@@ -18,7 +18,7 @@ namespace CodeFirstWebFramework {
 	};
 	public class Database : IDisposable {
 		DbInterface db;
-		ServerSettings server;
+		ServerConfig server;
 		Dictionary<string, Table> _tables;
 
 		/// <summary>
@@ -172,15 +172,15 @@ namespace CodeFirstWebFramework {
 				case "mysql":
 					return new MySqlDatabase(this, connectionString);
 				default:
-					throw new CheckException("Unknown database type {0}", AppSettings.Default.Database);
+					throw new CheckException("Unknown database type {0}", Config.Default.Database);
 			}
 		}
 
-		public Database(ServerSettings server) {
+		public Database(ServerConfig server) {
 			this.server = server;
-			_tables = server.ModuleDef.Tables;
-			string type = string.IsNullOrWhiteSpace(server.Database) ? AppSettings.Default.Database : server.Database;
-			string connectionString = string.IsNullOrWhiteSpace(server.ConnectionString) ? AppSettings.Default.ConnectionString : server.ConnectionString;
+			_tables = server.NamespaceDef.Tables;
+			string type = string.IsNullOrWhiteSpace(server.Database) ? Config.Default.Database : server.Database;
+			string connectionString = string.IsNullOrWhiteSpace(server.ConnectionString) ? Config.Default.ConnectionString : server.ConnectionString;
 			UniqueIdentifier = type + "\t" + connectionString;
 			db = getDatabase(type, connectionString);
 		}
@@ -611,7 +611,7 @@ namespace CodeFirstWebFramework {
 					WebServer.Log("{0}:{1}", elapsed, _message);
 			}
 
-			public double MaxTime = AppSettings.Default.SlowQuery;
+			public double MaxTime = Config.Default.SlowQuery;
 		}
 
 	}

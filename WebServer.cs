@@ -23,20 +23,20 @@ namespace CodeFirstWebFramework {
 		Dictionary<string, Session> _sessions;
 		static object _lock = new object();
 		Session _empty;
-		Dictionary<string, ModuleDef> modules;		// All the different web modules we are running
+		Dictionary<string, Namespace> modules;		// All the different web modules we are running
 
 		public WebServer() {
-			modules = new Dictionary<string, ModuleDef>();
+			modules = new Dictionary<string, Namespace>();
 			var baseType = typeof(AppModule);
 			HashSet<string> databases = new HashSet<string>();
-			AppSettings.Default.DefaultServer.ModuleDef = new ModuleDef(AppSettings.Default.Module);
-			modules[AppSettings.Default.Module] = AppSettings.Default.DefaultServer.ModuleDef;
-			foreach (ServerSettings server in AppSettings.Default.Servers) {
-				if (!modules.ContainsKey(server.Module)) {
-					server.ModuleDef = new ModuleDef(server.Module);
-					modules[server.Module] = server.ModuleDef;
+			Config.Default.DefaultServer.NamespaceDef = new Namespace(Config.Default.Namespace);
+			modules[Config.Default.Namespace] = Config.Default.DefaultServer.NamespaceDef;
+			foreach (ServerConfig server in Config.Default.Servers) {
+				if (!modules.ContainsKey(server.Namespace)) {
+					server.NamespaceDef = new Namespace(server.Namespace);
+					modules[server.Namespace] = server.NamespaceDef;
 				}
-				Type database = server.ModuleDef.GetDatabase();
+				Type database = server.NamespaceDef.GetDatabase();
 				if (database != null) {
 					using (Database db = (Database)Activator.CreateInstance(database, server)) {
 						if (!databases.Contains(db.UniqueIdentifier)) {
@@ -46,19 +46,19 @@ namespace CodeFirstWebFramework {
 					}
 				}
 			}
-			using (Database db = new Database(AppSettings.Default.DefaultServer)) {
+			using (Database db = new Database(Config.Default.DefaultServer)) {
 				if(!databases.Contains(db.UniqueIdentifier))
 					db.Upgrade();
 			}
 			_listener = new HttpListener();
-			_listener.Prefixes.Add("http://+:" + AppSettings.Default.Port + "/");
-			Log("Listening on port {0}", AppSettings.Default.Port);
+			_listener.Prefixes.Add("http://+:" + Config.Default.Port + "/");
+			Log("Listening on port {0}", Config.Default.Port);
 			_sessions = new Dictionary<string, Session>();
 			_empty = new Session(null);
 			// Start thread to expire sessions after 30 mins of inactivity
 			new Task(delegate() {
 				for (; ; ) {
-					Thread.Sleep(AppSettings.Default.SessionExpiryMinutes * 1000);
+					Thread.Sleep(Config.Default.SessionExpiryMinutes * 1000);
 					DateTime now = Utils.Now;
 					lock (_sessions) {
 						foreach (string key in _sessions.Keys.ToList()) {
@@ -139,7 +139,7 @@ namespace CodeFirstWebFramework {
 			AppModule module = null;
 			StringBuilder log = new StringBuilder();	// Session log writes to here, and it is displayed at the end
 			context = (HttpListenerContext)listenerContext;
-			ServerSettings server = AppSettings.Default.SettingsForHost(context.Request.Url.Host);
+			ServerConfig server = Config.Default.SettingsForHost(context.Request.Url.Host);
 			try {
 				log.AppendFormat("{0} {1}:{2}:[ms]:", 
 					context.Request.RemoteEndPoint.Address,
@@ -155,7 +155,7 @@ namespace CodeFirstWebFramework {
 					// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
 					string[] parts = baseName.Split('/');
 					if (parts.Length <= 2) {
-						Type type = modules[server.Module].GetModule(parts[0]);
+						Type type = modules[server.Namespace].GetModule(parts[0]);
 						if(type != null) {
 							// The AppModule exists - create the object
 							module = (AppModule)Activator.CreateInstance(type);
@@ -173,7 +173,7 @@ namespace CodeFirstWebFramework {
 				Cookie cookie = context.Request.Cookies["session"];
 				if (cookie != null) {
 					_sessions.TryGetValue(cookie.Value, out session);
-					if (AppSettings.Default.SessionLogging)
+					if (Config.Default.SessionLogging)
 						log.AppendFormat("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
 				}
 				if (session == null) {
@@ -182,7 +182,7 @@ namespace CodeFirstWebFramework {
 					} else {
 						session = new Session(this);
 						cookie = new Cookie("session", session.Cookie, "/");
-						if (AppSettings.Default.SessionLogging)
+						if (Config.Default.SessionLogging)
 							log.AppendFormat("[{0} new session]", cookie.Value);
 					}
 				}
@@ -192,7 +192,7 @@ namespace CodeFirstWebFramework {
 				}
 				// Set up module
 				module.Server = server;
-				module.ActiveModule = modules[server.Module];
+				module.ActiveModule = modules[server.Namespace];
 				module.Session = session;
 				module.LogString = log;
 				if (moduleName.EndsWith("Module"))
@@ -213,7 +213,7 @@ namespace CodeFirstWebFramework {
 							module = new ErrorModule();
 							module.Session = _empty;
 							module.Server = server;
-							module.ActiveModule = modules[server.Module];
+							module.ActiveModule = modules[server.Namespace];
 							module.LogString = log;
 							module.Context = context;
 							module.Module = "exception";

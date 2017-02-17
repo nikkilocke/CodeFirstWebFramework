@@ -116,9 +116,9 @@ namespace CodeFirstWebFramework {
 
 		public string OriginalModule;
 
-		public ServerSettings Server;
+		public ServerConfig Server;
 
-		public ModuleDef ActiveModule;
+		public Namespace ActiveModule;
 
 		/// <summary>
 		/// Parameters from Url
@@ -157,8 +157,8 @@ namespace CodeFirstWebFramework {
 			get { return jobs.Values; }
 		}
 
-		public AppSettings Config {
-			get { return AppSettings.Default; }
+		public Config Config {
+			get { return Config.Default; }
 		}
 
 		/// <summary>

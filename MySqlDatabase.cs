@@ -164,8 +164,8 @@ namespace CodeFirstWebFramework {
 		public Dictionary<string, Table> Tables() {
 			// NB: By default. MySql table names are case insensitive
 			Dictionary<string, Table> tables = new Dictionary<string, Table>(StringComparer.OrdinalIgnoreCase);
-			string schema = Regex.Match(AppSettings.Default.ConnectionString, "database=(.*?);").Groups[1].Value;
-			using(MySqlConnection conn = new MySqlConnection(AppSettings.Default.ConnectionString)) {
+			string schema = Regex.Match(Config.Default.ConnectionString, "database=(.*?);").Groups[1].Value;
+			using(MySqlConnection conn = new MySqlConnection(Config.Default.ConnectionString)) {
 				conn.Open();
 				DataTable tabs = conn.GetSchema("Tables");
 				DataTable cols = conn.GetSchema("Columns");

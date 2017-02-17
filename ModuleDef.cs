@@ -7,42 +7,46 @@ using System.Threading.Tasks;
 using System.Reflection;
 
 namespace CodeFirstWebFramework {
-	public class ModuleDef {
+	public class Namespace {
 		Dictionary<string, Type> appModules;	// List of all AppModule types by name ("Module" stripped off end)
 		Dictionary<string, Table> _tables;
 		Dictionary<Field, ForeignKeyAttribute> _foreignKeys;
+		List<Assembly> _assemblies;
 
-		public Assembly Assembly { get; private set; }
+		public string Name { get; private set; }
 
-		public string Name;
-
-		public ModuleDef(string name) {
+		public Namespace(string name) {
 			Name = name;
-			Assembly = Assembly.Load(name);
 			appModules = new Dictionary<string, Type>();
-			var baseType = typeof(AppModule);
-			foreach (Type t in Assembly.GetTypes().Where(t => !t.IsAbstract && t.IsSubclassOf(baseType))) {
-				string n = t.Name.ToLower();
-				if (n.EndsWith("module"))
-					n = n.Substring(0, n.Length - 6);
-				appModules[n] = t;
-			}
+			_assemblies = new List<Assembly>();
 			_tables = new Dictionary<string, Table>();
-			baseType = typeof(JsonObject);
 			_foreignKeys = new Dictionary<Field, ForeignKeyAttribute>();
-			// Process all subclasses of JsonObject with Table attribute in module assembly
-			foreach (Type tbl in Assembly.GetTypes().Where(t => t.IsSubclassOf(baseType))) {
-				if (!tbl.IsDefined(typeof(TableAttribute)))
-					continue;
-				processTable(tbl, null);
+			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+				bool relevant = false;
+				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == name && !t.IsAbstract)) {
+					relevant = true;
+					if (t.IsSubclassOf(typeof(AppModule))) {
+						string n = t.Name.ToLower();
+						if (n.EndsWith("module"))
+							n = n.Substring(0, n.Length - 6);
+						appModules[n] = t;
+					}
+					// Process all subclasses of JsonObject with Table attribute in module assembly
+					if (t.IsSubclassOf(typeof(JsonObject))) {
+						if (t.IsDefined(typeof(TableAttribute))) {
+							processTable(t, null);
+						} else if (t.IsDefined(typeof(ViewAttribute))) {
+						}
+					}
+				}
+				if (relevant)
+					_assemblies.Add(assembly);
 			}
 			// Add any tables defined in the framework module, but not in the given module
-			if (Assembly.Name() != baseType.Assembly.Name()) {
-				foreach (Type tbl in baseType.Assembly.GetTypes().Where(t => t.IsSubclassOf(baseType))) {
-					if (!tbl.IsDefined(typeof(TableAttribute)) || _tables.ContainsKey(tbl.Name))
-						continue;
-					processTable(tbl, null);
-				}
+			foreach (Type tbl in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(JsonObject)))) {
+				if (!tbl.IsDefined(typeof(TableAttribute)) || _tables.ContainsKey(tbl.Name))
+					continue;
+				processTable(tbl, null);
 			}
 			// Populate the foreign key attributes
 			foreach (Field fld in _foreignKeys.Keys) {
@@ -51,17 +55,24 @@ namespace CodeFirstWebFramework {
 				fld.ForeignKey = new ForeignKey(tbl, tbl.Fields[0]);
 			}
 			// Now do the Views (we assume no views in the framework module)
-			foreach (Type tbl in Assembly.GetTypes().Where(t => t.IsSubclassOf(baseType))) {
-				ViewAttribute view = tbl.GetCustomAttribute<ViewAttribute>();
-				if (view == null)
-					continue;
-				processTable(tbl, view);
+			foreach (Assembly assembly in _assemblies) {
+				foreach (Type tbl in assembly.GetTypes().Where(t => t.Namespace == name && t.IsSubclassOf(typeof(JsonObject)))) {
+					ViewAttribute view = tbl.GetCustomAttribute<ViewAttribute>();
+					if (view == null)
+						continue;
+					processTable(tbl, view);
+				}
 			}
 			_foreignKeys = null;
 		}
 
 		public Type GetDatabase() {
-			return Assembly.GetType(Assembly.Name() + ".Database");
+			foreach (Assembly assembly in _assemblies) {
+				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Database)))) {
+					return t;
+				}
+			}
+			return typeof(Database);
 		}
 
 		/// <summary>
@@ -123,56 +134,10 @@ namespace CodeFirstWebFramework {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType, ref fields, ref indexes, ref primary, ref primaryName);
 			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
-				if (field.IsDefined(typeof(DoNotStoreAttribute)))
+				PrimaryAttribute pk;
+				Field fld = Field.FieldFor(field, out pk);
+				if (fld == null)
 					continue;
-				bool nullable = field.IsDefined(typeof(NullableAttribute));
-				Type pt = field.FieldType;
-				decimal length = 0;
-				string defaultValue = null;
-				if (pt == typeof(bool?)) {
-					pt = typeof(bool);
-					nullable = true;
-				} else if (pt == typeof(int?)) {
-					pt = typeof(int);
-					nullable = true;
-				} else if (pt == typeof(decimal?)) {
-					pt = typeof(decimal);
-					nullable = true;
-				} else if (pt == typeof(double?)) {
-					pt = typeof(double);
-					nullable = true;
-				} else if (pt == typeof(DateTime?)) {
-					pt = typeof(DateTime);
-					nullable = true;
-				}
-				PrimaryAttribute pk = field.GetCustomAttribute<PrimaryAttribute>();
-				if (pk != null)
-					nullable = false;
-				if (pt == typeof(bool)) {
-					length = 1;
-					defaultValue = "0";
-				} else if (pt == typeof(int)) {
-					length = 11;
-					defaultValue = "0";
-				} else if (pt == typeof(decimal)) {
-					length = 10.2M;
-					defaultValue = "0.00";
-				} else if (pt == typeof(double)) {
-					length = 10.4M;
-					defaultValue = "0";
-				} else if (pt == typeof(string)) {
-					length = 45;
-					defaultValue = "";
-				}
-				if (nullable)
-					defaultValue = null;
-				LengthAttribute la = field.GetCustomAttribute<LengthAttribute>();
-				if (la != null)
-					length = la.Length + la.Precision / 10M;
-				DefaultValueAttribute da = field.GetCustomAttribute<DefaultValueAttribute>();
-				if (da != null)
-					defaultValue = da.Value;
-				Field fld = new Field(field.Name, pt, length, nullable, pk != null && pk.AutoIncrement, defaultValue);
 				if (pk != null) {
 					primary.Add(new Tuple<int, Field>(pk.Sequence, fld));
 					Utils.Check(primaryName == null || primaryName == pk.Name, "2 Primary keys defined on {0}", tbl.Name);

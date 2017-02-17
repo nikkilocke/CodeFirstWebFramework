@@ -4,22 +4,27 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using System.Web;
+using System.Configuration;
+using System.Globalization;
+using System.Reflection;
 using Mustache;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
-	public class AppSettings {
+	public class Config {
 		[JsonIgnore]
-		ServerSettings _default;
-		public static readonly string DefaultModule = System.Reflection.Assembly.GetExecutingAssembly().Name();
+		ServerConfig _default;
+		public static readonly string EntryModule = System.Reflection.Assembly.GetEntryAssembly().Name();
+		public static readonly string DefaultNamespace = "CodeFirstWebFramework";
 		public string Database = "SQLite";
-		public string Module = DefaultModule;
+		public string Namespace = DefaultNamespace;
 		public string ConnectionString = "Data Source=" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData).Replace(@"\", "/")
-			+ @"/" + DefaultModule + "/" + DefaultModule + ".db";
+			+ @"/" + EntryModule + "/" + EntryModule + ".db";
 		[JsonIgnore]
 		public string Filename;
 		public int Port = 8080;
@@ -27,13 +32,13 @@ namespace CodeFirstWebFramework {
 		public string ServerName = "localhost";
 		public string Email = "root@localhost";
 		public int SessionExpiryMinutes = 30;
-		public List<ServerSettings> Servers = new List<ServerSettings>();
+		public List<ServerConfig> Servers = new List<ServerConfig>();
 		public bool SessionLogging;
 		public int DatabaseLogging;
 		public bool PostLogging;
 		static public NameValueCollection CommandLineFlags;
 
-		public static AppSettings Default = new AppSettings();
+		public static Config Default = new Config();
 
 		public void Save(string filename) {
 			using (StreamWriter w = new StreamWriter(filename))
@@ -41,23 +46,23 @@ namespace CodeFirstWebFramework {
 		}
 
 		[JsonIgnore]
-		public ServerSettings DefaultServer {
+		public ServerConfig DefaultServer {
 			get {
 				lock (this) {
 					if (_default == null)
-						_default = new ServerSettings() {
+						_default = new ServerConfig() {
 							ServerName = ServerName,
 							Email = Email,
-							Module = Module
+							Namespace = Namespace
 						};
 				}
 				return _default;
 			}
 		}
 
-		public ServerSettings SettingsForHost(string host) {
+		public ServerConfig SettingsForHost(string host) {
 			if (Servers != null) {
-				ServerSettings settings = Servers.FirstOrDefault(s => s.Matches(host));
+				ServerConfig settings = Servers.FirstOrDefault(s => s.Matches(host));
 				if (settings != null)
 					return settings;
 			}
@@ -68,24 +73,72 @@ namespace CodeFirstWebFramework {
 		static public void Load(string filename) {
 			WebServer.Log("Loading config from {0}", filename);
 			using (StreamReader s = new StreamReader(filename)) {
-				Default = Utils.JsonTo<AppSettings>(s.ReadToEnd());
+				Default = Utils.JsonTo<Config>(s.ReadToEnd());
 				Default.Filename = Path.GetFileNameWithoutExtension(filename);
 				Default._default = null;
 			}
 		}
- 
+
+		static public void Load(string[] args) {
+			try {
+				string configName = Assembly.GetExecutingAssembly().Name() + ".config";
+				if (File.Exists(configName))
+					Config.Load(configName);
+				else
+					Config.Default.Save(configName);
+				NameValueCollection flags = new NameValueCollection();
+				foreach (string arg in args) {
+					string value = arg;
+					string name = Utils.NextToken(ref value, "=");
+					flags[name] = value;
+					if (value == "") {
+						switch (Path.GetExtension(arg).ToLower()) {
+							case ".config":
+								configName = arg;
+								Config.Load(arg);
+								continue;
+						}
+					}
+				}
+				Config.CommandLineFlags = flags;
+#if false
+				// Default to UK culture and time (specify empty culture and/or tz to use machine values)
+				if (flags["culture"] != "") {
+					CultureInfo c = new CultureInfo(flags["culture"] ?? "en-GB");
+					Thread.CurrentThread.CurrentCulture = c;
+					CultureInfo.DefaultThreadCurrentCulture = c;
+					CultureInfo.DefaultThreadCurrentUICulture = c;
+				}
+				if (flags["tz"] != "")
+					Utils._tz = TimeZoneInfo.FindSystemTimeZoneById(flags["tz"] ?? (windows ? "GMT Standard Time" : "GB"));
+#endif
+#if DEBUG
+				if (flags["now"] != null) {
+					DateTime now = Utils.Now;
+					DateTime newDate = DateTime.Parse(flags["now"]);
+					if (newDate.Date == newDate)
+						newDate = newDate.Add(now - now.Date);
+					Utils._timeOffset = newDate - now;
+				}
+#endif
+				new DailyLog("Logs." + Config.Default.Port).WriteLine("Started:config=" + configName);
+				Utils.Check(!string.IsNullOrEmpty(Config.Default.ConnectionString), "You must specify a ConnectionString in the " + configName + " file");
+			} catch (Exception ex) {
+				WebServer.Log(ex.ToString());
+			}
+		}
 	}
 
-	public class ServerSettings {
+	public class ServerConfig {
 		public string ServerName;
 		public string ServerAlias;
-		public string Module;
+		public string Namespace;
 		public string Email;
 		public string Title;
 		public string Database;
 		public string ConnectionString;
 		[JsonIgnore]
-		public ModuleDef ModuleDef;
+		public Namespace NamespaceDef;
 
 		public FileInfo FileInfo(string filename) {
 			FileInfo f;
@@ -95,13 +148,13 @@ namespace CodeFirstWebFramework {
 			Utils.Check(f.FullName.StartsWith(new FileInfo(ServerName).FullName), "Illegal file access");
 			if (f.Exists)
 				return f;
-			f = new FileInfo(Path.Combine(Module, filename));
+			f = new FileInfo(Path.Combine(Namespace, filename));
 			if (f.Exists)
 				return f;
-			f = new FileInfo(Path.Combine(CodeFirstWebFramework.AppSettings.Default.ServerName, filename));
+			f = new FileInfo(Path.Combine(CodeFirstWebFramework.Config.Default.ServerName, filename));
 			if (f.Exists)
 				return f;
-			return new FileInfo(Path.Combine(CodeFirstWebFramework.AppSettings.DefaultModule, filename));
+			return new FileInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, filename));
 		}
 
 		public bool Matches(string host) {

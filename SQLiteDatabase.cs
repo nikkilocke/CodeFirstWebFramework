@@ -167,8 +167,8 @@ namespace CodeFirstWebFramework {
 
 		public Dictionary<string, Table> Tables() {
 			Dictionary<string, Table> tables = new Dictionary<string, Table>();
-			createDatabase(AppSettings.Default.ConnectionString);
-			using (SqliteConnection conn = new SqliteConnection(AppSettings.Default.ConnectionString)) {
+			createDatabase(Config.Default.ConnectionString);
+			using (SqliteConnection conn = new SqliteConnection(Config.Default.ConnectionString)) {
 				conn.Open();
 				DataTable tabs = conn.GetSchema("Tables");
 				DataTable cols = conn.GetSchema("Columns");

@@ -4,75 +4,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
-using System.Configuration;
-using System.Globalization;
-using System.Reflection;
 
 namespace CodeFirstWebFramework {
-	class Program {
-		static void Main(string[] args) {
-			try {
-				string configName = Assembly.GetExecutingAssembly().Name() + ".config";
-				string startPage = "";
-				if (File.Exists(configName))
-					AppSettings.Load(configName);
-				else
-					AppSettings.Default.Save(configName);
-				NameValueCollection flags = new NameValueCollection();
-				foreach (string arg in args) {
-					string value = arg;
-					string name = Utils.NextToken(ref value, "=");
-					flags[name] = value;
-					if (value == "") {
-						switch (Path.GetExtension(arg).ToLower()) {
-							case ".config":
-								configName = arg;
-								AppSettings.Load(arg);
-								continue;
-						}
-					}
-				}
-				AppSettings.CommandLineFlags = flags;
-				bool windows = false;
-				switch (Environment.OSVersion.Platform) {
-					case PlatformID.Win32NT:
-					case PlatformID.Win32S:
-					case PlatformID.Win32Windows:
-						windows = true;
-						break;
-				}
-				// Default to UK culture and time (specify empty culture and/or tz to use machine values)
-				if (flags["culture"] != "") {
-					CultureInfo c = new CultureInfo(flags["culture"] ?? "en-GB");
-					Thread.CurrentThread.CurrentCulture = c;
-					CultureInfo.DefaultThreadCurrentCulture = c;
-					CultureInfo.DefaultThreadCurrentUICulture = c;
-				}
-				if (flags["tz"] != "")
-					Utils._tz = TimeZoneInfo.FindSystemTimeZoneById(flags["tz"] ?? (windows ? "GMT Standard Time" : "GB"));
-				if (flags["now"] != null) {
-					DateTime now = Utils.Now;
-					DateTime newDate = DateTime.Parse(flags["now"]);
-					if (newDate.Date == newDate)
-						newDate = newDate.Add(now - now.Date);
-					Utils._timeOffset = newDate - now;
-				}
-				new DailyLog("Logs." + AppSettings.Default.Port).WriteLine("Started:config=" + configName);
-				Utils.Check(!string.IsNullOrEmpty(AppSettings.Default.ConnectionString), "You must specify a ConnectionString in the " + configName + " file");
-				if (flags["url"] != null)
-					startPage = flags["url"];
-				if (windows && flags["nolaunch"] == null)
-					System.Diagnostics.Process.Start("http://localhost:" + AppSettings.Default.Port + "/" + startPage);
-				new WebServer().Start();
-			} catch (Exception ex) {
-				WebServer.Log(ex.ToString());
-			}
-		}
-	}
-
 	/// <summary>
 	/// Class to maintain a dated log file
 	/// </summary>

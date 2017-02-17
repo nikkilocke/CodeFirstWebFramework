@@ -29,9 +29,8 @@ namespace CodeFirstWebFramework {
 			modules = new Dictionary<string, ModuleDef>();
 			var baseType = typeof(AppModule);
 			HashSet<string> databases = new HashSet<string>();
-			string m = baseType.Assembly.Name();
-			AppSettings.Default.DefaultServer.ModuleDef = new ModuleDef(m);
-			modules[m] = AppSettings.Default.DefaultServer.ModuleDef;
+			AppSettings.Default.DefaultServer.ModuleDef = new ModuleDef(AppSettings.Default.Module);
+			modules[AppSettings.Default.Module] = AppSettings.Default.DefaultServer.ModuleDef;
 			foreach (ServerSettings server in AppSettings.Default.Servers) {
 				if (!modules.ContainsKey(server.Module)) {
 					server.ModuleDef = new ModuleDef(server.Module);

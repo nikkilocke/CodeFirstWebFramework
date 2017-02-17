@@ -122,7 +122,7 @@ namespace CodeFirstWebFramework {
 			foreach (Field fld in _foreignKeys.Keys) {
 				ForeignKeyAttribute fk = _foreignKeys[fld];
 				Table tbl = TableFor(fk.Table);
-				fld.ForeignKey = new ForeignKey(tbl, tbl.Fields[0]);
+				fld.ForeignKey = new ForeignKey(tbl, tbl.PrimaryKey);
 			}
 			// Now do the Views (we assume no views in the framework module)
 			foreach (Type tbl in assembly.GetTypes().Where(t => t.IsSubclassOf(baseType))) {
@@ -185,56 +185,10 @@ namespace CodeFirstWebFramework {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType, ref fields, ref indexes, ref primary, ref primaryName);
 			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
-				if (field.IsDefined(typeof(DoNotStoreAttribute)))
+				PrimaryAttribute pk;
+				Field fld = Field.FieldFor(field, out pk);
+				if (fld == null)
 					continue;
-				bool nullable = field.IsDefined(typeof(NullableAttribute));
-				Type pt = field.FieldType;
-				decimal length = 0;
-				string defaultValue = null;
-				if (pt == typeof(bool?)) {
-					pt = typeof(bool);
-					nullable = true;
-				} else if (pt == typeof(int?)) {
-					pt = typeof(int);
-					nullable = true;
-				} else if (pt == typeof(decimal?)) {
-					pt = typeof(decimal);
-					nullable = true;
-				} else if (pt == typeof(double?)) {
-					pt = typeof(double);
-					nullable = true;
-				} else if (pt == typeof(DateTime?)) {
-					pt = typeof(DateTime);
-					nullable = true;
-				}
-				PrimaryAttribute pk = field.GetCustomAttribute<PrimaryAttribute>();
-				if (pk != null)
-					nullable = false;
-				if (pt == typeof(bool)) {
-					length = 1;
-					defaultValue = "0";
-				} else if (pt == typeof(int)) {
-					length = 11;
-					defaultValue = "0";
-				} else if (pt == typeof(decimal)) {
-					length = 10.2M;
-					defaultValue = "0.00";
-				} else if (pt == typeof(double)) {
-					length = 10.4M;
-					defaultValue = "0";
-				} else if (pt == typeof(string)) {
-					length = 45;
-					defaultValue = "";
-				}
-				if (nullable)
-					defaultValue = null;
-				LengthAttribute la = field.GetCustomAttribute<LengthAttribute>();
-				if (la != null)
-					length = la.Length + la.Precision / 10M;
-				DefaultValueAttribute da = field.GetCustomAttribute<DefaultValueAttribute>();
-				if (da != null)
-					defaultValue = da.Value;
-				Field fld = new Field(field.Name, pt, length, nullable, pk != null && pk.AutoIncrement, defaultValue);
 				if (pk != null) {
 					primary.Add(new Tuple<int, Field>(pk.Sequence, fld));
 					Utils.Check(primaryName == null || primaryName == pk.Name, "2 Primary keys defined on {0}", tbl.Name);

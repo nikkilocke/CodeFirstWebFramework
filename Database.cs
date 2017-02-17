@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Data;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
@@ -719,6 +720,60 @@ namespace CodeFirstWebFramework {
 					s += "[AutoIncrement]";
 			}
 			return s;
+		}
+
+		public static Field FieldFor(FieldInfo field, out PrimaryAttribute pk) {
+			pk = null;
+			if (field.IsDefined(typeof(DoNotStoreAttribute)))
+				return null;
+			bool nullable = field.IsDefined(typeof(NullableAttribute));
+			Type pt = field.FieldType;
+			decimal length = 0;
+			string defaultValue = null;
+			if (pt == typeof(bool?)) {
+				pt = typeof(bool);
+				nullable = true;
+			} else if (pt == typeof(int?)) {
+				pt = typeof(int);
+				nullable = true;
+			} else if (pt == typeof(decimal?)) {
+				pt = typeof(decimal);
+				nullable = true;
+			} else if (pt == typeof(double?)) {
+				pt = typeof(double);
+				nullable = true;
+			} else if (pt == typeof(DateTime?)) {
+				pt = typeof(DateTime);
+				nullable = true;
+			}
+			pk = field.GetCustomAttribute<PrimaryAttribute>();
+			if (pk != null)
+				nullable = false;
+			if (pt == typeof(bool)) {
+				length = 1;
+				defaultValue = "0";
+			} else if (pt == typeof(int)) {
+				length = 11;
+				defaultValue = "0";
+			} else if (pt == typeof(decimal)) {
+				length = 10.2M;
+				defaultValue = "0.00";
+			} else if (pt == typeof(double)) {
+				length = 10.4M;
+				defaultValue = "0";
+			} else if (pt == typeof(string)) {
+				length = 45;
+				defaultValue = "";
+			}
+			if (nullable)
+				defaultValue = null;
+			LengthAttribute la = field.GetCustomAttribute<LengthAttribute>();
+			if (la != null)
+				length = la.Length + la.Precision / 10M;
+			DefaultValueAttribute da = field.GetCustomAttribute<DefaultValueAttribute>();
+			if (da != null)
+				defaultValue = da.Value;
+			return new Field(field.Name, pt, length, nullable, pk != null && pk.AutoIncrement, defaultValue);
 		}
 
 		public override string ToString() {

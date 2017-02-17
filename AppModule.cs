@@ -27,8 +27,10 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	
 	public abstract class AppModule : IDisposable {
-		static int _lastJob;							// Last batch job
-		static Dictionary<int, BatchJob> _jobs = new Dictionary<int, BatchJob>();
+		static int lastJob;							// Last batch job
+		static Dictionary<int, BatchJob> jobs = new Dictionary<int, BatchJob>();
+		private JObject _settings;
+
 		public static Encoding Encoding = Encoding.GetEncoding(1252);
 		public static string Charset = "ANSI";
 
@@ -45,9 +47,13 @@ namespace CodeFirstWebFramework {
 
 		public virtual Database Database {
 			get {
-				if (_db == null) 
-					_db = new Database(Server);
-				return _db;
+				return _db ?? (_db = new Database(Server));
+			}
+		}
+
+		public virtual JObject Settings {
+			get {
+				return _settings ?? (_settings = Database.QueryOne("SELECT * FROM Settings"));
 			}
 		}
 
@@ -148,7 +154,7 @@ namespace CodeFirstWebFramework {
 		/// All Modules running batch jobs
 		/// </summary>
 		static public IEnumerable<BatchJob> Jobs {
-			get { return _jobs.Values; }
+			get { return jobs.Values; }
 		}
 
 		public AppSettings Config {
@@ -175,6 +181,8 @@ namespace CodeFirstWebFramework {
 		/// Generic object for templates to use - usually contains data from the database
 		/// </summary>
 		public object Record;
+
+		public Form Form;
 
 		/// <summary>
 		/// Background batch job (e.g. import, restore)
@@ -205,9 +213,9 @@ namespace CodeFirstWebFramework {
 				Records = 100;
 				module.Batch = this;
 				// Get the next job number
-				lock (_jobs) {
-					Id = ++_lastJob;
-					_jobs[Id] = this;
+				lock (jobs) {
+					Id = ++lastJob;
+					jobs[Id] = this;
 				}
 				module.Log("Started batch job {0}", Id);
 				new Task(delegate() {
@@ -215,8 +223,8 @@ namespace CodeFirstWebFramework {
 					runBatch(action);
 					_module.CloseDatabase();
 					Thread.Sleep(60000);	// 1 minute
-					lock (_jobs) {
-						_jobs.Remove(Id);
+					lock (jobs) {
+						jobs.Remove(Id);
 					}
 				}).Start();
 				module.Module = "admin";
@@ -305,7 +313,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public static BatchJob GetBatchJob(int id) {
 			BatchJob job;
-			return _jobs.TryGetValue(id, out job) ? job : null;
+			return jobs.TryGetValue(id, out job) ? job : null;
 		}
 
 		/// <summary>
@@ -492,7 +500,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Load the named template, and render using Mustache from the supplied object.
 		/// E.g. {{Body} in the template will be replaced with the obj.Body.ToString()
-		/// Then split into <head> (goes to this.Head) and <body> (goes to this.Body)
+		/// Then split into &lt;head&gt; (goes to this.Head) and &lt;body&gt; (goes to this.Body)
 		/// If no head/body sections, the whole template goes into this.Body.
 		/// Then render the default template from this.
 		/// </summary>
@@ -545,7 +553,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Save an arbitrary JObject to the database, optionally also saving an audit trail
+		/// Save an arbitrary JObject to the database
 		/// </summary>
 		public AjaxReturn PostRecord(JsonObject record) {
 			AjaxReturn retval = new AjaxReturn();
@@ -554,6 +562,20 @@ namespace CodeFirstWebFramework {
 					record.Id = null;
 				Database.Update(record);
 				retval.id = record.Id;
+			} catch (Exception ex) {
+				Message = ex.Message;
+				retval.error = ex.Message;
+			}
+			return retval;
+		}
+
+		/// <summary>
+		/// Delete a record from the database
+		/// </summary>
+		public AjaxReturn DeleteRecord(string tablename, int id) {
+			AjaxReturn retval = new AjaxReturn();
+			try {
+				Database.Delete(tablename, id);
 			} catch (Exception ex) {
 				Message = ex.Message;
 				retval.error = ex.Message;

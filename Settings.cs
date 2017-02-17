@@ -15,7 +15,7 @@ namespace CodeFirstWebFramework {
 	public class AppSettings {
 		[JsonIgnore]
 		ServerSettings _default;
-		static string DefaultModule = System.Reflection.Assembly.GetExecutingAssembly().Name();
+		public static readonly string DefaultModule = System.Reflection.Assembly.GetExecutingAssembly().Name();
 		public string Database = "SQLite";
 		public string Module = DefaultModule;
 		public string ConnectionString = "Data Source=" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData).Replace(@"\", "/")
@@ -70,6 +70,7 @@ namespace CodeFirstWebFramework {
 			using (StreamReader s = new StreamReader(filename)) {
 				Default = Utils.JsonTo<AppSettings>(s.ReadToEnd());
 				Default.Filename = Path.GetFileNameWithoutExtension(filename);
+				Default._default = null;
 			}
 		}
  
@@ -97,7 +98,10 @@ namespace CodeFirstWebFramework {
 			f = new FileInfo(Path.Combine(Module, filename));
 			if (f.Exists)
 				return f;
-			return new FileInfo(Path.Combine(CodeFirstWebFramework.AppSettings.Default.ServerName, filename));
+			f = new FileInfo(Path.Combine(CodeFirstWebFramework.AppSettings.Default.ServerName, filename));
+			if (f.Exists)
+				return f;
+			return new FileInfo(Path.Combine(CodeFirstWebFramework.AppSettings.DefaultModule, filename));
 		}
 
 		public bool Matches(string host) {

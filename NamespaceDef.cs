@@ -9,18 +9,19 @@ using System.Reflection;
 namespace CodeFirstWebFramework {
 	public class Namespace {
 		Dictionary<string, Type> appModules;	// List of all AppModule types by name ("Module" stripped off end)
-		Dictionary<string, Table> _tables;
-		Dictionary<Field, ForeignKeyAttribute> _foreignKeys;
-		List<Assembly> _assemblies;
+		Dictionary<string, Table> tables;
+		Dictionary<Field, ForeignKeyAttribute> foreignKeys;
+		List<Assembly> assemblies;
 
 		public string Name { get; private set; }
 
 		public Namespace(string name) {
 			Name = name;
 			appModules = new Dictionary<string, Type>();
-			_assemblies = new List<Assembly>();
-			_tables = new Dictionary<string, Table>();
-			_foreignKeys = new Dictionary<Field, ForeignKeyAttribute>();
+			assemblies = new List<Assembly>();
+			tables = new Dictionary<string, Table>();
+			foreignKeys = new Dictionary<Field, ForeignKeyAttribute>();
+			List<Type> views = new List<Type>();
 			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
 				bool relevant = false;
 				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == name && !t.IsAbstract)) {
@@ -36,38 +37,34 @@ namespace CodeFirstWebFramework {
 						if (t.IsDefined(typeof(TableAttribute))) {
 							processTable(t, null);
 						} else if (t.IsDefined(typeof(ViewAttribute))) {
+							views.Add(t);
 						}
 					}
 				}
 				if (relevant)
-					_assemblies.Add(assembly);
+					assemblies.Add(assembly);
 			}
 			// Add any tables defined in the framework module, but not in the given module
 			foreach (Type tbl in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(JsonObject)))) {
-				if (!tbl.IsDefined(typeof(TableAttribute)) || _tables.ContainsKey(tbl.Name))
+				if (!tbl.IsDefined(typeof(TableAttribute)) || tables.ContainsKey(tbl.Name))
 					continue;
 				processTable(tbl, null);
 			}
 			// Populate the foreign key attributes
-			foreach (Field fld in _foreignKeys.Keys) {
-				ForeignKeyAttribute fk = _foreignKeys[fld];
+			foreach (Field fld in foreignKeys.Keys) {
+				ForeignKeyAttribute fk = foreignKeys[fld];
 				Table tbl = TableFor(fk.Table);
 				fld.ForeignKey = new ForeignKey(tbl, tbl.Fields[0]);
 			}
 			// Now do the Views (we assume no views in the framework module)
-			foreach (Assembly assembly in _assemblies) {
-				foreach (Type tbl in assembly.GetTypes().Where(t => t.Namespace == name && t.IsSubclassOf(typeof(JsonObject)))) {
-					ViewAttribute view = tbl.GetCustomAttribute<ViewAttribute>();
-					if (view == null)
-						continue;
-					processTable(tbl, view);
-				}
+			foreach (Type tbl in views) {
+				processTable(tbl, tbl.GetCustomAttribute<ViewAttribute>());
 			}
-			_foreignKeys = null;
+			foreignKeys = null;
 		}
 
 		public Type GetDatabase() {
-			foreach (Assembly assembly in _assemblies) {
+			foreach (Assembly assembly in assemblies) {
 				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Database)))) {
 					return t;
 				}
@@ -84,20 +81,20 @@ namespace CodeFirstWebFramework {
 		}
 
 		public Dictionary<string, Table> Tables {
-			get { return new Dictionary<string, Table>(_tables); }
+			get { return new Dictionary<string, Table>(tables); }
 		}
 
 		public IEnumerable<string> TableNames {
-			get { return _tables.Where(t => !t.Value.IsView).Select(t => t.Key); }
+			get { return tables.Where(t => !t.Value.IsView).Select(t => t.Key); }
 		}
 
 		public IEnumerable<string> ViewNames {
-			get { return _tables.Where(t => t.Value.IsView).Select(t => t.Key); }
+			get { return tables.Where(t => t.Value.IsView).Select(t => t.Key); }
 		}
 
 		public Table TableFor(string name) {
 			Table table;
-			Utils.Check(_tables.TryGetValue(name, out table), "Table '{0}' does not exist", name);
+			Utils.Check(tables.TryGetValue(name, out table), "Table '{0}' does not exist", name);
 			return table;
 		}
 
@@ -123,10 +120,18 @@ namespace CodeFirstWebFramework {
 					.ToArray()));
 			if (view != null) {
 				Table updateTable = null;
-				_tables.TryGetValue(Regex.Replace(tbl.Name, "^.*_", ""), out updateTable);
-				_tables[tbl.Name] = new View(tbl.Name, fields.ToArray(), inds.ToArray(), view.Sql, updateTable);
+				// If View is based on a Table class, use that as the update table
+				for (Type t = tbl.BaseType; t != typeof(Object); t = t.BaseType) {
+					if(t.IsDefined(typeof(TableAttribute))) {
+						if(tables.TryGetValue(t.Name, out updateTable))
+							break;
+					}
+				}
+				if(updateTable == null)
+					tables.TryGetValue(Regex.Replace(tbl.Name, "^.*_", ""), out updateTable);
+				tables[tbl.Name] = new View(tbl.Name, fields.ToArray(), inds.ToArray(), view.Sql, updateTable);
 			} else {
-				_tables[tbl.Name] = new Table(tbl.Name, fields.ToArray(), inds.ToArray());
+				tables[tbl.Name] = new Table(tbl.Name, fields.ToArray(), inds.ToArray());
 			}
 		}
 
@@ -153,7 +158,7 @@ namespace CodeFirstWebFramework {
 				}
 				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
 				if (fk != null)
-					_foreignKeys[fld] = fk;
+					foreignKeys[fld] = fk;
 				fields.Add(fld);
 			}
 		}

@@ -503,4 +503,21 @@ namespace CodeFirstWebFramework {
 			return contextData;
 		}
 	}
+
+	/// <summary>
+	/// CONCAT function - just like MySql
+	/// </summary>
+	[SqliteFunctionAttribute(Name = "CONCAT", FuncType = FunctionType.Scalar)]
+	class SqliteConcat : SqliteFunction {
+		public override object Invoke(object[] args) {
+			if (args.Length < 1 || args.Any(a => a == null || a == DBNull.Value))
+				return null;
+			try {
+				return String.Join("", args.Select(a => a.ToString()).ToArray());
+			} catch (Exception ex) {
+				WebServer.Log("Exception: {0}", ex);
+				return null;
+			}
+		}
+	}
 }

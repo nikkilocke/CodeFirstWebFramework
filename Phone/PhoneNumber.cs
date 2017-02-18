@@ -28,7 +28,7 @@ namespace Phone {
 		[Primary]
 		public int? PhoneNumberId;
 		[Unique("PhoneKey")]
-		[Field("visible", false)]
+		[Field(Visible = false)]
 		public string PhoneKey;
 		public string Number;
 		[Length(0)]
@@ -43,10 +43,9 @@ namespace Phone {
 			Menu = new MenuOption[] {
 				new MenuOption("New number", "/default/PhoneNumber?id=0")
 			};
-			Form = new Form(this, typeof(PhoneNumber), false);
-			Form["PhoneNumberId"].Options["visible"] = false;
+			Form = new DataTableForm(this, typeof(PhoneNumber), false);
 			Form.Options["select"] = "/default/PhoneNumber";
-			Form.Show("DataTable");
+			Form.Show();
 		}
 
 		public object DefaultListing() {
@@ -58,7 +57,7 @@ namespace Phone {
 			Form = new Form(this, typeof(PhoneNumber));
 			Form.Options["canDelete"] = n.PhoneNumberId != null;
 			Form.Options["data"] = n.ToJToken();
-			Form.Show("Form");
+			Form.Show();
 		}
 
 		public AjaxReturn PhoneNumberPost(PhoneNumber json) {

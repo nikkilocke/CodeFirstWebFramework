@@ -1,4 +1,13 @@
-/*.suo
 /bin
 /obj
+Phone/obj
+Phone/bin
 /packages
+/Logs.8080
+/*.config
+/*.dll
+/*.pdb
+/*.exe
+/*.manifest
+/*.def
+/*.suo

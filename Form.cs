@@ -62,6 +62,69 @@ namespace CodeFirstWebFramework {
 			get { return Options.AsInt("size"); }
 			set { Options["size"] = value; }
 		}
+
+		public bool Visible {
+			get { return Options["visible"] == null ? true : Options.AsBool("visible"); }
+			set { Options["visible"] = value; }
+		}
+
+		public string FieldName {
+			get { return Name ?? Data; }
+		}
+
+		public Field Field;
+
+		public static FieldAttribute FieldFor(Database db, FieldInfo field, bool readwrite) {
+			PrimaryAttribute pk;
+			Field fld = Field.FieldFor(field, out pk);
+			if (fld == null)
+				return null;
+			FieldAttribute f = field.GetCustomAttribute<FieldAttribute>();
+			if (f == null) {
+				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
+				if (fk == null) {
+					f = new FieldAttribute();
+				} else {
+					Table t = db.TableFor(fk.Table);
+					string valueName = t.Indexes.Length < 2 ? t.Fields[1].Name :
+						t.Indexes[1].Fields.Length < 2 ? t.Indexes[1].Fields[0].Name :
+						"CONCAT(" + String.Join(",' ',", t.Indexes[1].Fields.Select(fi => fi.Name).ToArray()) + ")";
+					f = new SelectAttribute(db.Query("SELECT " + t.PrimaryKey.Name + " AS id, "
+						+ valueName + " AS value FROM " + t.Name
+						+ " ORDER BY " + valueName), readwrite);
+				}
+			}
+			f.Field = fld;
+			if (f.Data == null)
+				f.Data = fld.Name;
+			if (f.Type == null) {
+				switch (fld.Type.Name) {
+					case "Int32":
+						f.Type = readwrite ? "intInput" : "int";
+						break;
+					case "Decimal":
+						f.Type = readwrite ? "decimalInput" : "decimal";
+						break;
+					case "Double":
+						f.Type = readwrite ? "doubleInput" : "double";
+						break;
+					case "Boolean":
+						f.Type = readwrite ? "checkboxInput" : "checkbox";
+						break;
+					case "DateTime":
+						f.Type = readwrite ? "dateInput" : "date";
+						break;
+					default:
+						f.Type = fld.Length == 0 ?
+							readwrite ? "textAreaInput" : "textArea" :
+							readwrite ? "textInput" : "string";
+						break;
+				}
+			}
+			if (f.Type == "textInput" && f.Size == 0 && fld.Length > 0)
+				f.Size = (int)Math.Floor(fld.Length);
+			return f;
+		}
 	}
 
 	public class SelectAttribute : FieldAttribute {
@@ -86,6 +149,8 @@ namespace CodeFirstWebFramework {
 
 	public class Form {
 
+		private JArray columns;
+
 		public Form(AppModule module, Type t) 
 			: this(module, t, true) {
 		}
@@ -93,6 +158,9 @@ namespace CodeFirstWebFramework {
 		public Form(AppModule module, Type t, bool readWrite) {
 			Module = module;
 			ReadWrite = readWrite;
+			columns = new JArray();
+			Options = new JObject();
+			Options["columns"] = columns;
 			Type table = t;
 			Type view = null;
 			while (table != typeof(JsonObject) && !table.IsDefined(typeof(TableAttribute))) {
@@ -109,17 +177,58 @@ namespace CodeFirstWebFramework {
 
 		public AppModule Module;
 
-		public JObject Options = new JObject().AddRange("columns", new JArray());
-
-		public JArray Columns {
-			get { return (JArray)Options["columns"]; }
-		}
+		public JObject Options;
 
 		public bool ReadWrite;
 
-		public void Show(string formType) {
+		public FieldAttribute Add(FieldInfo field) {
+			return Add(field, ReadWrite && field.DeclaringType.IsDefined(typeof(TableAttribute)));
+		}
+
+		public FieldAttribute Add(FieldInfo field, bool readwrite) {
+			FieldAttribute f = FieldAttribute.FieldFor(Module.Database, field, readwrite);
+			if (f != null)
+				columns.Add(f.Options);
+			return f;
+		}
+
+		public void Remove(string name) {
+			int i = 0;
+			bool found = false;
+			foreach (FieldAttribute f in Fields) {
+				if (f.FieldName == name) {
+					found = true;
+					break;
+				}
+				i++;
+			}
+			if(found)
+				columns.RemoveAt(i);
+		}
+
+		public virtual void Show() {
+			Show("Form");
+		}
+
+		protected void Show(string formType) {
 			Module.Form = this;
 			Module.WriteResponse(Module.Template(formType.ToLower(), Module), "text/html", System.Net.HttpStatusCode.OK);
+		}
+
+		public IEnumerable<FieldAttribute> Fields {
+			get {
+				return columns.Select(f => new FieldAttribute() { Options = (JObject)f });
+			}
+		}
+
+		public FieldAttribute this[string name] {
+			get {
+				return Fields.FirstOrDefault(f => f.FieldName == name);
+			}
+		}
+
+		protected virtual bool RequireField(FieldAttribute field) {
+			return !field.Field.AutoIncrement && field.Visible;
 		}
 
 		void processFields(Type tbl) {
@@ -127,66 +236,50 @@ namespace CodeFirstWebFramework {
 				processFields(tbl.BaseType);
 			bool readwrite = ReadWrite && tbl.IsDefined(typeof(TableAttribute));
 			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
-				PrimaryAttribute pk;
-				Field fld = Field.FieldFor(field, out pk);
-				if (fld == null)
-					continue;
-				FieldAttribute f = field.GetCustomAttribute<FieldAttribute>();
-				if(f == null) {
-					ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
-					if (fk == null) {
-						f = new FieldAttribute();
-					} else {
-						Table t = Module.Database.TableFor(fk.Table);
-						string valueName = t.Indexes.Length > 1 ? t.Indexes[1].Fields[0].Name : t.Fields[1].Name;
-						f = new SelectAttribute(Module.Database.Query("SELECT " + t.PrimaryKey.Name + " AS id, "
-							+ valueName + " AS value FROM " + t.Name
-							+ " ORDER BY " + valueName), readwrite);
-					}
-				}
-				if (f.Data == null)
-					f.Data = fld.Name;
-				if(f.Type == null) {
-					switch (fld.Type.Name) {
-						case "Int32":
-							f.Type = readwrite ? "intInput" : "int";
-							break;
-						case "Decimal":
-							f.Type = readwrite ? "decimalInput" : "decimal";
-							break;
-						case "Double":
-							f.Type = readwrite ? "doubleInput" : "double";
-							break;
-						case "Boolean":
-							f.Type = readwrite ? "checkboxInput" : "checkbox";
-							break;
-						case "DateTime":
-							f.Type = readwrite ? "dateInput" : "date";
-							break;
-						default:
-							f.Type = fld.Length == 0 ?
-								readwrite ? "textAreaInput" : "textArea" :
-								readwrite ? "textInput" : "string";
-							break;
-					}
-				}
-				if(f.Type == "textInput" && f.Size == 0 && fld.Length > 0)
-					f.Size = (int)Math.Floor(fld.Length);
-				Columns.Add(f.Options);
+				FieldAttribute f = FieldAttribute.FieldFor(Module.Database, field, readwrite);
+				if (f != null && RequireField(f))
+					columns.Add(f.Options);
 			}
 		}
 
-		public IEnumerable<FieldAttribute> Fields {
-			get {
-				return Columns.Select(f => new FieldAttribute() { Options = (JObject)f });
-			}
+	}
+
+	public class DataTableForm : Form {
+		public DataTableForm(AppModule module, Type t) 
+			: base(module, t, true) {
 		}
 
-		public FieldAttribute this[string name] {
-			get {
-				return Fields.FirstOrDefault(f => f.Name == name) ?? Fields.FirstOrDefault(f => f.Data == name);
-			}
+		public DataTableForm(AppModule module, Type t, bool readWrite)
+			: base(module, t, readWrite) {
 		}
+
+		public override void Show() {
+			base.Show("DataTable");
+		}
+
+		protected override bool RequireField(FieldAttribute field) {
+			return !field.Field.AutoIncrement;
+		}
+
+	}
+
+	public class HeaderDetailForm : Form {
+
+		public HeaderDetailForm(AppModule module, Type header, Type detail) 
+		: base(module, header) {
+			Detail = new Form(module, detail);
+			Options = new JObject().AddRange("header", Options);
+			Options["detail"] = Detail.Options;
+		}
+
+		public Form Detail;
+
+		new public JObject Options = new JObject();
+
+		public override void Show() {
+			base.Show("HeaderDetailForm");
+		}
+
 	}
 
 }

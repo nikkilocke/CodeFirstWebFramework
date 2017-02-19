@@ -39,10 +39,16 @@ namespace Phone {
 
 	public class DefaultModule : AppModule {
 
-		public override void Default() {
+		public DefaultModule() {
 			Menu = new MenuOption[] {
-				new MenuOption("New number", "/default/PhoneNumber?id=0")
+				new MenuOption("Phone Numbers", "/default/Default"),
+				new MenuOption("Analysis", "/default/AnalysisList"),
+				new MenuOption("Cost centres", "/default/CostCentreList")
 			};
+		}
+
+		public override void Default() {
+			insertMenuOption(new MenuOption("New number", "/default/PhoneNumber?id=0"));
 			Form = new DataTableForm(this, typeof(PhoneNumber), false);
 			Form.Options["select"] = "/default/PhoneNumber";
 			Form.Show();
@@ -56,7 +62,7 @@ namespace Phone {
 			PhoneNumber n = Database.Get<PhoneNumber>(id);
 			Form = new Form(this, typeof(PhoneNumber));
 			Form.Options["canDelete"] = n.PhoneNumberId != null;
-			Form.Options["data"] = n.ToJToken();
+			Form.Data = n.ToJToken();
 			Form.Show();
 		}
 
@@ -67,6 +73,63 @@ namespace Phone {
 
 		public AjaxReturn PhoneNumberDelete(int id) {
 			return DeleteRecord("PhoneNumber", id);
+		}
+
+		public void AnalysisList() {
+			insertMenuOption(new MenuOption("New analysis", "/default/Analysis?id=0"));
+			Form = new DataTableForm(this, typeof(Analysis), false);
+			Form.Options["select"] = "/default/Analysis";
+			Form.Show();
+		}
+
+		public object AnalysisListListing() {
+			return Database.Query("SELECT * FROM Analysis ORDER BY AnalysisName");
+		}
+
+		public void Analysis(int id) {
+			Analysis a = Database.Get<Analysis>(id);
+			Form = new Form(this, typeof(Analysis));
+			Form.Options["canDelete"] = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null;
+			Form.Data = a.ToJToken();
+			Form.Show();
+		}
+
+		public AjaxReturn AnalysisPost(Analysis json) {
+			Utils.Check(json.CostCentre > 0, "Cost Centre required");
+			return PostRecord(json);
+		}
+
+		public AjaxReturn AnalysisDelete(int id) {
+			Utils.Check(Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null, "Cannot delete analysis code - in use");
+			return DeleteRecord("Analysis", id);
+		}
+
+		public void CostCentreList() {
+			insertMenuOption(new MenuOption("New Cost Centre", "/default/CostCentre?id=0"));
+			Form = new DataTableForm(this, typeof(CostCentre), false);
+			Form.Options["select"] = "/default/CostCentre";
+			Form.Show();
+		}
+
+		public object CostCentreListListing() {
+			return Database.Query("SELECT * FROM CostCentre ORDER BY CostCentreName");
+		}
+
+		public void CostCentre(int id) {
+			CostCentre a = Database.Get<CostCentre>(id);
+			Form = new Form(this, typeof(CostCentre));
+			Form.Options["canDelete"] = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null;
+			Form.Data = a.ToJToken();
+			Form.Show();
+		}
+
+		public AjaxReturn CostCentrePost(CostCentre json) {
+			return PostRecord(json);
+		}
+
+		public AjaxReturn CostCentreDelete(int id) {
+			Utils.Check(Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null, "Cannot delete Cost Centre code - in use");
+			return DeleteRecord("CostCentre", id);
 		}
 	}
 }

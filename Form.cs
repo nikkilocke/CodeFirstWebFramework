@@ -147,37 +147,46 @@ namespace CodeFirstWebFramework {
 		}
 	}
 
-	public class Form {
+	public abstract class BaseForm {
 
-		private JArray columns;
-
-		public Form(AppModule module, Type t) 
-			: this(module, t, true) {
+		public BaseForm(AppModule module) {
+			Module = module;
+			Options = new JObject();
 		}
 
-		public Form(AppModule module, Type t, bool readWrite) {
-			Module = module;
-			ReadWrite = readWrite;
-			columns = new JArray();
-			Options = new JObject();
-			Options["columns"] = columns;
-			Type table = t;
-			Type view = null;
-			while (table != typeof(JsonObject) && !table.IsDefined(typeof(TableAttribute))) {
-				if (view == null && table.IsDefined(typeof(ViewAttribute)))
-					view = table;
-				table = table.BaseType;
-			}
-			if (table != typeof(JsonObject)) {
-				Options["table"] = table.Name;
-				Options["id"] = Module.Database.TableFor(table.Name).PrimaryKey.Name;
-			}
-			processFields(t);
+		public JToken Data {
+			get { return Options["data"]; }
+			set { Options["data"] = value; }
 		}
 
 		public AppModule Module;
 
 		public JObject Options;
+
+		public abstract void Show();
+
+		protected void Show(string formType) {
+			Module.Form = this;
+			Module.WriteResponse(Module.Template(formType.ToLower(), Module), "text/html", System.Net.HttpStatusCode.OK);
+		}
+
+	}
+
+	public class Form : BaseForm {
+
+		private JArray columns;
+
+		public Form(AppModule module, Type t)
+			: this(module, t, true) {
+		}
+
+		public Form(AppModule module, Type t, bool readWrite) 
+		: base(module) {
+			ReadWrite = readWrite;
+			columns = new JArray();
+			Options["columns"] = columns;
+			Build(t);
+		}
 
 		public bool ReadWrite;
 
@@ -192,6 +201,19 @@ namespace CodeFirstWebFramework {
 			return f;
 		}
 
+		public void Build(Type t) {
+			Type table = t;
+			while (table != typeof(JsonObject)) {
+				if (table.IsDefined(typeof(TableAttribute))) {
+					Options["table"] = table.Name;
+					Options["id"] = Module.Database.TableFor(table.Name).PrimaryKey.Name;
+					break;
+				}
+				table = table.BaseType;
+			}
+			processFields(t);
+		}
+
 		public void Remove(string name) {
 			int i = 0;
 			bool found = false;
@@ -202,17 +224,12 @@ namespace CodeFirstWebFramework {
 				}
 				i++;
 			}
-			if(found)
+			if (found)
 				columns.RemoveAt(i);
 		}
 
-		public virtual void Show() {
+		public override void Show() {
 			Show("Form");
-		}
-
-		protected void Show(string formType) {
-			Module.Form = this;
-			Module.WriteResponse(Module.Template(formType.ToLower(), Module), "text/html", System.Net.HttpStatusCode.OK);
 		}
 
 		public IEnumerable<FieldAttribute> Fields {
@@ -263,21 +280,37 @@ namespace CodeFirstWebFramework {
 
 	}
 
-	public class HeaderDetailForm : Form {
+	public class ListForm : Form {
+		public ListForm(AppModule module, Type t)
+			: base(module, t, true) {
+		}
+
+		public ListForm(AppModule module, Type t, bool readWrite)
+			: base(module, t, readWrite) {
+		}
+
+		public override void Show() {
+			base.Show("ListForm");
+		}
+
+	}
+
+	public class HeaderDetailForm : BaseForm {
 
 		public HeaderDetailForm(AppModule module, Type header, Type detail) 
-		: base(module, header) {
-			Detail = new Form(module, detail);
-			Options = new JObject().AddRange("header", Options);
+		: base(module) {
+			Header = new Form(module, header);
+			Detail = new ListForm(module, detail);
+			Options["header"] = Header.Options;
 			Options["detail"] = Detail.Options;
 		}
 
-		public Form Detail;
+		public Form Header;
 
-		new public JObject Options = new JObject();
+		public ListForm Detail;
 
 		public override void Show() {
-			base.Show("HeaderDetailForm");
+			Show("HeaderDetailForm");
 		}
 
 	}

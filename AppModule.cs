@@ -182,7 +182,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public object Record;
 
-		public Form Form;
+		public BaseForm Form;
 
 		/// <summary>
 		/// Background batch job (e.g. import, restore)

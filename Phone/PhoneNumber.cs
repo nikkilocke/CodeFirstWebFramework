@@ -49,7 +49,7 @@ namespace Phone {
 
 		public override void Default() {
 			insertMenuOption(new MenuOption("New number", "/default/PhoneNumber?id=0"));
-			Form = new DataTableForm(this, typeof(PhoneNumber), false);
+			Form = new DataTableForm(this, typeof(PhoneNumber));
 			Form.Options["select"] = "/default/PhoneNumber";
 			Form.Show();
 		}
@@ -77,7 +77,7 @@ namespace Phone {
 
 		public void AnalysisList() {
 			insertMenuOption(new MenuOption("New analysis", "/default/Analysis?id=0"));
-			Form = new DataTableForm(this, typeof(Analysis), false);
+			Form = new DataTableForm(this, typeof(Analysis));
 			Form.Options["select"] = "/default/Analysis";
 			Form.Show();
 		}
@@ -106,7 +106,7 @@ namespace Phone {
 
 		public void CostCentreList() {
 			insertMenuOption(new MenuOption("New Cost Centre", "/default/CostCentre?id=0"));
-			Form = new DataTableForm(this, typeof(CostCentre), false);
+			Form = new DataTableForm(this, typeof(CostCentre));
 			Form.Options["select"] = "/default/CostCentre";
 			Form.Show();
 		}

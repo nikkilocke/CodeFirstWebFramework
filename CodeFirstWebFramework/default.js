@@ -2360,7 +2360,7 @@ function selectClick(selector, selectFunction) {
 function defaultUrl(defaultSuffix) {
 	var url = window.location.pathname.replace(/\.html$/, '');
 	if(url == '/')
-		url = '/default/default';
+		url = '/home/default';
 	else if(url.substr(1).indexOf('/') < 0)
 		url += '/default';
 	return url + defaultSuffix + ".html" + window.location.search

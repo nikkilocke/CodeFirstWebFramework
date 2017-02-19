@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
-	public class Admin : AppModule {
+	public class AdminModule : AppModule {
 
 		public AjaxReturn BatchStatus(int id) {
 			AjaxReturn result = new AjaxReturn();

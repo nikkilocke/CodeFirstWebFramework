@@ -7,11 +7,26 @@ using System.Threading.Tasks;
 using System.Reflection;
 
 namespace CodeFirstWebFramework {
+	public class ModuleName {
+		public ModuleName(string name) {
+			Name = name;
+		}
+		public string Name;
+		public string UnCamelName {
+			get { return Name.UnCamel(); }
+		}
+	}
+
 	public class Namespace {
 		Dictionary<string, Type> appModules;	// List of all AppModule types by name ("Module" stripped off end)
 		Dictionary<string, Table> tables;
 		Dictionary<Field, ForeignKeyAttribute> foreignKeys;
 		List<Assembly> assemblies;
+		List<ModuleName> moduleNames;
+
+		public IEnumerable<ModuleName> Modules {
+			get { return moduleNames; }
+		}
 
 		public string Name { get; private set; }
 
@@ -22,15 +37,17 @@ namespace CodeFirstWebFramework {
 			tables = new Dictionary<string, Table>();
 			foreignKeys = new Dictionary<Field, ForeignKeyAttribute>();
 			List<Type> views = new List<Type>();
+			moduleNames = new List<ModuleName>();
 			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
 				bool relevant = false;
 				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == name && !t.IsAbstract)) {
 					relevant = true;
 					if (t.IsSubclassOf(typeof(AppModule))) {
-						string n = t.Name.ToLower();
-						if (n.EndsWith("module"))
+						string n = t.Name;
+						if (n.EndsWith("Module"))
 							n = n.Substring(0, n.Length - 6);
-						appModules[n] = t;
+						appModules[n.ToLower()] = t;
+						moduleNames.Add(new ModuleName(n));
 					}
 					// Process all subclasses of JsonObject with Table attribute in module assembly
 					if (t.IsSubclassOf(typeof(JsonObject))) {

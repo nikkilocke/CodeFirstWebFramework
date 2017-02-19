@@ -37,20 +37,20 @@ namespace Phone {
 		public int Analysis;
     }
 
-	public class DefaultModule : AppModule {
+	public class HomeModule : AppModule {
 
-		public DefaultModule() {
+		public HomeModule() {
 			Menu = new MenuOption[] {
-				new MenuOption("Phone Numbers", "/default/Default"),
-				new MenuOption("Analysis", "/default/AnalysisList"),
-				new MenuOption("Cost centres", "/default/CostCentreList")
+				new MenuOption("Phone Numbers", "/home/Default"),
+				new MenuOption("Analysis", "/home/AnalysisList"),
+				new MenuOption("Cost centres", "/home/CostCentreList")
 			};
 		}
 
 		public override void Default() {
-			insertMenuOption(new MenuOption("New number", "/default/PhoneNumber?id=0"));
+			insertMenuOption(new MenuOption("New number", "/home/PhoneNumber?id=0"));
 			Form = new DataTableForm(this, typeof(PhoneNumber));
-			Form.Options["select"] = "/default/PhoneNumber";
+			Form.Options["select"] = "/home/PhoneNumber";
 			Form.Show();
 		}
 
@@ -76,9 +76,9 @@ namespace Phone {
 		}
 
 		public void AnalysisList() {
-			insertMenuOption(new MenuOption("New analysis", "/default/Analysis?id=0"));
+			insertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0"));
 			Form = new DataTableForm(this, typeof(Analysis));
-			Form.Options["select"] = "/default/Analysis";
+			Form.Options["select"] = "/home/Analysis";
 			Form.Show();
 		}
 
@@ -105,9 +105,9 @@ namespace Phone {
 		}
 
 		public void CostCentreList() {
-			insertMenuOption(new MenuOption("New Cost Centre", "/default/CostCentre?id=0"));
+			insertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0"));
 			Form = new DataTableForm(this, typeof(CostCentre));
-			Form.Options["select"] = "/default/CostCentre";
+			Form.Options["select"] = "/home/CostCentre";
 			Form.Show();
 		}
 
@@ -131,5 +131,17 @@ namespace Phone {
 			Utils.Check(Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null, "Cannot delete Cost Centre code - in use");
 			return DeleteRecord("CostCentre", id);
 		}
+	}
+
+	public class AdminModule : CodeFirstWebFramework.AdminModule {
+
+		public override void Default() {
+			Menu = new MenuOption[] {
+				new MenuOption("Backup", "/admin/Backup"),
+				new MenuOption("Restore", "/admin/Restore")
+			};
+			WriteResponse(LoadTemplate("default", this), "text/html", System.Net.HttpStatusCode.OK);
+		}
+
 	}
 }

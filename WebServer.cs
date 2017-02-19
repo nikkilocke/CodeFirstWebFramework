@@ -147,7 +147,7 @@ namespace CodeFirstWebFramework {
 					context.Request.RawUrl);
 				Session session = null;
 				string filename = HttpUtility.UrlDecode(context.Request.Url.AbsolutePath).Substring(1);
-				if (filename == "") filename = "default";
+				if (filename == "") filename = "home";
 				string moduleName = null;
 				string methodName = null;
 				string baseName = filename.Replace(".html", "");	// Ignore .html - treat as a program request

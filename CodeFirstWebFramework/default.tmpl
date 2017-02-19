@@ -29,7 +29,7 @@
 <img id="menuicon" src="/images/menu.png" />
 <div id="header">
 <div id="heading">{{Config.Filename}} - {{{Server.Namespace}}} - {{{Title}}}</div>
-<div id="menu1">&nbsp;<button id="home" href="/default/default.html">Home</button><button id="admin" href="/admin/default.html">Admin</button></div>
+<div id="menu1">&nbsp;{{#each Server.NamespaceDef.Modules}}<button id="{{Name}}" href="/{{Name}}/default.html">{{UnCamelName}}</button>{{/each}}</div>
 <div id="menu2">&nbsp;{{#each Menu}}<button id="{{Id}}" href="{{Url}}"{{#if Disabled}} disabled="disabled"{{/if}}>{{Text}}</button>{{/each}}</div>
 <div id="menu3">&nbsp;</div>
 </div>

@@ -101,17 +101,14 @@ namespace CodeFirstWebFramework {
 					}
 				}
 				Config.CommandLineFlags = flags;
-#if false
-				// Default to UK culture and time (specify empty culture and/or tz to use machine values)
-				if (flags["culture"] != "") {
-					CultureInfo c = new CultureInfo(flags["culture"] ?? "en-GB");
+				if (!string.IsNullOrWhiteSpace(flags["culture"])) {
+					CultureInfo c = new CultureInfo(flags["culture"]);
 					Thread.CurrentThread.CurrentCulture = c;
 					CultureInfo.DefaultThreadCurrentCulture = c;
 					CultureInfo.DefaultThreadCurrentUICulture = c;
 				}
-				if (flags["tz"] != "")
-					Utils._tz = TimeZoneInfo.FindSystemTimeZoneById(flags["tz"] ?? (windows ? "GMT Standard Time" : "GB"));
-#endif
+				if (!string.IsNullOrWhiteSpace(flags["tz"]))
+					Utils._tz = TimeZoneInfo.FindSystemTimeZoneById(flags["tz"]);
 #if DEBUG
 				if (flags["now"] != null) {
 					DateTime now = Utils.Now;

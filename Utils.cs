@@ -243,6 +243,14 @@ namespace CodeFirstWebFramework {
 			return j == null || j.PropertyValues().Where(v => v.Type != JTokenType.Null).FirstOrDefault() == null;
 		}
 
+		/// <summary>
+		/// True if the specified property is missing or null
+		/// </summary>
+		public static bool IsMissingOrNull(this JObject j, string name) {
+			JToken t = j[name];
+			return t == null || t.Type == JTokenType.Null;
+		}
+
 		public static bool IsDecimal(this string s) {
 			return s == null ? false : DecimalRegex.IsMatch(s);
 		}

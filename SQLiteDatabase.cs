@@ -101,22 +101,25 @@ namespace CodeFirstWebFramework {
 			executeLogSafe(string.Format("ALTER TABLE `{0}` DROP INDEX `{1}`", t.Name, index.Name));
 		}
 
-		int Execute(string sql) {
-			int lastInserttId;
-			return Execute(sql, out lastInserttId);
-		}
-
-		public int Execute(string sql, out int lastInsertId) {
+		public int Execute(string sql) {
 			lock (_lock) {
 				using (SqliteCommand cmd = command(sql)) {
-					var ret = cmd.ExecuteNonQuery();
-					cmd.CommandText = "select last_insert_rowid()";
-					lastInsertId = (int)(Int64)cmd.ExecuteScalar();
-					return ret;
+					return cmd.ExecuteNonQuery();
 				}
 			}
 		}
 
+		public int Insert(Table table, string sql, bool updatesAutoIncrement) {
+			lock (_lock) {
+				using (SqliteCommand cmd = command(sql)) {
+					cmd.ExecuteNonQuery();
+					if (!table.PrimaryKey.AutoIncrement)
+						return 0;
+					cmd.CommandText = "select last_insert_rowid()";
+					return (int)(Int64)cmd.ExecuteScalar();
+				}
+			}
+		}
 		public bool FieldsMatch(Table t, Field code, Field database) {
 			if (code.TypeName != database.TypeName) return false;
 			if (t.IsView) return true;	// Database does not always give correct values for view columns

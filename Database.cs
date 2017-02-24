@@ -171,6 +171,8 @@ namespace CodeFirstWebFramework {
 					return new SQLiteDatabase(this, connectionString);
 				case "mysql":
 					return new MySqlDatabase(this, connectionString);
+				case "sqlserver":
+					return new SqlServerDatabase(this, connectionString);
 				default:
 					throw new CheckException("Unknown database type {0}", Config.Default.Database);
 			}
@@ -250,15 +252,10 @@ namespace CodeFirstWebFramework {
 		}
 
 		public int Execute(string sql) {
-			int lastInsertId;
-			return execute(sql, out lastInsertId);
-		}
-
-		int execute(string sql, out int lastInserttId) {
 			using (new Timer(sql)) {
 				if (Logging >= LogLevel.Writes) Log(sql);
 				try {
-					return db.Execute(sql, out lastInserttId);
+					return db.Execute(sql);
 				} catch (Exception ex) {
 					throw new DatabaseException(ex, sql);
 				}
@@ -333,15 +330,19 @@ namespace CodeFirstWebFramework {
 		int insert(Table table, JObject data) {
 			Field idField = table.PrimaryKey;
 			string idName = idField.Name;
-			List<Field> fields = table.Fields.Where(f => data[f.Name] != null).ToList();
+			List<Field> fields = table.Fields.Where(f => !data.IsMissingOrNull(f.Name)).ToList();
 			checkForMissingFields(table, data, true);
 			try {
-				int lastInsertId;
-				execute("INSERT INTO " + table.Name + " ("
+				string sql = "INSERT INTO \"" + table.Name + "\" ("
 					+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
-					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")", out lastInsertId);
-				data[idName] = lastInsertId;
-				return lastInsertId;
+					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
+				using (new Timer(sql)) {
+					if (Logging >= LogLevel.Writes) Log(sql);
+					int lastInsertId = db.Insert(table, sql, idField.AutoIncrement && !data.IsMissingOrNull(idName));
+					if (idField.AutoIncrement && data.IsMissingOrNull(idName))
+						data[idName] = lastInsertId;
+					return lastInsertId;
+				}
 			} catch (DatabaseException ex) {
 				throw new DatabaseException(ex, table);
 			}
@@ -351,7 +352,7 @@ namespace CodeFirstWebFramework {
 			Field idField = table.PrimaryKey;
 			string[] errors = table.Indexes.SelectMany(i => i.Fields)
 				.Distinct()
-				.Where(f => f != idField && !f.Nullable && string.IsNullOrWhiteSpace(data.AsString(f.Name)) && (insert || data[f.Name] != null))
+				.Where(f => f != idField && !f.Nullable && string.IsNullOrWhiteSpace(data.AsString(f.Name)) && (insert || !data.IsMissingOrNull(f.Name)))
 				.Select(f => f.Name)
 				.ToArray();
 			Utils.Check(errors.Length == 0, "Table {0} {1}:Missing key fields {2}",
@@ -545,20 +546,15 @@ namespace CodeFirstWebFramework {
 			if (result != null) {
 				data[idName] = idValue = result[idName];
 			}
-			List<Field> fields = table.Fields.Where(f => data[f.Name] != null).ToList();
+			List<Field> fields = table.Fields.Where(f => !data.IsMissingOrNull(f.Name)).ToList();
 			checkForMissingFields(table, data, idValue == null);
 			try {
-				int id;
 				if (idValue != null) {
-					execute("UPDATE " + table.Name + " SET "
+					Execute("UPDATE " + table.Name + " SET "
 						+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
-						+ " WHERE " + index.Where(data), out id);
-					id = idValue.To<int>();
+						+ " WHERE " + index.Where(data));
 				} else {
-					execute("INSERT INTO " + table.Name + " ("
-						+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
-						+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")", out id);
-					data[idName] = id;
+					insert(table, data);
 				}
 			} catch (DatabaseException ex) {
 				throw new DatabaseException(ex, table);
@@ -576,20 +572,17 @@ namespace CodeFirstWebFramework {
 				result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
 				if (result != null)
 					data[idName] = idValue = result[idName];
-				int id;
 				if (idValue != null) {
 					fields = fields.Where(f => data.AsString(f.Name) != result.AsString(f.Name)).ToList();
 					if (fields.Count == 0)
 						return;
-					execute("UPDATE " + table.Name + " SET "
+					Execute("UPDATE " + table.Name + " SET "
 						+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
-						+ " WHERE " + index.Where(data), out id);
-					id = idValue.To<int>();
+						+ " WHERE " + index.Where(data));
 				} else {
-					execute("INSERT INTO " + table.Name + " ("
+					data[idName] = db.Insert(table, "INSERT INTO " + table.Name + " ("
 						+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
-						+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")", out id);
-					data[idName] = id;
+						+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")", false);
 				}
 			} catch (DatabaseException ex) {
 				throw new DatabaseException(ex, table);
@@ -794,7 +787,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		public bool CoversData(JObject data) {
-			return (Fields.Where(f => data[f.Name] == null || data[f.Name].Type == JTokenType.Null).FirstOrDefault() == null);
+			return (Fields.Where(f => data.IsMissingOrNull(f.Name)).FirstOrDefault() == null);
 		}
 
 		public string FieldList {

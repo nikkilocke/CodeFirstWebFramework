@@ -44,12 +44,20 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Execute sql, returning id of any record inserted
 		/// </summary>
-		int Execute(string sql, out int lastInserttId);
+		int Execute(string sql);
 
 		/// <summary>
 		/// Do the fields in code and database match (some implementations are case insensitive)
 		/// </summary>
 		bool FieldsMatch(Table t, Field code, Field database);
+
+		/// <summary>
+		/// Insert data in table
+		/// <param name="sql">SQL INSERT statement</param>
+		/// <param name="updatesAutoIncrement">True if the SQL statement updates the AutoIncrement field</param>
+		/// <returns>Id of last row inserted</returns>
+		/// </summary>
+		int Insert(Table table, string sql, bool updatesAutoIncrement);
 
 		IEnumerable<JObject> Query(string sql);
 

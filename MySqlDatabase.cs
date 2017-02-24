@@ -102,16 +102,18 @@ namespace CodeFirstWebFramework {
 			executeLogSafe(string.Format("ALTER TABLE `{0}` DROP INDEX `{1}`", t.Name, index.Name));
 		}
 
-		int Execute(string sql) {
-			int lastInserttId;
-			return Execute(sql, out lastInserttId);
+		public int Execute(string sql) {
+			using (MySqlCommand cmd = command(sql)) {
+				return cmd.ExecuteNonQuery();
+			}
 		}
 
-		public int Execute(string sql, out int lastInserttId) {
+		public int Insert(Table table, string sql, bool updatesAutoIncrement) {
 			using (MySqlCommand cmd = command(sql)) {
-				var ret = cmd.ExecuteNonQuery();
-				lastInserttId = (int)cmd.LastInsertedId;
-				return ret;
+				cmd.ExecuteNonQuery();
+				if (!table.PrimaryKey.AutoIncrement)
+					return 0;
+				return (int)cmd.LastInsertedId;
 			}
 		}
 

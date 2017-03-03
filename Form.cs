@@ -311,7 +311,7 @@ namespace CodeFirstWebFramework {
 		/// Add a field from a C# class to the form
 		/// </summary>
 		public FieldAttribute Add(FieldInfo field) {
-			return Add(field, ReadWrite && field.DeclaringType.IsDefined(typeof(TableAttribute)));
+			return Add(field, ReadWrite && field.DeclaringType.IsDefined(typeof(TableAttribute), false));
 		}
 
 		/// <summary>
@@ -330,7 +330,7 @@ namespace CodeFirstWebFramework {
 		public void Build(Type t) {
 			Type table = t;
 			while (table != typeof(JsonObject)) {
-				if (table.IsDefined(typeof(TableAttribute))) {
+				if (table.IsDefined(typeof(TableAttribute), false)) {
 					Options["table"] = table.Name;
 					Options["id"] = Module.Database.TableFor(table.Name).PrimaryKey.Name;
 					break;
@@ -395,7 +395,7 @@ namespace CodeFirstWebFramework {
 		void processFields(Type tbl) {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType);
-			bool readwrite = ReadWrite && tbl.IsDefined(typeof(TableAttribute));
+			bool readwrite = ReadWrite && tbl.IsDefined(typeof(TableAttribute), false);
 			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
 				FieldAttribute f = FieldAttribute.FieldFor(Module.Database, field, readwrite);
 				if (f != null && RequireField(f))

@@ -19,10 +19,11 @@ namespace CodeFirstWebFramework {
 	public class Config {
 		[JsonIgnore]
 		ServerConfig _default;
-		public static readonly string EntryModule = System.Reflection.Assembly.GetEntryAssembly().Name();
-		public static readonly string DefaultNamespace = "CodeFirstWebFramework";
+		public static string EntryModule = System.Reflection.Assembly.GetEntryAssembly().Name();
+		public static string EntryNamespace = "CodeFirstWebFramework";
+		public static string DefaultNamespace = "CodeFirstWebFramework";
 		public string Database = "SQLite";
-		public string Namespace = DefaultNamespace;
+		public string Namespace = EntryNamespace;
 		public string ConnectionString = "Data Source=" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData).Replace(@"\", "/")
 			+ @"/" + EntryModule + "/" + EntryModule + ".db";
 		[JsonIgnore]
@@ -81,7 +82,8 @@ namespace CodeFirstWebFramework {
 
 		static public void Load(string[] args) {
 			try {
-				string configName = Assembly.GetExecutingAssembly().Name() + ".config";
+				Config.Default.Namespace = Config.EntryNamespace = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().ReflectedType.Namespace;
+				string configName = Assembly.GetEntryAssembly().Name() + ".config";
 				if (File.Exists(configName))
 					Config.Load(configName);
 				else
@@ -154,6 +156,23 @@ namespace CodeFirstWebFramework {
 			return new FileInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, filename));
 		}
 
+		public DirectoryInfo DirectoryInfo(string foldername) {
+			DirectoryInfo f;
+			if (foldername.StartsWith("/"))
+				foldername = foldername.Substring(1);
+			f = new DirectoryInfo(Path.Combine(ServerName, foldername));
+			Utils.Check(f.FullName.StartsWith(new FileInfo(ServerName).FullName), "Illegal file access");
+			if (f.Exists)
+				return f;
+			f = new DirectoryInfo(Path.Combine(Namespace, foldername));
+			if (f.Exists)
+				return f;
+			f = new DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.Default.ServerName, foldername));
+			if (f.Exists)
+				return f;
+			return new DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, foldername));
+		}
+
 		public bool Matches(string host) {
 			if (host == ServerName)
 				return true;
@@ -212,6 +231,8 @@ namespace CodeFirstWebFramework {
 
 	[Table]
 	public class Settings : JsonObject {
+		[Primary]
+		public int? idSettings;
 		public int DbVersion;
 	}
 

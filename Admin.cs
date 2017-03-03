@@ -9,6 +9,13 @@ using Newtonsoft.Json.Linq;
 namespace CodeFirstWebFramework {
 	public class AdminModule : AppModule {
 
+		public AdminModule() {
+		}
+
+		public AdminModule(AppModule module)
+			: base(module) {
+		}
+
 		public AjaxReturn BatchStatus(int id) {
 			AjaxReturn result = new AjaxReturn();
 			BatchJob batch = AppModule.GetBatchJob(id);

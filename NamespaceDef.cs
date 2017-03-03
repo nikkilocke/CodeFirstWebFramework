@@ -51,9 +51,9 @@ namespace CodeFirstWebFramework {
 					}
 					// Process all subclasses of JsonObject with Table attribute in module assembly
 					if (t.IsSubclassOf(typeof(JsonObject))) {
-						if (t.IsDefined(typeof(TableAttribute))) {
+						if (t.IsDefined(typeof(TableAttribute), false)) {
 							processTable(t, null);
-						} else if (t.IsDefined(typeof(ViewAttribute))) {
+						} else if (t.IsDefined(typeof(ViewAttribute), false)) {
 							views.Add(t);
 						}
 					}
@@ -63,7 +63,7 @@ namespace CodeFirstWebFramework {
 			}
 			// Add any tables defined in the framework module, but not in the given module
 			foreach (Type tbl in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(JsonObject)))) {
-				if (!tbl.IsDefined(typeof(TableAttribute)) || tables.ContainsKey(tbl.Name))
+				if (!tbl.IsDefined(typeof(TableAttribute), false) || tables.ContainsKey(tbl.Name))
 					continue;
 				processTable(tbl, null);
 			}
@@ -139,7 +139,7 @@ namespace CodeFirstWebFramework {
 				Table updateTable = null;
 				// If View is based on a Table class, use that as the update table
 				for (Type t = tbl.BaseType; t != typeof(Object); t = t.BaseType) {
-					if(t.IsDefined(typeof(TableAttribute))) {
+					if(t.IsDefined(typeof(TableAttribute), false)) {
 						if(tables.TryGetValue(t.Name, out updateTable))
 							break;
 					}

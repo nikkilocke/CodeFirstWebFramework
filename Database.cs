@@ -303,6 +303,20 @@ namespace CodeFirstWebFramework {
 			return result == null ? emptyRecord(table) : result;
 		}
 
+		/// <summary>
+		/// Produce an "IN(...)" SQL statement from a list of values
+		/// </summary>
+		public string In(params object[] args) {
+			return "IN(" + string.Join(",", args.Select(o => Quote(o is Enum ? (int)o : o)).ToArray()) + ")";
+		}
+
+		/// <summary>
+		/// Produce an "IN(...)" SQL statement from a list of values
+		/// </summary>
+		public string In<T>(IEnumerable<T> args) {
+			return "IN(" + string.Join(",", args.Select(o => Quote(o)).ToArray()) + ")";
+		}
+
 		public void Insert(string tableName, List<JObject> data) {
 			Table table = TableFor(tableName);
 			foreach (JObject row in data)
@@ -537,7 +551,7 @@ namespace CodeFirstWebFramework {
 			data.Id = (int)d[table.PrimaryKey.Name];
 		}
 
-		void update(Table table, JObject data) {
+		protected void update(Table table, JObject data) {
 			Field idField = table.PrimaryKey;
 			string idName = idField.Name;
 			JToken idValue = null;
@@ -561,7 +575,7 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
-		void updateIfChanged(Table table, JObject data) {
+		protected void updateIfChanged(Table table, JObject data) {
 			Field idField = table.PrimaryKey;
 			string idName = idField.Name;
 			JToken idValue = null;

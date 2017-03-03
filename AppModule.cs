@@ -47,14 +47,26 @@ namespace CodeFirstWebFramework {
 
 		public virtual Database Database {
 			get {
-				return _db ?? (_db = new Database(Server));
+				lock (this) {
+					if (_db == null) {
+						Type database = Server.NamespaceDef.GetDatabase();
+						if (database == null)
+							database = typeof(Database);
+						_db = (Database)Activator.CreateInstance(database, Server);
+					}
+				}
+				return _db;
 			}
 		}
 
-		public virtual JObject Settings {
+		public JObject Settings {
 			get {
 				return _settings ?? (_settings = Database.QueryOne("SELECT * FROM Settings"));
 			}
+		}
+
+		protected void ReloadSettings() {
+			_settings = null;
 		}
 
 		/// <summary>
@@ -316,12 +328,31 @@ namespace CodeFirstWebFramework {
 			return jobs.TryGetValue(id, out job) ? job : null;
 		}
 
+		public AppModule() {
+		}
+
+		public AppModule(AppModule module) {
+			Server = module.Server;
+			ActiveModule = module.ActiveModule;
+			Session = module.Session;
+			LogString = module.LogString;
+			Context = module.Context;
+			TitleText = module.TitleText;
+			Title = module.Title;
+			Module = module.Module;
+			OriginalModule = module.OriginalModule;
+			Method = module.Method;
+			OriginalMethod = module.OriginalMethod;
+			GetParameters = module.GetParameters;
+			Parameters = module.Parameters;
+			PostParameters = module.PostParameters;
+		}
+
 		/// <summary>
 		/// Responds to a Url request. Set up the AppModule variables and call the given method
 		/// </summary>
 		public void Call(HttpListenerContext context, string moduleName, string methodName) {
 			Context = context;
-			Server = Config.SettingsForHost(Request.Url.Host);
 			Log("({0}) ", Server.ServerName);
 			TitleText = Server.Title;
 			OriginalModule = Module = moduleName.ToLower();

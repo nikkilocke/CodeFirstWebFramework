@@ -1563,7 +1563,7 @@ function makeForm(selector, options) {
 			});
 		}
 	}
-	var deleteUrl = canDelete && !matchingStatement() ? myOption('delete', options) : null;
+	var deleteUrl = canDelete ? myOption('delete', options) : null;
 	if(deleteUrl === undefined) {
 		deleteUrl = defaultUrl('Delete');
 	}
@@ -1702,22 +1702,20 @@ function makeForm(selector, options) {
 						submitUrl(this);
 						e.preventDefault();
 					});
-				if(!matchingStatement()) {
-					if (options.saveAndClose !== false)
-						actionButton((options.submitText || 'Save') + ' and Close')
-							.addClass('goback')
-							.click(function (e) {
-								submitUrl(this);
-								e.preventDefault();
-							});
-					if (options.saveAndNew)
-						actionButton((options.submitText || 'Save') + ' and New')
-							.addClass('new')
-							.click(function (e) {
-								submitUrl(this);
-								e.preventDefault();
-							});
-				}
+				if (options.saveAndClose !== false)
+					actionButton((options.submitText || 'Save') + ' and Close')
+						.addClass('goback')
+						.click(function (e) {
+							submitUrl(this);
+							e.preventDefault();
+						});
+				if (options.saveAndNew)
+					actionButton((options.submitText || 'Save') + ' and New')
+						.addClass('new')
+						.click(function (e) {
+							submitUrl(this);
+							e.preventDefault();
+						});
 				actionButton('Reset')
 					.click(function () {
 						window.location.reload();
@@ -1833,8 +1831,7 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 		data: options.data
 	};
 	result.detail.header = result.header;
-	if(!matchingStatement())
-		nextPreviousButtons(result.data);
+	nextPreviousButtons(result.data);
 	result.detail.bind('changed.field', function() {
 		$('button#Back').text('Cancel');
 	});
@@ -2693,7 +2690,7 @@ function goto(url) {
  * Go back to previous url
  */
 function goback() {
-	var from = matchingStatement() ? '/banking/statementmatching.html?id=' + getParameter('id') : getParameter('from');
+	var from = getParameter('from');
 	if(!from) {
 		from = window.location.pathname;
 		var pos = from.substr(1).indexOf('/');
@@ -2724,14 +2721,6 @@ function hasParameter(name) {
 	var re = new RegExp('[&?]' + name + '(=|&|$)');
 	var m = re.exec(window.location.search);
 	return m != null && m.length != 0;
-}
-
-/**
- * Return true if currently matching a statement
- * @returns {boolean}
- */
-function matchingStatement() {
-	return window.location.pathname == '/banking/statementmatch.html';
 }
 
 function textQuote(text) {

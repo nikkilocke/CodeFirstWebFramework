@@ -32,7 +32,9 @@ namespace CodeFirstWebFramework {
 			Config.Default.DefaultServer.NamespaceDef = new Namespace(Config.Default.Namespace);
 			modules[Config.Default.Namespace] = Config.Default.DefaultServer.NamespaceDef;
 			foreach (ServerConfig server in Config.Default.Servers) {
-				if (!modules.ContainsKey(server.Namespace)) {
+				if (modules.ContainsKey(server.Namespace)) {
+					server.NamespaceDef = modules[server.Namespace];
+				} else {
 					server.NamespaceDef = new Namespace(server.Namespace);
 					modules[server.Namespace] = server.NamespaceDef;
 				}

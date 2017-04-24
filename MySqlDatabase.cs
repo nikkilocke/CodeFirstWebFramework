@@ -17,12 +17,14 @@ namespace CodeFirstWebFramework {
 	/// Interface to MySql
 	/// </summary>
 	public class MySqlDatabase : DbInterface {
+		string _connectionString;
 		MySqlConnection _conn;
 		MySqlTransaction _tran;
 		Database _db;
 
 		public MySqlDatabase(Database db, string connectionString) {
 			_db = db;
+			_connectionString = connectionString;
 			_conn = new MySqlConnection();
 			_conn.ConnectionString = connectionString;
 			_conn.Open();
@@ -166,57 +168,54 @@ namespace CodeFirstWebFramework {
 		public Dictionary<string, Table> Tables() {
 			// NB: By default. MySql table names are case insensitive
 			Dictionary<string, Table> tables = new Dictionary<string, Table>(StringComparer.OrdinalIgnoreCase);
-			string schema = Regex.Match(Config.Default.ConnectionString, "database=(.*?);").Groups[1].Value;
-			using(MySqlConnection conn = new MySqlConnection(Config.Default.ConnectionString)) {
-				conn.Open();
-				DataTable tabs = conn.GetSchema("Tables");
-				DataTable cols = conn.GetSchema("Columns");
-				DataTable fkeyCols = conn.GetSchema("Foreign Key Columns");
-				DataTable indexes = conn.GetSchema("Indexes");
-				DataTable indexCols = conn.GetSchema("IndexColumns");
-				DataTable views = conn.GetSchema("Views");
-				DataTable viewCols = conn.GetSchema("ViewColumns");
-				foreach(DataRow table in tabs.Rows) {
-					string name = table["TABLE_NAME"].ToString();
-					string filter = "TABLE_NAME = " + Quote(name);
-					Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
-						.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
-							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", c["EXTRA"].ToString().Contains("auto_increment"), 
-							c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
-					List<Index> tableIndexes = new List<Index>();
-					foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'True'")) {
-						string indexName = ind["INDEX_NAME"].ToString();
-						tableIndexes.Add(new Index("PRIMARY", 
-							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
-							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
-					}
-					foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'False' AND UNIQUE = 'True'")) {
-						string indexName = ind["INDEX_NAME"].ToString();
-						tableIndexes.Add(new Index(indexName,
-							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
-							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
-					}
-					tables[name] = new Table(name, fields, tableIndexes.ToArray());
+			string schema = Regex.Match(_connectionString, "database=(.*?);").Groups[1].Value;
+			DataTable tabs = _conn.GetSchema("Tables");
+			DataTable cols = _conn.GetSchema("Columns");
+			DataTable fkeyCols = _conn.GetSchema("Foreign Key Columns");
+			DataTable indexes = _conn.GetSchema("Indexes");
+			DataTable indexCols = _conn.GetSchema("IndexColumns");
+			DataTable views = _conn.GetSchema("Views");
+			DataTable viewCols = _conn.GetSchema("ViewColumns");
+			foreach(DataRow table in tabs.Rows) {
+				string name = table["TABLE_NAME"].ToString();
+				string filter = "TABLE_NAME = " + Quote(name);
+				Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
+					.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
+						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", c["EXTRA"].ToString().Contains("auto_increment"), 
+						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
+				List<Index> tableIndexes = new List<Index>();
+				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'True'")) {
+					string indexName = ind["INDEX_NAME"].ToString();
+					tableIndexes.Add(new Index("PRIMARY", 
+						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
+						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
-				foreach (DataRow fk in fkeyCols.Rows) {
-					// MySql 5 incorrectly returns lower case table and field names here
-					Table detail = tables[fk["TABLE_NAME"].ToString()];
-					Table master = tables[fk["REFERENCED_TABLE_NAME"].ToString()];
-					Field masterField = FieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
-					FieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
+				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'False' AND UNIQUE = 'True'")) {
+					string indexName = ind["INDEX_NAME"].ToString();
+					tableIndexes.Add(new Index(indexName,
+						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
+						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
-				foreach (DataRow table in views.Select("TABLE_SCHEMA = " + Quote(schema))) {
-					string name = table["TABLE_NAME"].ToString();
-					string filter = "VIEW_NAME = " + Quote(name);
-					Field[] fields = viewCols.Select(filter, "ORDINAL_POSITION")
-						.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
-							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", false,
-							c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
-					Table updateTable = null;
-					tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
-					tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) }, 
-						table["VIEW_DEFINITION"].ToString(), updateTable);
-				}
+				tables[name] = new Table(name, fields, tableIndexes.ToArray());
+			}
+			foreach (DataRow fk in fkeyCols.Rows) {
+				// MySql 5 incorrectly returns lower case table and field names here
+				Table detail = tables[fk["TABLE_NAME"].ToString()];
+				Table master = tables[fk["REFERENCED_TABLE_NAME"].ToString()];
+				Field masterField = FieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
+				FieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
+			}
+			foreach (DataRow table in views.Select("TABLE_SCHEMA = " + Quote(schema))) {
+				string name = table["TABLE_NAME"].ToString();
+				string filter = "VIEW_NAME = " + Quote(name);
+				Field[] fields = viewCols.Select(filter, "ORDINAL_POSITION")
+					.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
+						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", false,
+						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
+				Table updateTable = null;
+				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
+				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) }, 
+					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;
 		}

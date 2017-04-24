@@ -10,12 +10,14 @@ using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
 	public class SqlServerDatabase : DbInterface {
+		string _connectionString;
 		SqlConnection _conn;
 		SqlTransaction _tran;
 		Database _db;
 
 		public SqlServerDatabase(Database db, string connectionString) {
 			_db = db;
+			_connectionString = connectionString;
 			_conn = new SqlConnection();
 			_conn.ConnectionString = connectionString;
 			_conn.Open();
@@ -145,79 +147,76 @@ namespace CodeFirstWebFramework {
 
 		public Dictionary<string, Table> Tables() {
 			Dictionary<string, Table> tables = new Dictionary<string, Table>();
-			string schema = Regex.Match(Config.Default.ConnectionString, "database=(.*?);").Groups[1].Value;
-			using (SqlConnection conn = new SqlConnection(Config.Default.ConnectionString)) {
-				conn.Open();
-				DataTable tabs = conn.GetSchema("Tables");
-				DataTable cols = conn.GetSchema("Columns");
-				DataTable fkeyCols = conn.GetSchema("ForeignKeys");
-				DataTable indexes = conn.GetSchema("Indexes");
-				DataTable indexCols = conn.GetSchema("IndexColumns");
-				DataTable views = conn.GetSchema("Views");
-				DataTable viewCols = conn.GetSchema("ViewColumns");
-				foreach (DataRow table in tabs.Rows) {
-					string name = table["TABLE_NAME"].ToString();
-					string identityColumn = null;
-					using (SqlCommand cmd = command("SELECT * FROM " + name + " WHERE 1 = 0")) {
-						using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly)) {
-							DataTable tblcols = reader.GetSchemaTable();
-							foreach (DataRow r in tblcols.Rows) {
-								if ((bool)r["IsIdentity"]) {
-									identityColumn = r["ColumnName"].ToString();
-								}
+			string schema = Regex.Match(_connectionString, "database=(.*?);").Groups[1].Value;
+			DataTable tabs = _conn.GetSchema("Tables");
+			DataTable cols = _conn.GetSchema("Columns");
+			DataTable fkeyCols = _conn.GetSchema("ForeignKeys");
+			DataTable indexes = _conn.GetSchema("Indexes");
+			DataTable indexCols = _conn.GetSchema("IndexColumns");
+			DataTable views = _conn.GetSchema("Views");
+			DataTable viewCols = _conn.GetSchema("ViewColumns");
+			foreach (DataRow table in tabs.Rows) {
+				string name = table["TABLE_NAME"].ToString();
+				string identityColumn = null;
+				using (SqlCommand cmd = command("SELECT * FROM " + name + " WHERE 1 = 0")) {
+					using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly)) {
+						DataTable tblcols = reader.GetSchemaTable();
+						foreach (DataRow r in tblcols.Rows) {
+							if ((bool)r["IsIdentity"]) {
+								identityColumn = r["ColumnName"].ToString();
 							}
 						}
 					}
-					string filter = "TABLE_NAME = " + Quote(name);
-					Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
-						.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()),
-							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", c["COLUMN_NAME"].ToString() == identityColumn,
-							c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : Regex.Replace(c["COLUMN_DEFAULT"].ToString(), @"^\('?(.*?)'?\)", "$1"))).ToArray();
-					List<Index> tableIndexes = new List<Index>();
-					foreach (DataRow ind in indexes.Select(filter)) {
-						string indexName = ind["INDEX_NAME"].ToString();
-						if (indexName.StartsWith("PK_" + name + "_"))
-							indexName = "PRIMARY";
-						else if (!indexName.StartsWith("FK_" + name + "_")) {
-							tableIndexes.Add(new Index(indexName,
-								indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
-								.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
-						}
-					}
-					tables[name] = new Table(name, fields, tableIndexes.ToArray());
 				}
-				using (SqlCommand cmd = command(@"SELECT 
+				string filter = "TABLE_NAME = " + Quote(name);
+				Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
+					.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()),
+						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", c["COLUMN_NAME"].ToString() == identityColumn,
+						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : Regex.Replace(c["COLUMN_DEFAULT"].ToString(), @"^\('?(.*?)'?\)", "$1"))).ToArray();
+				List<Index> tableIndexes = new List<Index>();
+				foreach (DataRow ind in indexes.Select(filter)) {
+					string indexName = ind["INDEX_NAME"].ToString();
+					if (indexName.StartsWith("PK_" + name + "_"))
+						indexName = "PRIMARY";
+					else if (!indexName.StartsWith("FK_" + name + "_")) {
+						tableIndexes.Add(new Index(indexName,
+							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
+							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
+					}
+				}
+				tables[name] = new Table(name, fields, tableIndexes.ToArray());
+			}
+			using (SqlCommand cmd = command(@"SELECT 
 CTU.TABLE_NAME,
 KCU.COLUMN_NAME,
 CTU2.TABLE_NAME AS REFERENCED_TABLE_NAME,
 KCU2.COLUMN_NAME AS REFERENCED_COLUMN_NAME
 FROM INFORMATION_SCHEMA.CONSTRAINT_TABLE_USAGE CTU
- JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU ON KCU.CONSTRAINT_NAME = CTU.CONSTRAINT_NAME AND KCU.CONSTRAINT_SCHEMA = CTU.CONSTRAINT_SCHEMA
- JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS RC ON RC.CONSTRAINT_NAME = CTU.CONSTRAINT_NAME AND RC.CONSTRAINT_SCHEMA = CTU.CONSTRAINT_SCHEMA
- JOIN INFORMATION_SCHEMA.CONSTRAINT_TABLE_USAGE CTU2 ON CTU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME AND CTU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA
- JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU2 ON KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME AND KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA
+JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU ON KCU.CONSTRAINT_NAME = CTU.CONSTRAINT_NAME AND KCU.CONSTRAINT_SCHEMA = CTU.CONSTRAINT_SCHEMA
+JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS RC ON RC.CONSTRAINT_NAME = CTU.CONSTRAINT_NAME AND RC.CONSTRAINT_SCHEMA = CTU.CONSTRAINT_SCHEMA
+JOIN INFORMATION_SCHEMA.CONSTRAINT_TABLE_USAGE CTU2 ON CTU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME AND CTU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA
+JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU2 ON KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME AND KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA
 WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
-					using (SqlDataReader fk = cmd.ExecuteReader()) {
-						while (fk.Read()) {
-							Table detail = tables[fk["TABLE_NAME"].ToString()];
-							Table master = tables[fk["REFERENCED_TABLE_NAME"].ToString()];
-							Field masterField = FieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
-							FieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
-						}
+				using (SqlDataReader fk = cmd.ExecuteReader()) {
+					while (fk.Read()) {
+						Table detail = tables[fk["TABLE_NAME"].ToString()];
+						Table master = tables[fk["REFERENCED_TABLE_NAME"].ToString()];
+						Field masterField = FieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
+						FieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
 					}
 				}
-				foreach (DataRow table in views.Select("TABLE_SCHEMA = " + Quote(schema))) {
-					string name = table["TABLE_NAME"].ToString();
-					string filter = "VIEW_NAME = " + Quote(name);
-					Field[] fields = viewCols.Select(filter, "ORDINAL_POSITION")
-						.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()),
-							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", false,
-							c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
-					Table updateTable = null;
-					tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
-					tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) },
-						table["VIEW_DEFINITION"].ToString(), updateTable);
-				}
+			}
+			foreach (DataRow table in views.Select("TABLE_SCHEMA = " + Quote(schema))) {
+				string name = table["TABLE_NAME"].ToString();
+				string filter = "VIEW_NAME = " + Quote(name);
+				Field[] fields = viewCols.Select(filter, "ORDINAL_POSITION")
+					.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()),
+						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", false,
+						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
+				Table updateTable = null;
+				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
+				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) },
+					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;
 		}

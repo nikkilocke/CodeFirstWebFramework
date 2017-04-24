@@ -171,55 +171,52 @@ namespace CodeFirstWebFramework {
 		public Dictionary<string, Table> Tables() {
 			Dictionary<string, Table> tables = new Dictionary<string, Table>();
 			createDatabase(Config.Default.ConnectionString);
-			using (SqliteConnection conn = new SqliteConnection(Config.Default.ConnectionString)) {
-				conn.Open();
-				DataTable tabs = conn.GetSchema("Tables");
-				DataTable cols = conn.GetSchema("Columns");
-				DataTable fkeyCols = conn.GetSchema("ForeignKeys");
-				DataTable indexes = conn.GetSchema("Indexes");
-				DataTable indexCols = conn.GetSchema("IndexColumns");
-				DataTable views = conn.GetSchema("Views");
-				DataTable viewCols = conn.GetSchema("ViewColumns");
-				foreach(DataRow table in tabs.Rows) {
-					string name = table["TABLE_NAME"].ToString();
-					string filter = "TABLE_NAME = " + Quote(name);
-					Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
-						.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
-							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "True", c["AUTOINCREMENT"].ToString() == "True", 
-							defaultFromColumn(c))).ToArray();
-					List<Index> tableIndexes = new List<Index>();
-					foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'True'")) {
-						string indexName = ind["INDEX_NAME"].ToString();
-						tableIndexes.Add(new Index("PRIMARY", 
-							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
-							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
-					}
-					foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'False' AND UNIQUE = 'True'")) {
-						string indexName = ind["INDEX_NAME"].ToString();
-						tableIndexes.Add(new Index(indexName,
-							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
-							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
-					}
-					tables[name] = new Table(name, fields, tableIndexes.ToArray());
+			DataTable tabs = _conn.GetSchema("Tables");
+			DataTable cols = _conn.GetSchema("Columns");
+			DataTable fkeyCols = _conn.GetSchema("ForeignKeys");
+			DataTable indexes = _conn.GetSchema("Indexes");
+			DataTable indexCols = _conn.GetSchema("IndexColumns");
+			DataTable views = _conn.GetSchema("Views");
+			DataTable viewCols = _conn.GetSchema("ViewColumns");
+			foreach(DataRow table in tabs.Rows) {
+				string name = table["TABLE_NAME"].ToString();
+				string filter = "TABLE_NAME = " + Quote(name);
+				Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
+					.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
+						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "True", c["AUTOINCREMENT"].ToString() == "True", 
+						defaultFromColumn(c))).ToArray();
+				List<Index> tableIndexes = new List<Index>();
+				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'True'")) {
+					string indexName = ind["INDEX_NAME"].ToString();
+					tableIndexes.Add(new Index("PRIMARY", 
+						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
+						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
-				foreach (DataRow fk in fkeyCols.Rows) {
-					Table detail = tables[fk["TABLE_NAME"].ToString()];
-					Table master = tables[fk["FKEY_TO_TABLE"].ToString()];
-					Field masterField = master.FieldFor(fk["FKEY_TO_COLUMN"].ToString());
-					detail.FieldFor(fk["FKEY_FROM_COLUMN"].ToString()).ForeignKey = new ForeignKey(master, masterField);
+				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'False' AND UNIQUE = 'True'")) {
+					string indexName = ind["INDEX_NAME"].ToString();
+					tableIndexes.Add(new Index(indexName,
+						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
+						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
-				foreach (DataRow table in views.Select()) {
-					string name = table["TABLE_NAME"].ToString();
-					string filter = "VIEW_NAME = " + Quote(name);
-					Field[] fields = viewCols.Select(filter, "ORDINAL_POSITION")
-						.Select(c => new Field(c["VIEW_COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
-							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "True", false,
-							defaultFromColumn(c))).ToArray();
-					Table updateTable = null;
-					tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
-					tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) },
-						table["VIEW_DEFINITION"].ToString(), updateTable);
-				}
+				tables[name] = new Table(name, fields, tableIndexes.ToArray());
+			}
+			foreach (DataRow fk in fkeyCols.Rows) {
+				Table detail = tables[fk["TABLE_NAME"].ToString()];
+				Table master = tables[fk["FKEY_TO_TABLE"].ToString()];
+				Field masterField = master.FieldFor(fk["FKEY_TO_COLUMN"].ToString());
+				detail.FieldFor(fk["FKEY_FROM_COLUMN"].ToString()).ForeignKey = new ForeignKey(master, masterField);
+			}
+			foreach (DataRow table in views.Select()) {
+				string name = table["TABLE_NAME"].ToString();
+				string filter = "VIEW_NAME = " + Quote(name);
+				Field[] fields = viewCols.Select(filter, "ORDINAL_POSITION")
+					.Select(c => new Field(c["VIEW_COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
+						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "True", false,
+						defaultFromColumn(c))).ToArray();
+				Table updateTable = null;
+				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
+				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) },
+					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;
 		}

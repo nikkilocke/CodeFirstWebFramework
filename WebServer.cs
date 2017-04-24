@@ -26,51 +26,55 @@ namespace CodeFirstWebFramework {
 		Dictionary<string, Namespace> modules;		// All the different web modules we are running
 
 		public WebServer() {
-			modules = new Dictionary<string, Namespace>();
-			var baseType = typeof(AppModule);
-			HashSet<string> databases = new HashSet<string>();
-			Config.Default.DefaultServer.NamespaceDef = new Namespace(Config.Default.Namespace);
-			modules[Config.Default.Namespace] = Config.Default.DefaultServer.NamespaceDef;
-			foreach (ServerConfig server in Config.Default.Servers) {
-				if (modules.ContainsKey(server.Namespace)) {
-					server.NamespaceDef = modules[server.Namespace];
-				} else {
-					server.NamespaceDef = new Namespace(server.Namespace);
-					modules[server.Namespace] = server.NamespaceDef;
-				}
-				Type database = server.NamespaceDef.GetDatabase();
-				if (database != null) {
-					using (Database db = (Database)Activator.CreateInstance(database, server)) {
-						if (!databases.Contains(db.UniqueIdentifier)) {
-							databases.Add(db.UniqueIdentifier);
-							db.Upgrade();
+			try {
+				modules = new Dictionary<string, Namespace>();
+				var baseType = typeof(AppModule);
+				HashSet<string> databases = new HashSet<string>();
+				Config.Default.DefaultServer.NamespaceDef = new Namespace(Config.Default.Namespace);
+				modules[Config.Default.Namespace] = Config.Default.DefaultServer.NamespaceDef;
+				foreach (ServerConfig server in Config.Default.Servers) {
+					if (modules.ContainsKey(server.Namespace)) {
+						server.NamespaceDef = modules[server.Namespace];
+					} else {
+						server.NamespaceDef = new Namespace(server.Namespace);
+						modules[server.Namespace] = server.NamespaceDef;
+					}
+					Type database = server.NamespaceDef.GetDatabase();
+					if (database != null) {
+						using (Database db = (Database)Activator.CreateInstance(database, server)) {
+							if (!databases.Contains(db.UniqueIdentifier)) {
+								databases.Add(db.UniqueIdentifier);
+								db.Upgrade();
+							}
 						}
 					}
 				}
-			}
-			using (Database db = new Database(Config.Default.DefaultServer)) {
-				if(!databases.Contains(db.UniqueIdentifier))
-					db.Upgrade();
-			}
-			_listener = new HttpListener();
-			_listener.Prefixes.Add("http://+:" + Config.Default.Port + "/");
-			Log("Listening on port {0}", Config.Default.Port);
-			_sessions = new Dictionary<string, Session>();
-			_empty = new Session(null);
-			// Start thread to expire sessions after 30 mins of inactivity
-			new Task(delegate() {
-				for (; ; ) {
-					Thread.Sleep(Config.Default.SessionExpiryMinutes * 1000);
-					DateTime now = Utils.Now;
-					lock (_sessions) {
-						foreach (string key in _sessions.Keys.ToList()) {
-							Session s = _sessions[key];
-							if (s.Expires < now)
-								_sessions.Remove(key);
+				using (Database db = new Database(Config.Default.DefaultServer)) {
+					if (!databases.Contains(db.UniqueIdentifier))
+						db.Upgrade();
+				}
+				_listener = new HttpListener();
+				_listener.Prefixes.Add("http://+:" + Config.Default.Port + "/");
+				Log("Listening on port {0}", Config.Default.Port);
+				_sessions = new Dictionary<string, Session>();
+				_empty = new Session(null);
+				// Start thread to expire sessions after 30 mins of inactivity
+				new Task(delegate() {
+					for (; ; ) {
+						Thread.Sleep(Config.Default.SessionExpiryMinutes * 1000);
+						DateTime now = Utils.Now;
+						lock (_sessions) {
+							foreach (string key in _sessions.Keys.ToList()) {
+								Session s = _sessions[key];
+								if (s.Expires < now)
+									_sessions.Remove(key);
+							}
 						}
 					}
-				}
-			}).Start();
+				}).Start();
+			} catch (Exception ex) {
+				Log(ex.ToString());
+			}
 		}
 
 		/// <summary>

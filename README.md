@@ -3,10 +3,8 @@
 ## Introduction
 
 This DLL enables you to build a highly functional C# web app with minimal coding. Your Main method has only to call
-
     Config.Load(args);
     new WebServer().Start();
-
 This will load (or create) the config file, analyse the code for classes which should be persisted to the database, ensure the database schema is up to date with the code, and start listening for web requests on the default port (8080).
 
 The database is a local SQLite database by default, but can be set (in the config file) to any accessable MySql or Sql Server database. The default port and a number of other settings can also be overridden in the config file.

@@ -216,7 +216,7 @@ namespace CodeFirstWebFramework {
 		/// Each JObject shold have an id and a value (at least). 
 		/// If they have a category, a categorised select is created.
 		/// </summary>
-		JObjectEnumerable SelectOptions {
+		public JObjectEnumerable SelectOptions {
 			set { Options["selectOptions"] = (JArray)value; }
 		}
 	}
@@ -322,6 +322,33 @@ namespace CodeFirstWebFramework {
 			if (f != null)
 				columns.Add(f.Options);
 			return f;
+		}
+
+		/// <summary>
+		/// Insert a field from a C# class to the form
+		/// </summary>
+		public void Insert(int position, FieldAttribute f) {
+			columns.Insert(position, f.Options);
+		}
+
+		/// <summary>
+		/// Replace a field from a C# class to the form
+		/// </summary>
+		public void Replace(int position, FieldAttribute f) {
+			columns[position] = f.Options;
+		}
+
+		/// <summary>
+		/// Return the index of the named field in the form
+		/// </summary>
+		public int IndexOf(string name) {
+			int i = 0;
+			foreach(FieldAttribute f in Fields) {
+				if (f.FieldName == name)
+					return i;
+				i++;
+			}
+			return -1;
 		}
 
 		/// <summary>

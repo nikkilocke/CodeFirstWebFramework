@@ -598,7 +598,7 @@ var Type = {
 	autoComplete: {
 		// Auto complete input field
 		defaultContent: function(index, col, row) {
-			if(col.confirmAdd) {
+			if(col.confirmAdd || col.mustExist) {
 				// Prompt user if value doesn't already exist in selectOptions
 				//noinspection JSUnusedLocalSymbols
 				col.change = function(newValue, rowData, col, input) {
@@ -606,6 +606,10 @@ var Type = {
 						return v.value == newValue
 					});
 					if (item === undefined) {
+						if (col.mustExist) {
+							message('You must choose an existing ' + col.heading);
+							return false;
+						}
 						if (confirm(col.heading + ' ' + newValue + ' not found - add')) {
 							item = {
 								id: 0,
@@ -638,7 +642,7 @@ var Type = {
 			var options = {
 				source: function(req, resp) {
 					var re = $.ui.autocomplete.escapeRegex(req.term);
-					var matcher = new RegExp( "^" + re, "i" );
+					var matcher = new RegExp((this.matchBeginning ? '^' : '') + re, "i" );
 					resp(_.filter(self.selectOptions, function(o) {
 						return !o.hide && matcher.test(o.value);
 					}));
@@ -1864,7 +1868,7 @@ function makeListForm(selector, options) {
 					if(col.inputValue) {
 						hdg = col.heading;
 						_.each(table.data, function (row, index) {
-							col.inputValue(result.find('#r' + index + 'c' + col.name), row);
+							col.inputValue(table.find('#r' + index + 'c' + col.name), row);
 						});
 					}
 				});
@@ -1944,6 +1948,15 @@ function makeListForm(selector, options) {
 				message(col.heading + ':' + e);
 				$(this).focus();
 				return;
+			}
+			if(col.change) {
+				var nval = col.change(val, table.data[rowIndex], col, this);
+				if(nval === false) {
+					$(this).val(table.data[rowIndex][col.data])
+						.focus();
+					return;
+				} else if(nval !== undefined && nval !== null)
+					val = nval;
 			}
 			if(table.triggerHandler('changed.field', [val, table.data[rowIndex], col, this]) !== false) {
 				if(this.type == 'file') {

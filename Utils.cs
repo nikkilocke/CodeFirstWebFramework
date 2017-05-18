@@ -288,6 +288,8 @@ namespace CodeFirstWebFramework {
 					return "Supplier";
 				case "O":
 					return "Other Name";
+				case "M":
+					return "Member";
 				case "":
 				case null:
 					return "Unknown";

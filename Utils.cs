@@ -278,27 +278,6 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Translate NameType letter to human-readable form
-		/// </summary>
-		public static string NameType(this string type) {
-			switch (type) {
-				case "C":
-					return "Customer";
-				case "S":
-					return "Supplier";
-				case "O":
-					return "Other Name";
-				case "M":
-					return "Member";
-				case "":
-				case null:
-					return "Unknown";
-				default:
-					return "Type " + type;
-			}
-		}
-
-		/// <summary>
 		/// Split text at the first supplied delimiter.
 		/// Return the text before the delimiter, and set text to the remainder.
 		/// </summary>

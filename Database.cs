@@ -115,9 +115,12 @@ namespace CodeFirstWebFramework {
 				Dictionary<string, Table> dbTables = db.Tables();
 				int p = -1;
 				try {
-					p = QueryOne("SELECT DbVersion FROM Settings").AsInt("DbVersion");
-					if (p < 0)
-						p = 0;
+					JObject q = QueryOne("SELECT DbVersion FROM Settings");
+					if (q != null) {
+						p = q.AsInt("DbVersion");
+						if (p < 0)
+							p = 0;
+					}
 				} catch {
 				}
 				if (p < CurrentDbVersion)

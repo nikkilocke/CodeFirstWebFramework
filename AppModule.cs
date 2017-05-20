@@ -61,7 +61,7 @@ namespace CodeFirstWebFramework {
 
 		public JObject Settings {
 			get {
-				return _settings ?? (_settings = Database.QueryOne("SELECT * FROM Settings"));
+				return _settings ?? (_settings = Database.QueryOne("SELECT * FROM Settings") ?? new JObject());
 			}
 		}
 
@@ -332,20 +332,26 @@ namespace CodeFirstWebFramework {
 		}
 
 		public AppModule(AppModule module) {
-			Server = module.Server;
-			ActiveModule = module.ActiveModule;
-			Session = module.Session;
-			LogString = module.LogString;
-			Context = module.Context;
-			TitleText = module.TitleText;
-			Title = module.Title;
-			Module = module.Module;
-			OriginalModule = module.OriginalModule;
-			Method = module.Method;
-			OriginalMethod = module.OriginalMethod;
-			GetParameters = module.GetParameters;
-			Parameters = module.Parameters;
-			PostParameters = module.PostParameters;
+			CopyFrom = module;
+		}
+
+		public AppModule CopyFrom {
+			set {
+				Server = value.Server;
+				ActiveModule = value.ActiveModule;
+				Session = value.Session;
+				LogString = value.LogString;
+				Context = value.Context;
+				TitleText = value.TitleText;
+				Title = value.Title;
+				Module = value.Module;
+				OriginalModule = value.OriginalModule;
+				Method = value.Method;
+				OriginalMethod = value.OriginalMethod;
+				GetParameters = value.GetParameters;
+				Parameters = value.Parameters;
+				PostParameters = value.PostParameters;
+			}
 		}
 
 		/// <summary>

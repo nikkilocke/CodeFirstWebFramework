@@ -82,7 +82,9 @@
     <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Documentation.md" />
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

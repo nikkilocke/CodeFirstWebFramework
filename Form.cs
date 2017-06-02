@@ -11,6 +11,7 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// Attribute to define field display in forms
 	/// </summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class FieldAttribute : Attribute {
 		public FieldAttribute() {
 		}
@@ -128,6 +129,8 @@ namespace CodeFirstWebFramework {
 			Field fld = Field.FieldFor(field, out pk);
 			if (fld == null)
 				return null;
+			if (readwrite && field.IsDefined(typeof(ReadOnlyAttribute)))
+				readwrite = false;
 			FieldAttribute f = field.GetCustomAttribute<FieldAttribute>();
 			if (f == null) {
 				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
@@ -179,6 +182,7 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// Special FieldAttribute for select fields
 	/// </summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class SelectAttribute : FieldAttribute {
 
 		/// <summary>
@@ -219,6 +223,20 @@ namespace CodeFirstWebFramework {
 		public JObjectEnumerable SelectOptions {
 			set { Options["selectOptions"] = (JArray)value; }
 		}
+	}
+
+	/// <summary>
+	/// Indicate a field or class is writeable by default, even if it is not part of a Table
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property)]
+	public class WriteableAttribute : Attribute {
+	}
+
+	/// <summary>
+	/// Indicate a field or class is readonly by default, even if it is part of a Table
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+	public class ReadOnlyAttribute : Attribute {
 	}
 
 	/// <summary>
@@ -422,9 +440,9 @@ namespace CodeFirstWebFramework {
 		void processFields(Type tbl) {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType);
-			bool readwrite = ReadWrite && tbl.IsDefined(typeof(TableAttribute), false);
+			bool readwrite = ReadWrite && (tbl.IsDefined(typeof(TableAttribute), false) || tbl.IsDefined(typeof(WriteableAttribute), false));
 			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
-				FieldAttribute f = FieldAttribute.FieldFor(Module.Database, field, readwrite);
+				FieldAttribute f = FieldAttribute.FieldFor(Module.Database, field, readwrite || (ReadWrite && field.IsDefined(typeof(WriteableAttribute))));
 				if (f != null && RequireField(f))
 					columns.Add(f.Options);
 			}

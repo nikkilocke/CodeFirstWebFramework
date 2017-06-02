@@ -350,7 +350,7 @@ namespace CodeFirstWebFramework {
 			List<Field> fields = table.Fields.Where(f => !data.IsMissingOrNull(f.Name)).ToList();
 			checkForMissingFields(table, data, true);
 			try {
-				string sql = "INSERT INTO \"" + table.Name + "\" ("
+				string sql = "INSERT INTO " + table.Name + " ("
 					+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
 					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
 				using (new Timer(sql)) {

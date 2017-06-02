@@ -5,9 +5,11 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace CodeFirstWebFramework {
+	[AttributeUsage(AttributeTargets.Class)]
 	public class TableAttribute : Attribute {
 	}
 
+	[AttributeUsage(AttributeTargets.Class)]
 	public class ViewAttribute : Attribute {
 		public ViewAttribute(string sql) {
 			Sql = sql;
@@ -16,6 +18,7 @@ namespace CodeFirstWebFramework {
 		public string Sql;
 	}
 
+	[AttributeUsage(AttributeTargets.Field)]
 	public class UniqueAttribute : Attribute {
 
 		public UniqueAttribute(string name)
@@ -32,6 +35,7 @@ namespace CodeFirstWebFramework {
 		public int Sequence { get; private set; }
 	}
 
+	[AttributeUsage(AttributeTargets.Field)]
 	public class PrimaryAttribute : Attribute {
 
 		public PrimaryAttribute()
@@ -50,6 +54,7 @@ namespace CodeFirstWebFramework {
 		public int Sequence { get; private set; }
 	}
 
+	[AttributeUsage(AttributeTargets.Field)]
 	public class ForeignKeyAttribute : Attribute {
 		public ForeignKeyAttribute(string table) {
 			Table = table;
@@ -61,6 +66,7 @@ namespace CodeFirstWebFramework {
 	public class NullableAttribute : Attribute {
 	}
 
+	[AttributeUsage(AttributeTargets.Field)]
 	public class LengthAttribute : Attribute {
 		public LengthAttribute(int length)
 			: this(length, 0) {
@@ -76,6 +82,7 @@ namespace CodeFirstWebFramework {
 		public int Precision;
 	}
 
+	[AttributeUsage(AttributeTargets.Field)]
 	public class DefaultValueAttribute : Attribute {
 		public DefaultValueAttribute(string value) {
 			Value = value;
@@ -92,6 +99,7 @@ namespace CodeFirstWebFramework {
 		public string Value;
 	}
 
+	[AttributeUsage(AttributeTargets.Field|AttributeTargets.Property)]
 	public class DoNotStoreAttribute : Attribute {
 	}
 

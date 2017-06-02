@@ -33,28 +33,34 @@ namespace CodeFirstWebFramework {
 				Config.Default.DefaultServer.NamespaceDef = new Namespace(Config.Default.Namespace);
 				modules[Config.Default.Namespace] = Config.Default.DefaultServer.NamespaceDef;
 				foreach (ServerConfig server in Config.Default.Servers) {
-					if (modules.ContainsKey(server.Namespace)) {
-						server.NamespaceDef = modules[server.Namespace];
-					} else {
-						server.NamespaceDef = new Namespace(server.Namespace);
-						modules[server.Namespace] = server.NamespaceDef;
-					}
-					Type database = server.NamespaceDef.GetDatabase();
-					if (database != null) {
-						using (Database db = (Database)Activator.CreateInstance(database, server)) {
-							if (!databases.Contains(db.UniqueIdentifier)) {
-								databases.Add(db.UniqueIdentifier);
-								db.Upgrade();
-							}
-						}
-					}
+					registerServer(databases, server);
 				}
-				using (Database db = new Database(Config.Default.DefaultServer)) {
-					if (!databases.Contains(db.UniqueIdentifier))
-						db.Upgrade();
-				}
+				registerServer(databases, Config.Default.DefaultServer);
 			} catch (Exception ex) {
 				Log(ex.ToString());
+			}
+		}
+
+		/// <summary>
+		/// Add namespace to modules list, and upgrade database, if not done already.
+		/// </summary>
+		/// <param name="databases">HashSet of databases already upgraded</param>
+		/// <param name="server">ServerConfig to register</param>
+		void registerServer(HashSet<string> databases, ServerConfig server) {
+			if (modules.ContainsKey(server.Namespace)) {
+				server.NamespaceDef = modules[server.Namespace];
+			} else {
+				server.NamespaceDef = new Namespace(server.Namespace);
+				modules[server.Namespace] = server.NamespaceDef;
+			}
+			Type database = server.NamespaceDef.GetDatabase();
+			if (database != null) {
+				using (Database db = (Database)Activator.CreateInstance(database, server)) {
+					if (!databases.Contains(db.UniqueIdentifier)) {
+						databases.Add(db.UniqueIdentifier);
+						db.Upgrade();
+					}
+				}
 			}
 		}
 

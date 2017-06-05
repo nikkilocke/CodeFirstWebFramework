@@ -458,6 +458,15 @@ namespace CodeFirstWebFramework {
 			: base(module, t, false) {
 		}
 
+		/// <summary>
+		/// Url to call when the user selects a record.
+		/// </summary>
+		public string Select
+		{
+			get { return Options.AsString("select"); }
+			set { Options["select"] = value; }
+		}
+
 		public override void Show() {
 			base.Show("DataTable");
 		}
@@ -481,6 +490,15 @@ namespace CodeFirstWebFramework {
 
 		public ListForm(AppModule module, Type t, bool readWrite)
 			: base(module, t, readWrite) {
+		}
+
+		/// <summary>
+		/// Url to call when the user selects a record.
+		/// </summary>
+		public string Select
+		{
+			get { return Options.AsString("select"); }
+			set { Options["select"] = value; }
 		}
 
 		public override void Show() {

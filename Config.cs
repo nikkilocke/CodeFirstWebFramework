@@ -42,6 +42,7 @@ namespace CodeFirstWebFramework {
 		public static Config Default = new Config();
 
 		public void Save(string filename) {
+			filename = fileFor(filename);
 			using (StreamWriter w = new StreamWriter(filename))
 				w.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
 		}
@@ -71,7 +72,14 @@ namespace CodeFirstWebFramework {
 
 		}
 
+		static string fileFor(string filename) {
+			if (!filename.Contains("/") && !filename.Contains("\\"))
+				filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), filename);
+			return filename;
+		}
+
 		static public void Load(string filename) {
+			filename = fileFor(filename);
 			WebServer.Log("Loading config from {0}", filename);
 			using (StreamReader s = new StreamReader(filename)) {
 				Default = Utils.JsonTo<Config>(s.ReadToEnd());
@@ -120,7 +128,7 @@ namespace CodeFirstWebFramework {
 					Utils._timeOffset = newDate - now;
 				}
 #endif
-				new DailyLog("Logs." + Config.Default.Port).WriteLine("Started:config=" + configName);
+				new DailyLog(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Assembly.GetEntryAssembly().Name()+ "Logs." + Config.Default.Port)).WriteLine("Started:config=" + configName);
 				Utils.Check(!string.IsNullOrEmpty(Config.Default.ConnectionString), "You must specify a ConnectionString in the " + configName + " file");
 			} catch (Exception ex) {
 				WebServer.Log(ex.ToString());
@@ -141,16 +149,30 @@ namespace CodeFirstWebFramework {
 
 		public FileInfo FileInfo(string filename) {
 			FileInfo f;
+			string dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+			string folder = Path.Combine(dataFolder, ServerName);
 			if (filename.StartsWith("/"))
 				filename = filename.Substring(1);
+			f = new FileInfo(Path.Combine(folder, filename));
+			Utils.Check(f.FullName.StartsWith(new FileInfo(folder).FullName), "Illegal file access");
+			if (f.Exists)
+				return f;
 			f = new FileInfo(Path.Combine(ServerName, filename));
-			Utils.Check(f.FullName.StartsWith(new FileInfo(ServerName).FullName), "Illegal file access");
+			if (f.Exists)
+				return f;
+			f = new FileInfo(Path.Combine(dataFolder, Namespace, filename));
 			if (f.Exists)
 				return f;
 			f = new FileInfo(Path.Combine(Namespace, filename));
 			if (f.Exists)
 				return f;
+			f = new FileInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.Default.ServerName, filename));
+			if (f.Exists)
+				return f;
 			f = new FileInfo(Path.Combine(CodeFirstWebFramework.Config.Default.ServerName, filename));
+			if (f.Exists)
+				return f;
+			f = new FileInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.DefaultNamespace, filename));
 			if (f.Exists)
 				return f;
 			return new FileInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, filename));
@@ -158,16 +180,30 @@ namespace CodeFirstWebFramework {
 
 		public DirectoryInfo DirectoryInfo(string foldername) {
 			DirectoryInfo f;
+			string dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+			string folder = Path.Combine(dataFolder, ServerName);
 			if (foldername.StartsWith("/"))
 				foldername = foldername.Substring(1);
+			f = new DirectoryInfo(Path.Combine(folder, foldername));
+			Utils.Check(f.FullName.StartsWith(new FileInfo(folder).FullName), "Illegal file access");
+			if (f.Exists)
+				return f;
 			f = new DirectoryInfo(Path.Combine(ServerName, foldername));
-			Utils.Check(f.FullName.StartsWith(new FileInfo(ServerName).FullName), "Illegal file access");
+			if (f.Exists)
+				return f;
+			f = new DirectoryInfo(Path.Combine(dataFolder, Namespace, foldername));
 			if (f.Exists)
 				return f;
 			f = new DirectoryInfo(Path.Combine(Namespace, foldername));
 			if (f.Exists)
 				return f;
+			f = new DirectoryInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.Default.ServerName, foldername));
+			if (f.Exists)
+				return f;
 			f = new DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.Default.ServerName, foldername));
+			if (f.Exists)
+				return f;
+			f = new DirectoryInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.DefaultNamespace, foldername));
 			if (f.Exists)
 				return f;
 			return new DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, foldername));
@@ -234,6 +270,18 @@ namespace CodeFirstWebFramework {
 		[Primary]
 		public int? idSettings;
 		public int DbVersion;
+		[DefaultValue("default")]
+		public string Skin;
+		[DoNotStore]
+		public string AppVersion
+		{
+			get { return Assembly.GetEntryAssembly().GetName().Version.ToString(); }
+		}
+		public override int? Id
+		{
+			get { return idSettings; }
+			set { idSettings = value; }
+		}
 	}
 
 }

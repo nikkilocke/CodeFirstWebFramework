@@ -29,7 +29,7 @@ namespace CodeFirstWebFramework {
 	public abstract class AppModule : IDisposable {
 		static int lastJob;							// Last batch job
 		static Dictionary<int, BatchJob> jobs = new Dictionary<int, BatchJob>();
-		private JObject _settings;
+		private Settings _settings;
 
 		public static Encoding Encoding = Encoding.GetEncoding(1252);
 		public static string Charset = "ANSI";
@@ -48,20 +48,21 @@ namespace CodeFirstWebFramework {
 		public virtual Database Database {
 			get {
 				lock (this) {
-					if (_db == null) {
-						Type database = Server.NamespaceDef.GetDatabase();
-						if (database == null)
-							database = typeof(Database);
-						_db = (Database)Activator.CreateInstance(database, Server);
-					}
+					if (_db == null)
+						_db = Server.NamespaceDef.GetDatabase(Server);
 				}
 				return _db;
 			}
 		}
 
-		public JObject Settings {
+		public Settings Settings {
 			get {
-				return _settings ?? (_settings = Database.QueryOne("SELECT * FROM Settings") ?? new JObject());
+				if (_settings == null) {
+					Type t = Server.NamespaceDef.GetSettingsType();
+					_settings = (Settings)(Database.QueryOne("SELECT * FROM Settings").ToObject(t) 
+						?? Activator.CreateInstance(t));
+				}
+				return _settings;
 			}
 		}
 
@@ -158,9 +159,8 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Used for the web page title
 		/// </summary>
+		[TemplateSection]
 		public string Title;
-
-		public string TitleText = "";
 
 		/// <summary>
 		/// All Modules running batch jobs
@@ -176,11 +176,13 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Goes into the web page header
 		/// </summary>
+		[TemplateSection]
 		public string Head;
 
 		/// <summary>
 		/// Goes into the web page body
 		/// </summary>
+		[TemplateSection]
 		public string Body;
 
 		public bool ResponseSent { get; private set; }
@@ -342,7 +344,6 @@ namespace CodeFirstWebFramework {
 				Session = value.Session;
 				LogString = value.LogString;
 				Context = value.Context;
-				TitleText = value.TitleText;
 				Title = value.Title;
 				Module = value.Module;
 				OriginalModule = value.OriginalModule;
@@ -360,7 +361,6 @@ namespace CodeFirstWebFramework {
 		public void Call(HttpListenerContext context, string moduleName, string methodName) {
 			Context = context;
 			Log("({0}) ", Server.ServerName);
-			TitleText = Server.Title;
 			OriginalModule = Module = moduleName.ToLower();
 			OriginalMethod = Method = (methodName ?? "default").ToLower();
 			LogString.Append(GetType().Name + ":" + Title + ":");
@@ -538,28 +538,29 @@ namespace CodeFirstWebFramework {
 		/// Load the named template, and render using Mustache from the supplied object.
 		/// E.g. {{Body} in the template will be replaced with the obj.Body.ToString()
 		/// Then split into &lt;head&gt; (goes to this.Head) and &lt;body&gt; (goes to this.Body)
-		/// If no head/body sections, the whole template goes into this.Body.
+		/// (and also any other fields with the TemplateSection attribute).
+		/// If no body section, the whole remaining template goes into this.Body.
 		/// Then render the default template from this.
 		/// </summary>
 		public string Template(string filename, object obj) {
 			string body = LoadTemplate(filename, obj);
-			string titleText = extractSection("title", ref body);
-			if (titleText != "")
-				this.TitleText = titleText;
-			this.Head = extractSection("head", ref body);
-			this.Body = extractSection("body", ref body);
-			if (this.Body == "")
-				this.Body = body;
+			foreach(FieldInfo field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)) {
+				if (!field.IsDefined(typeof(TemplateSectionAttribute)))
+					continue;
+				field.SetValue(this, extractSection(field.Name.ToLower(), ref body, (string)field.GetValue(this) ?? ""));
+			}
+			if (string.IsNullOrWhiteSpace(Body))
+				Body = body;
 			return LoadTemplate("default", this);
 		}
 
-		string extractSection(string name, ref string template) {
+		string extractSection(string name, ref string template, string defaultValue = "") {
 			Match m = Regex.Match(template, "<" + name + ">(.*)</" + name + ">", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 			if (m.Success) {
 				template = template.Replace(m.Value, "");
 				return m.Groups[1].Value;
 			} else {
-				return "";
+				return defaultValue;
 			}
 		}
 

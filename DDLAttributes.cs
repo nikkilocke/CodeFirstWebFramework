@@ -103,4 +103,8 @@ namespace CodeFirstWebFramework {
 	public class DoNotStoreAttribute : Attribute {
 	}
 
+	[AttributeUsage(AttributeTargets.Field)]
+	public class TemplateSectionAttribute : Attribute {
+	}
+
 }

@@ -80,7 +80,20 @@ namespace CodeFirstWebFramework {
 			foreignKeys = null;
 		}
 
-		public Type GetDatabase() {
+		public Type GetSettingsType() {
+			foreach (Assembly assembly in assemblies) {
+				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Settings)))) {
+					return t;
+				}
+			}
+			return typeof(Settings);
+		}
+
+		public Database GetDatabase(ServerConfig server) {
+			return (Database)Activator.CreateInstance(GetDatabaseType(), server);
+		}
+
+		public Type GetDatabaseType() {
 			foreach (Assembly assembly in assemblies) {
 				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Database)))) {
 					return t;
@@ -92,7 +105,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Get the AppModule for a module name from the url
 		/// </summary>
-		public Type GetModule(string name) {
+		public Type GetModuleType(string name) {
 			name = name.ToLower();
 			return appModules.ContainsKey(name) ? appModules[name] : null;
 		}

@@ -53,13 +53,10 @@ namespace CodeFirstWebFramework {
 				server.NamespaceDef = new Namespace(server.Namespace);
 				modules[server.Namespace] = server.NamespaceDef;
 			}
-			Type database = server.NamespaceDef.GetDatabase();
-			if (database != null) {
-				using (Database db = (Database)Activator.CreateInstance(database, server)) {
-					if (!databases.Contains(db.UniqueIdentifier)) {
-						databases.Add(db.UniqueIdentifier);
-						db.Upgrade();
-					}
+			using (Database db = server.NamespaceDef.GetDatabase(server)) {
+				if (!databases.Contains(db.UniqueIdentifier)) {
+					databases.Add(db.UniqueIdentifier);
+					db.Upgrade();
 				}
 			}
 		}
@@ -167,7 +164,7 @@ namespace CodeFirstWebFramework {
 					// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
 					string[] parts = baseName.Split('/');
 					if (parts.Length <= 2) {
-						Type type = modules[server.Namespace].GetModule(parts[0]);
+						Type type = modules[server.Namespace].GetModuleType(parts[0]);
 						if(type != null) {
 							// The AppModule exists - create the object
 							module = (AppModule)Activator.CreateInstance(type);

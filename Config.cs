@@ -19,13 +19,13 @@ namespace CodeFirstWebFramework {
 	public class Config {
 		[JsonIgnore]
 		ServerConfig _default;
-		public static string EntryModule = System.Reflection.Assembly.GetEntryAssembly().Name();
+		public static string EntryModule = Assembly.GetEntryAssembly().Name();
+		public static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), EntryModule);
 		public static string EntryNamespace = "CodeFirstWebFramework";
 		public static string DefaultNamespace = "CodeFirstWebFramework";
 		public string Database = "SQLite";
 		public string Namespace = EntryNamespace;
-		public string ConnectionString = "Data Source=" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData).Replace(@"\", "/")
-			+ @"/" + EntryModule + "/" + EntryModule + ".db";
+		public string ConnectionString = "Data Source=" + DataPath + "/" + EntryModule + ".db";
 		[JsonIgnore]
 		public string Filename;
 		public int Port = 8080;
@@ -74,7 +74,7 @@ namespace CodeFirstWebFramework {
 
 		static string fileFor(string filename) {
 			if (!filename.Contains("/") && !filename.Contains("\\"))
-				filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), filename);
+				filename = Path.Combine(DataPath, filename);
 			return filename;
 		}
 
@@ -91,7 +91,7 @@ namespace CodeFirstWebFramework {
 		static public void Load(string[] args) {
 			try {
 				Config.Default.Namespace = Config.EntryNamespace = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().ReflectedType.Namespace;
-				string configName = Assembly.GetEntryAssembly().Name() + ".config";
+				string configName = EntryModule + ".config";
 				if (File.Exists(configName))
 					Config.Load(configName);
 				else
@@ -128,7 +128,7 @@ namespace CodeFirstWebFramework {
 					Utils._timeOffset = newDate - now;
 				}
 #endif
-				new DailyLog(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Assembly.GetEntryAssembly().Name()+ "Logs." + Config.Default.Port)).WriteLine("Started:config=" + configName);
+				new DailyLog(Path.Combine(DataPath, EntryModule + "Logs." + Config.Default.Port)).WriteLine("Started:config=" + configName);
 				Utils.Check(!string.IsNullOrEmpty(Config.Default.ConnectionString), "You must specify a ConnectionString in the " + configName + " file");
 			} catch (Exception ex) {
 				WebServer.Log(ex.ToString());
@@ -149,8 +149,7 @@ namespace CodeFirstWebFramework {
 
 		public FileInfo FileInfo(string filename) {
 			FileInfo f;
-			string dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-			string folder = Path.Combine(dataFolder, ServerName);
+			string folder = Path.Combine(Config.DataPath, ServerName);
 			if (filename.StartsWith("/"))
 				filename = filename.Substring(1);
 			f = new FileInfo(Path.Combine(folder, filename));
@@ -160,19 +159,19 @@ namespace CodeFirstWebFramework {
 			f = new FileInfo(Path.Combine(ServerName, filename));
 			if (f.Exists)
 				return f;
-			f = new FileInfo(Path.Combine(dataFolder, Namespace, filename));
+			f = new FileInfo(Path.Combine(Config.DataPath, Namespace, filename));
 			if (f.Exists)
 				return f;
 			f = new FileInfo(Path.Combine(Namespace, filename));
 			if (f.Exists)
 				return f;
-			f = new FileInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.Default.ServerName, filename));
+			f = new FileInfo(Path.Combine(Config.DataPath, CodeFirstWebFramework.Config.Default.ServerName, filename));
 			if (f.Exists)
 				return f;
 			f = new FileInfo(Path.Combine(CodeFirstWebFramework.Config.Default.ServerName, filename));
 			if (f.Exists)
 				return f;
-			f = new FileInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.DefaultNamespace, filename));
+			f = new FileInfo(Path.Combine(Config.DataPath, CodeFirstWebFramework.Config.DefaultNamespace, filename));
 			if (f.Exists)
 				return f;
 			return new FileInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, filename));
@@ -180,8 +179,7 @@ namespace CodeFirstWebFramework {
 
 		public DirectoryInfo DirectoryInfo(string foldername) {
 			DirectoryInfo f;
-			string dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-			string folder = Path.Combine(dataFolder, ServerName);
+			string folder = Path.Combine(Config.DataPath, ServerName);
 			if (foldername.StartsWith("/"))
 				foldername = foldername.Substring(1);
 			f = new DirectoryInfo(Path.Combine(folder, foldername));
@@ -191,19 +189,19 @@ namespace CodeFirstWebFramework {
 			f = new DirectoryInfo(Path.Combine(ServerName, foldername));
 			if (f.Exists)
 				return f;
-			f = new DirectoryInfo(Path.Combine(dataFolder, Namespace, foldername));
+			f = new DirectoryInfo(Path.Combine(Config.DataPath, Namespace, foldername));
 			if (f.Exists)
 				return f;
 			f = new DirectoryInfo(Path.Combine(Namespace, foldername));
 			if (f.Exists)
 				return f;
-			f = new DirectoryInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.Default.ServerName, foldername));
+			f = new DirectoryInfo(Path.Combine(Config.DataPath, CodeFirstWebFramework.Config.Default.ServerName, foldername));
 			if (f.Exists)
 				return f;
 			f = new DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.Default.ServerName, foldername));
 			if (f.Exists)
 				return f;
-			f = new DirectoryInfo(Path.Combine(dataFolder, CodeFirstWebFramework.Config.DefaultNamespace, foldername));
+			f = new DirectoryInfo(Path.Combine(Config.DataPath, CodeFirstWebFramework.Config.DefaultNamespace, foldername));
 			if (f.Exists)
 				return f;
 			return new DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, foldername));

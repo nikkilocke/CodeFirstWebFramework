@@ -30,14 +30,13 @@ namespace CodeFirstWebFramework {
 				modules = new Dictionary<string, Namespace>();
 				var baseType = typeof(AppModule);
 				HashSet<string> databases = new HashSet<string>();
-				Config.Default.DefaultServer.NamespaceDef = new Namespace(Config.Default.Namespace);
-				modules[Config.Default.Namespace] = Config.Default.DefaultServer.NamespaceDef;
 				foreach (ServerConfig server in Config.Default.Servers) {
 					registerServer(databases, server);
 				}
 				registerServer(databases, Config.Default.DefaultServer);
 			} catch (Exception ex) {
 				Log(ex.ToString());
+				throw;
 			}
 		}
 

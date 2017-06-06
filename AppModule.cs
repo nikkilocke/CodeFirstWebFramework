@@ -247,8 +247,8 @@ namespace CodeFirstWebFramework {
 
 			void runBatch(Action action) {
 				try {
-				_module.LogString = new StringBuilder();
-				_module.Log("Running batch job {0}", Id);
+					_module.LogString = new StringBuilder();
+					_module.Log("Running batch job {0}", Id);
 					action();
 				} catch (Exception ex) {
 					_module.Log("Batch job {0} Exception: {1}", Id, ex);

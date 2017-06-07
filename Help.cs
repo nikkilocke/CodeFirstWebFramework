@@ -27,6 +27,41 @@ namespace CodeFirstWebFramework {
 			}
 			FileInfo file = Server.FileInfo(Module + "/" + Method + ".md");
 			if (!file.Exists) {
+				// Maybe this is a templated help file
+				file = Server.FileInfo(Module + "/" + Method + ".tmpl");
+			}
+			ReturnHelpFrom(file);
+		}
+
+		/// <summary>
+		/// Override CallMethod so it also accepts unknown Method names (presuming them to be md files)
+		/// </summary>
+		public override object CallMethod(out MethodInfo method) {
+			method = this.GetType().GetMethod(Method, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+			if (method != null)
+				return base.CallMethod(out method);
+			method = this.GetType().GetMethod("Default", BindingFlags.Public | BindingFlags.Instance);
+			Default();
+			return null;
+		}
+
+		protected string LoadHelpFrom(FileInfo file) {
+			if (Method != "default") {
+				// Read the default.md file for the table of contents, to populate Next, Previous, etc.
+				parseContents((Method + ".md").ToLower());
+			}
+			Body = Server.LoadFile(file);
+			if (file.Extension == ".tmpl") {
+				// Do the templating of the contents themselves
+				Body = Server.TextTemplate(Body, this);
+				System.Diagnostics.Debug.WriteLine(Body);
+			}
+			string s = LoadTemplate("/help/default", this); // Place the content in the default.tmpl wrapper
+			return Markdown.ToHtml(s, new MarkdownPipelineBuilder().UseAdvancedExtensions().Build());
+		}
+
+		protected void ReturnHelpFrom(FileInfo file) {
+			if (!file.Exists) {
 				WriteResponse("", "text/plain", HttpStatusCode.NotFound);
 				return;
 			}
@@ -42,23 +77,8 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			Response.AddHeader("Last-Modified", file.LastWriteTimeUtc.ToString("r"));
-			if (Method != "default")
-				parseContents((Method + ".md").ToLower());
-			using (StreamReader r = new StreamReader(file.FullName)) {
-				Body = r.ReadToEnd();
-				string s = LoadTemplate("/help/default", this);
-				s = Markdown.ToHtml(s);
-				WriteResponse(s, "text/html", HttpStatusCode.OK);
-			}
-		}
-
-		/// <summary>
-		/// Override CallMethod so it accepts any Method name (presuming it to be an md file)
-		/// </summary>
-		public override object CallMethod(out MethodInfo method) {
-			method = this.GetType().GetMethod("Default", BindingFlags.Public | BindingFlags.Instance);
-			Default();
-			return null;
+			string s = LoadHelpFrom(file);
+			WriteResponse(s, "text/html", HttpStatusCode.OK);
 		}
 
 		/// <summary>

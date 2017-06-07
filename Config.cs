@@ -224,16 +224,23 @@ namespace CodeFirstWebFramework {
 		public string LoadFile(string filename) {
 			FileInfo f = FileInfo(filename.ToLower());
 			if (!f.Exists)
-				f = FileInfo(filename); ;
+				f = FileInfo(filename);
 			Utils.Check(f.Exists, "File not found:{0}", filename);
+			return LoadFile(f);
+		}
+
+		public string LoadFile(FileInfo f) {
+			Utils.Check(f.Exists, "File not found:{0}", f.Name);
 			using (StreamReader s = new StreamReader(f.FullName, AppModule.Encoding)) {
 				string text = s.ReadToEnd();
-				text = Regex.Replace(text, @"\{\{ *include +(.*) *\}\}", delegate(Match m) {
-					return LoadFile(m.Groups[1].Value);
-				});
-				text = Regex.Replace(text, @"//[\s]*{{([^{}]+)}}[\s]*$", "{{$1}}");
-				text = Regex.Replace(text, @"'!{{([^{}]+)}}'", "{{$1}}");
-				text = Regex.Replace(text, @"{{{([^{}]+)}}}", "\x1{{$1}}\x2");
+				if (f.Extension == ".tmpl") {
+					text = Regex.Replace(text, @"\{\{ *include +(.*) *\}\}", delegate (Match m) {
+						return LoadFile(m.Groups[1].Value);
+					});
+					text = Regex.Replace(text, @"//[\s]*{{([^{}]+)}}[\s]*$", "{{$1}}");
+					text = Regex.Replace(text, @"'!{{([^{}]+)}}'", "{{$1}}");
+					text = Regex.Replace(text, @"{{{([^{}]+)}}}", "\x1{{$1}}\x2");
+				}
 				return text;
 			}
 		}

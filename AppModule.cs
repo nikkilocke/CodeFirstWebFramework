@@ -744,7 +744,7 @@ namespace CodeFirstWebFramework {
 					contentType = "text/html";
 					using (StreamReader r = new StreamReader(file.FullName)) {
 						string s = r.ReadToEnd();
-						s = Markdown.ToHtml(s);
+						s = Markdown.ToHtml(s, new MarkdownPipelineBuilder().UseAdvancedExtensions().Build());
 						WriteResponse(s, contentType, HttpStatusCode.OK);
 					}
 					return;

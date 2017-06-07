@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Net;
+	using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.IO;
@@ -14,8 +14,22 @@ using System.Threading;
 using Mustache;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Markdig;
 
 namespace CodeFirstWebFramework {
+	/// <summary>
+	/// Attribute to indicate what file extensions a module can handle
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	public class HandlesAttribute : Attribute {
+
+		public HandlesAttribute(params string [] extensions) {
+			Extensions = extensions;
+		}
+
+		public IEnumerable<string> Extensions;
+
+	}
 	/// <summary>
 	/// Base class for all app modules.
 	/// Derive a class from this to server a folder of that name (you can add "Module" on the end of the name to avoid name clashes)
@@ -26,6 +40,7 @@ namespace CodeFirstWebFramework {
 	/// and returned.
 	/// </summary>
 	
+	[Handles(".html")]
 	public abstract class AppModule : IDisposable {
 		static int lastJob;							// Last batch job
 		static Dictionary<int, BatchJob> jobs = new Dictionary<int, BatchJob>();
@@ -456,7 +471,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="method">Also return the MethodInfo so caller knows what return type it has.
 		/// Will be set to null if there is no such named method.</param>
 
-		public object CallMethod(out MethodInfo method) {
+		public virtual object CallMethod(out MethodInfo method) {
 			List<object> parms = new List<object>();
 			method = this.GetType().GetMethod(Method, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 			if (method == null) {
@@ -685,19 +700,19 @@ namespace CodeFirstWebFramework {
 	/// If an html file is requested, it does not exist, but there is a corresponding tmpl file, the template is filled in and returned.
 	/// </summary>
 	public class FileSender : AppModule {
-		string _filename;
+		protected string Filename;
 
 		public FileSender(string filename) {
-			_filename = filename;
+			Filename = filename;
 			CacheAllowed = true;
 		}
 
 		public override void Default() {
 			Title = "";
-			if (_filename.IndexOf("..") >= 0) throw new FileNotFoundException("Illegal path " + _filename);
-			FileInfo file = Server.FileInfo(_filename);
-			if (!file.Exists && Path.GetExtension(_filename) == ".html") {
-				file = Server.FileInfo(Path.ChangeExtension(_filename, ".tmpl"));
+			if (Filename.IndexOf("..") >= 0) throw new FileNotFoundException("Illegal path " + Filename);
+			FileInfo file = Server.FileInfo(Filename);
+			if (!file.Exists && Path.GetExtension(Filename) == ".html") {
+				file = Server.FileInfo(Path.ChangeExtension(Filename, ".tmpl"));
 				if (file.Exists) {
 					FileInfo def = Server.FileInfo("default.tmpl");
 					if (def.LastWriteTimeUtc < file.LastWriteTimeUtc)
@@ -723,55 +738,63 @@ namespace CodeFirstWebFramework {
 				string contentType;
 			switch (file.Extension.ToLower()) {
 				case ".tmpl":
-					WriteResponse(Template(Path.ChangeExtension(_filename, ".tmpl"), this), "text/html", HttpStatusCode.OK);
+					WriteResponse(Template(Path.ChangeExtension(Filename, ".tmpl"), this), "text/html", HttpStatusCode.OK);
+					return;
+				case ".md":
+					contentType = "text/html";
+					using (StreamReader r = new StreamReader(file.FullName)) {
+						string s = r.ReadToEnd();
+						s = Markdown.ToHtml(s);
+						WriteResponse(s, contentType, HttpStatusCode.OK);
+					}
 					return;
 				case ".html":
-					case ".htm":
-						contentType = "text/html";
-						break;
-					case ".css":
-						contentType = "text/css";
-						break;
-					case ".js":
-						contentType = "text/javascript";
-						break;
-					case ".xml":
-						contentType = "text/xml";
-						break;
-					case ".bmp":
-						contentType = "image/bmp";
-						break;
-					case ".gif":
-						contentType = "image/gif";
-						break;
-					case ".jpg":
-						contentType = "image/jpeg";
-						break;
-					case ".jpeg":
-						contentType = "image/jpeg";
-						break;
-					case ".png":
-						contentType = "image/x-png";
-						break;
-					case ".txt":
-						contentType = "text/plain";
-						break;
-					case ".doc":
-						contentType = "application/msword";
-						break;
-					case ".pdf":
-						contentType = "application/pdf";
-						break;
-					case ".xls":
-						contentType = "application/x-msexcel";
-						break;
-					case ".wav":
-						contentType = "audio/x-wav";
-						break;
-					default:
-						contentType = "application/binary";
-						break;
-				}
+				case ".htm":
+					contentType = "text/html";
+					break;
+				case ".css":
+					contentType = "text/css";
+					break;
+				case ".js":
+					contentType = "text/javascript";
+					break;
+				case ".xml":
+					contentType = "text/xml";
+					break;
+				case ".bmp":
+					contentType = "image/bmp";
+					break;
+				case ".gif":
+					contentType = "image/gif";
+					break;
+				case ".jpg":
+					contentType = "image/jpeg";
+					break;
+				case ".jpeg":
+					contentType = "image/jpeg";
+					break;
+				case ".png":
+					contentType = "image/x-png";
+					break;
+				case ".txt":
+					contentType = "text/plain";
+					break;
+				case ".doc":
+					contentType = "application/msword";
+					break;
+				case ".pdf":
+					contentType = "application/pdf";
+					break;
+				case ".xls":
+					contentType = "application/x-msexcel";
+					break;
+				case ".wav":
+					contentType = "audio/x-wav";
+					break;
+				default:
+					contentType = "application/binary";
+					break;
+			}
 			using (Stream i = new FileStream(file.FullName, FileMode.Open, FileAccess.Read)) {
 				WriteResponse(i, contentType, HttpStatusCode.OK);
 			}

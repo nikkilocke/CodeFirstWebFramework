@@ -158,14 +158,16 @@ namespace CodeFirstWebFramework {
 				if (filename == "") filename = "home";
 				string moduleName = null;
 				string methodName = null;
-				string baseName = filename.Replace(".html", "");	// Ignore .html - treat as a program request
-				if (baseName.IndexOf(".") < 0) {
-					// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
-					string[] parts = baseName.Split('/');
-					if (parts.Length <= 2) {
-						Type type = modules[server.Namespace].GetModuleType(parts[0]);
-						if(type != null) {
-							// The AppModule exists - create the object
+				string extension = Path.GetExtension(filename);
+				string baseName = Regex.Replace(filename, @"\.[^/]*$", "");	// Ignore extension - treat as a program request
+				// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
+				string[] parts = baseName.Split('/');
+				if (parts.Length <= 2) {
+					Type type = modules[server.Namespace].GetModuleType(parts[0]);
+					if (type != null) {
+						// The AppModule exists - does it handle this extension?
+						HandlesAttribute handles = type.GetCustomAttribute<HandlesAttribute>(true);
+						if (string.IsNullOrWhiteSpace(extension) || handles.Extensions.Contains(extension.ToLower())) {
 							module = (AppModule)Activator.CreateInstance(type);
 							moduleName = parts[0];
 							if (parts.Length == 2) methodName = parts[1];

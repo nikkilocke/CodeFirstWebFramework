@@ -35,6 +35,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Markdig, Version=0.12.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>AccountServer\packages\Markdig.0.12.1\lib\net40\Markdig.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Data.Sqlite, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>packages\Mono.Data.Sqlite.Portable.1.0.3.5\lib\net4\Mono.Data.Sqlite.dll</HintPath>
       <Private>True</Private>
@@ -47,9 +50,8 @@
       <HintPath>packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>AccountServer\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -71,6 +73,7 @@
     <Compile Include="DbInterface.cs" />
     <Compile Include="DDLAttributes.cs" />
     <Compile Include="Form.cs" />
+    <Compile Include="Help.cs" />
     <Compile Include="NamespaceDef.cs" />
     <Compile Include="MySqlDatabase.cs" />
     <Compile Include="Program.cs" />

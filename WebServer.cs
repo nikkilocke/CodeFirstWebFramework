@@ -25,6 +25,9 @@ namespace CodeFirstWebFramework {
 		Session _empty;
 		Dictionary<string, Namespace> modules;		// All the different web modules we are running
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public WebServer() {
 			try {
 				modules = new Dictionary<string, Namespace>();
@@ -123,6 +126,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Stop the server
+		/// </summary>
 		public void Stop() {
 			_running = false;
 			_listener.Stop(); 
@@ -259,11 +265,27 @@ namespace CodeFirstWebFramework {
 		/// Simple session
 		/// </summary>
 		public class Session {
+			/// <summary>
+			/// Arbitrary JObject stored in session for later access
+			/// </summary>
 			public JObject Object { get; private set; }
+			/// <summary>
+			/// When the session expires
+			/// </summary>
 			public DateTime Expires;
+			/// <summary>
+			/// The session cookie
+			/// </summary>
 			public string Cookie { get; private set; }
+			/// <summary>
+			/// The WebServer owning the session (or null)
+			/// </summary>
 			public WebServer Server;
 
+			/// <summary>
+			/// Constructor
+			/// </summary>
+			/// <param name="server"></param>
 			public Session(WebServer server) {
 				if (server != null) {
 					Session session;

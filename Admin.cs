@@ -7,13 +7,22 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
+	/// <summary>
+	/// Class to provide Admin functions - called from Admin AppModule.
+	/// </summary>
 	public class AdminHelper {
 		AppModule module;
 
+		/// <summary>
+		/// Create AdminHelper for supplied module
+		/// </summary>
 		public AdminHelper(AppModule module) {
 			this.module = module;
 		}
 
+		/// <summary>
+		/// Return the status of the given batch job.
+		/// </summary>
 		public AjaxReturn BatchStatus(int id) {
 			AjaxReturn result = new AjaxReturn();
 			AppModule.BatchJob batch = AppModule.GetBatchJob(id);
@@ -37,6 +46,9 @@ namespace CodeFirstWebFramework {
 			return result;
 		}
 
+		/// <summary>
+		/// Backup the database
+		/// </summary>
 		public void Backup() {
 			module.Database.Logging = LogLevel.None;
 			module.Database.BeginTransaction();
@@ -49,6 +61,9 @@ namespace CodeFirstWebFramework {
 			module.WriteResponse(Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented), "application/json", System.Net.HttpStatusCode.OK);
 		}
 
+		/// <summary>
+		/// Restore the database
+		/// </summary>
 		public void Restore() {
 			if (module.PostParameters != null && module.PostParameters["file"] != null) {
 				new AppModule.BatchJob(module, delegate () {
@@ -93,16 +108,28 @@ namespace CodeFirstWebFramework {
 
 	}
 
+	/// <summary>
+	/// Admin module - provides BatchStatus, Backup and Restore. Uses AdminHelper for the implementation.
+	/// </summary>
 	public class AdminModule : AppModule {
 
+		/// <summary>
+		/// Return the status of the batch
+		/// </summary>
 		public AjaxReturn BatchStatus(int id) {
 			return new AdminHelper(this).BatchStatus(id);
 		}
 
+		/// <summary>
+		/// Backup the database
+		/// </summary>
 		public void Backup() {
 			new AdminHelper(this).Backup();
 		}
 
+		/// <summary>
+		/// Restore the database.
+		/// </summary>
 		public void Restore() {
 			new AdminHelper(this).Restore();
 		}

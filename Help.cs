@@ -12,13 +12,31 @@ using Newtonsoft.Json.Linq;
 using Markdig;
 
 namespace CodeFirstWebFramework {
+	/// <summary>
+	/// AppModule to handle help requests
+	/// </summary>
 	[Handles(".md")]
 	public class Help : AppModule {
+		/// <summary>
+		/// Whether the help has a table of contents (used in templates)
+		/// </summary>
 		public bool Contents;
+		/// <summary>
+		/// Markdown-style link to parent (if any) in table of contents
+		/// </summary>
 		public string Parent;
+		/// <summary>
+		/// Markdown-style link to next page (if any) in table of contents
+		/// </summary>
 		public string Next;
+		/// <summary>
+		/// Markdown-style link to previous page (if any) in table of contents
+		/// </summary>
 		public string Previous;
 
+		/// <summary>
+		/// Display a help file from the url
+		/// </summary>
 		public override void Default() {
 			if(Request.Url.AbsolutePath.Split('/').Length < 3) {
 				// Make sure the url is explicitly a file in help, so relative links work
@@ -34,7 +52,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Override CallMethod so it also accepts unknown Method names (presuming them to be md files)
+		/// Override CallMethod so it also accepts unknown Method names (presuming them to be md files) and still displays them
 		/// </summary>
 		public override object CallMethod(out MethodInfo method) {
 			method = this.GetType().GetMethod(Method, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
@@ -45,6 +63,12 @@ namespace CodeFirstWebFramework {
 			return null;
 		}
 
+		/// <summary>
+		/// Return the Markdown help text from file in a web page ready to render.
+		/// If Method is not "default.md", load the table of contents information
+		/// If the file is itself a template, fill it in first (output will be Markdown).
+		/// Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
+		/// </summary>
 		protected string LoadHelpFrom(FileInfo file) {
 			if (Method != "default") {
 				// Read the default.md file for the table of contents, to populate Next, Previous, etc.
@@ -60,6 +84,13 @@ namespace CodeFirstWebFramework {
 			return Markdown.ToHtml(s, new MarkdownPipelineBuilder().UseAdvancedExtensions().Build());
 		}
 
+		/// <summary>
+		/// Render the Markdown help text from file in a web page.
+		/// Allows caching and supports If-Modified-Since headers
+		/// If Method is not "default.md", load the table of contents information
+		/// If the file is itself a template, fill it in first (output will be Markdown).
+		/// Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
+		/// </summary>
 		protected void ReturnHelpFrom(FileInfo file) {
 			if (!file.Exists) {
 				WriteResponse("", "text/plain", HttpStatusCode.NotFound);
@@ -76,6 +107,7 @@ namespace CodeFirstWebFramework {
 				} catch {
 				}
 			}
+			CacheAllowed = true;
 			Response.AddHeader("Last-Modified", file.LastWriteTimeUtc.ToString("r"));
 			string s = LoadHelpFrom(file);
 			WriteResponse(s, "text/html", HttpStatusCode.OK);

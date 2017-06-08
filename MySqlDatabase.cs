@@ -22,6 +22,11 @@ namespace CodeFirstWebFramework {
 		MySqlTransaction _tran;
 		Database _db;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="db"></param>
+		/// <param name="connectionString"></param>
 		public MySqlDatabase(Database db, string connectionString) {
 			_db = db;
 			_connectionString = connectionString;
@@ -30,6 +35,9 @@ namespace CodeFirstWebFramework {
 			_conn.Open();
 		}
 
+		/// <summary>
+		/// Begin transaction
+		/// </summary>
 		public void BeginTransaction() {
 			if (_tran == null)
 				_tran = _conn.BeginTransaction();
@@ -42,6 +50,9 @@ namespace CodeFirstWebFramework {
 			return string.Format("CAST({0} AS {1})", value, type);
 		}
 
+		/// <summary>
+		/// Clean up database
+		/// </summary>
 		public void CleanDatabase() {
 			foreach (string table in _db.TableNames) {
 				Execute("ALTER TABLE " + table + " AUTO_INCREMENT = 1");
@@ -49,6 +60,20 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Commit transaction
+		/// </summary>
+		public void Commit() {
+			if (_tran != null) {
+				_tran.Commit();
+				_tran.Dispose();
+				_tran = null;
+			}
+		}
+
+		/// <summary>
+		/// Create a table from a Table definition
+		/// </summary>
 		public void CreateTable(Table t) {
 			View v = t as View;
 			if (v != null) {
@@ -74,19 +99,17 @@ namespace CodeFirstWebFramework {
 			executeLog(string.Format("CREATE TABLE `{0}` ({1}) ENGINE=InnoDB", t.Name, string.Join(",\r\n", defs.ToArray())));
 		}
 
+		/// <summary>
+		/// Create an index from a table and index definition
+		/// </summary>
 		public void CreateIndex(Table t, Index index) {
 			executeLog(string.Format("ALTER TABLE `{0}` ADD UNIQUE INDEX `{1}` ({2})", t.Name, index.Name,
 				string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC").ToArray())));
 		}
 
-		public void Commit() {
-			if (_tran != null) {
-				_tran.Commit();
-				_tran.Dispose();
-				_tran = null;
-			}
-		}
-
+		/// <summary>
+		/// Roll back any uncommitted transaction and close the connection
+		/// </summary>
 		public void Dispose() {
 			Rollback();
 			if (_conn != null) {
@@ -95,21 +118,37 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Drop a table
+		/// </summary>
 		public void DropTable(Table t) {
 			executeLogSafe("DROP TABLE IF EXISTS " + t.Name);
 			executeLogSafe("DROP VIEW IF EXISTS " + t.Name);
 		}
 
+		/// <summary>
+		/// Drop an index
+		/// </summary>
 		public void DropIndex(Table t, Index index) {
 			executeLogSafe(string.Format("ALTER TABLE `{0}` DROP INDEX `{1}`", t.Name, index.Name));
 		}
 
+		/// <summary>
+		/// Execute arbitrary sql
+		/// </summary>
 		public int Execute(string sql) {
 			using (MySqlCommand cmd = command(sql)) {
 				return cmd.ExecuteNonQuery();
 			}
 		}
 
+		/// <summary>
+		/// Insert a record
+		/// </summary>
+		/// <param name="table">Table</param>
+		/// <param name="sql">SQL INSERT statement</param>
+		/// <param name="updatesAutoIncrement">True if the insert may update an auto-increment field</param>
+		/// <returns>The value of the auto-increment record id of the newly inserted record</returns>
 		public int Insert(Table table, string sql, bool updatesAutoIncrement) {
 			using (MySqlCommand cmd = command(sql)) {
 				cmd.ExecuteNonQuery();
@@ -119,6 +158,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Determine whether two fields are the same
+		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {
 			if (code.TypeName != database.TypeName) return false;
 			if (t.IsView) return true;	// Database does not always give correct values for view columns
@@ -131,6 +173,9 @@ namespace CodeFirstWebFramework {
 			return true;
 		}
 
+		/// <summary>
+		/// Query the database, and return JObjects for each record returned
+		/// </summary>
 		public IEnumerable<JObject> Query(string query) {
 			using (MySqlCommand cmd = command(query)) {
 				using (MySqlDataReader r = executeReader(cmd, query)) {
@@ -142,11 +187,17 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Query the database, and return the first record matching the query
+		/// </summary>
 		public JObject QueryOne(string query) {
 			return Query(query + " LIMIT 1").FirstOrDefault();
 		}
 
-		static public string Quote(object o) {
+		/// <summary>
+		/// Quote any kind of data for inclusion in a SQL query
+		/// </summary>
+		public string Quote(object o) {
 			if (o == null || o == DBNull.Value) return "NULL";
 			if (o is int || o is long || o is double) return o.ToString();
 			if (o is decimal) return ((decimal)o).ToString("0.00");
@@ -157,6 +208,9 @@ namespace CodeFirstWebFramework {
 			return "'" + o.ToString().Replace("'", "''") + "'";
 		}
 
+		/// <summary>
+		/// Rollback transaction
+		/// </summary>
 		public void Rollback() {
 			if (_tran != null) {
 				_tran.Rollback();
@@ -165,6 +219,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Get a Dictionary of existing tables in the database
+		/// </summary>
 		public Dictionary<string, Table> Tables() {
 			// NB: By default. MySql table names are case insensitive
 			Dictionary<string, Table> tables = new Dictionary<string, Table>(StringComparer.OrdinalIgnoreCase);
@@ -202,8 +259,8 @@ namespace CodeFirstWebFramework {
 				// MySql 5 incorrectly returns lower case table and field names here
 				Table detail = tables[fk["TABLE_NAME"].ToString()];
 				Table master = tables[fk["REFERENCED_TABLE_NAME"].ToString()];
-				Field masterField = FieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
-				FieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
+				Field masterField = fieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
+				fieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
 			}
 			foreach (DataRow table in views.Select("TABLE_SCHEMA = " + Quote(schema))) {
 				string name = table["TABLE_NAME"].ToString();
@@ -220,10 +277,22 @@ namespace CodeFirstWebFramework {
 			return tables;
 		}
 
-		public Field FieldFor(Table table, string name) {
+		Field fieldFor(Table table, string name) {
 			return table.Fields.FirstOrDefault(f => StringComparer.OrdinalIgnoreCase.Compare(f.Name, name) == 0);
 		}
 
+		/// <summary>
+		/// Upgrade the table definition
+		/// </summary>
+		/// <param name="code">Defintiion required, from code</param>
+		/// <param name="database">Definition in database</param>
+		/// <param name="insert">Fields to insert</param>
+		/// <param name="update">Fields to change</param>
+		/// <param name="remove">Fields to remove</param>
+		/// <param name="insertFK">Foreign keys to insert</param>
+		/// <param name="dropFK">Foreign keys to remove</param>
+		/// <param name="insertIndex">Indexes to insert</param>
+		/// <param name="dropIndex">Indexes to remove</param>
 		public void UpgradeTable(Table code, Table database, List<Field> insert, List<Field> update, List<Field> remove,
 			List<Field> insertFK, List<Field> dropFK, List<Index> insertIndex, List<Index> dropIndex) {
 			foreach (Index i in dropIndex)
@@ -258,6 +327,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Determine whether two views are the same
+		/// </summary>
 		public bool? ViewsMatch(View code, View database) {
 			return null;
 		}

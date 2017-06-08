@@ -19,6 +19,10 @@ Because the templates are Mustache, you can insert information from variables in
 
 There is an extensive library of javascript (in `default.js`) which works with the C# code to provide support for forms, data tables, array list/edit forms and header-detail forms, along with callbacks to the C# code using ajax and json.
 
+There is built-in support for backing up and restoring the database (to json format).
+
+There is also built-in support for GitHub style Markdown (like this file), both in general use, and for writing context-sensitive help with a table of contents.
+
 The DLL can actually run multiple web servers on the same port (distinguished by the server part of the url), each of which can use the same or different C# code (distinguished by C# Namespaces) and use different databases. You can also customise the look and feel of each server, as the template code looks for templates in a folder named for the server, then a folder named for the app namespace, then in the CodeFirstWebFramework folder.
 
 [Full documentation is in Documentation.md](Documentation.md)

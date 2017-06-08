@@ -7,16 +7,33 @@ using System.Threading.Tasks;
 using System.Reflection;
 
 namespace CodeFirstWebFramework {
+
+	/// <summary>
+	/// Class to hold a module name, for use in templates
+	/// </summary>
 	public class ModuleName {
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name"></param>
 		public ModuleName(string name) {
 			Name = name;
 		}
+		/// <summary>
+		/// Name of module
+		/// </summary>
 		public string Name;
+		/// <summary>
+		/// Uncamelled name for display
+		/// </summary>
 		public string UnCamelName {
 			get { return Name.UnCamel(); }
 		}
 	}
 
+	/// <summary>
+	/// Desribes a namespace with AppModules which makes up a WebApp
+	/// </summary>
 	public class Namespace {
 		Dictionary<string, Type> appModules;	// List of all AppModule types by name ("Module" stripped off end)
 		Dictionary<string, Table> tables;
@@ -24,12 +41,21 @@ namespace CodeFirstWebFramework {
 		List<Assembly> assemblies;
 		List<ModuleName> moduleNames;
 
+		/// <summary>
+		/// List of module names for templates (e.g. to auto-generate a module menu)
+		/// </summary>
 		public IEnumerable<ModuleName> Modules {
 			get { return moduleNames; }
 		}
 
+		/// <summary>
+		/// Namespace name
+		/// </summary>
 		public string Name { get; private set; }
 
+		/// <summary>
+		/// Constructor - uses reflection to get the information
+		/// </summary>
 		public Namespace(string name) {
 			Name = name;
 			appModules = new Dictionary<string, Type>();
@@ -80,6 +106,10 @@ namespace CodeFirstWebFramework {
 			foreignKeys = null;
 		}
 
+		/// <summary>
+		/// Returns the type of the Settings record to be stored in the database.
+		/// If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.Settings
+		/// </summary>
 		public Type GetSettingsType() {
 			foreach (Assembly assembly in assemblies) {
 				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Settings)))) {
@@ -89,10 +119,19 @@ namespace CodeFirstWebFramework {
 			return typeof(Settings);
 		}
 
+		/// <summary>
+		/// Returns the the Database object to use.
+		/// If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.Database
+		/// </summary>
+		/// <param name="server">ConfigServer to pass to the database constructor</param>
 		public Database GetDatabase(ServerConfig server) {
 			return (Database)Activator.CreateInstance(GetDatabaseType(), server);
 		}
 
+		/// <summary>
+		/// Returns the type of the Database record to be stored in the database.
+		/// If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.Database
+		/// </summary>
 		public Type GetDatabaseType() {
 			foreach (Assembly assembly in assemblies) {
 				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Database)))) {
@@ -110,24 +149,39 @@ namespace CodeFirstWebFramework {
 			return appModules.ContainsKey(name) ? appModules[name] : null;
 		}
 
+		/// <summary>
+		/// Dictionary of tables defined in this namespace
+		/// </summary>
 		public Dictionary<string, Table> Tables {
 			get { return new Dictionary<string, Table>(tables); }
 		}
 
+		/// <summary>
+		/// List of the table names
+		/// </summary>
 		public IEnumerable<string> TableNames {
 			get { return tables.Where(t => !t.Value.IsView).Select(t => t.Key); }
 		}
 
+		/// <summary>
+		/// List of the view names
+		/// </summary>
 		public IEnumerable<string> ViewNames {
 			get { return tables.Where(t => t.Value.IsView).Select(t => t.Key); }
 		}
 
+		/// <summary>
+		/// Find a Table object by name - throw if not found
+		/// </summary>
 		public Table TableFor(string name) {
 			Table table;
 			Utils.Check(tables.TryGetValue(name, out table), "Table '{0}' does not exist", name);
 			return table;
 		}
 
+		/// <summary>
+		/// Generate Table or View object for a C# class
+		/// </summary>
 		void processTable(Type tbl, ViewAttribute view) {
 			List<Field> fields = new List<Field>();
 			Dictionary<string, List<Tuple<int, Field>>> indexes = new Dictionary<string, List<Tuple<int, Field>>>();
@@ -165,6 +219,10 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Update the field, index, etc. information for a C# type.
+		/// Process base classes first.
+		/// </summary>
 		void processFields(Type tbl, ref List<Field> fields, ref Dictionary<string, List<Tuple<int, Field>>> indexes, ref List<Tuple<int, Field>> primary, ref string primaryName) {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType, ref fields, ref indexes, ref primary, ref primaryName);

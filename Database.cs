@@ -11,11 +11,28 @@ using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
+	/// <summary>
+	/// Database log level
+	/// </summary>
 	public enum LogLevel {
+		/// <summary>
+		/// No logging
+		/// </summary>
 		None = 0,
+		/// <summary>
+		/// Log writes
+		/// </summary>
 		Writes,
+		/// <summary>
+		/// Log reads and writes
+		/// </summary>
 		Reads
 	};
+
+	/// <summary>
+	/// Class used for accessing the database.
+	/// Programs may subclass this to add more functionality.
+	/// </summary>
 	public class Database : IDisposable {
 		DbInterface db;
 		ServerConfig server;
@@ -181,6 +198,11 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="server">ServerConfig optionally containing the database type and connection string 
+		/// (Config.Default is used for items not supplied)</param>
 		public Database(ServerConfig server) {
 			this.server = server;
 			_tables = server.NamespaceDef.Tables;
@@ -190,56 +212,99 @@ namespace CodeFirstWebFramework {
 			db = getDatabase(type, connectionString);
 		}
 
+		/// <summary>
+		/// Start a transaction
+		/// </summary>
 		public void BeginTransaction() {
 			db.BeginTransaction();
 		}
 
+		/// <summary>
+		/// Return SQL to cast a value to a type
+		/// </summary>
 		public string Cast(string value, string type) {
 			return db.Cast(value, type);
 		}
 
+		/// <summary>
+		/// Check a field name is valid, throw an exception if not.
+		/// </summary>
+		/// <param name="f"></param>
 		public void CheckValidFieldname(string f) {
 			if (!IsValidFieldname(f))
 				throw new CheckException("'{0}' is not a valid field name", f);
 		}
 
+		/// <summary>
+		/// Clean and compact the database.
+		/// </summary>
 		public void Clean() {
 			db.CleanDatabase();
 		}
 
+		/// <summary>
+		/// Commit a transaction
+		/// </summary>
 		public void Commit() {
 			db.Commit();
 		}
 
+		/// <summary>
+		/// Delete a record by content.
+		/// </summary>
+		/// <param name="tableName">Table name</param>
+		/// <param name="data">Content - if this matches a unique key, that is the record which will be deleted</param>
 		public void Delete(string tableName, JObject data) {
 			delete(TableFor(tableName), data);
 		}
 
+		/// <summary>
+		/// Delete a record by id.
+		/// </summary>
 		public void Delete(string tableName, int id) {
 			Table t = TableFor(tableName);
 			Execute("DELETE FROM " + tableName + " WHERE " + t.PrimaryKey.Name + '=' + id);
 		}
 
+		/// <summary>
+		/// Delete a record by content.
+		/// </summary>
+		/// <param name="data">Content - if this matches a unique key, that is the record which will be deleted</param>
 		public void Delete(JsonObject data) {
 			delete(TableFor(data.GetType()).UpdateTable, data.ToJObject());
 		}
 
+		/// <summary>
+		/// Delete a record by content.
+		/// </summary>
+		/// <param name="table">Table</param>
+		/// <param name="data">Content - if this matches a unique key, that is the record which will be deleted</param>
 		public void delete(Table table, JObject data) {
 			Index index = table.IndexFor(data);
 			Utils.Check(index != null, "Deleting from {0}:data does not specify unique record", table.Name);
 			Execute("DELETE FROM " + table.Name + " WHERE " + index.Where(data));
 		}
 
+		/// <summary>
+		/// Dispose of the database.
+		/// Any uncommitted transaction will be rolled back, and the connection will be closed.
+		/// </summary>
 		public void Dispose() {
 			Rollback();
 			db.Dispose();
 			db = null;
 		}
 
+		/// <summary>
+		/// Create an empty record for the given table as a JObject
+		/// </summary>
 		public JObject EmptyRecord(string tableName) {
 			return emptyRecord(TableFor(tableName));
 		}
 
+		/// <summary>
+		/// Create an empty record as a C# object
+		/// </summary>
 		public T EmptyRecord<T>() where T : JsonObject {
 			JObject record = emptyRecord(TableFor(typeof(T)));
 			return record.ToObject<T>();
@@ -254,6 +319,9 @@ namespace CodeFirstWebFramework {
 			return record;
 		}
 
+		/// <summary>
+		/// Execute arbitrary SQL
+		/// </summary>
 		public int Execute(string sql) {
 			using (new Timer(sql)) {
 				if (Logging >= LogLevel.Writes) Log(sql);
@@ -265,6 +333,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Find out if a record with the given id exists in the table
+		/// </summary>
 		public bool Exists(string tableName, int? id) {
 			Table table = TableFor(tableName);
 			string idName = table.PrimaryKey.Name;
@@ -272,20 +343,36 @@ namespace CodeFirstWebFramework {
 				+ idName + " = " + id) != null;
 		}
 
+		/// <summary>
+		/// Given data that represents a unique key in a table, if a record matching the key
+		/// exists, return its record id, otherwise create a new record using the data and
+		/// return its id.
+		/// </summary>
 		public int? ForeignKey(string tableName, JObject data) {
 			int? result = LookupKey(tableName, data);
 			return result ?? insert(TableFor(tableName), data);
 		}
 
+		/// <summary>
+		/// Given name, value pairs that represents a unique key in a table, if a record matching the key
+		/// exists, return its record id, otherwise create a new record using the data and
+		/// return its id.
+		/// </summary>
 		public int? ForeignKey(string tableName, params object[] data) {
 			return ForeignKey(tableName, new JObject().AddRange(data));
 		}
 
+		/// <summary>
+		/// Get a record by id
+		/// </summary>
 		public T Get<T>(int id) where T : JsonObject {
 			Table table = TableFor(typeof(T));
 			return QueryOne<T>("SELECT * FROM " + table.Name + " WHERE " + table.PrimaryKey.Name + " = " + id);
 		}
 
+		/// <summary>
+		/// Get a record by unique key
+		/// </summary>
 		public T Get<T>(T criteria) where T : JsonObject {
 			Table table = TableFor(typeof(T));
 			JObject data = criteria.ToJObject();
@@ -300,6 +387,9 @@ namespace CodeFirstWebFramework {
 			return data.ToObject<T>();
 		}
 
+		/// <summary>
+		/// Get a record by id
+		/// </summary>
 		public JObject Get(string tableName, int id) {
 			Table table = TableFor(tableName);
 			JObject result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + table.PrimaryKey.Name + " = " + id);
@@ -320,16 +410,25 @@ namespace CodeFirstWebFramework {
 			return "IN(" + string.Join(",", args.Select(o => Quote(o)).ToArray()) + ")";
 		}
 
+		/// <summary>
+		/// Insert a series of records into the database
+		/// </summary>
 		public void Insert(string tableName, List<JObject> data) {
 			Table table = TableFor(tableName);
 			foreach (JObject row in data)
 				insert(table, row);
 		}
 
+		/// <summary>
+		/// Insert a record into the database
+		/// </summary>
 		public void Insert(string tableName, JObject data) {
 			insert(TableFor(tableName), data);
 		}
 
+		/// <summary>
+		/// Insert a record into the database
+		/// </summary>
 		public void Insert(string tableName, JsonObject data) {
 			Table table = TableFor(tableName);
 			JObject d = data.ToJObject();
@@ -337,6 +436,9 @@ namespace CodeFirstWebFramework {
 			data.Id = (int)d[table.PrimaryKey.Name];
 		}
 
+		/// <summary>
+		/// Insert a record into the database
+		/// </summary>
 		public void Insert(JsonObject data) {
 			Table table = TableFor(data.GetType()).UpdateTable;
 			JObject d = data.ToJObject();
@@ -376,16 +478,28 @@ namespace CodeFirstWebFramework {
 				table.Name, insert ? "insert" : "update", string.Join(", ", errors));
 		}
 
+		/// <summary>
+		/// Determine if a name is a valid database field name
+		/// </summary>
 		public bool IsValidFieldname(string f) {
 			return Regex.IsMatch(f, @"^[a-z]+$", RegexOptions.IgnoreCase);
 		}
 
+		/// <summary>
+		/// Log sql to the log
+		/// </summary>
 		public void Log(string sql) {
 			WebServer.Log(sql);
 		}
 
+		/// <summary>
+		/// Level of logging
+		/// </summary>
 		public LogLevel Logging;
 
+		/// <summary>
+		/// Find the record id of a record given data containing a unique key
+		/// </summary>
 		public int? LookupKey(string tableName, JObject data) {
 			Table table = TableFor(tableName);
 			string idName = table.PrimaryKey.Name;
@@ -396,10 +510,16 @@ namespace CodeFirstWebFramework {
 			return result == null ? null : result[idName].To<int?>();
 		}
 
+		/// <summary>
+		/// Find the record id of a record given name, value pairs containing a unique key
+		/// </summary>
 		public int? LookupKey(string tableName, params object[] data) {
 			return LookupKey(tableName, new JObject().AddRange(data));
 		}
 
+		/// <summary>
+		/// Query the database and return the records as JObjects
+		/// </summary>
 		public JObjectEnumerable Query(string sql) {
 			if (Logging >= LogLevel.Reads) Log(sql);
 			try {
@@ -411,6 +531,13 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Query the database and return the records as JObjects
+		/// </summary>
+		/// <param name="fields">Fields to return - leave empty or use "+" to return all relevant fields</param>
+		/// <param name="conditions">To use in the WHERE clause (may also include SORT BY)</param>
+		/// <param name="tableNames">List of table names to join for the query. 
+		/// Joins are performed automatically on foreign keys.</param>
 		public JObjectEnumerable Query(string fields, string conditions, params string[] tableNames) {
 			return Query(buildQuery(fields, conditions, tableNames));
 		}
@@ -461,71 +588,118 @@ namespace CodeFirstWebFramework {
 			return "SELECT " + fields + "\r\n" + string.Join("\r\n", joins) + "\r\n" + conditions;
 		}
 
+		/// <summary>
+		/// Query the database and return the records as C# objects
+		/// </summary>
 		public IEnumerable<T> Query<T>(string sql) {
 			return Query(sql).Select(r => r.ToObject<T>());
 		}
 
+		/// <summary>
+		/// Query the database and return the records as C# objects
+		/// </summary>
+		/// <param name="fields">Fields to return - leave empty or use "+" to return all relevant fields</param>
+		/// <param name="conditions">To use in the WHERE clause (may also include SORT BY)</param>
+		/// <param name="tableNames">List of table names to join for the query. 
+		/// Joins are performed automatically on foreign keys.</param>
 		public IEnumerable<T> Query<T>(string fields, string conditions, params string[] tableNames) {
 			return Query(fields, conditions, tableNames).Select(r => r.ToObject<T>());
 		}
 
+		/// <summary>
+		/// Query the database and return the first matching record as a JObject (or null if none)
+		/// </summary>
 		public JObject QueryOne(string query) {
 			return db.QueryOne(query);
 		}
 
+		/// <summary>
+		/// Query the database and return the first matching record as a JObject (or null if none)
+		/// <param name="fields">Fields to return - leave empty or use "+" to return all relevant fields</param>
+		/// <param name="conditions">To use in the WHERE clause (may also include SORT BY)</param>
+		/// <param name="tableNames">List of table names to join for the query. 
+		/// Joins are performed automatically on foreign keys.</param>
+		/// </summary>
 		public JObject QueryOne(string fields, string conditions, params string[] tableNames) {
 			return QueryOne(buildQuery(fields, conditions, tableNames));
 		}
 
+		/// <summary>
+		/// Query the database and return the first matching record as a C# object (or an empty record if none)
+		/// </summary>
 		public T QueryOne<T>(string query) where T : JsonObject {
 			JObject data = QueryOne(query);
 			return data == null || data.IsAllNull() ? EmptyRecord<T>() : data.To<T>();
 		}
 
+		/// <summary>
+		/// Query the database and return the first matching record as a C# object (or an empty record if none)
+		/// <param name="fields">Fields to return - leave empty or use "+" to return all relevant fields</param>
+		/// <param name="conditions">To use in the WHERE clause (may also include SORT BY)</param>
+		/// <param name="tableNames">List of table names to join for the query. 
+		/// Joins are performed automatically on foreign keys.</param>
+		/// </summary>
 		public T QueryOne<T>(string fields, string conditions, params string[] tableNames) where T : JsonObject {
 			JObject data = QueryOne(fields, conditions, tableNames);
 			return data == null || data.IsAllNull() ? EmptyRecord<T>() : data.To<T>();
 		}
 
+		/// <summary>
+		/// Quote any kind of data for inclusion in a SQL query
+		/// </summary>
 		public string Quote(object o) {
-			if (o == null || o == DBNull.Value) return "NULL";
-			if (o is int || o is long || o is double) return o.ToString();
-			if (o is decimal) return ((decimal)o).ToString("0.00");
-			if (o is double) return (Math.Round((decimal)o, 4)).ToString();
-			if (o is double) return ((decimal)o).ToString("0");
-			if (o is bool) return (bool)o ? "1" : "0";
-			if (o is DateTime) return "'" + ((DateTime)o).ToString("yyyy-MM-dd") + "'";
-			return "'" + o.ToString().Replace("'", "''") + "'";
+			return db.Quote(o);
 		}
 
+		/// <summary>
+		/// Determine if a record with the given id exists
+		/// </summary>
 		public bool RecordExists(string table, int id) {
 			return RecordExists(TableFor(table), id);
 		}
 
+		/// <summary>
+		/// Determine if a record with the given id exists
+		/// </summary>
 		public bool RecordExists(Table table, int id) {
 			Field idField = table.PrimaryKey;
 			string idName = idField.Name;
 			return QueryOne("SELECT " + idName + " FROM " + table.Name + " WHERE " + idName + " = " + id) != null;
 		}
 
+		/// <summary>
+		/// Rollback transaction
+		/// </summary>
 		public void Rollback() {
 			db.Rollback();
 		}
 
+		/// <summary>
+		/// Return the names of all the tables
+		/// </summary>
 		public IEnumerable<string> TableNames {
 			get { return _tables.Where(t => !t.Value.IsView).Select(t => t.Key); }
 		}
 
+		/// <summary>
+		/// Return the names of all the views
+		/// </summary>
 		public IEnumerable<string> ViewNames {
 			get { return _tables.Where(t => t.Value.IsView).Select(t => t.Key); }
 		}
 
+		/// <summary>
+		/// Find the Table descriptor for a table name
+		/// </summary>
 		public Table TableFor(string name) {
 			Table table;
 			Utils.Check(_tables.TryGetValue(name, out table), "Table '{0}' does not exist", name);
 			return table;
 		}
 
+		/// <summary>
+		/// Find the Table descriptor for a C# type
+		/// </summary>
 		public Table TableFor(Type type) {
 			Type t = type;
 			while (!_tables.ContainsKey(t.Name)) {
@@ -535,18 +709,34 @@ namespace CodeFirstWebFramework {
 			return TableFor(t.Name);
 		}
 
+		/// <summary>
+		/// Return a unique identifier based on the connection string so different Database objects
+		/// accessing the same database can be recognised as the same.
+		/// </summary>
 		public string UniqueIdentifier { get; private set; }
 
+		/// <summary>
+		/// Update a series of records
+		/// If each record doesn't already exist, it will be created.
+		/// </summary>
 		public void Update(string tableName, List<JObject> data) {
 			Table table = TableFor(tableName);
 			foreach (JObject row in data)
 				update(table, row);
 		}
 
+		/// <summary>
+		/// Update a record.
+		/// If the record doesn't already exist, it will be created.
+		/// </summary>
 		public void Update(string tableName, JObject data) {
 			update(TableFor(tableName), data);
 		}
 
+		/// <summary>
+		/// Update a record.
+		/// If the record doesn't already exist, it will be created.
+		/// </summary>
 		public void Update(JsonObject data) {
 			Table table = TableFor(data.GetType()).UpdateTable;
 			JObject d = data.ToJObject();
@@ -554,6 +744,10 @@ namespace CodeFirstWebFramework {
 			data.Id = (int)d[table.PrimaryKey.Name];
 		}
 
+		/// <summary>
+		/// Update a record.
+		/// If the record doesn't already exist, it will be created.
+		/// </summary>
 		protected void update(Table table, JObject data) {
 			Field idField = table.PrimaryKey;
 			string idName = idField.Name;
@@ -578,6 +772,10 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Update a record only if it has changed.
+		/// If the record doesn't already exist, it will be created.
+		/// </summary>
 		protected void updateIfChanged(Table table, JObject data) {
 			Field idField = table.PrimaryKey;
 			string idName = idField.Name;
@@ -606,44 +804,86 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Class to time queries, and log if they exceed MaxTime (default Config.Default.SlowQuery)
+		/// </summary>
 		public class Timer : IDisposable {
 			DateTime _start;
 			string _message;
 
+			/// <summary>
+			/// Constructor
+			/// </summary>
+			/// <param name="message"></param>
 			public Timer(string message) {
 				_start = Utils.Now;
 				_message = message;
 			}
 
+			/// <summary>
+			/// Check elapsed time and log if it exceeds MaxTime
+			/// </summary>
 			public void Dispose() {
 				double elapsed = (Utils.Now - _start).TotalMilliseconds;
 				if (elapsed > MaxTime)
 					WebServer.Log("{0}:{1}", elapsed, _message);
 			}
 
+			/// <summary>
+			/// Max time (default Config.Default.SlowQuery)
+			/// </summary>
 			public double MaxTime = Config.Default.SlowQuery;
 		}
 
 	}
 
+	/// <summary>
+	/// Store details about a Foreign Key field
+	/// </summary>
 	public class ForeignKey {
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="table">Table the key refers to</param>
+		/// <param name="field">Field in that table</param>
 		public ForeignKey(Table table, Field field) {
 			Table = table;
 			Field = field;
 		}
 
+		/// <summary>
+		/// Table the key refers to
+		/// </summary>
 		public Table Table { get; private set; }
 
+		/// <summary>
+		/// Field in that table
+		/// </summary>
 		public Field Field { get; private set; }
 	}
 
+	/// <summary>
+	/// Store detailt about a database field
+	/// </summary>
 	public class Field {
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public Field(string name) {
 			Name = name;
 			Type = typeof(string);
 		}
 
+		/// <summary>
+		/// Full constructor
+		/// </summary>
+		/// <param name="name">Field name</param>
+		/// <param name="type">C# type</param>
+		/// <param name="length">Length</param>
+		/// <param name="nullable">Whether it may be null</param>
+		/// <param name="autoIncrement">Whether it is auto increment</param>
+		/// <param name="defaultValue">Default value (or null)</param>
 		public Field(string name, Type type, decimal length, bool nullable, bool autoIncrement, string defaultValue) {
 			Name = name;
 			Type = type;
@@ -666,18 +906,39 @@ namespace CodeFirstWebFramework {
 			DefaultValue = defaultValue;
 		}
 
+		/// <summary>
+		/// Whether the field is auto increment
+		/// </summary>
 		public bool AutoIncrement { get; private set; }
 
+		/// <summary>
+		/// Default value
+		/// </summary>
 		public string DefaultValue { get; private set; }
 
+		/// <summary>
+		/// Foreign key details (or null)
+		/// </summary>
 		public ForeignKey ForeignKey;
 
+		/// <summary>
+		/// Length
+		/// </summary>
 		public decimal Length { get; private set; }
 
+		/// <summary>
+		/// Name
+		/// </summary>
 		public string Name { get; private set; }
 
+		/// <summary>
+		/// Whether the field may be null
+		/// </summary>
 		public bool Nullable { get; private set; }
 
+		/// <summary>
+		/// Quote value of object o to use in a SQL statement, assuming value is to be placed in this field.
+		/// </summary>
 		public string Quote(object o) {
 			if (o == null || o == DBNull.Value) return "NULL";
 			if ((Type == typeof(int) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime)) && o.ToString() == "") return "NULL";
@@ -694,8 +955,15 @@ namespace CodeFirstWebFramework {
 			return "'" + o.ToString().Replace("'", "''") + "'";
 		}
 
+		/// <summary>
+		/// C# type
+		/// </summary>
 		public Type Type { get; private set; }
 
+		/// <summary>
+		/// String representation of C# type, allowing for Nullable.
+		/// E.g. a Nullable Int32 will retuen "int?"
+		/// </summary>
 		public string TypeName {
 			get {
 				string name = Type.Name;
@@ -718,6 +986,10 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// String description of Field
+		/// </summary>
+		/// <param name="view">Whether this field is in a view</param>
 		public string Data(bool view) {
 			string s = Name + "(" + TypeName;
 			if (view)
@@ -732,6 +1004,11 @@ namespace CodeFirstWebFramework {
 			return s;
 		}
 
+		/// <summary>
+		/// Create a Field object from the Attributes on a C# class field
+		/// </summary>
+		/// <param name="field">The C# FieldInfo for the field</param>
+		/// <param name="pk">Set to PrimaryAttribute if the field has one</param>
 		public static Field FieldFor(FieldInfo field, out PrimaryAttribute pk) {
 			pk = null;
 			if (field.IsDefined(typeof(DoNotStoreAttribute)))
@@ -786,126 +1063,239 @@ namespace CodeFirstWebFramework {
 			return new Field(field.Name, pt, length, nullable, pk != null && pk.AutoIncrement, defaultValue);
 		}
 
+		/// <summary>
+		/// String representation (for debugging)
+		/// </summary>
 		public override string ToString() {
 			return Name + "(" + TypeName + ")";
 		}
 	}
 
+	/// <summary>
+	/// Index descriptor
+	/// </summary>
 	public class Index {
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name">Index name</param>
+		/// <param name="fields">Fields making up the index</param>
 		public Index(string name, params Field[] fields) {
 			Name = name;
 			Fields = fields;
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name">Index name</param>
+		/// <param name="fields">Field names making up the index</param>
 		public Index(string name, params string[] fields) {
 			Name = name;
 			Fields = fields.Select(f => new Field(f)).ToArray();
 		}
 
+		/// <summary>
+		/// Whether this index has values in the data for all of its fields
+		/// </summary>
 		public bool CoversData(JObject data) {
 			return (Fields.Where(f => data.IsMissingOrNull(f.Name)).FirstOrDefault() == null);
 		}
 
+		/// <summary>
+		/// List of fields (with types) in the index, separate by commas - for matching two indexes to see if they are the same
+		/// </summary>
 		public string FieldList {
 			get { return string.Join(",", Fields.Select(f => f.ToString()).ToArray()); }
 		}
 
+		/// <summary>
+		/// The fields that go to make up the index
+		/// </summary>
 		public Field[] Fields { get; private set; }
 
+		/// <summary>
+		/// Index name
+		/// </summary>
 		public string Name { get; private set; }
 
+		/// <summary>
+		/// Generate a WHERE clause (without the "WHERE") to select the record matching data for this index
+		/// </summary>
 		public string Where(JObject data) {
 			return string.Join(" AND ", Fields.Select(f => f.Name + "=" + f.Quote(data[f.Name])).ToArray());
 		}
 
+		/// <summary>
+		/// For debugging
+		/// </summary>
 		public override string ToString() {
 			return "I:" + Name + "=" + FieldList;
 		}
 	}
 
+	/// <summary>
+	/// Table definition
+	/// </summary>
 	public class Table {
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public Table(string name, Field[] fields, Index[] indexes) {
 			Name = name;
 			Fields = fields;
 			Indexes = indexes;
 		}
 
+		/// <summary>
+		/// The fields in the table
+		/// </summary>
 		public Field[] Fields;
 
+		/// <summary>
+		/// Find a field by name (null if not found)
+		/// </summary>
 		public Field FieldFor(string name) {
 			return Fields.FirstOrDefault(f => f.Name == name);
 		}
 
+		/// <summary>
+		/// Find foreign key in this table that refers to target table (null if not found)
+		/// </summary>
 		public Field ForeignKeyFieldFor(Table table) {
 			return Fields.FirstOrDefault(f => f.ForeignKey != null && f.ForeignKey.Table.Name == table.Name);
 		}
 
+		/// <summary>
+		/// The indexes
+		/// </summary>
 		public Index[] Indexes { get; private set; }
 
+		/// <summary>
+		/// Find the first index for which there are values for all fields in data (null if none)
+		/// </summary>
 		public Index IndexFor(JObject data) {
 			return Indexes.Where(i => i.CoversData(data)).FirstOrDefault();
 		}
 
+		/// <summary>
+		/// Table name
+		/// </summary>
 		public string Name { get; private set; }
 
+		/// <summary>
+		/// Primary key (first index)
+		/// </summary>
 		public Field PrimaryKey {
 			get { return Indexes[0].Fields[0]; }
 		}
 
+		/// <summary>
+		/// Table to update if update is called on a View
+		/// </summary>
 		public virtual Table UpdateTable { get { return this; } }
 
+		/// <summary>
+		/// Whether this is a View rather than a native table
+		/// </summary>
 		public virtual bool IsView { get { return false; } }
 
+		/// <summary>
+		/// For debugging
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString() {
 			return "T:" + string.Join(",", Fields.Select(f => f.ToString()).ToArray()) + "\r\n"
 				+ string.Join("\r\n", Indexes.Select(i => i.ToString()).ToArray());
 		}
 	}
 
+	/// <summary>
+	/// View definition
+	/// </summary>
 	public class View : Table {
 		Table _updateTable;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name">View name</param>
+		/// <param name="fields">Fields</param>
+		/// <param name="indexes">Indexes</param>
+		/// <param name="sql">SQL to generate data</param>
+		/// <param name="updateTable">Table to update if update called on a view record</param>
 		public View(string name, Field[] fields, Index[] indexes, string sql, Table updateTable)
 			: base(name, fields, indexes) {
 			Sql = sql;
 			_updateTable = updateTable;
 		}
 
+		/// <summary>
+		/// SQL to generate data
+		/// </summary>
 		public string Sql { get; private set; }
 
+		/// <summary>
+		/// Table to update if update called on a record from the view
+		/// </summary>
 		public override Table UpdateTable { get { return _updateTable; } }
 
+		/// <summary>
+		/// Whether this is a view (always true)
+		/// </summary>
 		public override bool IsView { get { return true; } }
 
 	}
 
+	/// <summary>
+	/// An enumerable of JObjects with a JArray converter, to efficiently handle output of a query
+	/// </summary>
 	public class JObjectEnumerable : IEnumerable<JObject> {
 		IEnumerable<JObject> _e;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public JObjectEnumerable(IEnumerable<JObject> e) {
 			_e = e;
 		}
 
+		/// <summary>
+		/// ToList converter. If called, the enumerable itself is converted to a list, so that it won't be enumerated again.
+		/// </summary>
+		/// <returns></returns>
 		public List<JObject> ToList() {
 			List<JObject> e = _e.ToList();
 			_e = e;
 			return e;
 		}
 
+		/// <summary>
+		/// For debugging
+		/// </summary>
 		public override string ToString() {
 			return this.ToJson();
 		}
 
+		/// <summary>
+		/// Standard GetEnumerator
+		/// </summary>
 		public IEnumerator<JObject> GetEnumerator() {
 			return _e.GetEnumerator();
 		}
 
+		/// <summary>
+		/// Standard GetEnumerator
+		/// </summary>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return _e.GetEnumerator();
 		}
 
+		/// <summary>
+		/// Convert to a JArray
+		/// </summary>
 		static public implicit operator JArray(JObjectEnumerable o) {
 			JArray j = new JArray();
 			foreach (JObject jo in o) {
@@ -915,30 +1305,54 @@ namespace CodeFirstWebFramework {
 		}
 	}
 
+	/// <summary>
+	/// Base class for all [Table] C# objects
+	/// </summary>
 	public class JsonObject {
 
+		/// <summary>
+		/// Convert to a JObject
+		/// </summary>
 		public JObject ToJObject() {
 			return JObject.FromObject(this);
 		}
 
+		/// <summary>
+		/// Make a copy
+		/// </summary>
 		public T Clone<T>() {
 			return this.ToJObject().To<T>();
 		}
 
+		/// <summary>
+		/// Record id
+		/// </summary>
 		public virtual int? Id {
 			get { return null; }
 			set { }
 		}
 
+		/// <summary>
+		/// For debugging
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString() {
 			return this.ToJson();
 		}
 
 	}
 
+	/// <summary>
+	/// Sorted list of tables, such that tables referred to in a foreign key come before the referring table,
+	/// and tables referred to in a view come before the view
+	/// </summary>
 	public class TableList : List<Table> {
 		List<Table> _allTables;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="allTables">The tables to add to the list</param>
 		public TableList(IEnumerable<Table> allTables) {
 			_allTables = allTables.ToList();
 			foreach (Table t in _allTables.Where(t => t is View))
@@ -962,29 +1376,54 @@ namespace CodeFirstWebFramework {
 		}
 	}
 
+	/// <summary>
+	/// Exception thrown by database code - contains the SQL and/or the table causing the exception
+	/// </summary>
 	public class DatabaseException : Exception {
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="ex">Exception caught</param>
+		/// <param name="table">Table causing the exception</param>
 		public DatabaseException(DatabaseException ex, Table table)
 			: base(ex.InnerException.Message, ex.InnerException) {
 			Sql = ex.Sql;
 			Table = table.Name;
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="ex">Exception caught</param>
+		/// <param name="sql">SQL causing the exception</param>
 		public DatabaseException(Exception ex, string sql)
 			: base(ex.Message, ex) {
 			Sql = sql;
 		}
 
+		/// <summary>
+		/// SQL causing the exception
+		/// </summary>
 		public string Sql;
 
+		/// <summary>
+		/// Table causing the exception
+		/// </summary>
 		public string Table;
 
+		/// <summary>
+		/// Message (also shows table causing the exception, if known)
+		/// </summary>
 		public override string Message {
 			get {
 				return Table == null ? base.Message : Table + ":" + base.Message;
 			}
 		}
 
+		/// <summary>
+		/// Returns exception string and SQL
+		/// </summary>
 		public override string ToString() {
 			return base.ToString() + "\r\nSQL:" + Sql;
 

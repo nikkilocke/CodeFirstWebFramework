@@ -11,13 +11,16 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// Class to maintain a dated log file
 	/// </summary>
-
 	public class DailyLog : System.Diagnostics.TraceListener {
 		DateTime _lastDate = DateTime.MinValue;
 		string _logFolder;
 		StreamWriter _sw = null;
 		bool _autoclose;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="logFolder"></param>
 		public DailyLog(string logFolder) {
 			_logFolder = logFolder;
 			_autoclose = false;
@@ -27,12 +30,18 @@ namespace CodeFirstWebFramework {
 			System.Diagnostics.Trace.Listeners.Add(this);
 		}
 
+		/// <summary>
+		/// Close the file
+		/// </summary>
 		public override void Close() {
 			if (_sw != null)
 				_sw.Close();
 			_sw = null;
 		}
 
+		/// <summary>
+		/// Flush the file to disk
+		/// </summary>
 		public override void Flush() {
 			Close();
 		}
@@ -40,10 +49,9 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Purges log files with names dated earlier than the given date
 		/// </summary>
-		/// <param name="before"></param>
+		/// <param name="before">Date</param>
 		/// <param name="folder">Folder to look for the log files in</param>
 		/// <remarks>Ignores files that don't look like daily log files</remarks>
-
 		public void Purge(DateTime before, string folder) {
 			Regex mask = new Regex(@"^\d{4}-\d{2}-\d{2}\.log$", RegexOptions.IgnoreCase);
 			foreach (string file in Directory.GetFiles(folder, "*.log")) {
@@ -54,6 +62,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Purges log files with names dated earlier than the given date
+		/// </summary>
 		public void Purge(DateTime before) {
 			Purge(before, _logFolder);
 
@@ -62,7 +73,6 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Write exact text given to the file
 		/// </summary>
-
 		public override void Write(string text) {
 			lock (this) {
 				open();
@@ -78,7 +88,6 @@ namespace CodeFirstWebFramework {
 		/// Write exact text given to the file
 		/// </summary>
 		/// <param name="line">Line to write or null to just flush the file when a new day starts</param>
-
 		public override void WriteLine(string line) {
 			lock (this) {
 				open();

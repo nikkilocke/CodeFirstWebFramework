@@ -53,6 +53,7 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Insert data in table
+		/// <param name="table">Table</param>
 		/// <param name="sql">SQL INSERT statement</param>
 		/// <param name="updatesAutoIncrement">True if the SQL statement updates the AutoIncrement field</param>
 		/// <returns>Id of last row inserted</returns>
@@ -63,10 +64,33 @@ namespace CodeFirstWebFramework {
 
 		JObject QueryOne(string query);
 
+		/// <summary>
+		/// Quote any kind of data for inclusion in a SQL query
+		/// </summary>
+		string Quote(object o);
+
+		/// <summary>
+		/// Rollback transaction
+		/// </summary>
 		void Rollback();
 
+		/// <summary>
+		/// Dictionary of Tables by name
+		/// </summary>
 		Dictionary<string, Table> Tables();
 
+		/// <summary>
+		/// Upgrade the table definition
+		/// </summary>
+		/// <param name="code">Defintiion required, from code</param>
+		/// <param name="database">Definition in database</param>
+		/// <param name="insert">Fields to insert</param>
+		/// <param name="update">Fields to change</param>
+		/// <param name="remove">Fields to remove</param>
+		/// <param name="insertFK">Foreign keys to insert</param>
+		/// <param name="dropFK">Foreign keys to remove</param>
+		/// <param name="insertIndex">Indexes to insert</param>
+		/// <param name="dropIndex">Indexes to remove</param>
 		void UpgradeTable(Table code, Table database, List<Field> insert, List<Field> update, List<Field> remove,
 			List<Field> insertFK, List<Field> dropFK, List<Index> insertIndex, List<Index> dropIndex);
 

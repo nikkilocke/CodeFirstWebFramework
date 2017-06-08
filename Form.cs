@@ -13,11 +13,15 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class FieldAttribute : Attribute {
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public FieldAttribute() {
 		}
 
 		/// <summary>
-		/// 
+		/// Constructor
 		/// </summary>
 		/// <param name="args">Pairs of name, value, passed direct into Options (so must be javascript style starting with lower case letter)</param>
 		public FieldAttribute(params object [] args) {
@@ -244,6 +248,9 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	public abstract class BaseForm {
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public BaseForm(AppModule module) {
 			Module = module;
 			Options = new JObject();
@@ -257,6 +264,9 @@ namespace CodeFirstWebFramework {
 			set { Options["data"] = value; }
 		}
 
+		/// <summary>
+		/// Module creating the form
+		/// </summary>
 		public AppModule Module;
 
 		/// <summary>
@@ -402,6 +412,9 @@ namespace CodeFirstWebFramework {
 				columns.RemoveAt(i);
 		}
 
+		/// <summary>
+		/// Render the form to the web page, using the appropriate template
+		/// </summary>
 		public override void Show() {
 			Show("Form");
 		}
@@ -454,6 +467,12 @@ namespace CodeFirstWebFramework {
 	/// DataTable (jquery) form - always readonly.
 	/// </summary>
 	public class DataTableForm : Form {
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="module">Creating module</param>
+		/// <param name="t">Type to display in the form</param>
 		public DataTableForm(AppModule module, Type t) 
 			: base(module, t, false) {
 		}
@@ -467,6 +486,9 @@ namespace CodeFirstWebFramework {
 			set { Options["select"] = value; }
 		}
 
+		/// <summary>
+		/// Render the form to a web page using the appropriate template
+		/// </summary>
 		public override void Show() {
 			base.Show("DataTable");
 		}
@@ -484,10 +506,22 @@ namespace CodeFirstWebFramework {
 	/// List form
 	/// </summary>
 	public class ListForm : Form {
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="module">Creating module</param>
+		/// <param name="t">Type to display in the list</param>
 		public ListForm(AppModule module, Type t)
 			: base(module, t, true) {
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="module">Creating module</param>
+		/// <param name="t">Type to display in the list</param>
+		/// <param name="readWrite">Whether the user can update the data</param>
 		public ListForm(AppModule module, Type t, bool readWrite)
 			: base(module, t, readWrite) {
 		}
@@ -501,6 +535,9 @@ namespace CodeFirstWebFramework {
 			set { Options["select"] = value; }
 		}
 
+		/// <summary>
+		/// Render the form to a web page using the appropriate template
+		/// </summary>
 		public override void Show() {
 			base.Show("ListForm");
 		}
@@ -526,10 +563,19 @@ namespace CodeFirstWebFramework {
 			Options["detail"] = Detail.Options;
 		}
 
+		/// <summary>
+		/// The header Form
+		/// </summary>
 		public Form Header;
 
+		/// <summary>
+		/// The Detail ListForm
+		/// </summary>
 		public ListForm Detail;
 
+		/// <summary>
+		/// Render the form to a web page using the appropriate template
+		/// </summary>
 		public override void Show() {
 			Show("HeaderDetailForm");
 		}

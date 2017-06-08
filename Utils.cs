@@ -10,6 +10,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
+	/// <summary>
+	/// Utility functions
+	/// </summary>
 	public static class Utils {
 		/// <summary>
 		/// For converting between json string and JObject
@@ -42,6 +45,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Helper to add a list of stuff to a JObject. Chainable.
 		/// </summary>
+		/// <param name="self">The Jobject to add the stuff to</param>
 		/// <param name="content">Of the form: string, object - string = value
 		/// or JObject - adds properties of JObject
 		/// or NameValueCollection - adds collection members</param>
@@ -173,6 +177,9 @@ namespace CodeFirstWebFramework {
 			return val == null ? null : val.ToObject<string>();
 		}
 
+		/// <summary>
+		/// this[name] as an arbitrary type T
+		/// </summary>
 		public static T As<T>(this JObject self, string name) where T:class {
 			if (self == null)
 				return null;
@@ -251,10 +258,16 @@ namespace CodeFirstWebFramework {
 			return t == null || t.Type == JTokenType.Null;
 		}
 
+		/// <summary>
+		/// Determine if a string is a valid decimal number
+		/// </summary>
 		public static bool IsDecimal(this string s) {
 			return s == null ? false : DecimalRegex.IsMatch(s);
 		}
 
+		/// <summary>
+		/// Determine if a string is a valid integer number
+		/// </summary>
 		public static bool IsInteger(this string s) {
 			return s == null ? false : IntegerRegex.IsMatch(s);
 		}
@@ -273,6 +286,9 @@ namespace CodeFirstWebFramework {
 			return JsonConvert.DeserializeObject<T>(s, new DecimalFormatJsonConverter());
 		}
 
+		/// <summary>
+		/// Actual file name part of an Assembly name
+		/// </summary>
 		public static string Name(this System.Reflection.Assembly assembly) {
 			return assembly.FullName.Split(',')[0];
 		}
@@ -293,12 +309,16 @@ namespace CodeFirstWebFramework {
 		public static TimeZoneInfo _tz = TimeZoneInfo.Local;
 
 		/// <summary>
-		/// For testing - set this to an offset, and all dates & times will be offset by this amount.
+		/// For testing - set this to an offset, and all dates &amp; times will be offset by this amount.
 		/// Enables a test to be run as if the computer time clock was offset by this amount - 
-		/// i.e. the date & time were set exactly the same as when the test was first run.
+		/// i.e. the date &amp; time were set exactly the same as when the test was first run.
 		/// </summary>
 		internal static TimeSpan _timeOffset = new TimeSpan(0);
 
+		/// <summary>
+		/// Time Now.
+		/// Can be adjusted for test runs using _timeOffset
+		/// </summary>
 		public static DateTime Now {
 			get {
 				DateTime n = DateTime.UtcNow + _timeOffset;
@@ -306,6 +326,10 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Date Today.
+		/// Can be adjusted for test runs using _timeOffset
+		/// </summary>
 		public static DateTime Today {
 			get {
 				return Now.Date;
@@ -322,7 +346,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Compare 2 strings, and return a number between 0 & 1 indicating what proportion of the words were the same.
+		/// Compare 2 strings, and return a number between 0 &amp; 1 indicating what proportion of the words were the same.
 		/// </summary>
 		public static float SimilarTo(this string self, string s) {
 			if (string.IsNullOrWhiteSpace(self) || string.IsNullOrWhiteSpace(s))
@@ -364,24 +388,42 @@ namespace CodeFirstWebFramework {
 		}
 	}
 
+	/// <summary>
+	/// Exception thrown by Check assertion function
+	/// </summary>
 	public class CheckException : ApplicationException {
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public CheckException(string message)
 			: this(null, message) {
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public CheckException(string message, Exception ex)
 			: this(ex, message + "\r\n") {
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public CheckException(Exception ex, string message)
 			: base(message, ex) {
 		}
 
+		/// <summary>
+		/// Constructor accepting string.Format arguments
+		/// </summary>
 		public CheckException(string format, params object[] args)
 			: this(string.Format(format, args)) {
 		}
 
+		/// <summary>
+		/// Constructor accepting string.Format arguments
+		/// </summary>
 		public CheckException(Exception ex, string format, params object[] args)
 			: this(ex, string.Format(format + "\r\n", args)) {
 		}
@@ -393,9 +435,15 @@ namespace CodeFirstWebFramework {
 	/// Converting to object, accepts strings, floats and ints.
 	/// </summary>
 	public class DecimalFormatJsonConverter : JsonConverter {
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public DecimalFormatJsonConverter() {
 		}
 
+		/// <summary>
+		/// Writes the JSON representation of the object.
+		/// </summary>
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
 			if (value == null)
 				writer.WriteValue((decimal?)null);
@@ -407,6 +455,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Reads the object from JSON.
+		/// </summary>
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
 			JToken token = JToken.Load(reader);
 			decimal d;
@@ -432,6 +483,9 @@ namespace CodeFirstWebFramework {
 			return (double)d;
 		}
 
+		/// <summary>
+		/// Whether this converter can convert this type of object
+		/// </summary>
 		public override bool CanConvert(Type objectType) {
 			return objectType == typeof(decimal) || objectType == typeof(double) || objectType == typeof(decimal?) || objectType == typeof(double?);
 		}

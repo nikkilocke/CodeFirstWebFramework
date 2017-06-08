@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,12 +9,18 @@ using System.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
+	/// <summary>
+	/// DbInterface for Sql Server
+	/// </summary>
 	public class SqlServerDatabase : DbInterface {
 		string _connectionString;
 		SqlConnection _conn;
 		SqlTransaction _tran;
 		Database _db;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public SqlServerDatabase(Database db, string connectionString) {
 			_db = db;
 			_connectionString = connectionString;
@@ -23,6 +29,9 @@ namespace CodeFirstWebFramework {
 			_conn.Open();
 		}
 
+		/// <summary>
+		/// Begin transaction
+		/// </summary>
 		public void BeginTransaction() {
 			if (_tran == null)
 				_tran = _conn.BeginTransaction();
@@ -35,9 +44,15 @@ namespace CodeFirstWebFramework {
 			return string.Format("CAST({0} AS {1})", value, type);
 		}
 
+		/// <summary>
+		/// Clean up database (does nothing here)
+		/// </summary>
 		public void CleanDatabase() {
 		}
 
+		/// <summary>
+		/// Commit transaction
+		/// </summary>
 		public void Commit() {
 			if (_tran != null) {
 				_tran.Commit();
@@ -46,6 +61,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Create a table from a Table definition
+		/// </summary>
 		public void CreateTable(Table t) {
 			View v = t as View;
 			if (v != null) {
@@ -74,26 +92,41 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Create an index from a table and index definition
+		/// </summary>
 		public void CreateIndex(Table t, Index index) {
 			executeLog(string.Format("ALTER TABLE \"{0}\" ADD UNIQUE INDEX \"{1}\" ({2})", t.Name, index.Name,
 				string.Join(",", index.Fields.Select(f => "\"" + f.Name + "\" ASC").ToArray())));
 		}
 
+		/// <summary>
+		/// Drop a table
+		/// </summary>
 		public void DropTable(Table t) {
 			executeLogSafe("DROP TABLE " + t.Name);
 			executeLogSafe("DROP VIEW " + t.Name);
 		}
 
+		/// <summary>
+		/// Drop an index
+		/// </summary>
 		public void DropIndex(Table t, Index index) {
 			executeLogSafe(string.Format("ALTER TABLE \"{0}\" DROP INDEX \"{1}\"", t.Name, index.Name));
 		}
 
+		/// <summary>
+		/// Execute arbitrary sql
+		/// </summary>
 		public int Execute(string sql) {
 			using (SqlCommand cmd = command(sql)) {
 				return cmd.ExecuteNonQuery();
 			}
 		}
 
+		/// <summary>
+		/// Determine whether two fields are the same
+		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {
 			if (code.TypeName != database.TypeName) return false;
 			if (code.AutoIncrement != database.AutoIncrement) return false;
@@ -103,6 +136,13 @@ namespace CodeFirstWebFramework {
 			return true;
 		}
 
+		/// <summary>
+		/// Insert a record
+		/// </summary>
+		/// <param name="table">Table</param>
+		/// <param name="sql">SQL INSERT statement</param>
+		/// <param name="updatesAutoIncrement">True if the insert may update an auto-increment field</param>
+		/// <returns>The value of the auto-increment record id of the newly inserted record</returns>
 		public int Insert(Table table, string sql, bool updatesAutoIncrement) {
 			using (SqlCommand cmd = command(sql)) {
 				if (updatesAutoIncrement) {
@@ -122,6 +162,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Query the database, and return JObjects for each record returned
+		/// </summary>
 		public IEnumerable<Newtonsoft.Json.Linq.JObject> Query(string sql) {
 			using (SqlCommand cmd = command(sql)) {
 				using (SqlDataReader r = executeReader(cmd, sql)) {
@@ -133,10 +176,16 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Query the database, and return the first record matching the query
+		/// </summary>
 		public Newtonsoft.Json.Linq.JObject QueryOne(string query) {
 			return Query(Regex.Replace(query, @"^\s*SELECT\b", "SELECT TOP 1", RegexOptions.IgnoreCase)).FirstOrDefault();
 		}
 
+		/// <summary>
+		/// Rollback transaction
+		/// </summary>
 		public void Rollback() {
 			if (_tran != null) {
 				_tran.Rollback();
@@ -145,6 +194,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Get a Dictionary of existing tables in the database
+		/// </summary>
 		public Dictionary<string, Table> Tables() {
 			Dictionary<string, Table> tables = new Dictionary<string, Table>();
 			string schema = Regex.Match(_connectionString, "database=(.*?);").Groups[1].Value;
@@ -201,8 +253,8 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 					while (fk.Read()) {
 						Table detail = tables[fk["TABLE_NAME"].ToString()];
 						Table master = tables[fk["REFERENCED_TABLE_NAME"].ToString()];
-						Field masterField = FieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
-						FieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
+						Field masterField = fieldFor(master, fk["REFERENCED_COLUMN_NAME"].ToString());
+						fieldFor(detail, fk["COLUMN_NAME"].ToString()).ForeignKey = new ForeignKey(master, masterField);
 					}
 				}
 			}
@@ -221,10 +273,22 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			return tables;
 		}
 
-		public Field FieldFor(Table table, string name) {
+		Field fieldFor(Table table, string name) {
 			return table.Fields.FirstOrDefault(f => f.Name == name);
 		}
 
+		/// <summary>
+		/// Upgrade the table definition
+		/// </summary>
+		/// <param name="code">Defintiion required, from code</param>
+		/// <param name="database">Definition in database</param>
+		/// <param name="insert">Fields to insert</param>
+		/// <param name="update">Fields to change</param>
+		/// <param name="remove">Fields to remove</param>
+		/// <param name="insertFK">Foreign keys to insert</param>
+		/// <param name="dropFK">Foreign keys to remove</param>
+		/// <param name="insertIndex">Indexes to insert</param>
+		/// <param name="dropIndex">Indexes to remove</param>
 		public void UpgradeTable(Table code, Table database, List<Field> insert, List<Field> update, List<Field> remove, List<Field> insertFK, List<Field> dropFK, List<Index> insertIndex, List<Index> dropIndex) {
 			foreach (Index i in dropIndex)
 				DropIndex(database, i);
@@ -258,10 +322,16 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			}
 		}
 
+		/// <summary>
+		/// Do the views in code and database match
+		/// </summary>
 		public bool? ViewsMatch(View code, View database) {
 			return null;
 		}
 
+		/// <summary>
+		/// Roll back any uncommitted transaction and close the connection
+		/// </summary>
 		public void Dispose() {
 			Rollback();
 			if (_conn != null) {
@@ -270,7 +340,10 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			}
 		}
 
-		static public string Quote(object o) {
+		/// <summary>
+		/// Quote any kind of data for inclusion in a SQL query
+		/// </summary>
+		public string Quote(object o) {
 			if (o == null || o == DBNull.Value) return "NULL";
 			if (o is int || o is long || o is double) return o.ToString();
 			if (o is decimal) return ((decimal)o).ToString("0.00");

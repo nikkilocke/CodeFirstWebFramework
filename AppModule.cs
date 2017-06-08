@@ -18,15 +18,30 @@ using Markdig;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
+	/// Attribute to indicate a string field in an AppModule is to be filled from an XML element
+	/// of the same name (but in lower case) in a template (if such an element exists) when
+	/// the template is substituted in default.tmpl
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Field)]
+	public class TemplateSectionAttribute : Attribute {
+	}
+
+	/// <summary>
 	/// Attribute to indicate what file extensions a module can handle
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
 	public class HandlesAttribute : Attribute {
 
+		/// <summary>
+		/// Attribute to indicate which extensions an AppModule can handle
+		/// </summary>
 		public HandlesAttribute(params string [] extensions) {
 			Extensions = extensions;
 		}
 
+		/// <summary>
+		/// List of extensions this AppModule can handle
+		/// </summary>
 		public IEnumerable<string> Extensions;
 
 	}
@@ -46,13 +61,26 @@ namespace CodeFirstWebFramework {
 		static Dictionary<int, BatchJob> jobs = new Dictionary<int, BatchJob>();
 		private Settings _settings;
 
+		/// <summary>
+		/// Character encoding for web output
+		/// </summary>
 		public static Encoding Encoding = Encoding.GetEncoding(1252);
+
+		/// <summary>
+		/// Charset for web output
+		/// </summary>
 		public static string Charset = "ANSI";
 
+		/// <summary>
+		/// Set to true if the web server is allowed to cache this page. Normally false, as pages are generated dynamically.
+		/// </summary>
 		public bool CacheAllowed { get; protected set; }
 
 		Database _db;
 
+		/// <summary>
+		/// Close the database
+		/// </summary>
 		public void CloseDatabase() {
 			if (_db != null) {
 				_db.Dispose();
@@ -60,6 +88,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// The Database for this AppModule
+		/// </summary>
 		public virtual Database Database {
 			get {
 				lock (this) {
@@ -70,6 +101,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// The Settings record from the database
+		/// </summary>
 		public Settings Settings {
 			get {
 				if (_settings == null) {
@@ -81,6 +115,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Force the Settings record to be reloaded from the database
+		/// </summary>
 		protected void ReloadSettings() {
 			_settings = null;
 		}
@@ -99,6 +136,9 @@ namespace CodeFirstWebFramework {
 			get { return Session.Object; }
 		}
 
+		/// <summary>
+		/// The data which is logged when the web request completes.
+		/// </summary>
 		public StringBuilder LogString;
 
 		/// <summary>
@@ -115,6 +155,9 @@ namespace CodeFirstWebFramework {
 			if (LogString != null) LogString.AppendFormat(format + "\r\n", args);
 		}
 
+		/// <summary>
+		/// Close the database (unless a batch job is using it)
+		/// </summary>
 		public void Dispose() {
 			if (_db != null && Batch == null) {
 				// Don't close database if a batch job is using it
@@ -122,8 +165,14 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// The Context from the web request that created this AppModule
+		/// </summary>
 		public HttpListenerContext Context;
 
+		/// <summary>
+		/// Any exception thrown handling a web request
+		/// </summary>
 		public Exception Exception;
 
 		/// <summary>
@@ -136,16 +185,36 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public string Message;
 
+		/// <summary>
+		/// The current Method (from the url - lower case).
+		/// Used by Respond to decide which template file to use.
+		/// </summary>
 		public string Method;
 
+		/// <summary>
+		/// The current module (from the url - lower case).
+		/// Used by Respond to decide which template file to use.
+		/// </summary>
 		public string Module;
 
+		/// <summary>
+		/// The original value of Method (from the url - lower case).
+		/// </summary>
 		public string OriginalMethod;
 
+		/// <summary>
+		/// The original value of Module (from the url - lower case).
+		/// </summary>
 		public string OriginalModule;
 
+		/// <summary>
+		/// The Server handling this request
+		/// </summary>
 		public ServerConfig Server;
 
+		/// <summary>
+		/// The Namespace in which this module is running
+		/// </summary>
 		public Namespace ActiveModule;
 
 		/// <summary>
@@ -154,7 +223,7 @@ namespace CodeFirstWebFramework {
 		public NameValueCollection GetParameters;
 
 		/// <summary>
-		/// Get & Post parameters combined
+		/// Get &amp; Post parameters combined
 		/// </summary>
 		public JObject Parameters = new JObject();
 
@@ -163,10 +232,16 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public JObject PostParameters;
 
+		/// <summary>
+		/// The Web Request (from Context)
+		/// </summary>
 		public HttpListenerRequest Request {
 			get { return Context.Request; }
 		}
 
+		/// <summary>
+		/// The Web Response (from Context)
+		/// </summary>
 		public HttpListenerResponse Response {
 			get { return Context.Response; }
 		}
@@ -184,6 +259,9 @@ namespace CodeFirstWebFramework {
 			get { return jobs.Values; }
 		}
 
+		/// <summary>
+		/// The Config file data
+		/// </summary>
 		public Config Config {
 			get { return Config.Default; }
 		}
@@ -200,8 +278,14 @@ namespace CodeFirstWebFramework {
 		[TemplateSection]
 		public string Body;
 
+		/// <summary>
+		/// True if a response has been sent to the request (and the default response should not be created)
+		/// </summary>
 		public bool ResponseSent { get; private set; }
 
+		/// <summary>
+		/// Today's date (yyyy-MM-dd)
+		/// </summary>
 		public string Today {
 			get { return Utils.Today.ToString("yyyy-MM-dd"); }
 		}
@@ -211,6 +295,9 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public object Record;
 
+		/// <summary>
+		/// The Form to render, if any
+		/// </summary>
 		public BaseForm Form;
 
 		/// <summary>
@@ -234,6 +321,7 @@ namespace CodeFirstWebFramework {
 			/// Create a batch job that redirects somewhere specific
 			/// </summary>
 			/// <param name="module">Module containing Database, Session, etc.</param>
+			/// <param name="redirect">Where to redirect to after batch (or null for default)</param>
 			/// <param name="action">Action to run the job</param>
 			public BatchJob(AppModule module, string redirect, Action action) {
 				_module = module;
@@ -288,6 +376,9 @@ namespace CodeFirstWebFramework {
 			/// </summary>
 			public string Error;
 
+			/// <summary>
+			/// True if the batch job has finished
+			/// </summary>
 			public bool Finished;
 
 			/// <summary>
@@ -345,13 +436,22 @@ namespace CodeFirstWebFramework {
 			return jobs.TryGetValue(id, out job) ? job : null;
 		}
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		public AppModule() {
 		}
 
+		/// <summary>
+		/// Make a new module with settings copied from another
+		/// </summary>
 		public AppModule(AppModule module) {
 			CopyFrom = module;
 		}
 
+		/// <summary>
+		/// Copy main settings from another AppModule
+		/// </summary>
 		public AppModule CopyFrom {
 			set {
 				Server = value.Server;
@@ -470,7 +570,6 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="method">Also return the MethodInfo so caller knows what return type it has.
 		/// Will be set to null if there is no such named method.</param>
-
 		public virtual object CallMethod(out MethodInfo method) {
 			List<object> parms = new List<object>();
 			method = this.GetType().GetMethod(Method, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
@@ -527,6 +626,25 @@ namespace CodeFirstWebFramework {
 		public virtual void Default() {
 		}
 
+		string _help;
+
+		/// <summary>
+		/// Return the url of any help file found in the help folder which applies to this module (and maybe method)
+		/// </summary>
+		public string Help
+		{
+			get
+			{
+				if (_help == null) {
+					FileInfo h = Server.FileInfo("/help/" + Module + "_" + Method + ".md");
+					if (!h.Exists)
+						h = Server.FileInfo("/help/" + Module + ".md");
+					_help = h.Exists ? "/help/" + h.Name : "";
+				}
+				return _help;
+			}
+		}
+
 		/// <summary>
 		/// Perform any initialisation or validation that applies to all calls to this module
 		/// (e.g. login or supervisor checks)
@@ -534,6 +652,9 @@ namespace CodeFirstWebFramework {
 		protected virtual void Init() {
 		}
 
+		/// <summary>
+		/// Add a menu option to the default Menu
+		/// </summary>
 		protected void insertMenuOption(MenuOption o) {
 			int i;
 			for (i = 0; i < Menu.Length; i++) {
@@ -545,6 +666,12 @@ namespace CodeFirstWebFramework {
 			Menu = list.ToArray();
 		}
 
+		/// <summary>
+		/// Read a Mustache template file from one of the search folders, and perform the 
+		/// variable substitutions using obj as the object.
+		/// </summary>
+		/// <param name="filename">like a url - e.g. "admin/backup" </param>
+		/// <param name="obj">Object to use for substitutions</param>
 		public string LoadTemplate(string filename, object obj) {
 			return Server.LoadTemplate(filename, obj);
 		}
@@ -579,6 +706,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Perform a web redirect to redirect the browser to another url.
+		/// </summary>
 		public void Redirect(string url) {
 			if (Context == null)
 				return;
@@ -587,7 +717,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Render the template Module/Method.html from this.
+		/// Render the template Module/Method.tmpl from this.
 		/// </summary>
 		public void Respond() {
 			try {
@@ -700,13 +830,22 @@ namespace CodeFirstWebFramework {
 	/// If an html file is requested, it does not exist, but there is a corresponding tmpl file, the template is filled in and returned.
 	/// </summary>
 	public class FileSender : AppModule {
+		/// <summary>
+		/// The name of the file (as a url)
+		/// </summary>
 		protected string Filename;
 
+		/// <summary>
+		/// Create a FileSender for a file
+		/// </summary>
 		public FileSender(string filename) {
 			Filename = filename;
 			CacheAllowed = true;
 		}
 
+		/// <summary>
+		/// Default behaviour is to return the file contents, processing .tmpl and .md files as appropriate.
+		/// </summary>
 		public override void Default() {
 			Title = "";
 			if (Filename.IndexOf("..") >= 0) throw new FileNotFoundException("Illegal path " + Filename);
@@ -812,6 +951,11 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	public class UploadedFile {
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name">field name</param>
+		/// <param name="content">file data</param>
 		public UploadedFile(string name, string content) {
 			Name = name;
 			Content = content;
@@ -822,6 +966,9 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public string Content { get; set; }
 
+		/// <summary>
+		/// Field name
+		/// </summary>
 		public string Name { get; set; }
 
 		/// <summary>
@@ -836,19 +983,37 @@ namespace CodeFirstWebFramework {
 	/// Menu option for the second level menu
 	/// </summary>
 	public class MenuOption {
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="text">Menu text</param>
+		/// <param name="url">Url to go to</param>
 		public MenuOption(string text, string url) : this(text, url, true) {
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="text">Menu text</param>
+		/// <param name="url">Url to go to</param>
+		/// <param name="enabled">False if disabled</param>
 		public MenuOption(string text, string url, bool enabled) {
 			Text = text;
 			Url = url;
 			Enabled = enabled;
 		}
 
+		/// <summary>
+		/// Is the option disabled (used in Mustache templates)
+		/// </summary>
 		public bool Disabled { 
 			get { return !Enabled; } 
 		}
 
+		/// <summary>
+		/// Is the option enabled
+		/// </summary>
 		public bool Enabled;
 
 		/// <summary>
@@ -858,8 +1023,14 @@ namespace CodeFirstWebFramework {
 			get { return Text.Replace(" ", ""); }
 		}
 
+		/// <summary>
+		/// Menu text
+		/// </summary>
 		public string Text;
 
+		/// <summary>
+		/// Url to go to
+		/// </summary>
 		public string Url;
 	}
 
@@ -893,6 +1064,9 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public object data;
 
+		/// <summary>
+		/// Show as a string (for logs)
+		/// </summary>
 		public override string ToString() {
 			StringBuilder b = new StringBuilder("AjaxReturn");
 			if (!string.IsNullOrEmpty(error)) b.AppendFormat(",error:{0}", error);

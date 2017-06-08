@@ -22,11 +22,17 @@ namespace CodeFirstWebFramework {
 		SqliteTransaction _tran;
 		Database _db;
 
+		/// <summary>
+		/// Static constructor registers the extension functions to make SQLite more like MySql
+		/// </summary>
 		static SQLiteDatabase() {
 			SqliteDateDiff.RegisterFunction(typeof(SqliteDateDiff));
 			SqliteSum.RegisterFunction(typeof(SqliteSum));
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public SQLiteDatabase(Database db, string connectionString) {
 			_db = db;
 			createDatabase(connectionString);
@@ -35,6 +41,9 @@ namespace CodeFirstWebFramework {
 			_conn.Open();
 		}
 
+		/// <summary>
+		/// Begin transaction
+		/// </summary>
 		public void BeginTransaction() {
 			lock (_lock) {
 				if (_tran == null)
@@ -49,6 +58,9 @@ namespace CodeFirstWebFramework {
 			return value;
 		}
 
+		/// <summary>
+		/// Clean up database
+		/// </summary>
 		public void CleanDatabase() {
 			foreach (string table in _db.TableNames) {
 				Table t = _db.TableFor(table);
@@ -59,6 +71,9 @@ namespace CodeFirstWebFramework {
 			Execute("VACUUM");
 		}
 
+		/// <summary>
+		/// Create a table from a Table definition
+		/// </summary>
 		public void CreateTable(Table t) {
 			View v = t as View;
 			if (v != null) {
@@ -69,11 +84,17 @@ namespace CodeFirstWebFramework {
 			createIndexes(t);
 		}
 
+		/// <summary>
+		/// Create an index from a table and index definition
+		/// </summary>
 		public void CreateIndex(Table t, Index index) {
 			executeLog(string.Format("ALTER TABLE `{0}` ADD CONSTRAINT `{1}` UNIQUE ({2})", t.Name, index.Name,
 				string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC").ToArray())));
 		}
 
+		/// <summary>
+		/// Commit transaction
+		/// </summary>
 		public void Commit() {
 			if (_tran != null) {
 				lock (_lock) {
@@ -84,6 +105,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Roll back any uncommitted transaction and close the connection
+		/// </summary>
 		public void Dispose() {
 			Rollback();
 			if (_conn != null) {
@@ -92,15 +116,24 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Drop a table
+		/// </summary>
 		public void DropTable(Table t) {
 			executeLogSafe("DROP TABLE IF EXISTS " + t.Name);
 			executeLogSafe("DROP VIEW IF EXISTS " + t.Name);
 		}
 
+		/// <summary>
+		/// Drop an index
+		/// </summary>
 		public void DropIndex(Table t, Index index) {
 			executeLogSafe(string.Format("ALTER TABLE `{0}` DROP INDEX `{1}`", t.Name, index.Name));
 		}
 
+		/// <summary>
+		/// Execute arbitrary sql
+		/// </summary>
 		public int Execute(string sql) {
 			lock (_lock) {
 				using (SqliteCommand cmd = command(sql)) {
@@ -109,6 +142,13 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Insert a record
+		/// </summary>
+		/// <param name="table">Table</param>
+		/// <param name="sql">SQL INSERT statement</param>
+		/// <param name="updatesAutoIncrement">True if the insert may update an auto-increment field</param>
+		/// <returns>The value of the auto-increment record id of the newly inserted record</returns>
 		public int Insert(Table table, string sql, bool updatesAutoIncrement) {
 			lock (_lock) {
 				using (SqliteCommand cmd = command(sql)) {
@@ -120,6 +160,9 @@ namespace CodeFirstWebFramework {
 				}
 			}
 		}
+		/// <summary>
+		/// Do the fields in code and database match (some implementations are case insensitive)
+		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {
 			if (code.TypeName != database.TypeName) return false;
 			if (t.IsView) return true;	// Database does not always give correct values for view columns
@@ -130,6 +173,9 @@ namespace CodeFirstWebFramework {
 			return true;
 		}
 
+		/// <summary>
+		/// Query the database, and return JObjects for each record returned
+		/// </summary>
 		public IEnumerable<JObject> Query(string query) {
 			lock (_lock) {
 				using (SqliteCommand cmd = command(query)) {
@@ -143,11 +189,17 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Query the database, and return the first record matching the query
+		/// </summary>
 		public JObject QueryOne(string query) {
 			return Query(query + " LIMIT 1").FirstOrDefault();
 		}
 
-		static public string Quote(object o) {
+		/// <summary>
+		/// Quote any kind of data for inclusion in a SQL query
+		/// </summary>
+		public string Quote(object o) {
 			if (o == null || o == DBNull.Value) return "NULL";
 			if (o is int || o is long || o is double) return o.ToString();
 			if (o is decimal) return ((decimal)o).ToString("0.00");
@@ -158,6 +210,9 @@ namespace CodeFirstWebFramework {
 			return "'" + o.ToString().Replace("'", "''") + "'";
 		}
 
+		/// <summary>
+		/// Rollback transaction
+		/// </summary>
 		public void Rollback() {
 			if (_tran != null) {
 				lock (_lock) {
@@ -168,6 +223,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Get a Dictionary of existing tables in the database
+		/// </summary>
 		public Dictionary<string, Table> Tables() {
 			Dictionary<string, Table> tables = new Dictionary<string, Table>();
 			createDatabase(Config.Default.ConnectionString);
@@ -221,6 +279,18 @@ namespace CodeFirstWebFramework {
 			return tables;
 		}
 
+		/// <summary>
+		/// Upgrade the table definition
+		/// </summary>
+		/// <param name="code">Defintiion required, from code</param>
+		/// <param name="database">Definition in database</param>
+		/// <param name="insert">Fields to insert</param>
+		/// <param name="update">Fields to change</param>
+		/// <param name="remove">Fields to remove</param>
+		/// <param name="insertFK">Foreign keys to insert</param>
+		/// <param name="dropFK">Foreign keys to remove</param>
+		/// <param name="insertIndex">Indexes to insert</param>
+		/// <param name="dropIndex">Indexes to remove</param>
 		public void UpgradeTable(Table code, Table database, List<Field> insert, List<Field> update, List<Field> remove,
 			List<Field> insertFK, List<Field> dropFK, List<Index> insertIndex, List<Index> dropIndex) {
 				for (int i = dropIndex.Count; i-- > 0; ) {
@@ -239,6 +309,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Do the views in code and database match
+		/// </summary>
 		public bool? ViewsMatch(View code, View database) {
 			string c = Regex.Replace(code.Sql, @"[ \r\n\t]+", " ", RegexOptions.Singleline).Trim();
 			string d = Regex.Replace(database.Sql, @"[ \r\n\t]+", " ", RegexOptions.Singleline).Trim();

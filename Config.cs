@@ -16,37 +16,104 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
+	/// <summary>
+	/// The config file from the data folder
+	/// </summary>
 	public class Config {
 		[JsonIgnore]
 		ServerConfig _default;
+		/// <summary>
+		/// The name of the program
+		/// </summary>
 		public static string EntryModule = Assembly.GetEntryAssembly().Name();
+		/// <summary>
+		/// The data folder
+		/// </summary>
 		public static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), EntryModule);
+		/// <summary>
+		/// The namespace of the entry program
+		/// </summary>
 		public static string EntryNamespace = "CodeFirstWebFramework";
+		/// <summary>
+		/// The default namespace to use if none supplied
+		/// </summary>
 		public static string DefaultNamespace = "CodeFirstWebFramework";
+		/// <summary>
+		/// The default type of database
+		/// </summary>
 		public string Database = "SQLite";
+		/// <summary>
+		/// The default namespace
+		/// </summary>
 		public string Namespace = EntryNamespace;
+		/// <summary>
+		/// The default connection string
+		/// </summary>
 		public string ConnectionString = "Data Source=" + DataPath + "/" + EntryModule + ".db";
+		/// <summary>
+		/// The name of the file from which this config has been read
+		/// </summary>
 		[JsonIgnore]
 		public string Filename;
+		/// <summary>
+		/// The default port the web server listens on
+		/// </summary>
 		public int Port = 8080;
+		/// <summary>
+		/// Log all queries that take longer than this
+		/// </summary>
 		public int SlowQuery = 100;
+		/// <summary>
+		/// The default server name
+		/// </summary>
 		public string ServerName = "localhost";
+		/// <summary>
+		/// The default email address to send from
+		/// </summary>
 		public string Email = "root@localhost";
+		/// <summary>
+		/// Expire sessions after this number of minutes
+		/// </summary>
 		public int SessionExpiryMinutes = 30;
+		/// <summary>
+		/// List of other servers listening
+		/// </summary>
 		public List<ServerConfig> Servers = new List<ServerConfig>();
+		/// <summary>
+		/// True if all session creation is to be logged
+		/// </summary>
 		public bool SessionLogging;
+		/// <summary>
+		/// True if all database access sql is to be logged
+		/// </summary>
 		public int DatabaseLogging;
+		/// <summary>
+		/// True if post parameters are to be logged
+		/// </summary>
 		public bool PostLogging;
+		/// <summary>
+		/// Command line flags extracted from program command line
+		/// </summary>
 		static public NameValueCollection CommandLineFlags;
 
+		/// <summary>
+		/// The default (and only) Config file
+		/// </summary>
 		public static Config Default = new Config();
 
+		/// <summary>
+		/// Save this configuration by name
+		/// </summary>
+		/// <param name="filename">Simple name - no folders allowed - it will be saved in the data folder</param>
 		public void Save(string filename) {
 			filename = fileFor(filename);
 			using (StreamWriter w = new StreamWriter(filename))
 				w.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
 		}
 
+		/// <summary>
+		/// A ServerConfig with the defaults from the main Config section
+		/// </summary>
 		[JsonIgnore]
 		public ServerConfig DefaultServer {
 			get {
@@ -62,6 +129,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// The ServerConfig which applies to the provided url host part
+		/// </summary>
 		public ServerConfig SettingsForHost(string host) {
 			if (Servers != null) {
 				ServerConfig settings = Servers.FirstOrDefault(s => s.Matches(host));
@@ -78,6 +148,10 @@ namespace CodeFirstWebFramework {
 			return filename;
 		}
 
+		/// <summary>
+		/// Load a config by name
+		/// </summary>
+		/// <param name="filename">Plain filename - no folders allowed - will be in the data folder</param>
 		static public void Load(string filename) {
 			filename = fileFor(filename);
 			WebServer.Log("Loading config from {0}", filename);
@@ -88,6 +162,11 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Read any config file specified in the command line, or ProgramName.config if none.
+		/// Also fill in the COmmandLineFlags.
+		/// </summary>
+		/// <param name="args">The program arguments</param>
 		static public void Load(string[] args) {
 			try {
 				Config.Default.Namespace = Config.EntryNamespace = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().ReflectedType.Namespace;
@@ -136,17 +215,49 @@ namespace CodeFirstWebFramework {
 		}
 	}
 
+	/// <summary>
+	/// Configuration for a web server
+	/// </summary>
 	public class ServerConfig {
+		/// <summary>
+		/// Name part of the url
+		/// </summary>
 		public string ServerName;
+		/// <summary>
+		/// Other names allowed, separated by spaces
+		/// </summary>
 		public string ServerAlias;
+		/// <summary>
+		/// Namespace in which to look for AppModules
+		/// </summary>
 		public string Namespace;
+		/// <summary>
+		/// Email address from which to send emails
+		/// </summary>
 		public string Email;
+		/// <summary>
+		/// Title for web pages
+		/// </summary>
 		public string Title;
+		/// <summary>
+		/// Database type
+		/// </summary>
 		public string Database;
+		/// <summary>
+		/// Database connection string
+		/// </summary>
 		public string ConnectionString;
+		/// <summary>
+		/// Details of the namespace
+		/// </summary>
 		[JsonIgnore]
 		public Namespace NamespaceDef;
 
+		/// <summary>
+		/// Search the list of folders for a file matching the filename
+		/// </summary>
+		/// <param name="filename">Like a url - e.g. "admin/settings.html"</param>
+		/// <returns></returns>
 		public FileInfo FileInfo(string filename) {
 			FileInfo f;
 			string folder = Path.Combine(Config.DataPath, ServerName);
@@ -177,6 +288,9 @@ namespace CodeFirstWebFramework {
 			return new FileInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, filename));
 		}
 
+		/// <summary>
+		/// Search the list of folders for a folder matching the foldername
+		/// </summary>
 		public DirectoryInfo DirectoryInfo(string foldername) {
 			DirectoryInfo f;
 			string folder = Path.Combine(Config.DataPath, ServerName);
@@ -207,6 +321,9 @@ namespace CodeFirstWebFramework {
 			return new DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, foldername));
 		}
 
+		/// <summary>
+		/// Whether this server serves for the host name
+		/// </summary>
 		public bool Matches(string host) {
 			if (host == ServerName)
 				return true;
@@ -221,6 +338,10 @@ namespace CodeFirstWebFramework {
 			return false;
 		}
 
+		/// <summary>
+		/// Load the contents of the file from one of the search folders.
+		/// </summary>
+		/// <param name="filename">Like a url</param>
 		public string LoadFile(string filename) {
 			FileInfo f = FileInfo(filename.ToLower());
 			if (!f.Exists)
@@ -229,6 +350,10 @@ namespace CodeFirstWebFramework {
 			return LoadFile(f);
 		}
 
+		/// <summary>
+		/// Load the contents of a specific file.
+		/// If it is a .tmpl file, perform our extra substitutions to support {{include}}, //{{}}, '!{{}} and {{{}}}
+		/// </summary>
 		public string LoadFile(FileInfo f) {
 			Utils.Check(f.Exists, "File not found:{0}", f.Name);
 			using (StreamReader s = new StreamReader(f.FullName, AppModule.Encoding)) {
@@ -245,6 +370,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Load a template and perform Mustache substitutions on it using obj.
+		/// </summary>
 		public string LoadTemplate(string filename, object obj) {
 			try {
 				if (Path.GetExtension(filename) == "")
@@ -257,6 +385,11 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Perform Mustache substitutions on a template
+		/// </summary>
+		/// <param name="text">The template</param>
+		/// <param name="obj">The object to use</param>
 		public string TextTemplate(string text, object obj) {
 			FormatCompiler compiler = new FormatCompiler();
 			compiler.RemoveNewLines = false;
@@ -270,18 +403,36 @@ namespace CodeFirstWebFramework {
 
 	}
 
+	/// <summary>
+	/// The Settings record from the Settings table
+	/// </summary>
 	[Table]
 	public class Settings : JsonObject {
+		/// <summary>
+		/// Record id
+		/// </summary>
 		[Primary]
 		public int? idSettings;
+		/// <summary>
+		/// Database version
+		/// </summary>
 		public int DbVersion;
+		/// <summary>
+		/// Display skin to use
+		/// </summary>
 		[DefaultValue("default")]
 		public string Skin;
+		/// <summary>
+		/// The application version
+		/// </summary>
 		[DoNotStore]
 		public string AppVersion
 		{
 			get { return Assembly.GetEntryAssembly().GetName().Version.ToString(); }
 		}
+		/// <summary>
+		/// Record id
+		/// </summary>
 		public override int? Id
 		{
 			get { return idSettings; }

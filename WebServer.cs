@@ -91,8 +91,16 @@ namespace CodeFirstWebFramework {
 		public void Start() {
 			try {
 				_listener = new HttpListener();
-				_listener.Prefixes.Add("http://+:" + Config.Default.Port + "/");
-				Log("Listening on port {0}", Config.Default.Port);
+				HashSet<int> ports = new HashSet<int>();
+				ports.Add(Config.Default.Port);
+				foreach (ServerConfig server in Config.Default.Servers) {
+					if (server.Port > 0)
+						ports.Add(server.Port);
+				}
+				foreach (int port in ports) {
+					_listener.Prefixes.Add("http://+:" + port + "/");
+					Log("Listening on port {0}", Config.Default.Port);
+				}
 				_sessions = new Dictionary<string, Session>();
 				_empty = new Session(null);
 				// Start thread to expire sessions after 30 mins of inactivity
@@ -153,7 +161,7 @@ namespace CodeFirstWebFramework {
 			AppModule module = null;
 			StringBuilder log = new StringBuilder();	// Session log writes to here, and it is displayed at the end
 			context = (HttpListenerContext)listenerContext;
-			ServerConfig server = Config.Default.SettingsForHost(context.Request.Url.Host);
+			ServerConfig server = Config.Default.SettingsForHost(context.Request.Url);
 			try {
 				log.AppendFormat("{0} {1}:{2}:[ms]:", 
 					context.Request.RemoteEndPoint.Address,

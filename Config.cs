@@ -132,9 +132,9 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// The ServerConfig which applies to the provided url host part
 		/// </summary>
-		public ServerConfig SettingsForHost(string host) {
+		public ServerConfig SettingsForHost(Uri uri) {
 			if (Servers != null) {
-				ServerConfig settings = Servers.FirstOrDefault(s => s.Matches(host));
+				ServerConfig settings = Servers.FirstOrDefault(s => s.Matches(uri));
 				if (settings != null)
 					return settings;
 			}
@@ -227,6 +227,10 @@ namespace CodeFirstWebFramework {
 		/// Other names allowed, separated by spaces
 		/// </summary>
 		public string ServerAlias;
+		/// <summary>
+		/// The port the web server listens on
+		/// </summary>
+		public int Port;
 		/// <summary>
 		/// Namespace in which to look for AppModules
 		/// </summary>
@@ -324,7 +328,11 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Whether this server serves for the host name
 		/// </summary>
-		public bool Matches(string host) {
+		public bool Matches(Uri uri) {
+			int port = Port == 0 ? Config.Default.Port : Port;
+			if (uri.Port != port)
+				return false;
+			string host = uri.Host;
 			if (host == ServerName)
 				return true;
 			host = host.ToLower();

@@ -18,7 +18,7 @@ The Config file has the following main variables
 |Email|Email used as from address when sending emails|root@localhost|
 |SessionExpiryMinutes|Number of minutes of inactivity before discarding session data|30|
  
-The web server can actually handle requests for more than 1 web app. Each web app must be in its own C# Namespace. The server distinguishes which web app/Namespace to call from the server part of the Url. To enable this, add an entry for each app to the `Servers` array in the config file. Each Servers entry can have the following variables:
+The web server can actually handle requests for more than 1 web app. Each web app must be in its own C# Namespace. The server distinguishes which web app/Namespace to call from the server part of the Url (including the port). To enable this, add an entry for each app to the `Servers` array in the config file. Each Servers entry can have the following variables:
  
 |Variable|Description|
 |-----------|---------------|
@@ -27,6 +27,7 @@ The web server can actually handle requests for more than 1 web app. Each web ap
 |Namespace|The C# Namespace in which to search for modules and methods to call for a request page|
 |ServerName|The Url used to access the app|
 |ServerAlias|Other Urls for this app, separated by spaces|
+|Port|The port the web server listens on|
 |Email|Email used as from address when sending emails|
 |Title|Default app name to use in web page title|
  
@@ -90,6 +91,16 @@ All .tmpl files are rendered into a string, which is then searched for xml eleme
 Note that you can add additional string fields to your own AppModules, marked with the `[TemplateSection]` attribute, and these will be treated the same as title, head and body above.
 
 See [CodeFirstWebFramework/admin/batch.tmpl](CodeFirstWebFramework/admin/batch.tmpl) and [CodeFirstWebFramework/default.tmpl](CodeFirstWebFramework/default.tmpl) for examples.
+
+Note that CodeFirstWebFramework Mustache templates provide a number of enhancements to standard Mustache-Sharp, as follows:
+
+|Markup|Function|
+|------|--------|
+|{{include *filename*}}|Searches for *filename* in the search folders, and reads it in.|
+|{{{*variable*}}}|Having replaced *variable*, html quotes it, so that html special characters are rendered as expected. For example if the variable contains &lt;B&gt;, it appears in the rendered html page as is, instead of turning on bold print.|
+|// {{*mustache*}}|Is replaced by {{*mustache*}}. This is so you can hide mustache in a comment in javascript files to avoid apparent syntax errors.|
+|'!{{*mustache*}}'|Is replaced by {{*mustache*}}. This is so you can hide mustache a string in javascript files to avoid apparent syntax errors.|
+
 
 ## Database class
 
@@ -222,4 +233,20 @@ You can allow the user to select an item from the list by adding a "select" prop
 
 This is a header Form followed by a ListForm containing lines for that header. The Data provided must contain a header property containing the header data, and a detail enumerable containing the detail lines.
 
+## Help
 
+CodeFirstWebFramework includes the built-in ability to display Markdown (.md) files, and these are used by the help system. You should write a `help/default.md` file containing the markdown for the help table of contents. This file should have headings which consist of links to the various help files e.g.
+
+	# Using the AccountServer accounting system
+	
+	## [Installation](installation.md)
+	
+	### [Importing data from other systems](admin_import.md)
+	
+	## [Navigation - how the screens work](navigation.md)
+
+It can also contain any other markdown you wish. The C# Help AppModule will use this file to work out the structure of the help system, so it can generate Next, Previous and Up links.
+
+The files referred to can be linked to anywhere (e.g. `/help/installation.md`). When any of the md files in the help folder are displayed, they are automatically included in `/help/default.tmpl`, which implements the Table of Contents, Next, Previous and Up links. You can even template a help file itself - instead of creating a .md file, create a .tmpl file of the same name, and you can include Mustache in the file. This would probably be most useful if you have your own Help class (derived from CodeFirstWebFramework.Help) with its own variables to use in the template.
+
+The help becomes context sensitive, because every AppModule has a Help property, which will automatically contain a link to any file file in the help folder with the name *module*_*method*.md, or, if that doesn't exist, the name *module*.md. You can add this link to your `/default.tmpl` file to provide a context-sensitive help link. Note it will be an empty string if there is no such file, which you can test for with code like `{{#if Help}}<a href="{{Help}}">Help</a>{{/if}}`.

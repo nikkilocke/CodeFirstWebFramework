@@ -104,7 +104,12 @@ Example config file for 1 web app running on 2 different hostnames with the same
 
 ## Directory searching
 
-CodeFirstWebFramework provides a number of template, javascript, css, etc. files in the CodeFirstWebFramework folder under the installation directory. You can provide alternative versions of any of these files in a folder with the same name as your program. If you have more than 1 web app, and you want different versions for each one, you can provide them in a folder with the same name as the server (e.g. `localhost`).
+CodeFirstWebFramework provides a number of template, javascript, css, etc. files in the `contentFiles/CodeFirstWebFramework` folder. You need to copy this folder to your program exe folder - I use a post-build command:
+
+	xcopy /E /I /Y "$(ProjectDir)contentFiles\CodeFirstWebFramework" "$(TargetDir)CodeFirstWebFramework"
+
+You can provide alternative versions of any of these files in a folder with the same name as your program. If you have more than 1 web app, and you want different versions for each one, you can provide them in a folder with the same name as the server (e.g. `localhost`).
+
 Finally, if your users want to override any of these files for their individual installation (without editing your versions, which would be overwritten during an upgrade), they can provide versions in any of the above folders, but in the Common Application Data/Program Name folder.
 
 So whenever the web server is looking for a file (e.g. an html file, or a template tmpl file, or a js, css, or jpg file), it searches through the following set of directories:

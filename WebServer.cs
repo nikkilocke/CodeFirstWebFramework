@@ -6,11 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {

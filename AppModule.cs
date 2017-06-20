@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-	using System.Net;
-using System.Net.Http;
+using System.Net;
 using System.Web;
 using System.IO;
 using System.Reflection;
@@ -1032,6 +1031,7 @@ namespace CodeFirstWebFramework {
 	/// Generic return type used for Ajax requests
 	/// </summary>
 	public class AjaxReturn {
+#pragma warning disable IDE1006 // Naming Styles
 		/// <summary>
 		/// Exception message - if not null or empty, request has failed
 		/// </summary>
@@ -1057,6 +1057,7 @@ namespace CodeFirstWebFramework {
 		/// Arbitrary data which the caller needs
 		/// </summary>
 		public object data;
+#pragma warning restore IDE1006 // Naming Styles
 
 		/// <summary>
 		/// Show as a string (for logs)

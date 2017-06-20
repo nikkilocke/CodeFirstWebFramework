@@ -1328,8 +1328,23 @@ namespace CodeFirstWebFramework {
 		/// Record id
 		/// </summary>
 		public virtual int? Id {
-			get { return null; }
-			set { }
+			get { FieldInfo id = idField; return id == null ? null : (int?)id.GetValue(this); }
+			set { FieldInfo id = idField; if(id != null) id.SetValue(this, value); }
+		}
+		
+		FieldInfo idField {
+			get {
+			FieldInfo found = null;
+				foreach(FieldInfo f in GetType().GetFields(BindingFlags.Public | BindingFlags.Instance)) {
+					PrimaryAttribute p = f.GetCustomAttribute<PrimaryAttribute>();
+					if(p != null) {
+						if(p.Sequence > 0 || f.FieldType != typeof(int?))
+							return null;
+						found = f;
+					}
+				}
+				return found;
+			}
 		}
 
 		/// <summary>

@@ -207,7 +207,7 @@ namespace CodeFirstWebFramework {
 					Utils._timeOffset = newDate - now;
 				}
 #endif
-				new DailyLog(Path.Combine(DataPath, EntryModule + "Logs." + Config.Default.Port)).WriteLine("Started:config=" + configName);
+				new DailyLog(Path.Combine(DataPath, EntryModule + "Logs")).WriteLine("Started:config=" + configName);
 				Utils.Check(!string.IsNullOrEmpty(Config.Default.ConnectionString), "You must specify a ConnectionString in the " + configName + " file");
 			} catch (Exception ex) {
 				WebServer.Log(ex.ToString());

@@ -33,6 +33,75 @@ The web server can actually handle requests for more than 1 web app. Each web ap
  
 The default values for these variables are the values from the config file as above.
 
+Example config file for 2 web apps running on different ports on localhost:
+
+	{
+	  "Database": "SQLite",
+	  "Namespace": "Phone",
+	  "ConnectionString": "Data Source=C:/ProgramData/Phone/Phone.db",
+	  "Port": 8080,
+	  "SlowQuery": 100,
+	  "ServerName": "localhost",
+	  "Email": "root@localhost",
+	  "SessionExpiryMinutes": 30,
+	  "Servers": [],
+	  "SessionLogging": false,
+	  "DatabaseLogging": 0,
+	  "PostLogging": false,
+	  "Servers": [
+			{
+			"ServerName": "localhost",
+			"Port": 8080,
+			"Namespace": "Phone",
+			"Title": "Phone Book",
+			"Database": "SQLite",
+			"ConnectionString": "Data Source=C:/ProgramData/Phone/Phone.db"
+			},
+			{
+			"ServerName": "localhost",
+			"Port": 8081,
+			"Namespace": "AddressBook",
+			"Title": "Address Book",
+			"Database": "SQLite",
+			"ConnectionString": "Data Source=C:/ProgramData/AddressBook/AddressBook.db"
+			}
+	  ]
+	}
+
+Example config file for 1 web app running on 2 different hostnames with the same web app but different databases:
+
+	{
+	  "Database": "SQLite",
+	  "Namespace": "Phone",
+	  "ConnectionString": "Data Source=C:/ProgramData/Phone/Phone.db",
+	  "Port": 8080,
+	  "SlowQuery": 100,
+	  "ServerName": "localhost",
+	  "Email": "root@localhost",
+	  "SessionExpiryMinutes": 30,
+	  "Servers": [],
+	  "SessionLogging": false,
+	  "DatabaseLogging": 0,
+	  "PostLogging": false,
+	  "Servers": [
+			{
+			"ServerName": "localhost",
+			"Namespace": "Phone",
+			"Title": "Phone Book (business)",
+			"Database": "SQLite",
+			"ConnectionString": "Data Source=C:/ProgramData/Phone/Phone.db"
+			},
+			{
+			"ServerName": "127.0.0.1",
+			"Namespace": "Phone",
+			"Title": "Phone Book (personal)",
+			"Database": "SQLite",
+			"ConnectionString": "Data Source=C:/ProgramData/Phone/Personal.db"
+			}
+	  ]
+	}
+
+
 ## Directory searching
 
 CodeFirstWebFramework provides a number of template, javascript, css, etc. files in the CodeFirstWebFramework folder under the installation directory. You can provide alternative versions of any of these files in a folder with the same name as your program. If you have more than 1 web app, and you want different versions for each one, you can provide them in a folder with the same name as the server (e.g. `localhost`).
@@ -92,7 +161,7 @@ Note that you can add additional string fields to your own AppModules, marked wi
 
 See [CodeFirstWebFramework/admin/batch.tmpl](CodeFirstWebFramework/admin/batch.tmpl) and [CodeFirstWebFramework/default.tmpl](CodeFirstWebFramework/default.tmpl) for examples.
 
-Note that CodeFirstWebFramework Mustache templates provide a number of enhancements to standard Mustache-Sharp, as follows:
+Note that CodeFirstWebFramework Mustache templates preserve newlines in templates, and provide a number of enhancements to standard Mustache-Sharp, as follows:
 
 |Markup|Function|
 |------|--------|
@@ -106,24 +175,24 @@ Note that CodeFirstWebFramework Mustache templates provide a number of enhanceme
 
 The provided Database class provides extensive methods for reading objects from the database, updating and inserting, transactions, etc. It has a built-in Upgrade method that will find all the tables and views defined in the C# code, and create or update all the table structures in the database to match.
 
-As your program evolves, you may find it necessary to run additional code when upgrading the database from one version to another (e.g. to fill in new fields with specific values, or maybe you are splitting a table into 2 related tables). To cater for this, there is a DbVersion field in the Settings table, which is automatically compared with the CurrentDbVersion virtual property in the Database class. You can create a subclass of Database for each of your Namespaces (web apps), and override the `PreUpgradeFromVersion` and `PostUpgradeFromVersion` virtual methods to run any such code. The `PreUpgradeFromVersion` is run before any changes are made to the database structure, and `PostUpgradeFromVersion` is run after.
+As your program evolves, you may find it necessary to run additional code when upgrading the database from one version to another (e.g. to fill in new fields with specific values, or maybe you are splitting a table into 2 related tables). To cater for this, there is a DbVersion field in the Settings table, which is automatically compared with the CurrentDbVersion virtual property in the Database class. You can create a subclass of Database for each of your Namespaces (web apps), and override `CurrentDbVersion` property, and the `PreUpgradeFromVersion` and `PostUpgradeFromVersion` virtual methods to run any such code. The `PreUpgradeFromVersion` is run before any changes are made to the database structure, and `PostUpgradeFromVersion` is run after.
 
 ### Database tables
 
-Database tables are declared as C# classes, which must be subclasses of `JsonObject`, and have the `[Table]` attribute. Most tables will have a unique, auto-increment integer field as the primary key - this should be given the `[Primary]` attribute. Some of the javascript code assumes by default that the primary key is called `idTableName` (where TableName is the class name), although there are facilities to change this in forms. This field is referred to as the record id below.
+Database tables are declared as C# classes, which must be subclasses of `JsonObject`, and have the `[Table]` attribute. Most tables will have a unique, auto-increment integer field as the primary key - this should be given the `[Primary]` attribute. Some of the javascript code assumes by default that the primary key is called `idTableName` (where TableName is the class name), although there are facilities to change this in forms. This field is referred to as the record id below. 
 
 In order to make SQL statements joining tables easier to write, it is often preferable to make your field names globally unique. To make this easier, the framework understands that variable names are often preceded by their table name (e.g. in the Document table, a field called DocumentName), and it will strip off the table name when displaying headings and prompts to the user.
 
 In the table, you can add other attributes to fields to map them to the database correctly:
 
-|Attrubute|Description|
+|Attribute|Description|
 |---------|-----------|
-|Unique(string name, int order = 0)|This field (or combination of fields) is a unique key. For a combination of fields, use the Unique attribute with the same name, and sequential orders.|
-|Nullable|Indicates the field may be null.|
-|Length(int length, int precision = 0)|Indicates the length of the field - for decimal fields, use 2 parameters for length and precision. A string field with length explicitly set to 0 will be stored as a variable-length memo field - otherwise the default is 45 for a string field, 10.2 for decimal, 10.4 for double, 11 for integer and 1 for bool.|
-|DefaultValue(string value)|The default value used if a record is created with no value for this field.|
-|ForeignKey(string table)|This field is an integer foreign key which refers to the record id of the given table.|
-|DoNotStore|This field exists in the class, but is not stored in the database.|
+|`Unique(string name, int order = 0)`|This field (or combination of fields) is a unique key. For a combination of fields, use the Unique attribute with the same name, and sequential orders.|
+|`Nullable`|Indicates the field may be null.|
+|`Length(int length, int precision = 0)`|Indicates the length of the field - for decimal fields, use 2 parameters for length and precision. A string field with length explicitly set to 0 will be stored as a variable-length memo field - otherwise the default is 45 for a string field, 10.2 for decimal, 10.4 for double, 11 for integer and 1 for bool.|
+|`DefaultValue(string value)`|The default value used if a record is created with no value for this field.|
+|`ForeignKey(string table)`|This field is an integer foreign key which refers to the record id of the given table.|
+|`DoNotStore`|This field exists in the class, but is not stored in the database.|
 
 You can also create classes which are mapped to views on the database - use the `View(string sql)` attribute - `sql` is the SQL to query the database and produce the view.
 
@@ -157,9 +226,9 @@ The WebServer class will determine which class is required, and then creates an 
 
 The simplest method has no parameters, and no return value. Once it has been called (by a web request for `/class/method.html`), on its return the Call method will see that no response has been sent yet, and call Respond, which looks for a template file with the same name (i.e. /class/method.tmpl), fills in that template using the AppModule, and returns the resulting html. Any parameters provided in the request are supplied in the `AppModule.GetParameters` and `AppModule.PostParameters` NameValueCollections. There is also an `AppModule.Parameters` NameValueCollection which is a merge of both of the above.
 
-A method may also have named parameters. CallMethod will look for request parameters with the same names, and fill in the parameters to the method accordingly. If the parameters don't match, or are not all supplied, it throw an Exception, which will  will return a 500 Internal Server error (along with details of the exception formatted with exception.tmpl).
+A method may also have named parameters. CallMethod will look for request parameters with the same names, and fill in the parameters to the method accordingly. If the parameters don't match, or are not all supplied, it throws an Exception, which will  will return a 500 Internal Server error (along with details of the exception formatted with exception.tmpl).
 
-A method may also return something - if so, the Call method will call WriteResponse to convert the returned type to a response. Streams and strings are returned unchanged - anything other non-null return value is converted to a json object. The javascript provided often uses Ajax calls (e.g. to save a form), and many of these expect an object of type `AjaxReturn` to return the status and results of a call.
+A method may also return something - if so, the Call method will call WriteResponse to convert the returned type to a response. Streams and strings are returned unchanged - any other non-null return value is converted to a json object. The javascript provided often uses Ajax calls (e.g. to save a form), and many of these expect an object of type `AjaxReturn` to return the status and results of a call.
 
 A method may instead call WriteResponse or Respond itself to send back results, if the default behaviour is not sufficient. Or even write the result itself - in which case it should set ResponseSent to true, to prevent the default processing.
 
@@ -179,7 +248,7 @@ You can further modify this behaviour with the following attributes:
 |---------|-----------|
 |ReadOnly|Makes the field read only|
 |Writeable|Makes the field writeable, even if it would be read only by default|
-|Select(IEnumerable<JObject> values, bool readWrite = true)|Makes the field a select dropdown. Values is an enurable list of JObjects which contain as a minimum and id (to place in the field when returning the value) and a value (to display to the user)|
+|Select(IEnumerable<JObject> values, bool readWrite = true)|Makes the field a select dropdown. Values is an enumerable list of JObjects which contain as a minimum and id (to place in the field when returning the value) and a value (to display to the user)|
 
 You can also apply the Field attribute, which has the following fields which may be set to modify the behaviour:
 
@@ -189,8 +258,8 @@ You can also apply the Field attribute, which has the following fields which may
 |Name|The name of the field - default is the same as Data.|
 |Type|The kind of field to use - see default.js Type object for a full list of types.|
 |Heading|The heading or prompt for the field.|
-|Colspan|In input forms, givbes the field a colspan so it takes more columns.|
-|SameRow|In input fields, buts this field on the same row as the previous one.|
+|Colspan|In input forms, gives the field a colspan so it takes more columns.|
+|SameRow|In input fields, puts this field on the same row as the previous one.|
 |Attributes|Html attributes added to the field.|
 |Size|The size/length of the field - by default comes from the Length attribute.|
 |Visible|Set to false to hide the field (but it is still searchable).|
@@ -199,12 +268,12 @@ For very fine control, you can set any of the other properties supported in the 
 
 All the Form classes have a field called `Data`, which may be set to a JToken containing the form data - if none is supplied, the DataTable and List forms will make an Ajax callback to get the data to the current method with `Listing` added to the end.
 
-The also have a field called Options which is a JObject to which you can add other attributes supported by the javascript.
+They also have a field called Options which is a JObject to which you can add other attributes supported by the javascript.
 These include:
 
 |Property|Description|
 |--------|-----------|
-|table|The name of the table - used to strip off table prefixes from variable name.s|
+|table|The name of the table - used to strip off table prefixes from variable names.|
 |id|The name of the [Primary] id field of the table - default is "id" + the table name.|
 
 
@@ -219,15 +288,15 @@ There is the built-in ability to filter out records with zero values - if you se
 
 ### Form
 
-The Form class creates an input or display form. For input forms, "Save" and "Save and Close" buttons are provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Post` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by setting adding a `submit` property to Options.
+The Form class creates an input or display form. For input forms, "Save" and "Save and Close" buttons are provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Post` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
 
-If a `canDelete` property is added to Options, a Delete button will be provided, which calls the current method with `Delete` added to the end, providing the record id as a parameter. You can override this url by setting adding a `delete` property to Options.
+If a `canDelete` property is added to Options, a Delete button will be provided, which calls the current method with `Delete` added to the end, providing the record id as a parameter. You can override this url by adding a `delete` property to Options.
 
 ### ListForm
 
 This creates a possibly editable editable list of records. 
 
-You can allow the user to select an item from the list by adding a "select" property to Options, containing a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Post` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by setting adding a `submit` property to Options.
+You can allow the user to select an item from the list by adding a "select" property to Options, containing a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Post` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
 
 ### HeaderDetailForm
 

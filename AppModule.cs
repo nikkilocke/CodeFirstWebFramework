@@ -291,11 +291,6 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Generic object for templates to use - usually contains data from the database
-		/// </summary>
-		public object Record;
-
-		/// <summary>
 		/// The Form to render, if any
 		/// </summary>
 		public BaseForm Form;
@@ -361,7 +356,6 @@ namespace CodeFirstWebFramework {
 				_module.Log("Finished batch job {0}", Id);
 				WebServer.Log(_module.LogString.ToString());
 				_module.LogString = null;
-				_module.Record = null;
 				_module.Batch = null;
 				Finished = true;
 			}

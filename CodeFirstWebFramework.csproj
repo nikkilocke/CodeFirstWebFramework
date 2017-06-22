@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
@@ -6,12 +6,17 @@
     <Authors>Nikki Locke</Authors>
     <Company>Trumphurst Ltd</Company>
     <Title>CodeFirstWebFramework</Title>
-    <Description>Easy to use web server for building web apps that use sql databases generated from c# classes</Description>
+    <Description>Easy to use web server for building web apps that use sql databases generated automatically from c# classes.</Description>
+    <Summary>
+      Easy to use web server for building web apps that use sql databases generated and updated automatically from c# classes.
+      Includes Mustache templating for whole site and individual pages, automatic calling of code from urls, with translation of parameters, Ajax, forms and data tables, context-sensitive help and many other features.
+    </Summary>
     <Copyright>2017 Trumphurst Ltd.</Copyright>
     <PackageProjectUrl>https://github.com/nikkilocke/CodeFirstWebFramework</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

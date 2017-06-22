@@ -143,8 +143,10 @@ namespace CodeFirstWebFramework {
 		}
 
 		static string fileFor(string filename) {
-			if (!filename.Contains("/") && !filename.Contains("\\"))
+			if (!filename.Contains("/") && !filename.Contains("\\")) {
+				Directory.CreateDirectory(DataPath);
 				filename = Path.Combine(DataPath, filename);
+			}
 			return filename;
 		}
 
@@ -171,7 +173,7 @@ namespace CodeFirstWebFramework {
 			try {
 				Config.Default.Namespace = Config.EntryNamespace = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().ReflectedType.Namespace;
 				string configName = EntryModule + ".config";
-				if (File.Exists(configName))
+				if (File.Exists(fileFor(configName)))
 					Config.Load(configName);
 				else
 					Config.Default.Save(configName);

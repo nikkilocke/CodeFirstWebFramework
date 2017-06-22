@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Nikki Locke</Authors>
     <Company>Trumphurst Ltd</Company>
+    <Title>CodeFirstWebFramework</Title>
     <Description>Easy to use web server for building web apps that use sql databases generated from c# classes</Description>
     <Copyright>2017 Trumphurst Ltd.</Copyright>
     <PackageProjectUrl>https://github.com/nikkilocke/CodeFirstWebFramework</PackageProjectUrl>
@@ -33,6 +34,7 @@
 	  <BuildAction>Content</BuildAction>
 	  <copyToOutput>true</copyToOutput>
 	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
   </ItemGroup>
 

@@ -1,5 +1,19 @@
 # CodeFirstWebFramework Documentation
- 
+
+## Building a project which uses CodeFirstWebFramework
+
+Download the latest NuGet `CodeFirstWebFramework` package using the NuGet package manager.
+
+CodeFirstWebFramework provides a number of template, javascript, css, etc. files in the `contentFiles/CodeFirstWebFramework` folder. You need to copy this folder to your program exe folder - I use a post-build command:
+
+	xcopy /E /I /Y "$(ProjectDir)contentFiles\CodeFirstWebFramework" "$(TargetDir)CodeFirstWebFramework"
+
+## Building CodeFirstWebFramework itself
+
+If you want to build and/or modify the framework, you will require Visual Studio 2017 or later, as the project file depends on automatic build features introduced in that version.
+
+You can convert the project to an earlier version of Visual Studio, or build it with Mono - to do that you just need to add all the .cs files to the project (whereas Visual Studio 2017 searches the directory automatically), and add all the required NuGet packages listed in the existing `.csproj` file.
+
 ## Config files
  
 The first time you run a program that calls `Config.Load`, if there is no existing Config file with the same name as the program (but a .config extension), it will create one with the default values, which you can then edit. Note that the config file is loaded when the program runs - if you change it, you have to restart the program for the new values to take effect. 

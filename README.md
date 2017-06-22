@@ -1,5 +1,7 @@
 # CodeFirstWebFramework Web App development tool
 
+Now available as a NuGet package, downloadable directly from Visual Studio.
+
 This DLL enables you to build a highly functional C# web app with minimal coding. Your Main method has only to call
 
     Config.Load(args);
@@ -23,7 +25,7 @@ There is built-in support for backing up and restoring the database (to json for
 
 There is also built-in support for GitHub style Markdown (like this file), both in general use, and for writing context-sensitive help with a table of contents.
 
-The DLL can actually run multiple web servers on the same port (distinguished by the server part of the url), each of which can use the same or different C# code (distinguished by C# Namespaces) and use different databases. You can also customise the look and feel of each server, as the template code looks for templates in a folder named for the server, then a folder named for the app namespace, then in the CodeFirstWebFramework folder.
+The DLL can actually run multiple web servers on the same port (distinguished by the server part of the url), or different ports, each of which can use the same or different C# code (distinguished by C# Namespaces) and use different databases. You can also customise the look and feel of each server, as the template code looks for templates in a folder named for the server, then a folder named for the app namespace, then in the CodeFirstWebFramework folder.
 
 [Full documentation is in contentFiles/Documentation.md](contentFiles/Documentation.md)
 

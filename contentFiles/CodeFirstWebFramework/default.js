@@ -24,11 +24,12 @@ $.widget( "custom.catcomplete", $.ui.autocomplete, {
 		});
 	}
 });
+var dateStyle = { dateFormat: 'dd MM yy'};
 
 $(function() {
 //	testHarness = bowser.firefox && hasParameter('test');
 	touchScreen = bowser.mobile || bowser.tablet;
-	decPoint = (1.23).toLocaleString()[1];
+	decPoint = (1.23).toLocaleString(window.navigator.userLanguage || window.navigator.language)[1];
 	resize();
 	$('#menuicon').click(function() {
 		// Small screen user has clicked menu icon - show/hide menu
@@ -36,7 +37,12 @@ $(function() {
 	});
 	$('body').on('click', 'button[href]', function() {
 		// Buttons with hrefs act like links
-		window.location = $(this).attr('href');
+		var href = $(this).attr('href');
+		var target = $(this).attr('target');
+		if(target)
+			window.open(href, target);
+		else
+			window.location = href;
 	});
 	$('body').on('click', 'button[data-goto]', function() {
 		// Buttons with data-goto act like links, but also store state to come back to
@@ -221,17 +227,27 @@ function parseDate(date) {
  * @param {string|Date} date
  * @returns {string} Formatted date, or '' if invalid
  */
-function formatDate(date) {
+function formatDate(date, format) {
 	if(!date)
 		return date || '';
 	try {
 		var d = Date.parse(date);
 		if(isNaN(d))
 			return date || '';
-		return new Date(d).toLocaleDateString();
+		return $.datepicker.formatDate(format || dateStyle.dateFormat, new Date(d));
+		// return new Date(d).toLocaleDateString(window.navigator.userLanguage || window.navigator.language);
 	} catch(e) {
 		return date || '';
 	}
+}
+
+/**
+ * Format a date for a date input field.
+ * @param {string|Date} date
+ * @returns {string} Formatted date, or '' if invalid
+ */
+function formatDateForInput(date) {
+	return bowser.firefox ? formatDate(date) : date ? date.substr(0, 10) : '';
 }
 
 /**
@@ -240,7 +256,13 @@ function formatDate(date) {
  * @returns {string} Formatted date, or '' if invalid
  */
 function formatDateTime(date) {
-	return formatDate(date);
+	if(!date)
+		return date;
+	try {
+		return new Date(Date.parse(date)).toLocaleString(window.navigator.userLanguage || window.navigator.language);
+	} catch(e) {
+		return date;
+	}
 }
 
 /**
@@ -260,7 +282,7 @@ function formatNumber(number) {
 function formatNumberWithCommas(number) {
 	if( number == null || number === '')
 		return '';
-	number = parseFloat(number).toLocaleString();
+	number = parseFloat(number).toLocaleString(window.navigator.userLanguage || window.navigator.language);
 	var p = number.indexOf(decPoint);
 	if(p == -1)
 		return number + '.00';
@@ -475,7 +497,13 @@ var Type = {
 	},
 	date: {
 		render: function(data, type, row, meta) {
-			return colRender(data ? data.substr(0, 10) : data, type, row, meta);
+			switch(type) {
+				case 'display':
+				case 'filter':
+					return formatDate(data);
+				default:
+					return data ? data.substr(0, 10) : data;
+			}
 		},
 		download: function(data, rowno, row) {
 			return formatDate(data);
@@ -723,14 +751,14 @@ var Type = {
 	},
 	dateInput: {
 		defaultContent: function(index, col) {
-			return '<input type="date" data-col="' + col.name + '" ' + col.attributes + '/>';
+			return '<input class="date" type="date" data-col="' + col.name + '" ' + col.attributes + '/>';
 		},
 		draw: function(data, rowno, row) {
-			data = data ? data.substr(0, 10) : '';
-			return '<input type="date" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" ' + this.attributes + '/>';
+			data = formatDateForInput(data);
+			return '<input class="date" type="date" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" ' + this.attributes + '/>';
 		},
 		update: function(cell, data, rowno, row) {
-			data = data ? data.substr(0, 10) : '';
+			data = formatDateForInput(data);
 			colUpdate('input', cell, data, rowno, this, row);
 		}
 	},
@@ -1651,6 +1679,7 @@ function makeForm(selector, options) {
 			var colData = result.data[col.data];
 			col.update(col.cell, colData, 0, result.data);
 		});
+		addJQueryUiControls();
 	}
 	var drawn = false;
 
@@ -2051,6 +2080,7 @@ function makeListForm(selector, options) {
 		for(var row = 0; row < table.data.length; row++) {
 			drawRow(row);
 		}
+		addJQueryUiControls();
 	}
 	function dataReady(d) {
 		table.data = d;
@@ -2110,6 +2140,7 @@ function makeListForm(selector, options) {
 	table.addRow = function(row) {
 		table.data.push(row);
 		drawRow(table.data.length - 1);
+		addJQueryUiControls();
 	};
 	/**
 	 * The cell for a data item

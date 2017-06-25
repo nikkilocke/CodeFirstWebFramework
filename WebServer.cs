@@ -97,7 +97,7 @@ namespace CodeFirstWebFramework {
 				}
 				foreach (int port in ports) {
 					_listener.Prefixes.Add("http://+:" + port + "/");
-					Log("Listening on port {0}", Config.Default.Port);
+					Log("Listening on port {0}", port);
 				}
 				_sessions = new Dictionary<string, Session>();
 				_empty = new Session(null);

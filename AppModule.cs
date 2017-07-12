@@ -68,7 +68,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Charset for web output
 		/// </summary>
-		public static string Charset = "ANSI";
+		public static string Charset = "windows-1252";
 
 		/// <summary>
 		/// Set to true if the web server is allowed to cache this page. Normally false, as pages are generated dynamically.

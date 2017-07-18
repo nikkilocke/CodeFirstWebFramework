@@ -138,7 +138,7 @@ namespace CodeFirstWebFramework {
 				if (settings != null)
 					return settings;
 			}
-			return DefaultServer;
+			return uri.Port == Port ? DefaultServer : null;
 
 		}
 

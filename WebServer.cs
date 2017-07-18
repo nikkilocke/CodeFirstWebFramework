@@ -160,6 +160,18 @@ namespace CodeFirstWebFramework {
 			StringBuilder log = new StringBuilder();	// Session log writes to here, and it is displayed at the end
 			context = (HttpListenerContext)listenerContext;
 			ServerConfig server = Config.Default.SettingsForHost(context.Request.Url);
+			if(server == null) {
+				// Request not matching any of the Server array, and not on the default port
+				context.Response.StatusCode = 404;
+				context.Response.ContentType = "text/plain;charset=" + AppModule.Charset;
+				byte[] msg = AppModule.Encoding.GetBytes("Server not found");
+				context.Response.ContentLength64 = msg.Length;
+				Log("404 Server not found ");
+				using (Stream r = context.Response.OutputStream) {
+					r.Write(msg, 0, msg.Length);
+				}
+				return;
+			}
 			try {
 				log.AppendFormat("{0} {1}:{2}:[ms]:", 
 					context.Request.RemoteEndPoint.Address,

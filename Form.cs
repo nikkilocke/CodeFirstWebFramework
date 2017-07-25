@@ -454,6 +454,14 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Whether the user can delete record.
+		/// </summary>
+		public bool CanDelete {
+			get { return Options.AsBool("canDelete"); }
+			set { Options["canDelete"] = value; }
+		}
+
+		/// <summary>
 		/// Process all the fields from a type (do any base classes first)
 		/// </summary>
 		/// <param name="tbl"></param>
@@ -592,6 +600,16 @@ namespace CodeFirstWebFramework {
 		public override void Show() {
 			Show("HeaderDetailForm");
 		}
+
+		/// <summary>
+		/// Whether the user can delete record.
+		/// </summary>
+		public bool CanDelete
+		{
+			get { return Header.CanDelete; }
+			set { Header.CanDelete = value; }
+		}
+
 
 	}
 

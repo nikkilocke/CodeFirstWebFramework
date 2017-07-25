@@ -156,7 +156,7 @@ namespace CodeFirstWebFramework {
 			};
 			f.Header.Replace(f.Header.IndexOf("AccessLevel"), level);
 			f.Detail.Replace(f.Detail.IndexOf("AccessLevel"), level);
-			f.Options["canDelete"] = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
+			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {
 				// This has to be the admin user
 				user.AccessLevel = AccessLevel.Admin;
@@ -274,7 +274,7 @@ namespace CodeFirstWebFramework {
 						string redirect = module.SessionData.redirect;
 						module.Session.Object.Remove("redirect");
 						if (string.IsNullOrEmpty(redirect))
-							redirect = "/home";
+							redirect = "/admin";
 						module.Redirect(redirect);
 						return;
 					}
@@ -295,9 +295,10 @@ namespace CodeFirstWebFramework {
 				new MenuOption("Settings", "/admin/editsettings"),
 				new MenuOption("Users", "/admin/users"),
 				new MenuOption("Backup", "/admin/backup"),
-				new MenuOption("Restore", "/admin/restore"),
-				new MenuOption(Session.User == null ? "Login" : "Logout", "/admin/login")
-			);
+				new MenuOption("Restore", "/admin/restore")
+				);
+			if(SecurityOn)
+				insertMenuOption(new MenuOption(Session.User == null ? "Login" : "Logout", "/admin/login"));
 		}
 
 		[Auth(AccessLevel.Any)]

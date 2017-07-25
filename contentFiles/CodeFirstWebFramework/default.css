@@ -26,6 +26,15 @@
     margin: 0;
     padding: 2px;
 }
+.loginuser {
+	float: left;
+	overflow: hidden;
+	color: white;
+	font-weight: bold;
+	background-color: #4970D1;
+	margin: 0;
+	padding: 2px;
+}
 #menu1 {
     min-height: 31px;
     background-color: lightgrey;

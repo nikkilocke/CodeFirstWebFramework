@@ -62,7 +62,7 @@ namespace Phone {
 		public void PhoneNumber(int id) {
 			PhoneNumber n = Database.Get<PhoneNumber>(id);
 			Form form = new Form(this, typeof(PhoneNumber));
-			form.Options["canDelete"] = n.PhoneNumberId != null;
+			form.CanDelete = n.PhoneNumberId != null;
 			form.Data = n.ToJToken();
 			form.Show();
 		}
@@ -91,7 +91,7 @@ namespace Phone {
 		public void Analysis(int id) {
 			Analysis a = Database.Get<Analysis>(id);
 			Form form = new Form(this, typeof(Analysis));
-			form.Options["canDelete"] = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null;
+			form.CanDelete = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null;
 			form.Data = a.ToJToken();
 			form.Show();
 		}
@@ -121,7 +121,7 @@ namespace Phone {
 		public void CostCentre(int id) {
 			CostCentre a = Database.Get<CostCentre>(id);
 			Form form = new Form(this, typeof(CostCentre));
-			form.Options["canDelete"] = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null;
+			form.CanDelete = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null;
 			form.Data = a.ToJToken();
 			form.Show();
 		}

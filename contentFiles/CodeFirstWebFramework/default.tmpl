@@ -22,6 +22,7 @@
 <body>
 <img id="menuicon" src="/images/menu.png" />
 <div id="header">
+{{#if Session.User}}<div class="loginuser">{{Session.User.Login}}</div>{{/if}}
 <div id="heading">{{Config.Filename}} - {{{Server.Namespace}}} - {{{Title}}}</div>
 <div id="menu1">&nbsp;{{#each Server.NamespaceDef.Modules}}
 	<button id="{{Name}}" href="/{{Name}}/default.html">{{UnCamelName}}</button>{{/each}}

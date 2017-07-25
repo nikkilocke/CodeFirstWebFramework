@@ -310,7 +310,11 @@ namespace CodeFirstWebFramework {
 		/// <param name="readwrite">Whether the user can input to some of the fields</param>
 		public Form(AppModule module, bool readwrite)
 			: base(module) {
+			if (!module.HasAccess(module.Info, module.Method + "post", out int accessLevel))
+				readwrite = false;
 			ReadWrite = readwrite;
+			if (!readwrite)
+				Options["readonly"] = true;
 		}
 
 		/// <summary>
@@ -458,7 +462,11 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool CanDelete {
 			get { return Options.AsBool("canDelete"); }
-			set { Options["canDelete"] = value; }
+			set {
+				if (!Module.HasAccess(Module.Info, Module.Method + "delete", out int accessLevel))
+					value = false;
+				Options["canDelete"] = value;
+			}
 		}
 
 		/// <summary>

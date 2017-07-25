@@ -210,6 +210,7 @@ namespace CodeFirstWebFramework {
 			Table t = module.Database.TableFor("User");
 			User user = (User)((JObject)json["header"]).To(t.Type);
 			bool passwordChanged = false;
+			bool firstUser = !module.SecurityOn;
 			if (user.idUser > 0) {
 				// Existing record
 				User u = module.Database.Get<User>((int)user.idUser);
@@ -247,6 +248,8 @@ namespace CodeFirstWebFramework {
 				module.Database.Insert("Permission", p);
 			}
 			module.Database.Commit();
+			if (firstUser)
+				module.Session.User = user;
 			return r;
 		}
 

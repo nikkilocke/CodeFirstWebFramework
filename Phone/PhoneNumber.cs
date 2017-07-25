@@ -58,7 +58,7 @@ namespace Phone {
 			return Database.Query("SELECT * FROM PhoneNumber ORDER BY PhoneKey");
 		}
 
-		[Auth(AccessLevel.ReadWrite)]
+		[Auth(AccessLevel.ReadOnly)]
 		public void PhoneNumber(int id) {
 			PhoneNumber n = Database.Get<PhoneNumber>(id);
 			Form form = new Form(this, typeof(PhoneNumber));

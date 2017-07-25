@@ -134,8 +134,10 @@ namespace CodeFirstWebFramework {
 		public virtual Database Database {
 			get {
 				lock (this) {
-					if (_db == null)
+					if (_db == null) {
 						_db = Server.NamespaceDef.GetDatabase(Server);
+						_db.Module = this;
+					}
 				}
 				return _db;
 			}

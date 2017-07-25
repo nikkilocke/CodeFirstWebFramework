@@ -1547,6 +1547,7 @@ function makeDataTable(selector, options) {
  * @param {string|*} [options.ajax] Ajax settings, or string url (current url + 'Listing')
  * @param {boolean} [options.dialog] Show form as a dialog when Edit button is pushed
  * @param {string} [options.submitText} Text to use for Save buttons (default "Save")
+ * @param {boolean} [options.readonly} No save (default false)
  * @param {boolean} [options.saveAndClose} Include Save and Close button (default true)
  * @param {boolean} [options.saveAndNew} Include Save and New button (default false)
  * @param {*} [options.data] Existing data to display
@@ -1733,27 +1734,29 @@ function makeForm(selector, options) {
 						result.parent().dialog('open');
 						e.preventDefault();
 					});
-			} else {
-				// Add Buttons
-				actionButton(options.submitText || 'Save')
-					.click(function (e) {
-						submitUrl(this);
-						e.preventDefault();
-					});
-				if (options.saveAndClose !== false)
-					actionButton((options.submitText || 'Save') + ' and Close')
-						.addClass('goback')
-						.click(function (e) {
-							submitUrl(this);
-							e.preventDefault();
-						});
-				if (options.saveAndNew)
-					actionButton((options.submitText || 'Save') + ' and New')
-						.addClass('new')
-						.click(function (e) {
-							submitUrl(this);
-							e.preventDefault();
-						});
+            } else {
+                if (!options.readonly) {
+                    // Add Buttons
+                    actionButton(options.submitText || 'Save')
+                        .click(function (e) {
+                            submitUrl(this);
+                            e.preventDefault();
+                        });
+                    if (options.saveAndClose !== false)
+                        actionButton((options.submitText || 'Save') + ' and Close')
+                            .addClass('goback')
+                            .click(function (e) {
+                                submitUrl(this);
+                                e.preventDefault();
+                            });
+                    if (options.saveAndNew)
+                        actionButton((options.submitText || 'Save') + ' and New')
+                            .addClass('new')
+                            .click(function (e) {
+                                submitUrl(this);
+                                e.preventDefault();
+                            });
+                }
 				actionButton('Reset')
 					.click(function () {
 						window.location.reload();

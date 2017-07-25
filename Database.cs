@@ -212,6 +212,8 @@ namespace CodeFirstWebFramework {
 			db = getDatabase(type, connectionString);
 		}
 
+		public AppModule Module;
+
 		/// <summary>
 		/// Start a transaction
 		/// </summary>
@@ -309,7 +311,7 @@ namespace CodeFirstWebFramework {
 		public T EmptyRecord<T>() where T : JsonObject {
 			Table t = TableFor(typeof(T));
 			JObject record = emptyRecord(t);
-			return (T)record.ToObject(t.Type);
+			return t.FromJson<T>(record);
 		}
 
 		JObject emptyRecord(Table table) {
@@ -388,7 +390,7 @@ namespace CodeFirstWebFramework {
 			}
 			if (data == null || data.IsAllNull())
 				data = emptyRecord(table);
-			return (T)data.ToObject(table.Type);
+			return table.FromJson<T>(data);
 		}
 
 		/// <summary>
@@ -597,8 +599,8 @@ namespace CodeFirstWebFramework {
 		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		public IEnumerable<T> Query<T>(string sql) {
-			Table t = TableFor(typeof(T));
-			return Query(sql).Select(r => (T)r.ToObject(t.Type));
+			Table t = TableForOrDefault(typeof(T));
+			return Query(sql).Select(r => t.FromJson<T>(r));
 		}
 
 		/// <summary>
@@ -610,8 +612,8 @@ namespace CodeFirstWebFramework {
 		/// <param name="tableNames">List of table names to join for the query. 
 		/// Joins are performed automatically on foreign keys.</param>
 		public IEnumerable<T> Query<T>(string fields, string conditions, params string[] tableNames) {
-			Table t = TableFor(typeof(T));
-			return Query(fields, conditions, tableNames).Select(r => (T)r.ToObject(t.Type));
+			Table t = TableForOrDefault(typeof(T));
+			return Query(fields, conditions, tableNames).Select(r => t.FromJson<T>(r));
 		}
 
 		/// <summary>
@@ -637,9 +639,9 @@ namespace CodeFirstWebFramework {
 		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		public T QueryOne<T>(string query) where T : JsonObject {
-			Table t = TableFor(typeof(T));
+			Table t = TableForOrDefault(typeof(T));
 			JObject data = QueryOne(query);
-			return data == null || data.IsAllNull() ? EmptyRecord<T>() : (T)data.ToObject(t.Type);
+			return data == null || data.IsAllNull() ? EmptyRecord<T>() : t.FromJson<T>(data);
 		}
 
 		/// <summary>
@@ -651,9 +653,9 @@ namespace CodeFirstWebFramework {
 		/// Joins are performed automatically on foreign keys.</param>
 		/// </summary>
 		public T QueryOne<T>(string fields, string conditions, params string[] tableNames) where T : JsonObject {
-			Table t = TableFor(typeof(T));
+			Table t = TableForOrDefault(typeof(T));
 			JObject data = QueryOne(fields, conditions, tableNames);
-			return data == null || data.IsAllNull() ? EmptyRecord<T>() : (T)data.ToObject(t.Type);
+			return data == null || data.IsAllNull() ? EmptyRecord<T>() : t.FromJson<T>(data);
 		}
 
 		/// <summary>
@@ -717,6 +719,20 @@ namespace CodeFirstWebFramework {
 			while (!_tables.ContainsKey(t.Name)) {
 				t = t.BaseType;
 				Utils.Check(t != typeof(JsonObject), "Unable to find a table for type {0}", type.Name);
+			}
+			return TableFor(t.Name);
+		}
+
+		/// <summary>
+		/// Try to find the Table descriptor for a C# type
+		/// </summary>
+		public Table TableForOrDefault(Type type) {
+			Type t = type;
+			while (!_tables.ContainsKey(t.Name)) {
+				t = t.BaseType;
+				if (t == typeof(JsonObject)) {
+					return new Table(t);
+				}
 			}
 			return TableFor(t.Name);
 		}
@@ -1162,6 +1178,14 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// For TableForOrDefault - just provides JObject type conversion
+		/// </summary>
+		public Table(Type t) {
+			Name = t.Name;
+			Type = t;
+		}
+
+		/// <summary>
 		/// The fields in the table
 		/// </summary>
 		public Field[] Fields;
@@ -1218,6 +1242,17 @@ namespace CodeFirstWebFramework {
 		/// Whether this is a View rather than a native table
 		/// </summary>
 		public virtual bool IsView { get { return false; } }
+
+		/// <summary>
+		/// Convert JObject to type T
+		/// If the table type is a subclass of T, return the table type cast to T
+		/// </summary>
+		public T FromJson<T>(JObject o) {
+			Type t = typeof(T);
+			if (Type.IsSubclassOf(t))
+				t = Type;
+			return (T)o.ToObject(t);
+		}
 
 		/// <summary>
 		/// For debugging

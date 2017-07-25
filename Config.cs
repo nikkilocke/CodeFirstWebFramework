@@ -426,6 +426,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Database version
 		/// </summary>
+		[ReadOnly]
 		public int DbVersion;
 		/// <summary>
 		/// Display skin to use

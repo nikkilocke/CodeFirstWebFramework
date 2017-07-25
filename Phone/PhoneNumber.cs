@@ -24,7 +24,7 @@ namespace Phone {
 	}
 
 	[Table]
-    public class PhoneNumber : JsonObject {
+	public class PhoneNumber : JsonObject {
 		[Primary]
 		public int? PhoneNumberId;
 		[Unique("PhoneKey")]
@@ -35,35 +35,36 @@ namespace Phone {
 		public string Name;
 		[ForeignKey("Analysis")]
 		public int Analysis;
-    }
+	}
 
 	public class HomeModule : AppModule {
 
-		public HomeModule() {
-			Menu = new MenuOption[] {
+		protected override void Init() {
+			insertMenuOptions(
 				new MenuOption("Phone Numbers", "/home/Default"),
 				new MenuOption("Analysis", "/home/AnalysisList"),
 				new MenuOption("Cost centres", "/home/CostCentreList")
-			};
+			);
 		}
 
 		public override void Default() {
 			insertMenuOption(new MenuOption("New number", "/home/PhoneNumber?id=0"));
-			Form = new DataTableForm(this, typeof(PhoneNumber));
-			Form.Options["select"] = "/home/PhoneNumber";
-			Form.Show();
+			DataTableForm form = new DataTableForm(this, typeof(PhoneNumber));
+			form.Select = "/home/PhoneNumber";
+			form.Show();
 		}
 
 		public object DefaultListing() {
 			return Database.Query("SELECT * FROM PhoneNumber ORDER BY PhoneKey");
 		}
 
+		[Auth(AccessLevel.ReadWrite)]
 		public void PhoneNumber(int id) {
 			PhoneNumber n = Database.Get<PhoneNumber>(id);
-			Form = new Form(this, typeof(PhoneNumber));
-			Form.Options["canDelete"] = n.PhoneNumberId != null;
-			Form.Data = n.ToJToken();
-			Form.Show();
+			Form form = new Form(this, typeof(PhoneNumber));
+			form.Options["canDelete"] = n.PhoneNumberId != null;
+			form.Data = n.ToJToken();
+			form.Show();
 		}
 
 		public AjaxReturn PhoneNumberPost(PhoneNumber json) {
@@ -77,21 +78,22 @@ namespace Phone {
 
 		public void AnalysisList() {
 			insertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0"));
-			Form = new DataTableForm(this, typeof(Analysis));
-			Form.Options["select"] = "/home/Analysis";
-			Form.Show();
+			DataTableForm form = new DataTableForm(this, typeof(Analysis));
+			form.Select = "/home/Analysis";
+			form.Show();
 		}
 
 		public object AnalysisListListing() {
 			return Database.Query("SELECT * FROM Analysis ORDER BY AnalysisName");
 		}
 
+		[Auth(AccessLevel.ReadWrite)]
 		public void Analysis(int id) {
 			Analysis a = Database.Get<Analysis>(id);
-			Form = new Form(this, typeof(Analysis));
-			Form.Options["canDelete"] = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null;
-			Form.Data = a.ToJToken();
-			Form.Show();
+			Form form = new Form(this, typeof(Analysis));
+			form.Options["canDelete"] = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null;
+			form.Data = a.ToJToken();
+			form.Show();
 		}
 
 		public AjaxReturn AnalysisPost(Analysis json) {
@@ -106,21 +108,22 @@ namespace Phone {
 
 		public void CostCentreList() {
 			insertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0"));
-			Form = new DataTableForm(this, typeof(CostCentre));
-			Form.Options["select"] = "/home/CostCentre";
-			Form.Show();
+			DataTableForm form = new DataTableForm(this, typeof(CostCentre));
+			form.Select = "/home/CostCentre";
+			form.Show();
 		}
 
 		public object CostCentreListListing() {
 			return Database.Query("SELECT * FROM CostCentre ORDER BY CostCentreName");
 		}
 
+		[Auth(AccessLevel.ReadWrite)]
 		public void CostCentre(int id) {
 			CostCentre a = Database.Get<CostCentre>(id);
-			Form = new Form(this, typeof(CostCentre));
-			Form.Options["canDelete"] = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null;
-			Form.Data = a.ToJToken();
-			Form.Show();
+			Form form = new Form(this, typeof(CostCentre));
+			form.Options["canDelete"] = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null;
+			form.Data = a.ToJToken();
+			form.Show();
 		}
 
 		public AjaxReturn CostCentrePost(CostCentre json) {
@@ -135,13 +138,6 @@ namespace Phone {
 
 	public class AdminModule : CodeFirstWebFramework.AdminModule {
 
-		public override void Default() {
-			Menu = new MenuOption[] {
-				new MenuOption("Backup", "/admin/Backup"),
-				new MenuOption("Restore", "/admin/Restore")
-			};
-			WriteResponse(LoadTemplate("default", this), "text/html", System.Net.HttpStatusCode.OK);
-		}
-
 	}
+
 }

@@ -26,6 +26,11 @@ $.widget( "custom.catcomplete", $.ui.autocomplete, {
 });
 var dateStyle = { dateFormat: 'dd MM yy'};
 
+function addJQueryUiControls() {
+	if (bowser.firefox)
+		$('input.date').datepicker(dateStyle);
+}
+
 $(function() {
 //	testHarness = bowser.firefox && hasParameter('test');
 	touchScreen = bowser.mobile || bowser.tablet;

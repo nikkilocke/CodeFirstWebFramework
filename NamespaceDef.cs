@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Reflection;
 
 namespace CodeFirstWebFramework {
@@ -11,23 +9,56 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// Class to hold a module name, for use in templates
 	/// </summary>
-	public class ModuleName {
+	public class ModuleInfo {
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="name"></param>
-		public ModuleName(string name) {
+		public ModuleInfo(string name, Type t) {
 			Name = name;
+			Type = t;
+			AuthAttribute a = t.GetCustomAttribute<AuthAttribute>(true);
+			ModuleAccessLevel = a == null ? CodeFirstWebFramework.AccessLevel.Any : a.AccessLevel;
+			AuthMethods = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+			foreach (MethodInfo m in t.GetMethods()) {
+				a = m.GetCustomAttribute<AuthAttribute>(true);
+				if (a != null)
+					AuthMethods[m.Name] = a.AccessLevel;
+			}
 		}
 		/// <summary>
 		/// Name of module
 		/// </summary>
 		public string Name;
+		public Type Type;
 		/// <summary>
 		/// Uncamelled name for display
 		/// </summary>
 		public string UnCamelName {
 			get { return Name.UnCamel(); }
+		}
+		/// <summary>
+		/// Auth access level (or AccessLevel.Any)
+		/// </summary>
+		public int ModuleAccessLevel;
+		/// <summary>
+		/// Dictionary of method names that have an Auth attribute
+		/// </summary>
+		public Dictionary<string, int> AuthMethods;
+		/// <summary>
+		/// Lowest Access level for any method.
+		/// Returns AccessLevel.Any if all methods have that level (or there are none),
+		/// otherwise the lowest level > Any
+		/// </summary>
+		public int LowestAccessLevel {
+			get {
+				int l = AccessLevel.Any;
+				foreach (int lvl in AuthMethods.Values) {
+					if (lvl > AccessLevel.Any && lvl < l)
+						l = lvl;
+				}
+				return l;
+			}
 		}
 	}
 
@@ -35,17 +66,16 @@ namespace CodeFirstWebFramework {
 	/// Desribes a namespace with AppModules which makes up a WebApp
 	/// </summary>
 	public class Namespace {
-		Dictionary<string, Type> appModules;	// List of all AppModule types by name ("Module" stripped off end)
+		Dictionary<string, ModuleInfo> appModules;	// List of all AppModule types by name ("Module" stripped off end)
 		Dictionary<string, Table> tables;
 		Dictionary<Field, ForeignKeyAttribute> foreignKeys;
 		List<Assembly> assemblies;
-		List<ModuleName> moduleNames;
 
 		/// <summary>
 		/// List of module names for templates (e.g. to auto-generate a module menu)
 		/// </summary>
-		public IEnumerable<ModuleName> Modules {
-			get { return moduleNames; }
+		public IEnumerable<ModuleInfo> Modules {
+			get { return appModules.Values; }
 		}
 
 		/// <summary>
@@ -58,12 +88,11 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public Namespace(string name) {
 			Name = name;
-			appModules = new Dictionary<string, Type>();
+			appModules = new Dictionary<string, ModuleInfo>();
 			assemblies = new List<Assembly>();
 			tables = new Dictionary<string, Table>();
 			foreignKeys = new Dictionary<Field, ForeignKeyAttribute>();
 			List<Type> views = new List<Type>();
-			moduleNames = new List<ModuleName>();
 			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
 				bool relevant = false;
 				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == name && !t.IsAbstract)) {
@@ -72,8 +101,7 @@ namespace CodeFirstWebFramework {
 						string n = t.Name;
 						if (n.EndsWith("Module"))
 							n = n.Substring(0, n.Length - 6);
-						appModules[n.ToLower()] = t;
-						moduleNames.Add(new ModuleName(n));
+						appModules[n.ToLower()] = new ModuleInfo(n, t);
 					}
 					// Process all subclasses of JsonObject with Table attribute in module assembly
 					if (t.IsSubclassOf(typeof(JsonObject))) {
@@ -120,7 +148,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Returns the the Database object to use.
+		/// Returns the Database object to use.
 		/// If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.Database
 		/// </summary>
 		/// <param name="server">ConfigServer to pass to the database constructor</param>
@@ -129,7 +157,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Returns the type of the Database record to be stored in the database.
+		/// Returns the type of the Database record to use to access the database.
 		/// If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.Database
 		/// </summary>
 		public Type GetDatabaseType() {
@@ -142,11 +170,46 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Returns the AccessLevel object to use.
+		/// If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.AccessLevel
+		/// </summary>
+		public AccessLevel GetAccessLevel() {
+			return (AccessLevel)Activator.CreateInstance(GetAccessLevelType());
+		}
+
+		/// <summary>
+		/// Returns the type of the AccessLevel record to use for authorisation levels.
+		/// If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.AccessLevel
+		/// </summary>
+		public Type GetAccessLevelType() {
+			foreach (Assembly assembly in assemblies) {
+				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(AccessLevel)))) {
+					return t;
+				}
+			}
+			return typeof(AccessLevel);
+		}
+
+		/// <summary>
 		/// Get the AppModule for a module name from the url
 		/// </summary>
-		public Type GetModuleType(string name) {
-			name = name.ToLower();
-			return appModules.ContainsKey(name) ? appModules[name] : null;
+		public ModuleInfo GetModuleInfo(string name) {
+			return appModules.TryGetValue(name.ToLower(), out ModuleInfo m) ? m : null;
+		}
+
+		public ModuleInfo ParseUri(string uri, out string filename) {
+			filename = uri.Split('?', '&')[0];
+			if (filename.StartsWith("/"))
+				filename = filename.Substring(1);
+			if (filename == "") filename = "home/default";
+			string baseName = Regex.Replace(filename, @"\.[^/]*$", ""); // Ignore extension - treat as a program request
+																		// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
+			string[] parts = baseName.Split('/');
+			// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
+			ModuleInfo info = parts.Length <= 2 ? GetModuleInfo(parts[0]) : null;
+			if(info != null && parts.Length == 1)
+				filename += "/default";
+			return info;
 		}
 
 		/// <summary>
@@ -213,9 +276,9 @@ namespace CodeFirstWebFramework {
 				}
 				if(updateTable == null)
 					tables.TryGetValue(Regex.Replace(tbl.Name, "^.*_", ""), out updateTable);
-				tables[tbl.Name] = new View(tbl.Name, fields.ToArray(), inds.ToArray(), view.Sql, updateTable);
+				tables[tbl.Name] = new View(tbl.Name, fields.ToArray(), inds.ToArray(), view.Sql, updateTable) { Type = tbl };
 			} else {
-				tables[tbl.Name] = new Table(tbl.Name, fields.ToArray(), inds.ToArray());
+				tables[tbl.Name] = new Table(tbl.Name, fields.ToArray(), inds.ToArray()) { Type = tbl };
 			}
 		}
 

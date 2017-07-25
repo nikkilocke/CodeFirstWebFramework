@@ -1,0 +1,24 @@
+<head>
+	<script>
+		$(function() {
+			var table = makeHeaderDetailForm('#docs', '#detail', 
+				{{Form.Options}}
+			);
+			$('#detail').toggle(table.header.data.ModulePermissions);
+			table.header.bind('changed.field', function(e, newValue, rowData, col, input) {
+				if(col.name == 'ModulePermissions')
+					$('#detail').toggle(newValue);
+			});
+			_.each(table.detail.data, function(d, index) {
+				$('#detail select#r' + index + 'cAccessLevel').find('option').each(function() {
+					if(this.value > 0 && this.value < d.MinAccessLevel)
+						$(this).hide();
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+<table id="docs" cellspacing="0" width="100%"></table>
+<table id="detail" cellspacing="0" width="100%"></table>
+</body>

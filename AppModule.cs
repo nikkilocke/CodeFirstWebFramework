@@ -75,6 +75,47 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool CacheAllowed { get; protected set; }
 
+		/// <summary>
+		/// Security information about this module
+		/// </summary>
+		public ModuleInfo Info;
+
+		private bool? _securityOn;
+
+		public bool SecurityOn
+		{
+			get {
+				if (_securityOn == null)
+					_securityOn = Database.QueryOne("SELECT idUser FROM User") != null;
+				return (bool)_securityOn;
+			}
+		}
+
+		public int UserAccessLevel;
+
+		/// <summary>
+		/// True if user does not have write access
+		/// </summary>
+		public bool ReadOnly {
+			get { return UserAccessLevel <= AccessLevel.ReadOnly; }
+		}
+
+		/// <summary>
+		/// True if user does have write access
+		/// </summary>
+		public bool ReadWrite
+		{
+			get { return UserAccessLevel >= AccessLevel.ReadWrite; }
+		}
+
+		/// <summary>
+		/// True if user has Admin access
+		/// </summary>
+		public bool Admin
+		{
+			get { return UserAccessLevel >= AccessLevel.Admin; }
+		}
+
 		Database _db;
 
 		/// <summary>
@@ -106,9 +147,7 @@ namespace CodeFirstWebFramework {
 		public Settings Settings {
 			get {
 				if (_settings == null) {
-					Type t = Server.NamespaceDef.GetSettingsType();
-					_settings = (Settings)(Database.QueryOne("SELECT * FROM Settings").ToObject(t) 
-						?? Activator.CreateInstance(t));
+					_settings = Database.Get<Settings>(1);
 				}
 				return _settings;
 			}
@@ -117,7 +156,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Force the Settings record to be reloaded from the database
 		/// </summary>
-		protected void ReloadSettings() {
+		public void ReloadSettings() {
 			_settings = null;
 		}
 
@@ -177,7 +216,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Module menu - line 2 of page top menu
 		/// </summary>
-		public MenuOption[] Menu;
+		public List<MenuOption> Menu;
 		
 		/// <summary>
 		/// Alert message to show user
@@ -460,6 +499,8 @@ namespace CodeFirstWebFramework {
 				GetParameters = value.GetParameters;
 				Parameters = value.Parameters;
 				PostParameters = value.PostParameters;
+				Info = value.Info;
+				UserAccessLevel = value.UserAccessLevel;
 			}
 		}
 
@@ -566,8 +607,15 @@ namespace CodeFirstWebFramework {
 		public virtual object CallMethod(out MethodInfo method) {
 			List<object> parms = new List<object>();
 			method = this.GetType().GetMethod(Method, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-			if (method == null) {
+			if (method == null)
 				return null;
+			if (!HasAccess(Info, Method, out UserAccessLevel)) {
+				if (Session.User == null && method.ReturnType == typeof(void)) {
+					SessionData.redirect = Request.Url.AbsoluteUri;
+					Redirect("/admin/login");
+					return null;
+				}
+				throw new CheckException("Unauthorised access");
 			}
 			string moduleName = GetType().Name;
 			if (moduleName.EndsWith("Module"))
@@ -610,7 +658,66 @@ namespace CodeFirstWebFramework {
 					throw new CheckException(ex, "Could not convert {0} to {1}", val, p.ParameterType.Name);
 				}
 			}
+			Init();
 			return method.Invoke(this, parms.Count == 0 ? null : parms.ToArray());
+		}
+
+		/// <summary>
+		/// Check the security for access to a url
+		/// </summary>
+		public bool HasAccess(string uri) {
+			ModuleInfo info = Server.NamespaceDef.ParseUri(uri, out string filename);
+			return info == null ? true : HasAccess(info, Path.GetFileNameWithoutExtension(filename), out int accesslevel);
+		}
+
+		/// <summary>
+		/// Check the security for accewss to a method
+		/// </summary>
+		/// <param name="accessLevel">The user's access level to this method</param>
+		public bool HasAccess(ModuleInfo info, string mtd, out int accessLevel) {
+			if (!SecurityOn) {
+				// No security
+				accessLevel = AccessLevel.Admin;
+				return true;
+			} else if (info != null) {
+				int level = info.ModuleAccessLevel;
+				if (info.AuthMethods.TryGetValue(mtd, out int l)) {
+					level = l;
+				} else {
+					bool writeAccess = false;
+					if (mtd.EndsWith("post")) {
+						mtd = mtd.Substring(0, mtd.Length - 4);
+						writeAccess = true;
+					} else if (mtd.EndsWith("delete")) {
+						mtd = mtd.Substring(0, mtd.Length - 6);
+						writeAccess = true;
+					}
+					if (writeAccess) {
+						if (info.AuthMethods.TryGetValue(mtd, out l))
+							level = l;
+						else
+							mtd = "-";
+						if (level == AccessLevel.ReadOnly)
+							level = AccessLevel.ReadWrite;
+					} else {
+						mtd = "-";
+					}
+				}
+				if (Session.User != null) {
+					accessLevel = Session.User.AccessLevel;
+					if (Session.User.ModulePermissions) {
+						JObject p = Database.QueryOne("SELECT AccessLevel FROM Permission WHERE UserId = " + Session.User.idUser
+							+ " AND Module = " + Database.Quote(Module) + " AND Method = " + Database.Quote(mtd));
+						if (p != null)
+							accessLevel = p.AsInt("AccessLevel");
+					}
+				} else
+					accessLevel = AccessLevel.None;
+				return accessLevel >= level;
+			} else {
+				accessLevel = AccessLevel.None;
+				return true;
+			}
 		}
 
 		/// <summary>
@@ -645,18 +752,24 @@ namespace CodeFirstWebFramework {
 		protected virtual void Init() {
 		}
 
+		protected void insertMenuOptions(params MenuOption [] opts) {
+			foreach (MenuOption o in opts)
+				insertMenuOption(o);
+		}
 		/// <summary>
-		/// Add a menu option to the default Menu
+		/// Add a menu option to the default Menu (checking security - no add if no access)
 		/// </summary>
 		protected void insertMenuOption(MenuOption o) {
+			if (!HasAccess(o.Url))
+				return;
+			if (Menu == null)
+				Menu = new List<MenuOption>();
 			int i;
-			for (i = 0; i < Menu.Length; i++) {
+			for (i = 0; i < Menu.Count; i++) {
 				if (Menu[i].Text.StartsWith("New "))
 					break;
 			}
-			List<MenuOption> list = Menu.ToList();
-			list.Insert(i, o);
-			Menu = list.ToArray();
+			Menu.Insert(i, o);
 		}
 
 		/// <summary>

@@ -304,10 +304,12 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Create an empty record as a C# object
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		public T EmptyRecord<T>() where T : JsonObject {
-			JObject record = emptyRecord(TableFor(typeof(T)));
-			return record.ToObject<T>();
+			Table t = TableFor(typeof(T));
+			JObject record = emptyRecord(t);
+			return (T)record.ToObject(t.Type);
 		}
 
 		JObject emptyRecord(Table table) {
@@ -364,6 +366,7 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Get a record by id
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		public T Get<T>(int id) where T : JsonObject {
 			Table table = TableFor(typeof(T));
@@ -372,6 +375,7 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Get a record by unique key
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		public T Get<T>(T criteria) where T : JsonObject {
 			Table table = TableFor(typeof(T));
@@ -384,7 +388,7 @@ namespace CodeFirstWebFramework {
 			}
 			if (data == null || data.IsAllNull())
 				data = emptyRecord(table);
-			return data.ToObject<T>();
+			return (T)data.ToObject(table.Type);
 		}
 
 		/// <summary>
@@ -590,20 +594,24 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Query the database and return the records as C# objects
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		public IEnumerable<T> Query<T>(string sql) {
-			return Query(sql).Select(r => r.ToObject<T>());
+			Table t = TableFor(typeof(T));
+			return Query(sql).Select(r => (T)r.ToObject(t.Type));
 		}
 
 		/// <summary>
 		/// Query the database and return the records as C# objects
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		/// <param name="fields">Fields to return - leave empty or use "+" to return all relevant fields</param>
 		/// <param name="conditions">To use in the WHERE clause (may also include SORT BY)</param>
 		/// <param name="tableNames">List of table names to join for the query. 
 		/// Joins are performed automatically on foreign keys.</param>
 		public IEnumerable<T> Query<T>(string fields, string conditions, params string[] tableNames) {
-			return Query(fields, conditions, tableNames).Select(r => r.ToObject<T>());
+			Table t = TableFor(typeof(T));
+			return Query(fields, conditions, tableNames).Select(r => (T)r.ToObject(t.Type));
 		}
 
 		/// <summary>
@@ -626,22 +634,26 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Query the database and return the first matching record as a C# object (or an empty record if none)
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
 		public T QueryOne<T>(string query) where T : JsonObject {
+			Table t = TableFor(typeof(T));
 			JObject data = QueryOne(query);
-			return data == null || data.IsAllNull() ? EmptyRecord<T>() : data.To<T>();
+			return data == null || data.IsAllNull() ? EmptyRecord<T>() : (T)data.ToObject(t.Type);
 		}
 
 		/// <summary>
 		/// Query the database and return the first matching record as a C# object (or an empty record if none)
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// <param name="fields">Fields to return - leave empty or use "+" to return all relevant fields</param>
 		/// <param name="conditions">To use in the WHERE clause (may also include SORT BY)</param>
 		/// <param name="tableNames">List of table names to join for the query. 
 		/// Joins are performed automatically on foreign keys.</param>
 		/// </summary>
 		public T QueryOne<T>(string fields, string conditions, params string[] tableNames) where T : JsonObject {
+			Table t = TableFor(typeof(T));
 			JObject data = QueryOne(fields, conditions, tableNames);
-			return data == null || data.IsAllNull() ? EmptyRecord<T>() : data.To<T>();
+			return data == null || data.IsAllNull() ? EmptyRecord<T>() : (T)data.ToObject(t.Type);
 		}
 
 		/// <summary>
@@ -1191,6 +1203,11 @@ namespace CodeFirstWebFramework {
 		public Field PrimaryKey {
 			get { return Indexes[0].Fields[0]; }
 		}
+
+		/// <summary>
+		/// The C# type to which this table relates
+		/// </summary>
+		public Type Type;
 
 		/// <summary>
 		/// Table to update if update is called on a View

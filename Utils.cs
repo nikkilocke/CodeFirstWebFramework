@@ -191,15 +191,21 @@ namespace CodeFirstWebFramework {
 		/// Convert this JObject to a C# object of type T
 		/// </summary>
 		public static T To<T>(this JToken self) {
+			return (T)To(self, typeof(T));
+		}
+
+		/// <summary>
+		/// Convert this JObject to a C# object of type t
+		/// </summary>
+		public static object To(this JToken self, Type t) {
 			try {
-				return self.ToObject<T>(_converter);
+				return self.ToObject(t, _converter);
 			} catch (Exception ex) {
 				Match m = Regex.Match(ex.Message, "Error converting value (.*) to type '(.*)'. Path '(.*)', line");
 				if (m.Success)
 					throw new CheckException(ex, "{0} is an invalid value for {1}", m.Groups[1], m.Groups[3]);
-				throw new CheckException(ex, "Could not convert {0} to {1}", self, typeof(T).Name);
+				throw new CheckException(ex, "Could not convert {0} to {1}", self, t.Name);
 			}
-
 		}
 
 		/// <summary>

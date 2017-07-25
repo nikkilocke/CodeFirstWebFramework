@@ -178,24 +178,19 @@ namespace CodeFirstWebFramework {
 					context.Request.Headers["X-Forwarded-For"],
 					context.Request.RawUrl);
 				Session session = null;
-				string filename = HttpUtility.UrlDecode(context.Request.Url.AbsolutePath).Substring(1);
-				if (filename == "") filename = "home";
+				ModuleInfo info = modules[server.Namespace].ParseUri(context.Request.Url.AbsolutePath, out string filename);
 				string moduleName = null;
 				string methodName = null;
-				string extension = Path.GetExtension(filename);
-				string baseName = Regex.Replace(filename, @"\.[^/]*$", "");	// Ignore extension - treat as a program request
 				// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
-				string[] parts = baseName.Split('/');
-				if (parts.Length <= 2) {
-					Type type = modules[server.Namespace].GetModuleType(parts[0]);
-					if (type != null) {
-						// The AppModule exists - does it handle this extension?
-						HandlesAttribute handles = type.GetCustomAttribute<HandlesAttribute>(true);
-						if (string.IsNullOrWhiteSpace(extension) || handles.Extensions.Contains(extension.ToLower())) {
-							module = (AppModule)Activator.CreateInstance(type);
-							moduleName = parts[0];
-							if (parts.Length == 2) methodName = parts[1];
-						}
+				if (info != null) {
+					// The AppModule exists - does it handle this extension?
+					string extension = Path.GetExtension(filename);
+					HandlesAttribute handles = info.Type.GetCustomAttribute<HandlesAttribute>(true);
+					if (string.IsNullOrWhiteSpace(extension) || handles.Extensions.Contains(extension.ToLower())) {
+						module = (AppModule)Activator.CreateInstance(info.Type);
+						module.Info = info;
+						moduleName = Path.GetDirectoryName(filename);
+						methodName = Path.GetFileNameWithoutExtension(filename);
 					}
 				}
 				if (moduleName == null) {
@@ -283,6 +278,10 @@ namespace CodeFirstWebFramework {
 		/// Simple session
 		/// </summary>
 		public class Session {
+			/// <summary>
+			/// Logged in user (or null if none)
+			/// </summary>
+			public User User;
 			/// <summary>
 			/// Arbitrary JObject stored in session for later access
 			/// </summary>

@@ -133,7 +133,7 @@ namespace CodeFirstWebFramework {
 			Field fld = Field.FieldFor(field, out pk);
 			if (fld == null)
 				return null;
-			if (readwrite && field.IsDefined(typeof(ReadOnlyAttribute)))
+			if (readwrite && (field.IsDefined(typeof(ReadOnlyAttribute)) || field.IsDefined(typeof(DoNotStoreAttribute))))
 				readwrite = false;
 			FieldAttribute f = field.GetCustomAttribute<FieldAttribute>();
 			if (f == null) {
@@ -353,6 +353,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Add a field to the form
+		/// </summary>
+		public void Add(FieldAttribute f) {
+			columns.Add(f.Options);
+		}
+
+		/// <summary>
 		/// Insert a field from a C# class to the form
 		/// </summary>
 		public void Insert(int position, FieldAttribute f) {
@@ -483,7 +490,10 @@ namespace CodeFirstWebFramework {
 		public string Select
 		{
 			get { return Options.AsString("select"); }
-			set { Options["select"] = value; }
+			set {
+				if (Module.HasAccess(value))
+					Options["select"] = value;
+			}
 		}
 
 		/// <summary>
@@ -532,7 +542,10 @@ namespace CodeFirstWebFramework {
 		public string Select
 		{
 			get { return Options.AsString("select"); }
-			set { Options["select"] = value; }
+			set {
+				if (Module.HasAccess(value))
+					Options["select"] = value;
+			}
 		}
 
 		/// <summary>

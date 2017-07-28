@@ -683,8 +683,8 @@ namespace CodeFirstWebFramework {
 				return true;
 			} else if (info != null) {
 				int level = info.ModuleAccessLevel;
-				if (info.AuthMethods.TryGetValue(mtd, out int l)) {
-					level = l;
+				if (info.AuthMethods.TryGetValue(mtd, out AuthAttribute l)) {
+					level = l.AccessLevel;
 				} else {
 					bool writeAccess = false;
 					if (mtd.EndsWith("post")) {
@@ -696,7 +696,7 @@ namespace CodeFirstWebFramework {
 					}
 					if (writeAccess) {
 						if (info.AuthMethods.TryGetValue(mtd, out l))
-							level = l;
+							level = l.AccessLevel;
 						else
 							mtd = "-";
 						if (level == AccessLevel.ReadOnly)

@@ -399,7 +399,7 @@ namespace CodeFirstWebFramework {
 		public JObject Get(string tableName, int id) {
 			Table table = TableFor(tableName);
 			JObject result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + table.PrimaryKey.Name + " = " + id);
-			return result == null ? emptyRecord(table) : result;
+			return result ?? emptyRecord(table);
 		}
 
 		/// <summary>
@@ -513,7 +513,7 @@ namespace CodeFirstWebFramework {
 			if (index == null || index.Fields.FirstOrDefault(f => data[f.Name].ToString() != "") == null) return null;
 			JObject result = QueryOne("SELECT " + idName + " FROM " + tableName + " WHERE "
 				+ index.Where(data));
-			return result == null ? null : result[idName].To<int?>();
+			return result?[idName].To<int?>();
 		}
 
 		/// <summary>
@@ -891,7 +891,7 @@ namespace CodeFirstWebFramework {
 	}
 
 	/// <summary>
-	/// Store detailt about a database field
+	/// Store details about a database field
 	/// </summary>
 	public class Field {
 
@@ -1033,16 +1033,44 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Create a Field object from the Attributes on a C# class field
+		/// Create a Field object from the Attributes on a C# class field (unless it has a DoNotStore attribute)
 		/// </summary>
 		/// <param name="field">The C# FieldInfo for the field</param>
 		/// <param name="pk">Set to PrimaryAttribute if the field has one</param>
 		public static Field FieldFor(FieldInfo field, out PrimaryAttribute pk) {
-			pk = null;
+			pk = field.GetCustomAttribute<PrimaryAttribute>();
 			if (field.IsDefined(typeof(DoNotStoreAttribute)))
 				return null;
-			bool nullable = field.IsDefined(typeof(NullableAttribute));
-			Type pt = field.FieldType;
+			return FieldFor(field.Name, field.FieldType, field.IsDefined(typeof(NullableAttribute)),
+				pk, field.GetCustomAttribute<LengthAttribute>(),
+				field.GetCustomAttribute<DefaultValueAttribute>());
+		}
+
+		/// <summary>
+		/// Create a Field object from the Attributes on a C# class field
+		/// </summary>
+		/// <param name="field">The C# FieldInfo for the field</param>
+		public static Field FieldFor(FieldInfo field) {
+			return FieldFor(field.Name, field.FieldType, field.IsDefined(typeof(NullableAttribute)),
+				field.GetCustomAttribute<PrimaryAttribute>(), field.GetCustomAttribute<LengthAttribute>(),
+				field.GetCustomAttribute<DefaultValueAttribute>());
+		}
+
+		/// <summary>
+		/// Create a Field object from the Attributes on a C# class property
+		/// </summary>
+		/// <param name="field">The C# PropertyInfo for the field</param>
+		public static Field FieldFor(PropertyInfo field) {
+			return FieldFor(field.Name, field.PropertyType, field.IsDefined(typeof(NullableAttribute)),
+				field.GetCustomAttribute<PrimaryAttribute>(), field.GetCustomAttribute<LengthAttribute>(),
+				field.GetCustomAttribute<DefaultValueAttribute>());
+		}
+
+		/// <summary>
+		/// Create a Field object from the Attributes on a C# class field
+		/// </summary>
+		public static Field FieldFor(string name, Type pt, bool nullable, PrimaryAttribute pk, LengthAttribute la, 
+			DefaultValueAttribute da) {
 			decimal length = 0;
 			string defaultValue = null;
 			if (pt == typeof(bool?)) {
@@ -1061,7 +1089,6 @@ namespace CodeFirstWebFramework {
 				pt = typeof(DateTime);
 				nullable = true;
 			}
-			pk = field.GetCustomAttribute<PrimaryAttribute>();
 			if (pk != null)
 				nullable = false;
 			if (pt == typeof(bool)) {
@@ -1082,14 +1109,13 @@ namespace CodeFirstWebFramework {
 			}
 			if (nullable)
 				defaultValue = null;
-			LengthAttribute la = field.GetCustomAttribute<LengthAttribute>();
 			if (la != null)
 				length = la.Length + la.Precision / 10M;
-			DefaultValueAttribute da = field.GetCustomAttribute<DefaultValueAttribute>();
 			if (da != null)
 				defaultValue = da.Value;
-			return new Field(field.Name, pt, length, nullable, pk != null && pk.AutoIncrement, defaultValue);
+			return new Field(name, pt, length, nullable, pk != null && pk.AutoIncrement, defaultValue);
 		}
+
 
 		/// <summary>
 		/// String representation (for debugging)

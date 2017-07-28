@@ -174,7 +174,7 @@ namespace CodeFirstWebFramework {
 			if (self == null)
 				return null;
 			JToken val = self[name];
-			return val == null ? null : val.ToObject<string>();
+			return val?.ToObject<string>();
 		}
 
 		/// <summary>
@@ -184,7 +184,7 @@ namespace CodeFirstWebFramework {
 			if (self == null)
 				return null;
 			JToken val = self[name];
-			return val == null ? null : val.ToObject<T>();
+			return val?.ToObject<T>();
 		}
 
 		/// <summary>

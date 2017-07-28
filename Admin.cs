@@ -19,8 +19,9 @@ namespace CodeFirstWebFramework {
 		}
 
 		public void EditSettings() {
-			Form form = new Form(module, typeof(Settings));
-			form.Data = module.Settings.ToJToken();
+			Form form = new Form(module, typeof(Settings)) {
+				Data = module.Settings.ToJToken()
+			};
 			DirectoryInfo skinFolder = module.Server.DirectoryInfo("skin");
 			form.Replace(form.IndexOf("Skin"), new SelectAttribute(skinFolder.EnumerateFiles("*.css")
 						.Where(f => File.Exists(Path.ChangeExtension(f.FullName, ".js")))
@@ -149,13 +150,15 @@ namespace CodeFirstWebFramework {
 		public void EditUser(int id) {
 			User user = module.Database.Get<User>(id);
 			user.Password = "";
-			HeaderDetailForm f = new HeaderDetailForm(module, user.GetType(), typeof(Permission));
+			HeaderDetailForm f = new HeaderDetailForm(module, new Form(module, user.GetType()), 
+				new ListForm(module, typeof(Permission), true, "Module", "Function", "AccessLevel"));
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
 			SelectAttribute level = new SelectAttribute(levels.Select(), true) {
 				Data = "AccessLevel"
 			};
 			f.Header.Replace(f.Header.IndexOf("AccessLevel"), level);
 			f.Detail.Replace(f.Detail.IndexOf("AccessLevel"), level);
+			f.Detail.Remove("Method");
 			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {
 				// This has to be the admin user
@@ -166,7 +169,8 @@ namespace CodeFirstWebFramework {
 			}
 			f.Data = new JObject().AddRange(
 				"header", user,
-				"detail", permissions(id)
+				"detail", permissions(id).GroupBy(p => p.Module + ":" + p.Function)
+					.Select(g => ((JObject)g.First().ToJToken()).AddRange("detail", g.ToJToken()))
 				);
 			module.Form = f;
 		}
@@ -188,6 +192,7 @@ namespace CodeFirstWebFramework {
 				p.MinAccessLevel = m.ModuleAccessLevel;
 				if (lowest > AccessLevel.Any)
 					p.MinAccessLevel = Math.Min(m.ModuleAccessLevel, lowest);
+				p.Function = "All";
 				yield return p;
 				foreach (string method in m.AuthMethods.Keys) {
 					p = new Permission() {
@@ -199,9 +204,15 @@ namespace CodeFirstWebFramework {
 					r = module.Database.Get(p);
 					if (r.UserId == user)
 						p = r;
-					p.MinAccessLevel = m.AuthMethods[method];
-					if(p.MinAccessLevel != AccessLevel.Any)
+					AuthAttribute a = m.AuthMethods[method];
+					p.MinAccessLevel = a.AccessLevel;
+					if (!a.Hide && p.MinAccessLevel != AccessLevel.Any) {
+						if (!string.IsNullOrEmpty(a.Name))
+							p.Function = a.Name;
+						else
+							p.Function = p.Method.UnCamel().Replace(" Post", " (Edit)");
 						yield return p;
+					}
 				}
 			}
 		}
@@ -241,11 +252,13 @@ namespace CodeFirstWebFramework {
 				return r;
 			module.Database.Execute("DELETE FROM Permission WHERE UserId = " + user.idUser);
 			t = module.Database.TableFor("Permission");
-			foreach (JObject p in ((JArray)json["detail"])) {
-				p["UserId"] = user.idUser;
-				if (user.idUser == 1)
-					p["AccessLevel"] = AccessLevel.Admin;
-				module.Database.Insert("Permission", p);
+			foreach (JObject group in ((JArray)json["detail"])) {
+				int level = user.idUser == 1 ? AccessLevel.Admin : group.AsInt("AccessLevel");
+				foreach (JObject p in ((JArray)group["detail"])) {
+					p["UserId"] = user.idUser;
+					p["AccessLevel"] = level;
+					module.Database.Insert("Permission", p);
+				}
 			}
 			module.Database.Commit();
 			if (firstUser)
@@ -264,7 +277,8 @@ namespace CodeFirstWebFramework {
 		}
 
 		public void Login() {
-			module.Session.User = null;
+			if (module.Method == "logout")
+				module.Session.User = null;
 			if (module.Request.HttpMethod == "POST") {
 				string login = module.Parameters.AsString("login");
 				string password = module.Parameters.AsString("password");
@@ -277,13 +291,22 @@ namespace CodeFirstWebFramework {
 						string redirect = module.SessionData.redirect;
 						module.Session.Object.Remove("redirect");
 						if (string.IsNullOrEmpty(redirect))
-							redirect = "/admin";
+							redirect = "/home";
+						if (!module.HasAccess(redirect)) {
+							foreach(ModuleInfo info in module.Server.NamespaceDef.Modules) {
+								if(module.HasAccess("/" + info.Name)) {
+									redirect = "/" + info.Name;
+									break;
+								}
+							}
+						}
 						module.Redirect(redirect);
 						return;
 					}
 				}
 				module.Message = "Login name or not found or password invalid";
 			}
+
 		}
 	}
 

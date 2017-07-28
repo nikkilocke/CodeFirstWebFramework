@@ -62,6 +62,9 @@ namespace CodeFirstWebFramework {
 		public int AccessLevel;
 		[DoNotStore]
 		public int MinAccessLevel;
+		[DoNotStore]
+		[ReadOnly]
+		public string Function;
 	}
 
 	/// <summary>
@@ -77,6 +80,10 @@ namespace CodeFirstWebFramework {
 		}
 
 		public int AccessLevel;
+
+		public bool Hide;
+
+		public string Name;
 	}
 
 	/// <summary>
@@ -86,9 +93,9 @@ namespace CodeFirstWebFramework {
 	public class AccessLevel {
 		public const int Any = -1;			// Allow access to anyone
 		public const int Unspecified = 0;	// No level specified - you will check the level in code, presumably
-		public const int ReadOnly = 1;
-		public const int ReadWrite = 2;
-		public const int Admin = 99;		// Administrator - do not change this value - should allow access to anything
+		public const int ReadOnly = 10;
+		public const int ReadWrite = 20;
+		public const int Admin = 1000;		// Administrator - do not change this value - should allow access to anything
 		public const int None = 0;			// No access (a User.AccessLevel)
 
 		/// <summary>
@@ -96,10 +103,16 @@ namespace CodeFirstWebFramework {
 		/// NB Must always have 0, "None" as the first item.
 		/// </summary>
 		public virtual IEnumerable<JObject> Select() {
-			yield return new JObject().AddRange("id", 0, "value", "None");
-			yield return new JObject().AddRange("id", ReadOnly, "value", "Read Only");
-			yield return new JObject().AddRange("id", ReadWrite, "value", "Read Write");
-			yield return new JObject().AddRange("id", Admin, "value", "Admin");
+			List<JObject> values = new List<JObject>();
+			values.Add(new JObject().AddRange("id", 0, "value", "None"));
+			foreach (FieldInfo c in GetType()
+					.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+					.Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(int))) {
+				int id = (int)c.GetRawConstantValue();
+				if(id > 0 && !values.Any(v => v.AsInt("id") == id))
+					values.Add(new JObject().AddRange("id", id, "value", c.Name.UnCamel()));
+			}
+			return values.OrderBy(v => v.AsInt("id"));
 		}
 	}
 

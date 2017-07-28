@@ -123,14 +123,13 @@ namespace CodeFirstWebFramework {
 		public Field Field;
 
 		/// <summary>
-		/// Create a FieldAttribute for the given property in a class.
+		/// Create a FieldAttribute for the given field in a class.
 		/// </summary>
 		/// <param name="db">Database (needed to retrieve default select options)</param>
-		/// <param name="field">Property definition</param>
+		/// <param name="field">FieldInfo definition</param>
 		/// <param name="readwrite">True if the user can edit the field</param>
 		public static FieldAttribute FieldFor(Database db, FieldInfo field, bool readwrite) {
-			PrimaryAttribute pk;
-			Field fld = Field.FieldFor(field, out pk);
+			Field fld = Field.FieldFor(field);
 			if (fld == null)
 				return null;
 			if (readwrite && (field.IsDefined(typeof(ReadOnlyAttribute)) || field.IsDefined(typeof(DoNotStoreAttribute))))
@@ -150,36 +149,56 @@ namespace CodeFirstWebFramework {
 						+ " ORDER BY " + valueName), readwrite);
 				}
 			}
-			f.Field = fld;
-			if (f.Data == null)
-				f.Data = fld.Name;
-			if (f.Type == null) {
+			f.SetField(fld, readwrite);
+			return f;
+		}
+
+		/// <summary>
+		/// Create a FieldAttribute for the given property in a class.
+		/// </summary>
+		/// <param name="field">Property definition</param>
+		/// <param name="readwrite">True if the user can edit the field</param>
+		public static FieldAttribute FieldFor(PropertyInfo field, bool readwrite) {
+			Field fld = Field.FieldFor(field);
+			if (fld == null)
+				return null;
+			if (readwrite && (field.IsDefined(typeof(ReadOnlyAttribute)) || field.IsDefined(typeof(DoNotStoreAttribute))))
+				readwrite = false;
+			FieldAttribute f = field.GetCustomAttribute<FieldAttribute>() ?? new FieldAttribute();
+			f.SetField(fld, readwrite);
+			return f;
+		}
+
+		void SetField(Field fld, bool readwrite) { 
+			Field = fld;
+			if (Data == null)
+				Data = fld.Name;
+			if (Type == null) {
 				switch (fld.Type.Name) {
 					case "Int32":
-						f.Type = readwrite ? "intInput" : "int";
+						Type = readwrite ? "intInput" : "int";
 						break;
 					case "Decimal":
-						f.Type = readwrite ? "decimalInput" : "decimal";
+						Type = readwrite ? "decimalInput" : "decimal";
 						break;
 					case "Double":
-						f.Type = readwrite ? "doubleInput" : "double";
+						Type = readwrite ? "doubleInput" : "double";
 						break;
 					case "Boolean":
-						f.Type = readwrite ? "checkboxInput" : "checkbox";
+						Type = readwrite ? "checkboxInput" : "checkbox";
 						break;
 					case "DateTime":
-						f.Type = readwrite ? "dateInput" : "date";
+						Type = readwrite ? "dateInput" : "date";
 						break;
 					default:
-						f.Type = fld.Length == 0 ?
+						Type = fld.Length == 0 ?
 							readwrite ? "textAreaInput" : "textArea" :
 							readwrite ? "textInput" : "string";
 						break;
 				}
 			}
-			if (f.Type == "textInput" && f.Size == 0 && fld.Length > 0)
-				f.Size = (int)Math.Floor(fld.Length);
-			return f;
+			if (Type == "textInput" && Size == 0 && fld.Length > 0)
+				Size = (int)Math.Floor(fld.Length);
 		}
 	}
 
@@ -335,6 +354,19 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Form for C# type t with specific fields in specific order
+		/// </summary>
+		public Form(AppModule module, Type t, bool readwrite, params string [] fieldNames)
+			: this(module, readwrite) {
+			columns = new JArray();
+			Options["columns"] = columns;
+			setTableName(t);
+			foreach(string name in fieldNames) {
+				Add(t, name);
+			}
+		}
+
+		/// <summary>
 		/// Whether the user can input
 		/// </summary>
 		public bool ReadWrite;
@@ -361,6 +393,28 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public void Add(FieldAttribute f) {
 			columns.Add(f.Options);
+		}
+
+		bool readWriteFlagForTable(Type t, bool writeable) {
+			return ReadWrite && (writeable || t.IsDefined(typeof(TableAttribute), false) || t.IsDefined(typeof(WriteableAttribute), false));
+		}
+
+		/// <summary>
+		/// Add a field to the form by name
+		/// </summary>
+		public FieldAttribute Add(Type t, string name) {
+			FieldAttribute f = null;
+			FieldInfo fld = t.GetField(name);
+			if (fld == null) {
+				PropertyInfo p = t.GetProperty(name);
+				Utils.Check(p != null, "Field {0} not found in type {1}", name, t.Name);
+				f = FieldAttribute.FieldFor(p, readWriteFlagForTable(p.DeclaringType, p.IsDefined(typeof(WriteableAttribute))));
+			} else {
+				f = FieldAttribute.FieldFor(Module.Database, fld, readWriteFlagForTable(fld.DeclaringType, fld.IsDefined(typeof(WriteableAttribute))));
+			}
+			if (f != null)
+				columns.Add(f.Options);
+			return f;
 		}
 
 		/// <summary>
@@ -390,10 +444,7 @@ namespace CodeFirstWebFramework {
 			return -1;
 		}
 
-		/// <summary>
-		/// Add all the suitable fields from a C# type to the form
-		/// </summary>
-		public void Build(Type t) {
+		void setTableName(Type t) {
 			Type table = t;
 			while (table != typeof(JsonObject)) {
 				if (table.IsDefined(typeof(TableAttribute), false)) {
@@ -403,6 +454,13 @@ namespace CodeFirstWebFramework {
 				}
 				table = table.BaseType;
 			}
+		}
+
+		/// <summary>
+		/// Add all the suitable fields from a C# type to the form
+		/// </summary>
+		public void Build(Type t) {
+			setTableName(t);
 			processFields(t);
 		}
 
@@ -553,6 +611,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Constructor for C# type t with specific fields in specific order
+		/// </summary>
+		public ListForm(AppModule module, Type t, bool readwrite, params string[] fieldNames)
+			: base(module, t, readwrite, fieldNames) {
+		}
+
+		/// <summary>
 		/// Url to call when the user selects a record.
 		/// </summary>
 		public string Select
@@ -588,6 +653,20 @@ namespace CodeFirstWebFramework {
 		: base(module) {
 			Header = new Form(module, header);
 			Detail = new ListForm(module, detail);
+			Options["header"] = Header.Options;
+			Options["detail"] = Detail.Options;
+		}
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="module">Owning module</param>
+		/// <param name="header">Header form</param>
+		/// <param name="detail">Detail form</param>
+		public HeaderDetailForm(AppModule module, Form header, ListForm detail)
+		: base(module) {
+			Header = header;
+			Detail = detail;
 			Options["header"] = Header.Options;
 			Options["detail"] = Detail.Options;
 		}

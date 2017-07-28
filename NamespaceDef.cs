@@ -19,11 +19,11 @@ namespace CodeFirstWebFramework {
 			Type = t;
 			AuthAttribute a = t.GetCustomAttribute<AuthAttribute>(true);
 			ModuleAccessLevel = a == null ? CodeFirstWebFramework.AccessLevel.Any : a.AccessLevel;
-			AuthMethods = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+			AuthMethods = new Dictionary<string, AuthAttribute>(StringComparer.OrdinalIgnoreCase);
 			foreach (MethodInfo m in t.GetMethods()) {
 				a = m.GetCustomAttribute<AuthAttribute>(true);
 				if (a != null)
-					AuthMethods[m.Name] = a.AccessLevel;
+					AuthMethods[m.Name] = a;
 			}
 		}
 		/// <summary>
@@ -44,7 +44,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Dictionary of method names that have an Auth attribute
 		/// </summary>
-		public Dictionary<string, int> AuthMethods;
+		public Dictionary<string, AuthAttribute> AuthMethods;
 		/// <summary>
 		/// Lowest Access level for any method.
 		/// Returns AccessLevel.Any if all methods have that level (or there are none),
@@ -53,9 +53,9 @@ namespace CodeFirstWebFramework {
 		public int LowestAccessLevel {
 			get {
 				int l = AccessLevel.Any;
-				foreach (int lvl in AuthMethods.Values) {
-					if (lvl > AccessLevel.Any && lvl < l)
-						l = lvl;
+				foreach (AuthAttribute lvl in AuthMethods.Values) {
+					if (lvl.AccessLevel > AccessLevel.Any && lvl.AccessLevel < l)
+						l = lvl.AccessLevel;
 				}
 				return l;
 			}

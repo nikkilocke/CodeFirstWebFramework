@@ -1686,6 +1686,8 @@ function makeForm(selector, options) {
 			col.update(col.cell, colData, 0, result.data);
 		});
 		addJQueryUiControls();
+		if(options.readonly)
+			result.find('input,select,textarea').attr('disabled', true);
 	}
 	var drawn = false;
 
@@ -1711,11 +1713,20 @@ function makeForm(selector, options) {
 					modal: true,
 					height: Math.min(result.height() + 200, $(window).height() * 0.9),
                     width: Math.min(result.width() + 100, $(window).width() - 50),
-					buttons: {
+					buttons: options.readonly ? {
 						Ok: {
 							id: 'Ok',
 							text: 'Ok',
 							click: function() {
+								$(this).dialog("close");
+							}
+						}
+					} : {
+						Ok: {
+							id: 'Ok',
+							text: 'Ok',
+							click: function() {
+								if(!options.readonly)
 								submitUrl(this);
 								$(this).dialog("close");
 							}
@@ -1729,14 +1740,14 @@ function makeForm(selector, options) {
 						}
 					}
 				});
-				actionButton('Edit')
+				actionButton(options.readonly ? 'View' : 'Edit')
 					.click(function (e) {
 						result.parent().dialog('open');
 						e.preventDefault();
 					});
             } else {
-                if (!options.readonly) {
                     // Add Buttons
+				if(!options.readonly) {
                     actionButton(options.submitText || 'Save')
                         .click(function (e) {
                             submitUrl(this);
@@ -1756,14 +1767,14 @@ function makeForm(selector, options) {
                                 submitUrl(this);
                                 e.preventDefault();
                             });
-                }
-				actionButton('Reset')
-					.click(function () {
-						window.location.reload();
-					});
+					actionButton('Reset')
+						.click(function () {
+							window.location.reload();
+						});
+				}
 			}
 		}
-		if(deleteUrl) {
+		if(deleteUrl && !options.readonly) {
 			deleteButton = actionButton('Delete')
 				.click(function (e) {
 					if(confirm("Are you sure you want to delete this record"))
@@ -1846,6 +1857,10 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	}
 	if(options.header.submit === undefined)
 		options.header.submit = submitUrl;
+	if(options.header.readonly === undefined)
+		options.header.readonly = options.readonly;
+	if(options.detail.readonly === undefined)
+		options.detail.readonly = options.header.readonly;
 	if(options.header.ajax === undefined || options.detail.ajax === undefined) {
 		if (options.data) {
 			if(options.header.ajax === undefined)
@@ -1895,7 +1910,7 @@ function makeListForm(selector, options) {
 	if(selectUrl === undefined && submitUrl === undefined) {
 		submitUrl = defaultUrl('Post');
 	}
-	if(typeof(submitUrl) == 'string') {
+	if(selectUrl === undefined && typeof(submitUrl) == 'string') {
 		var s = submitUrl;
 		//noinspection JSUnusedAssignment,JSUnusedLocalSymbols
 		submitUrl = function(button) {
@@ -1970,7 +1985,7 @@ function makeListForm(selector, options) {
 		col.index = index;
 		colCount = Math.max(colCount, c);
 	});
-	if(options.deleteRows && rowsPerRecord == 1)
+	if(options.deleteRows && !options.readonly && rowsPerRecord == 1)
 		$('<th></th>').appendTo(row);
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function() {
@@ -2059,7 +2074,7 @@ function makeListForm(selector, options) {
 			col.update(cell, data, rowIndex, rowData);
 			cell = cell.next('td');
 		});
-		if(options.deleteRows && rowsPerRecord == 1) {
+		if(options.deleteRows && !options.readonly && rowsPerRecord == 1) {
 			if(cell.length != 0)
 				cell.remove();
 			cell = $('<td class="deleteButton"></td>').appendTo(row);
@@ -2089,11 +2104,35 @@ function makeListForm(selector, options) {
 			drawRow(row);
 		}
 		addJQueryUiControls();
+		if(options.readonly)
+			table.find('input,select,textarea').attr('disabled', true);
 	}
+	var drawn = false;
 	function dataReady(d) {
 		table.data = d;
 		body.find('tr').remove();
 		draw();
+		if(!drawn && submitUrl) {
+			drawn = true;
+			if(!options.readonly) {
+				actionButton(options.submitText || 'Save')
+					.click(function (e) {
+						submitUrl(this);
+						e.preventDefault();
+					});
+				if (options.saveAndClose !== false)
+					actionButton((options.submitText || 'Save') + ' and Close')
+						.addClass('goback')
+						.click(function (e) {
+							submitUrl(this);
+							e.preventDefault();
+						});
+				actionButton('Reset')
+					.click(function () {
+						window.location.reload();
+					});
+			}
+		}
 	}
 
 	/**

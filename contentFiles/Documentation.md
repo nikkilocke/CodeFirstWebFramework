@@ -261,13 +261,15 @@ Default.js also provides the methods necessary to implement ajax-enabled forms. 
 
 The C# forms are all based on the Form class. You can create a form to view or input a C# class by calling `Build(Type)`. This will add the necessary columns to the form. By default the types of each field are deduced from the members of the class, as modified by the attributes described under Database tables above. E.g. a ForeignKey field will appear as a select dropdown containing the records from the other table. By default, fields in a Table class will be read-write, and extra fields in a derived or other class (e.g. a View) will be read only.
 
+You can also include Properties (rather than Fields) in your form, or determine which specific fields you want, and their order in the form if you construct the form by providing a specific list of fields/properties.
+
 You can further modify this behaviour with the following attributes:
 
 |Attribute|Description|
 |---------|-----------|
 |ReadOnly|Makes the field read only|
 |Writeable|Makes the field writeable, even if it would be read only by default|
-|Select(IEnumerable<JObject> values, bool readWrite = true)|Makes the field a select dropdown. Values is an enumerable list of JObjects which contain as a minimum and id (to place in the field when returning the value) and a value (to display to the user)|
+|Select(IEnumerable<JObject> values, bool readWrite = true)|Makes the field a select dropdown. Values is an enumerable list of JObjects which contain as a minimum an id (to place in the field when returning the value) and a value (to display to the user)|
 
 You can also apply the Field attribute, which has the following fields which may be set to modify the behaviour:
 
@@ -315,7 +317,7 @@ If a `canDelete` property is added to Options, a Delete button will be provided,
 
 This creates a possibly editable editable list of records. 
 
-You can allow the user to select an item from the list by adding a "select" property to Options, containing a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Post` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
+You can allow the user to select an item from the list by setting the Select propertyto a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Post` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
 
 ### HeaderDetailForm
 
@@ -338,3 +340,18 @@ It can also contain any other markdown you wish. The C# Help AppModule will use 
 The files referred to can be linked to anywhere (e.g. `/help/installation.md`). When any of the md files in the help folder are displayed, they are automatically included in `/help/default.tmpl`, which implements the Table of Contents, Next, Previous and Up links. You can even template a help file itself - instead of creating a .md file, create a .tmpl file of the same name, and you can include Mustache in the file. This would probably be most useful if you have your own Help class (derived from CodeFirstWebFramework.Help) with its own variables to use in the template.
 
 The help becomes context sensitive, because every AppModule has a Help property, which will automatically contain a link to any file file in the help folder with the name *module*_*method*.md, or, if that doesn't exist, the name *module*.md. You can add this link to your `/default.tmpl` file to provide a context-sensitive help link. Note it will be an empty string if there is no such file, which you can test for with code like `{{#if Help}}<a href="{{Help}}">Help</a>{{/if}}`.
+
+## Login and security
+
+By default, there is no user login or security. However, if you provide an interface to edit users, and to login (normally in the `Admin` module - see the Admin module provided) and at least one user is added, logging in will be enabled.
+
+You can limit access to a particular module, or to a particular method in a module by adding an `[Auth]` property. Doing so automatically adds that module or method to the list of modules and methods which require a particular access level. You can specify the access level in the `Auth` constructor (any integer, but pre-defined values are provided as constants in the `AccessLevel` class), or you can write code to check the user's access level (in `AppModule.UserAccessLevel` - this is automatically set to `Admin` if security is disabled because there are no users).
+
+If no access level is specified for a method, it inherits the access level of the module. By default, if the access level of a method is `ReadOnly`, then the corresponding `Post` and `Delete` methods will be `ReadWrite` - there is no need to specify those separately. If most of your methods require the same access level, but one can be accessed by anyone (e.g. `Admin.Login`), you can set the access level on the module, and add an `Auth` parameter to the `Login` method with level set to `AccessLevel.Any`.
+
+If there are no users on file, there is no login security. Once you add a user, all functionality marked with an `Auth` attribute requires logging in as a user. The first user you create will be the Admin user, who has access to everything. You cannot delete this user until all the other users have been deleted (and deleting this user will turn off login security).
+
+All other users have an `AccessLevel`, which can be set to `None`, `ReadOnly`, `ReadWrite` or `Admin`. Any functionality which requires login requires one of these access levels. If you require additional levels in your application, create a new class derived from `AccessLevel`, with constants for the new levels. Any distinct values will be included automatically in the drop-down list of levels, or you can override the `Select` method to provide the data for the list if the default implementation is not sufficient. Note that the core code assumes `ReadOnly`, `ReadWrite` and `Admin` levels remain with their specific values, but space has been left to add intermediate values.
+
+The user can also gain finer control over who has access to what by ticking `Module Permissions`. This will show a list of all the modules and/or methods which require an access level, and you can set the user's level for each one individually. By default, this shows every module and method with an `Auth` attribute, but you can remove some of them from the display by setting `Hide` on the attribute to `true` (the permission used will be that on the module), or show multiple `Auth` method attributes as a single row by setting a `Name` on the attribute - all attributes with the same `Name` are shown as a single row. If you don't specify a `Name`, it is derived from the method name by un-camel-casing the name, and replacing `" Post"` with `" (Edit)"`.
+

@@ -17,11 +17,12 @@ namespace CodeFirstWebFramework {
 		public ModuleInfo(string name, Type t) {
 			Name = name;
 			Type = t;
-			AuthAttribute a = t.GetCustomAttribute<AuthAttribute>(true);
-			ModuleAccessLevel = a == null ? CodeFirstWebFramework.AccessLevel.Any : a.AccessLevel;
+			Auth = t.GetCustomAttribute<AuthAttribute>(true);
+			if (Auth == null)
+				Auth = new AuthAttribute(AccessLevel.Any);
 			AuthMethods = new Dictionary<string, AuthAttribute>(StringComparer.OrdinalIgnoreCase);
 			foreach (MethodInfo m in t.GetMethods()) {
-				a = m.GetCustomAttribute<AuthAttribute>(true);
+				AuthAttribute a = m.GetCustomAttribute<AuthAttribute>(true);
 				if (a != null)
 					AuthMethods[m.Name] = a;
 			}
@@ -37,6 +38,7 @@ namespace CodeFirstWebFramework {
 		public string UnCamelName {
 			get { return Name.UnCamel(); }
 		}
+		public AuthAttribute Auth;
 		/// <summary>
 		/// Auth access level (or AccessLevel.Any)
 		/// </summary>

@@ -682,7 +682,7 @@ namespace CodeFirstWebFramework {
 				accessLevel = AccessLevel.Admin;
 				return true;
 			} else if (info != null) {
-				int level = info.ModuleAccessLevel;
+				int level = info.Auth.AccessLevel;
 				if (info.AuthMethods.TryGetValue(mtd, out AuthAttribute l)) {
 					level = l.AccessLevel;
 				} else {
@@ -708,10 +708,10 @@ namespace CodeFirstWebFramework {
 				if (Session.User != null) {
 					accessLevel = Session.User.AccessLevel;
 					if (Session.User.ModulePermissions) {
-						JObject p = Database.QueryOne("SELECT AccessLevel FROM Permission WHERE UserId = " + Session.User.idUser
+						JObject p = Database.QueryOne("SELECT FunctionAccessLevel FROM Permission WHERE UserId = " + Session.User.idUser
 							+ " AND Module = " + Database.Quote(Module) + " AND Method = " + Database.Quote(mtd));
 						if (p != null)
-							accessLevel = p.AsInt("AccessLevel");
+							accessLevel = p.AsInt("FunctionAccessLevel");
 					}
 				} else
 					accessLevel = AccessLevel.None;

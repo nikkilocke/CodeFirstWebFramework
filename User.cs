@@ -59,9 +59,13 @@ namespace CodeFirstWebFramework {
 		[Primary(3, AutoIncrement = false)]
 		[ReadOnly]
 		public string Method;
-		public int AccessLevel;
+		public int FunctionAccessLevel;
 		[DoNotStore]
 		public int MinAccessLevel;
+		[DoNotStore]
+		[ReadOnly]
+		[Field(Heading = "Module")]
+		public string ModuleName;
 		[DoNotStore]
 		[ReadOnly]
 		public string Function;

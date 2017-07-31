@@ -151,13 +151,16 @@ namespace CodeFirstWebFramework {
 			User user = module.Database.Get<User>(id);
 			user.Password = "";
 			HeaderDetailForm f = new HeaderDetailForm(module, new Form(module, user.GetType()), 
-				new ListForm(module, typeof(Permission), true, "Module", "Function", "AccessLevel"));
+				new ListForm(module, typeof(Permission), true, "ModuleName", "Function", "FunctionAccessLevel"));
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
 			SelectAttribute level = new SelectAttribute(levels.Select(), true) {
 				Data = "AccessLevel"
 			};
 			f.Header.Replace(f.Header.IndexOf("AccessLevel"), level);
-			f.Detail.Replace(f.Detail.IndexOf("AccessLevel"), level);
+			level = new SelectAttribute(levels.Select(), true) {
+				Data = "FunctionAccessLevel"
+			};
+			f.Detail.Replace(f.Detail.IndexOf("FunctionAccessLevel"), level);
 			f.Detail.Remove("Method");
 			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {
@@ -176,42 +179,52 @@ namespace CodeFirstWebFramework {
 		}
 
 		public IEnumerable<Permission> permissions(int user) {
-			foreach (ModuleInfo m in module.Server.NamespaceDef.Modules) {
-				int lowest = m.LowestAccessLevel;
-				if (m.ModuleAccessLevel == AccessLevel.Any && lowest == AccessLevel.Any)
-					continue;
-				Permission p = new Permission() {
-					UserId = user,
-					Module = m.Name,
-					Method = "-",
-					AccessLevel = AccessLevel.Unspecified
-				};
-				Permission r = module.Database.Get(p);
-				if (r.UserId == user)
-					p = r;
-				p.MinAccessLevel = m.ModuleAccessLevel;
-				if (lowest > AccessLevel.Any)
-					p.MinAccessLevel = Math.Min(m.ModuleAccessLevel, lowest);
-				p.Function = "All";
-				yield return p;
-				foreach (string method in m.AuthMethods.Keys) {
-					p = new Permission() {
+			if (user != 1) {
+				foreach (ModuleInfo m in module.Server.NamespaceDef.Modules) {
+					if (m.Auth.Hide)
+						continue;
+					int lowest = m.LowestAccessLevel;
+					if (m.Auth.AccessLevel == AccessLevel.Any && lowest == AccessLevel.Any)
+						continue;
+					Permission p = new Permission() {
 						UserId = user,
 						Module = m.Name,
-						Method = method,
-						AccessLevel = AccessLevel.Unspecified
+						Method = "-",
+						FunctionAccessLevel = AccessLevel.Unspecified
 					};
-					r = module.Database.Get(p);
-					if (r.UserId == user)
-						p = r;
-					AuthAttribute a = m.AuthMethods[method];
-					p.MinAccessLevel = a.AccessLevel;
-					if (!a.Hide && p.MinAccessLevel != AccessLevel.Any) {
-						if (!string.IsNullOrEmpty(a.Name))
-							p.Function = a.Name;
-						else
-							p.Function = p.Method.UnCamel().Replace(" Post", " (Edit)");
-						yield return p;
+					if (user > 1) {
+						Permission r = module.Database.Get(p);
+						if (r.UserId == user)
+							p = r;
+					}
+					p.MinAccessLevel = m.Auth.AccessLevel;
+					if (lowest > AccessLevel.Any)
+						p.MinAccessLevel = Math.Min(m.Auth.AccessLevel, lowest);
+					p.ModuleName = m.Auth.Name ?? m.Name;
+					p.Function = "All";
+					yield return p;
+					foreach (string method in m.AuthMethods.Keys) {
+						p = new Permission() {
+							UserId = user,
+							Module = m.Name,
+							Method = method,
+							FunctionAccessLevel = AccessLevel.Unspecified
+						};
+						if (user > 1) {
+							Permission r = module.Database.Get(p);
+							if (r.UserId == user)
+								p = r;
+						}
+						AuthAttribute a = m.AuthMethods[method];
+						p.MinAccessLevel = a.AccessLevel;
+						if (!a.Hide && p.MinAccessLevel != AccessLevel.Any) {
+							if (!string.IsNullOrEmpty(a.Name))
+								p.Function = a.Name;
+							else
+								p.Function = p.Method.UnCamel().Replace(" Post", " (Edit)");
+							p.ModuleName = m.Auth.Name ?? m.Name;
+							yield return p;
+						}
 					}
 				}
 			}
@@ -219,7 +232,8 @@ namespace CodeFirstWebFramework {
 
 		public AjaxReturn EditUserPost(JObject json) {
 			Table t = module.Database.TableFor("User");
-			User user = (User)((JObject)json["header"]).To(t.Type);
+			JObject header = (JObject)json["header"];
+			User user = (User)header.To(t.Type);
 			bool passwordChanged = false;
 			bool firstUser = !module.SecurityOn;
 			if (user.idUser > 0) {
@@ -235,8 +249,8 @@ namespace CodeFirstWebFramework {
 				passwordChanged = true;
 				if (module.Database.QueryOne("SELECT idUser FROM User") == null) {
 					user.idUser = 1;        // Admin user
-					user.AccessLevel = AccessLevel.Admin;
-					user.ModulePermissions = false;
+					header["AccessLevel"] = user.AccessLevel = AccessLevel.Admin;
+					header["ModulePermissions"] = user.ModulePermissions = false;
 				}
 			}
 			if (passwordChanged) {
@@ -250,13 +264,15 @@ namespace CodeFirstWebFramework {
 			AjaxReturn r = module.PostRecord(user);
 			if (!string.IsNullOrEmpty(r.error))
 				return r;
+			header["idUser"] = user.idUser;
+			header["Password"] = user.Password;
 			module.Database.Execute("DELETE FROM Permission WHERE UserId = " + user.idUser);
 			t = module.Database.TableFor("Permission");
 			foreach (JObject group in ((JArray)json["detail"])) {
-				int level = user.idUser == 1 ? AccessLevel.Admin : group.AsInt("AccessLevel");
+				int level = user.idUser == 1 ? AccessLevel.Admin : group.AsInt("FunctionAccessLevel");
 				foreach (JObject p in ((JArray)group["detail"])) {
 					p["UserId"] = user.idUser;
-					p["AccessLevel"] = level;
+					p["FunctionAccessLevel"] = level;
 					module.Database.Insert("Permission", p);
 				}
 			}

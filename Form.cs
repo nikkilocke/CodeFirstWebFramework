@@ -404,16 +404,23 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public FieldAttribute Add(Type t, string name) {
 			FieldAttribute f = null;
-			FieldInfo fld = t.GetField(name);
+			// Name may be "fieldname/heading"
+			string[] parts = name.Split('/');
+			FieldInfo fld = t.GetField(parts[0]);
 			if (fld == null) {
-				PropertyInfo p = t.GetProperty(name);
-				Utils.Check(p != null, "Field {0} not found in type {1}", name, t.Name);
+				PropertyInfo p = t.GetProperty(parts[0]);
+				Utils.Check(p != null, "Field {0} not found in type {1}", parts[0], t.Name);
 				f = FieldAttribute.FieldFor(p, readWriteFlagForTable(p.DeclaringType, p.IsDefined(typeof(WriteableAttribute))));
 			} else {
 				f = FieldAttribute.FieldFor(Module.Database, fld, readWriteFlagForTable(fld.DeclaringType, fld.IsDefined(typeof(WriteableAttribute))));
 			}
-			if (f != null)
+			if (f != null) {
+				if (parts.Length > 1)
+					f.Heading = parts[1];
+				else if (f.FieldName.StartsWith(Options.AsString("table")))	// If name starts with table name, remove table name from heading
+					f.Heading = f.FieldName.Substring(Options.AsString("table").Length);
 				columns.Add(f.Options);
+			}
 			return f;
 		}
 

@@ -685,6 +685,7 @@ namespace CodeFirstWebFramework {
 				int level = info.Auth.AccessLevel;
 				if (info.AuthMethods.TryGetValue(mtd, out AuthAttribute l)) {
 					level = l.AccessLevel;
+					mtd = l.Name;
 				} else {
 					bool writeAccess = false;
 					if (mtd.EndsWith("post")) {
@@ -695,9 +696,10 @@ namespace CodeFirstWebFramework {
 						writeAccess = true;
 					}
 					if (writeAccess) {
-						if (info.AuthMethods.TryGetValue(mtd, out l))
+						if (info.AuthMethods.TryGetValue(mtd, out l)) {
 							level = l.AccessLevel;
-						else
+							mtd = l.Name;
+						} else
 							mtd = "-";
 						if (level == AccessLevel.ReadOnly)
 							level = AccessLevel.ReadWrite;
@@ -709,7 +711,7 @@ namespace CodeFirstWebFramework {
 					accessLevel = Session.User.AccessLevel;
 					if (Session.User.ModulePermissions) {
 						JObject p = Database.QueryOne("SELECT FunctionAccessLevel FROM Permission WHERE UserId = " + Session.User.idUser
-							+ " AND Module = " + Database.Quote(Module) + " AND Method = " + Database.Quote(mtd));
+							+ " AND Module = " + Database.Quote(info.Auth.Name) + " AND Method = " + Database.Quote(mtd));
 						if (p != null)
 							accessLevel = p.AsInt("FunctionAccessLevel");
 					}

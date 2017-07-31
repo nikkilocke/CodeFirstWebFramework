@@ -37,6 +37,7 @@ namespace Phone {
 		public int Analysis;
 	}
 
+	[Auth(Name = "Phone Numbers")]
 	public class HomeModule : AppModule {
 
 		protected override void Init() {
@@ -67,11 +68,13 @@ namespace Phone {
 			form.Show();
 		}
 
+		[Auth(AccessLevel.ReadWrite)]
 		public AjaxReturn PhoneNumberPost(PhoneNumber json) {
 			json.PhoneKey = Regex.Replace(json.Number, "^[0-9]", "");
 			return PostRecord(json);
 		}
 
+		[Auth(AccessLevel.ReadWrite)]
 		public AjaxReturn PhoneNumberDelete(int id) {
 			return DeleteRecord("PhoneNumber", id);
 		}
@@ -87,7 +90,7 @@ namespace Phone {
 			return Database.Query("SELECT * FROM Analysis ORDER BY AnalysisName");
 		}
 
-		[Auth(AccessLevel.ReadWrite)]
+		[Auth(AccessLevel.ReadWrite, Name = "Update Analysis Codes")]
 		public void Analysis(int id) {
 			Analysis a = Database.Get<Analysis>(id);
 			Form form = new Form(this, typeof(Analysis));
@@ -117,7 +120,7 @@ namespace Phone {
 			return Database.Query("SELECT * FROM CostCentre ORDER BY CostCentreName");
 		}
 
-		[Auth(AccessLevel.ReadWrite)]
+		[Auth(AccessLevel.ReadWrite, Name = "Update Cost Centres")]
 		public void CostCentre(int id) {
 			CostCentre a = Database.Get<CostCentre>(id);
 			Form form = new Form(this, typeof(CostCentre));

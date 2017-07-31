@@ -10,7 +10,7 @@
 					$('#detail').toggle(newValue);
 			});
 			_.each(table.detail.data, function(d, index) {
-				$('#detail select#r' + index + 'cAccessLevel').find('option').each(function() {
+				$('#detail select#r' + index + 'cFunctionAccessLevel').find('option').each(function() {
 					if(this.value > 0 && this.value < d.MinAccessLevel)
 						$(this).hide();
 				});

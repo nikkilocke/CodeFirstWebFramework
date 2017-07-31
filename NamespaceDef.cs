@@ -20,11 +20,16 @@ namespace CodeFirstWebFramework {
 			Auth = t.GetCustomAttribute<AuthAttribute>(true);
 			if (Auth == null)
 				Auth = new AuthAttribute(AccessLevel.Any);
+			if (Auth.Name == null)
+				Auth.Name = name;
 			AuthMethods = new Dictionary<string, AuthAttribute>(StringComparer.OrdinalIgnoreCase);
 			foreach (MethodInfo m in t.GetMethods()) {
 				AuthAttribute a = m.GetCustomAttribute<AuthAttribute>(true);
-				if (a != null)
+				if (a != null) {
+					if (a.Name == null)
+						a.Name = m.Name;
 					AuthMethods[m.Name] = a;
+				}
 			}
 		}
 		/// <summary>

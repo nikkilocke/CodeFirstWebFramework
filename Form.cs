@@ -410,7 +410,8 @@ namespace CodeFirstWebFramework {
 			if (fld == null) {
 				PropertyInfo p = t.GetProperty(parts[0]);
 				Utils.Check(p != null, "Field {0} not found in type {1}", parts[0], t.Name);
-				f = FieldAttribute.FieldFor(p, readWriteFlagForTable(p.DeclaringType, p.IsDefined(typeof(WriteableAttribute))));
+				bool readwrite = p.SetMethod != null && readWriteFlagForTable(p.DeclaringType, p.IsDefined(typeof(WriteableAttribute)));
+				f = FieldAttribute.FieldFor(p, readwrite);
 			} else {
 				f = FieldAttribute.FieldFor(Module.Database, fld, readWriteFlagForTable(fld.DeclaringType, fld.IsDefined(typeof(WriteableAttribute))));
 			}

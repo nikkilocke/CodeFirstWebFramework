@@ -59,16 +59,20 @@ namespace CodeFirstWebFramework {
 		[Primary(3, AutoIncrement = false)]
 		[ReadOnly]
 		public string Method;
+		[DoNotStore]
+		public string Function {
+			get {
+				if (Method == "-")
+					return "All";
+				else if (Method.EndsWith("Post"))
+					return Method.Substring(0, Method.Length - 4).UnCamel() + " Edit";
+				else
+					return Method.UnCamel();
+			}
+		}
 		public int FunctionAccessLevel;
 		[DoNotStore]
 		public int MinAccessLevel;
-		[DoNotStore]
-		[ReadOnly]
-		[Field(Heading = "Module")]
-		public string ModuleName;
-		[DoNotStore]
-		[ReadOnly]
-		public string Function;
 	}
 
 	/// <summary>

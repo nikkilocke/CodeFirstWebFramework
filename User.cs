@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,12 +62,7 @@ namespace CodeFirstWebFramework {
 		[DoNotStore]
 		public string Function {
 			get {
-				if (Method == "-")
-					return "All";
-				else if (Method.EndsWith("Post"))
-					return Method.Substring(0, Method.Length - 4).UnCamel() + " Edit";
-				else
-					return Method.UnCamel();
+				return Method == "-" ? "All" : Method.UnCamel();
 			}
 		}
 		public int FunctionAccessLevel;

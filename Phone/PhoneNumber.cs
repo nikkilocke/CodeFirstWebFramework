@@ -69,9 +69,9 @@ namespace Phone {
 		}
 
 		[Auth(AccessLevel.ReadWrite)]
-		public AjaxReturn PhoneNumberPost(PhoneNumber json) {
+		public AjaxReturn PhoneNumberSave(PhoneNumber json) {
 			json.PhoneKey = Regex.Replace(json.Number, "^[0-9]", "");
-			return PostRecord(json);
+			return SaveRecord(json);
 		}
 
 		[Auth(AccessLevel.ReadWrite)]
@@ -99,9 +99,9 @@ namespace Phone {
 			form.Show();
 		}
 
-		public AjaxReturn AnalysisPost(Analysis json) {
+		public AjaxReturn AnalysisSave(Analysis json) {
 			Utils.Check(json.CostCentre > 0, "Cost Centre required");
-			return PostRecord(json);
+			return SaveRecord(json);
 		}
 
 		public AjaxReturn AnalysisDelete(int id) {
@@ -129,8 +129,8 @@ namespace Phone {
 			form.Show();
 		}
 
-		public AjaxReturn CostCentrePost(CostCentre json) {
-			return PostRecord(json);
+		public AjaxReturn CostCentreSave(CostCentre json) {
+			return SaveRecord(json);
 		}
 
 		public AjaxReturn CostCentreDelete(int id) {

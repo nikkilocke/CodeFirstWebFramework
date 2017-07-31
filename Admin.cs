@@ -33,7 +33,7 @@ namespace CodeFirstWebFramework {
 			form.Show();
 		}
 
-		public AjaxReturn EditSettingsPost(JObject json) {
+		public AjaxReturn EditSettingsSave(JObject json) {
 			module.Database.BeginTransaction();
 			json["idSettings"] = 1;
 			module.Database.Update("Settings", json);
@@ -233,7 +233,7 @@ namespace CodeFirstWebFramework {
 			return modules.Keys.OrderBy(k => k).Select(k => modules[k]);
 		}
 
-		public AjaxReturn EditUserPost(JObject json) {
+		public AjaxReturn EditUserSave(JObject json) {
 			Table t = module.Database.TableFor("User");
 			JObject header = (JObject)json["header"];
 			User user = (User)header.To(t.Type);
@@ -242,7 +242,7 @@ namespace CodeFirstWebFramework {
 			if (user.idUser > 0) {
 				// Existing record
 				User u = module.Database.Get<User>((int)user.idUser);
-				Utils.Check(user.idUser == u.idUser, "Invalid EditUser post");
+				Utils.Check(user.idUser == u.idUser, "Invalid EditUser save");
 				if (string.IsNullOrEmpty(user.Password)) {
 					user.Password = u.Password;
 				} else {
@@ -264,7 +264,7 @@ namespace CodeFirstWebFramework {
 				user.Password = user.HashPassword(user.Password);
 			}
 			module.Database.BeginTransaction();
-			AjaxReturn r = module.PostRecord(user);
+			AjaxReturn r = module.SaveRecord(user);
 			if (!string.IsNullOrEmpty(r.error))
 				return r;
 			header["idUser"] = user.idUser;
@@ -283,7 +283,7 @@ namespace CodeFirstWebFramework {
 			return r;
 		}
 
-		public AjaxReturn DeleteUserPost(int id) {
+		public AjaxReturn EditUserDelete(int id) {
 			module.Database.BeginTransaction();
 			User user = module.Database.Get<User>(id);
 			Utils.Check(user.idUser > 1, "Cannot delete this user");
@@ -352,8 +352,8 @@ namespace CodeFirstWebFramework {
 			new AdminHelper(this).EditSettings();
 		}
 
-		public AjaxReturn EditSettingsPost(JObject json) {
-			return new AdminHelper(this).EditSettingsPost(json);
+		public AjaxReturn EditSettingsSave(JObject json) {
+			return new AdminHelper(this).EditSettingsSave(json);
 		}
 
 		/// <summary>
@@ -391,12 +391,12 @@ namespace CodeFirstWebFramework {
 			new AdminHelper(this).EditUser(id);
 		}
 
-		public AjaxReturn EditUserPost(JObject json) {
-			return new AdminHelper(this).EditUserPost(json);
+		public AjaxReturn EditUserSave(JObject json) {
+			return new AdminHelper(this).EditUserSave(json);
 		}
 
-		public AjaxReturn DeleteUserPost(int id) {
-			return new AdminHelper(this).DeleteUserPost(id);
+		public AjaxReturn EditUserDelete(int id) {
+			return new AdminHelper(this).EditUserDelete(id);
 		}
 
 		[Auth(AccessLevel.Any)]

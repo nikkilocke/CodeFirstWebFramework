@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -329,7 +329,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="readwrite">Whether the user can input to some of the fields</param>
 		public Form(AppModule module, bool readwrite)
 			: base(module) {
-			if (!module.HasAccess(module.Info, module.Method + "post", out int accessLevel))
+			if (!module.HasAccess(module.Info, module.Method + "save", out int accessLevel))
 				readwrite = false;
 			ReadWrite = readwrite;
 			if (!readwrite)

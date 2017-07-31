@@ -669,7 +669,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool HasAccess(string uri) {
 			ModuleInfo info = Server.NamespaceDef.ParseUri(uri, out string filename);
-			return info == null ? true : HasAccess(info, Path.GetFileNameWithoutExtension(filename), out int accesslevel);
+			return info == null ? true : HasAccess(info, Path.GetFileNameWithoutExtension(filename) + (Array.IndexOf(uri.Split('?','&'), "id=0") > 0 ? "save" : ""), out int accesslevel);
 		}
 
 		/// <summary>
@@ -688,7 +688,7 @@ namespace CodeFirstWebFramework {
 					mtd = l.Name;
 				} else {
 					bool writeAccess = false;
-					if (mtd.EndsWith("post")) {
+					if (mtd.EndsWith("save")) {
 						mtd = mtd.Substring(0, mtd.Length - 4);
 						writeAccess = true;
 					} else if (mtd.EndsWith("delete")) {
@@ -848,7 +848,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Save an arbitrary JObject to the database
 		/// </summary>
-		public AjaxReturn PostRecord(JsonObject record) {
+		public AjaxReturn SaveRecord(JsonObject record) {
 			AjaxReturn retval = new AjaxReturn();
 			try {
 				if (record.Id <= 0)

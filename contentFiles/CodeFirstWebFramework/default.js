@@ -1561,7 +1561,7 @@ function makeForm(selector, options) {
 	var submitUrl = myOption('submit', options);
 	var deleteButton;
 	if(submitUrl === undefined) {
-		submitUrl = defaultUrl('Post');
+		submitUrl = defaultUrl('Save');
 	}
 	if(typeof(submitUrl) == 'string') {
 		// Turn url into a function that validates and posts
@@ -1806,7 +1806,7 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	var submitUrl = options.submit;
 	var tableName = options.header.table;
 	if(submitUrl === undefined) {
-		submitUrl = defaultUrl('Post');
+		submitUrl = defaultUrl('Save');
 	}
 	if(typeof(submitUrl) == 'string') {
 		var submitHref = submitUrl;
@@ -1909,7 +1909,7 @@ function makeListForm(selector, options) {
 	var submitUrl = myOption('submit', options);
 	var selectUrl = myOption('select', options);
 	if(selectUrl === undefined && submitUrl === undefined) {
-		submitUrl = defaultUrl('Post');
+		submitUrl = defaultUrl('Save');
 	}
 	if(selectUrl === undefined && typeof(submitUrl) == 'string') {
 		var s = submitUrl;

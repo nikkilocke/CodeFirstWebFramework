@@ -286,8 +286,9 @@ namespace CodeFirstWebFramework {
 		public AjaxReturn EditUserDelete(int id) {
 			module.Database.BeginTransaction();
 			User user = module.Database.Get<User>(id);
-			Utils.Check(user.idUser > 1, "Cannot delete this user");
-			module.Database.Execute("DELETE FROM Permissions WHERE UserId = " + id);
+			Utils.Check(user.idUser > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null), 
+				"Cannot delete this user");
+			module.Database.Execute("DELETE FROM Permission WHERE UserId = " + id);
 			module.Database.Execute("DELETE FROM User WHERE iduser = " + id);
 			module.Database.Commit();
 			return new AjaxReturn() { message = "User deleted" };

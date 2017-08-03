@@ -21,7 +21,8 @@ namespace CodeFirstWebFramework {
 		Dictionary<string, Session> _sessions;
 		static object _lock = new object();
 		Session _empty;
-		Dictionary<string, Namespace> modules;		// All the different web modules we are running
+		Dictionary<string, Namespace> modules;      // All the different web modules we are running
+		HashSet<string> loadedAssemblies;
 
 		/// <summary>
 		/// Constructor
@@ -29,6 +30,7 @@ namespace CodeFirstWebFramework {
 		public WebServer() {
 			try {
 				modules = new Dictionary<string, Namespace>();
+				loadedAssemblies = new HashSet<string>();
 				var baseType = typeof(AppModule);
 				HashSet<string> databases = new HashSet<string>();
 				foreach (ServerConfig server in Config.Default.Servers) {
@@ -50,6 +52,12 @@ namespace CodeFirstWebFramework {
 			if (modules.ContainsKey(server.Namespace)) {
 				server.NamespaceDef = modules[server.Namespace];
 			} else {
+				foreach(string assembly in server.AdditionalAssemblies) {
+					if (loadedAssemblies.Contains(assembly))
+						continue;
+					Assembly.Load(assembly);
+					loadedAssemblies.Add(assembly);
+				}
 				server.NamespaceDef = new Namespace(server.Namespace);
 				modules[server.Namespace] = server.NamespaceDef;
 			}

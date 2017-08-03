@@ -166,7 +166,7 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Read any config file specified in the command line, or ProgramName.config if none.
-		/// Also fill in the COmmandLineFlags.
+		/// Also fill in the CommandLineFlags.
 		/// </summary>
 		/// <param name="args">The program arguments</param>
 		static public void Load(string[] args) {
@@ -253,6 +253,10 @@ namespace CodeFirstWebFramework {
 		/// Database connection string
 		/// </summary>
 		public string ConnectionString;
+		/// <summary>
+		/// Additional Assemblies to load to provide the required functionality
+		/// </summary>
+		public string [] AdditionalAssemblies = new string [0];
 		/// <summary>
 		/// Details of the namespace
 		/// </summary>

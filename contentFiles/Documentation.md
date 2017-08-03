@@ -39,6 +39,7 @@ The web server can actually handle requests for more than 1 web app. Each web ap
 |Database|The type of database - SQLite, MySql, or SQLServer|
 |ConnectionString|For the type of database|
 |Namespace|The C# Namespace in which to search for modules and methods to call for a request page|
+|AdditionalAssemblies|Array of additional assemblies (DLL or EXE) to load into the program. This facility allows you to add additional web apps from separate files, and have them all run in your single web server.|
 |ServerName|The Url used to access the app|
 |ServerAlias|Other Urls for this app, separated by spaces|
 |Port|The port the web server listens on|

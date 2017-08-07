@@ -117,6 +117,16 @@ namespace CodeFirstWebFramework {
 			get { return Name ?? Data; }
 		}
 
+		public FieldAttribute MakeSelectable(JObjectEnumerable values) {
+			Options["selectOptions"] = (JArray)values;
+			Type = Options.AsBool("readonly") ? "select" : "selectInput";
+			return this;
+		}
+
+		public FieldAttribute MakeSelectable(IEnumerable<JObject> values) {
+			return MakeSelectable(new JObjectEnumerable(values));
+		}
+
 		/// <summary>
 		/// SQL Field definition
 		/// </summary>
@@ -199,6 +209,7 @@ namespace CodeFirstWebFramework {
 			}
 			if (Type == "textInput" && Size == 0 && fld.Length > 0)
 				Size = (int)Math.Floor(fld.Length);
+			Options["readonly"] = !readwrite;
 		}
 	}
 

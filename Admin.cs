@@ -23,9 +23,9 @@ namespace CodeFirstWebFramework {
 				Data = module.Settings.ToJToken()
 			};
 			DirectoryInfo skinFolder = module.Server.DirectoryInfo("skin");
-			form.Replace(form.IndexOf("Skin"), new SelectAttribute(skinFolder.EnumerateFiles("*.css")
+			form["Skin"].MakeSelectable(skinFolder.EnumerateFiles("*.css")
 						.Where(f => File.Exists(Path.ChangeExtension(f.FullName, ".js")))
-						.Select(f => new JObject().AddRange("value", Path.GetFileNameWithoutExtension(f.Name))), true) { Data = "Skin" });
+						.Select(f => new JObject().AddRange("value", Path.GetFileNameWithoutExtension(f.Name))));
 			form.Add(new FieldAttribute() {
 				Data = "AppVersion",
 				Type = "string"
@@ -135,11 +135,7 @@ namespace CodeFirstWebFramework {
 			};
 			f.Remove("Password");
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
-			SelectAttribute level = new SelectAttribute(levels.Select(), true) {
-				Data = "AccessLevel",
-				Type = "select"
-			};
-			f.Replace(f.IndexOf("AccessLevel"), level);
+			f["AccessLevel"].MakeSelectable(levels.Select());
 			f.Show();
 		}
 
@@ -153,14 +149,8 @@ namespace CodeFirstWebFramework {
 			HeaderDetailForm f = new HeaderDetailForm(module, new Form(module, user.GetType()), 
 				new ListForm(module, typeof(Permission), true, "Module", "Function", "FunctionAccessLevel"));
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
-			SelectAttribute level = new SelectAttribute(levels.Select(), true) {
-				Data = "AccessLevel"
-			};
-			f.Header.Replace(f.Header.IndexOf("AccessLevel"), level);
-			level = new SelectAttribute(levels.Select(), true) {
-				Data = "FunctionAccessLevel"
-			};
-			f.Detail.Replace(f.Detail.IndexOf("FunctionAccessLevel"), level);
+			f.Header["AccessLevel"].MakeSelectable(levels.Select());
+			f.Detail["FunctionAccessLevel"].MakeSelectable(levels.Select());
 			f.Detail.Remove("Method");
 			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {

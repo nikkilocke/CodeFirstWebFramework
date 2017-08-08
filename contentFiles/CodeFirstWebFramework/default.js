@@ -916,6 +916,20 @@ var Type = {
 			}
 		}
 	},
+	file: {
+		// File input, no auto upload
+		defaultContent: function(index, col) {
+			return '<input type="file" data-col="' + col.name + '"/>';
+		},
+		draw: function(data, rowno, row) {
+			return '<input type="file" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '"' + (this.multiple ? ' multiple="multiple"' : '') + ' />';
+		},
+		update: function(cell, data, rowno, row) {
+			var i = cell.find('input#r' + rowno + 'c' + this.name);
+			if(!i.length)
+				cell.html(this.draw(data, rowno, row));
+		}
+	},
 	radioInput: {
 		// Radio buttons from select options
 		defaultContent: function(index, col) {
@@ -1652,7 +1666,7 @@ function makeForm(selector, options) {
 					val = nval;
 			}
 			if($(selector).triggerHandler('changed.field', [val, result.data, col, this]) !== false) {
-				if(this.type == 'file') {
+				if(this.type == 'file' && $(this).hasClass('autoUpload')) {
 					var img = $(this).prev('img');
 					var submitHref = defaultUrl('Upload');
 					var d = new FormData();
@@ -2012,7 +2026,7 @@ function makeListForm(selector, options) {
 					val = nval;
 			}
 			if(table.triggerHandler('changed.field', [val, table.data[rowIndex], col, this]) !== false) {
-				if(this.type == 'file') {
+				if(this.type == 'file' && $(this).hasClass('autoUpload')) {
 					var img = $(this).prev('img');
 					var submitHref = defaultUrl('Upload');
 					var d = new FormData();
@@ -2211,6 +2225,160 @@ function makeListForm(selector, options) {
 	};
 	Forms.push(table);
 	return table;
+}
+
+/**
+ * Make a form to edit a single record and post it back
+ * Column options are:
+ * {string} [prefix]dataItemName[/heading] (prefix:#=decimal, /=date, @=email)
+ * or
+ * {*} [type] Type.* - sets defaults for column options
+ * {string} data item name
+ * {string} [heading]
+ * @param {string} selector
+ * @param options
+ * @param {string} [options.table] Name of SQL table
+ * @param {string} [options.idName] Name of id field in table (id<table>)
+ * @param {string|function} [options.select] Url to go to or function to call when a row is clicked
+ * @param {string|*} [options.ajax] Ajax settings, or string url (current url + 'Listing')
+ * @param {boolean} [options.dialog] Show form as a dialog when Edit button is pushed
+ * @param {string} [options.submitText} Text to use for Save buttons (default "Save")
+ * @param {boolean} [options.readonly} No save (default false)
+ * @param {boolean} [options.saveAndClose} Include Save and Close button (default true)
+ * @param {boolean} [options.saveAndNew} Include Save and New button (default false)
+ * @param {*} [options.data] Existing data to display
+ * @param {Array} options.columns
+ * @param {function} [options.validate] Callback to validate data
+ * @returns {*}
+ */
+function makeDumbForm(selector, options) {
+	var tableName = myOption('table', options);
+	var submitUrl = myOption('submit', options);
+	var deleteButton;
+	if(submitUrl === undefined) {
+		submitUrl = defaultUrl('Save');
+	}
+	if(submitUrl) {
+		$(selector).closest('form').attr("action", submitUrl);
+	}
+	$(selector).addClass('form');
+	_setAjaxObject(options, 'Data', '');
+	var row;
+	var columns = {};
+	_.each(options.columns, function(col, index) {
+		options.columns[index] = col = _setColObject(col, tableName, index);
+		if(!row || !col.sameRow)
+			row = $('<tr></tr>').appendTo($(selector));
+		$('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
+		if(col.colspan)
+			col.cell.attr('colspan', col.colspan);
+		columns[col.name] = col;
+		col.index = index;
+	});
+	// Attach event handler to input fields
+	$('body').off('change', selector + ' :input');
+	$('body').on('change', selector + ' :input', function(/** this: jElement */) {
+		$('button#Back').text('Cancel');
+		var col = result.fields[$(this).attr('data-col')];
+		if(col) {
+			var val;
+			try {
+				//noinspection JSCheckFunctionSignatures
+				val = col.inputValue(this, result.data);
+			} catch(e) {
+				message(col.heading + ':' + e);
+				$(this).focus();
+				return;
+			}
+			if(col.change) {
+				var nval = col.change(val, result.data, col, this);
+				if(nval === false) {
+					$(this).val(result.data[col.data])
+						.focus();
+					return;
+				} else if(nval !== undefined && nval !== null)
+					val = nval;
+			}
+			if($(selector).triggerHandler('changed.field', [val, result.data, col, this]) !== false) {
+				if(this.type == 'file' && $(this).hasClass('autoUpload')) {
+					var img = $(this).prev('img');
+					var submitHref = defaultUrl('Upload');
+					var d = new FormData();
+					for(var f = 0; f < this.files.length; f++)
+						d.append('file' + (f || ''), this.files[f]);
+					d.append('json', JSON.stringify(result.data));
+					postFormData(submitHref, d, function(d) {
+						if(tableName && d.id)
+							window.location = urlParameter('id', d.id);
+					});
+				} else {
+					result.data[col.data] = val;
+					_.each(options.columns, function (c) {
+						if (c.data == col.data) {
+							c.update(c.cell, val, 0, result.data);
+						}
+					});
+				}
+			}
+		}
+	});
+	var result = $(selector);
+
+	/**
+	 * Redraw form fields
+	 */
+	function draw() {
+		//noinspection JSUnusedLocalSymbols
+		_.each(options.columns, function (col, index) {
+			var colData = result.data[col.data];
+			col.update(col.cell, colData, 0, result.data);
+		});
+		addJQueryUiControls();
+		if(options.readonly)
+			result.find('input,select,textarea').attr('disabled', true);
+	}
+	var drawn = false;
+
+	/**
+	 * Draw form when data arrives
+	 * @param d
+	 */
+	function dataReady(d) {
+		result.data = d;
+		draw();
+		$(selector).find(':input').each(function() { this.name = $(this).attr('data-col'); });
+		// Only do this bit once
+		if(drawn)
+			return;
+		drawn = true;
+		if(submitUrl) {
+				// Add Buttons
+			if(!options.readonly) {
+				actionButton(options.submitText || 'Save')
+					.click(function (e) {
+                       	unsavedInput = false;
+						$(selector).closest('form').submit();
+						e.preventDefault();
+					});
+				actionButton('Reset')
+					.click(function () {
+						window.location.reload();
+					});
+			}
+		}
+	}
+	result.fields = columns;
+	result.settings = options;
+	result.dataReady = dataReady;
+	result.draw = draw;
+	Forms.push(result);
+	if(options.data)
+		dataReady(options.data);
+	else if(options.ajax) {
+		get(options.ajax.url, null, dataReady);
+	}
+	return result;
 }
 
 /**

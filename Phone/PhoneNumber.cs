@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.IO;
 using CodeFirstWebFramework;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Phone {
 	[Table]
@@ -44,7 +47,8 @@ namespace Phone {
 			insertMenuOptions(
 				new MenuOption("Phone Numbers", "/home/Default"),
 				new MenuOption("Analysis", "/home/AnalysisList"),
-				new MenuOption("Cost centres", "/home/CostCentreList")
+				new MenuOption("Cost centres", "/home/CostCentreList"),
+				new MenuOption("Import", "/home/Import")
 			);
 		}
 
@@ -80,7 +84,7 @@ namespace Phone {
 		}
 
 		public void AnalysisList() {
-			insertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0"));
+			insertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0&from=/home/analysislist"));
 			DataTableForm form = new DataTableForm(this, typeof(Analysis));
 			form.Select = "/home/Analysis";
 			form.Show();
@@ -110,7 +114,7 @@ namespace Phone {
 		}
 
 		public void CostCentreList() {
-			insertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0"));
+			insertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0&from=/home/costcentrelist"));
 			DataTableForm form = new DataTableForm(this, typeof(CostCentre));
 			form.Select = "/home/CostCentre";
 			form.Show();
@@ -137,6 +141,92 @@ namespace Phone {
 			Utils.Check(Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null, "Cannot delete Cost Centre code - in use");
 			return DeleteRecord("CostCentre", id);
 		}
+
+		/// <summary>
+		/// Import vcard file. Uses hand-written form in Phone/home/import.tmpl. Submit button calls ImportFile.
+		/// </summary>
+		public void Import() {
+			DumbForm f = new DumbForm(this, true);
+			f.Add(new FieldAttribute() {
+				Data = "file",
+				Heading = "File to import",
+				Type = "file"
+			});
+			f.Add(new SelectAttribute(Database.Query("SELECT AnalysisId as id, AnalysisName AS value FROM Analysis ORDER BY AnalysisName")) {
+				Data = "analysis",
+				Heading = "Analysis"
+			});
+			f.Add(new FieldAttribute() {
+				Data = "prefix",
+				Heading = "International prefix to remove",
+				Type = "textInput"
+			});
+			f.Data = new JObject().AddRange("analysis", 1, "prefix", "+44");
+			f.Show();
+		}
+
+		/// <summary>
+		/// User has submitted a vcard file
+		/// </summary>
+		public void ImportSave(UploadedFile file, int analysis, string prefix) {
+			Utils.Check(Database.Get("Analysis", analysis) != null, "You must choose an analysis code");
+			Method = "import";		// Show import.tmpl again
+			StringBuilder results = new StringBuilder();
+			new BatchJob(this, delegate () {
+				int lineNo = 0;
+				try {
+					string name = "";
+					string[] lines = file.Content.Split('\n');
+					Batch.Records = lines.Length;
+					foreach (string l in lines) {
+						Batch.Record = lineNo++;
+						string line = l;
+						string tag = Utils.NextToken(ref line, ":");
+						line = line.Replace("\r", "").Replace("\\n", "\r\n");
+						switch (tag) {
+							case "BEGIN":
+							case "END":
+								name = "";
+								break;
+							case "FN":
+								name = line;
+								break;
+							default:
+								if (tag.StartsWith("TEL")) {
+									Utils.NextToken(ref tag, ";");
+									line = line.Trim();
+									if (!string.IsNullOrEmpty(prefix) && line.StartsWith(prefix))
+										line = "0" + line.Substring(prefix.Length).Trim();
+									string key = Regex.Replace(line, "^[0-9]", "");
+									if (key == "")
+										break;
+									PhoneNumber p = Database.Get(new PhoneNumber() {
+										PhoneKey = key
+									});
+									if (p.PhoneNumberId > 0) {
+										string message = string.Format("Existing number:{0} {1}", name, line);
+										Batch.Status = message;
+										results.AppendLine(message);
+									} else {
+										string message = string.Format("New number:{0} {1}", name, line);
+										Batch.Status = message;
+										results.AppendLine(message);
+										p.Name = name + " " + tag;
+										p.Number = line;
+										p.PhoneKey = key;
+										p.Analysis = analysis;
+										Database.Insert(p);
+									}
+								}
+								break;
+						}
+					}
+				} catch (Exception ex) {
+					throw new CheckException(ex, "{0}:Error:{1}\r\n", lineNo, ex.Message);
+				}
+			});
+		}
+
 	}
 
 	public class AdminModule : CodeFirstWebFramework.AdminModule {

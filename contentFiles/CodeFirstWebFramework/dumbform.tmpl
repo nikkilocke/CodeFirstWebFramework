@@ -1,0 +1,14 @@
+<head>
+	<script>
+		$(function() {
+			var table = makeDumbForm('#docs', 
+				{{Form.Options}}
+			);
+		});
+	</script>
+</head>
+<body>
+<form method="POST" enctype="multipart/form-data">
+	<table id="docs" cellspacing="0" width="100%"></table>
+</form>
+</body>

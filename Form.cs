@@ -345,6 +345,8 @@ namespace CodeFirstWebFramework {
 			ReadWrite = readwrite;
 			if (!readwrite)
 				Options["readonly"] = true;
+			columns = new JArray();
+			Options["columns"] = columns;
 		}
 
 		/// <summary>
@@ -359,8 +361,6 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public Form(AppModule module, Type t, bool readwrite)
 			: this(module, readwrite) {
-			columns = new JArray();
-			Options["columns"] = columns;
 			Build(t);
 		}
 
@@ -369,8 +369,6 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public Form(AppModule module, Type t, bool readwrite, params string [] fieldNames)
 			: this(module, readwrite) {
-			columns = new JArray();
-			Options["columns"] = columns;
 			setTableName(t);
 			foreach(string name in fieldNames) {
 				Add(t, name);
@@ -719,4 +717,43 @@ namespace CodeFirstWebFramework {
 
 	}
 
+	/// <summary>
+	/// Old-style FORM/SUBMIT form
+	/// </summary>
+	public class DumbForm : Form {
+
+		/// <summary>
+		/// Empty form
+		/// </summary>
+		/// <param name="module">Owning module</param>
+		/// <param name="readwrite">Whether the user can input to some of the fields</param>
+		public DumbForm(AppModule module, bool readwrite) : base(module, readwrite) {
+		}
+
+		/// <summary>
+		/// Readwrite form for C# type t
+		/// </summary>
+		public DumbForm(AppModule module, Type t)
+			: base(module, t) {
+		}
+
+		/// <summary>
+		/// Form for C# type t
+		/// </summary>
+		public DumbForm(AppModule module, Type t, bool readwrite)
+			: base(module, readwrite) {
+		}
+
+		/// <summary>
+		/// Form for C# type t with specific fields in specific order
+		/// </summary>
+		public DumbForm(AppModule module, Type t, bool readwrite, params string[] fieldNames)
+			: base(module, t, readwrite, fieldNames) {
+		}
+
+		public override void Show() {
+			Show("DumbForm");
+		}
+
+	}
 }

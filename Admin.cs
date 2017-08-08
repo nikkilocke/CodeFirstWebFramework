@@ -325,6 +325,7 @@ namespace CodeFirstWebFramework {
 	public class AdminModule : AppModule {
 
 		protected override void Init() {
+			base.Init();
 			insertMenuOptions(
 				new MenuOption("Settings", "/admin/editsettings"),
 				new MenuOption("Users", "/admin/users"),

@@ -785,7 +785,11 @@ namespace CodeFirstWebFramework {
 			if (result != null) {
 				data[idName] = idValue = result[idName];
 			}
-			List<Field> fields = table.Fields.Where(f => !data.IsMissingOrNull(f.Name)).ToList();
+			List<Field> fields = table.Fields.Where(f => data[f.Name] != null && (f.Nullable || data[f.Name].Type != JTokenType.Null)).ToList();
+#if DEBUG
+			if (fields.Any(f => data[f.Name].Type == JTokenType.Null))
+				Log("Fields set to null " + string.Join(",", fields.Where(f => data[f.Name].Type == JTokenType.Null).Select(f => f.Name).ToArray()));
+#endif
 			checkForMissingFields(table, data, idValue == null);
 			try {
 				if (idValue != null) {
@@ -969,7 +973,13 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public string Quote(object o) {
 			if (o == null || o == DBNull.Value) return "NULL";
-			if ((Type == typeof(int) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime)) && o.ToString() == "") return "NULL";
+			string s = o.ToString();
+			if ((Type == typeof(int) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return "NULL";
+			if (Type == typeof(bool)) {
+				// Accept numeric value as bool (non-zero = true)
+				if (Regex.IsMatch(s, @"^\d+$"))
+					return int.Parse(s) > 0 ? "1" : "0";
+			}
 			try {
 				o = Convert.ChangeType(o.ToString(), Type);
 			} catch (Exception ex) {

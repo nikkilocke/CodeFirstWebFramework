@@ -224,6 +224,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		public AjaxReturn EditUserSave(JObject json) {
+			module.Database.BeginTransaction();
 			Table t = module.Database.TableFor("User");
 			JObject header = (JObject)json["header"];
 			User user = (User)header.To(t.Type);
@@ -253,19 +254,18 @@ namespace CodeFirstWebFramework {
 					throw new CheckException(error);
 				user.Password = user.HashPassword(user.Password);
 			}
-			module.Database.BeginTransaction();
 			AjaxReturn r = module.SaveRecord(user);
 			if (!string.IsNullOrEmpty(r.error))
 				return r;
-			header["idUser"] = user.idUser;
-			header["Password"] = user.Password;
 			module.Database.Execute("DELETE FROM Permission WHERE UserId = " + user.idUser);
-			t = module.Database.TableFor("Permission");
-			foreach (JObject p in ((JArray)json["detail"])) {
-				p["UserId"] = user.idUser;
-				if (user.idUser == 1)
-					p["FunctionAccessLevel"] = AccessLevel.Admin;
-				module.Database.Insert("Permission", p);
+			if (user.ModulePermissions) {
+				t = module.Database.TableFor("Permission");
+				foreach (JObject p in ((JArray)json["detail"])) {
+					p["UserId"] = user.idUser;
+					if (user.idUser == 1)
+						p["FunctionAccessLevel"] = AccessLevel.Admin;
+					module.Database.Insert("Permission", p);
+				}
 			}
 			module.Database.Commit();
 			if (firstUser)
@@ -371,7 +371,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		public void Users() {
-			insertMenuOption(new MenuOption("New User", "/admin/EditUser?id=0"));
+			insertMenuOption(new MenuOption("New User", "/admin/EditUser?id=0&from=%2Fadmin%2Fusers"));
 			new AdminHelper(this).Users();
 		}
 

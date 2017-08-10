@@ -91,7 +91,7 @@ namespace CodeFirstWebFramework {
 
 	/// <summary>
 	/// Predefined access levels.
-	/// Derive a class from this and override Select to provide additional levels.
+	/// Derive a class from this to provide additional levels.
 	/// </summary>
 	public class AccessLevel {
 		public const int Any = -1;			// Allow access to anyone

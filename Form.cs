@@ -47,6 +47,11 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Pair of types, separated by , - first is read only, second is read-write
+		/// </summary>
+		public string Types;
+
+		/// <summary>
 		/// Type of field - see list in default.js
 		/// </summary>
 		public string Type {
@@ -146,20 +151,21 @@ namespace CodeFirstWebFramework {
 				readwrite = false;
 			FieldAttribute f = field.GetCustomAttribute<FieldAttribute>();
 			if (f == null) {
+				f = new FieldAttribute();
+				f.SetField(fld, readwrite);
 				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
-				if (fk == null) {
-					f = new FieldAttribute();
-				} else {
+				if (fk != null) {
 					Table t = db.TableFor(fk.Table);
 					string valueName = t.Indexes.Length < 2 ? t.Fields[1].Name :
 						t.Indexes[1].Fields.Length < 2 ? t.Indexes[1].Fields[0].Name :
 						"CONCAT(" + String.Join(",' ',", t.Indexes[1].Fields.Select(fi => fi.Name).ToArray()) + ")";
-					f = new SelectAttribute(db.Query("SELECT " + t.PrimaryKey.Name + " AS id, "
+					f.MakeSelectable(db.Query("SELECT " + t.PrimaryKey.Name + " AS id, "
 						+ valueName + " AS value FROM " + t.Name
-						+ " ORDER BY " + valueName), readwrite);
+						+ " ORDER BY " + valueName));
 				}
+			} else {
+				f.SetField(fld, readwrite);
 			}
-			f.SetField(fld, readwrite);
 			return f;
 		}
 
@@ -184,78 +190,42 @@ namespace CodeFirstWebFramework {
 			if (Data == null)
 				Data = fld.Name;
 			if (Type == null) {
-				switch (fld.Type.Name) {
-					case "Int32":
-						Type = readwrite ? "intInput" : "int";
-						break;
-					case "Decimal":
-						Type = readwrite ? "decimalInput" : "decimal";
-						break;
-					case "Double":
-						Type = readwrite ? "doubleInput" : "double";
-						break;
-					case "Boolean":
-						Type = readwrite ? "checkboxInput" : "checkbox";
-						break;
-					case "DateTime":
-						Type = readwrite ? "dateInput" : "date";
-						break;
-					default:
-						Type = fld.Length == 0 ?
-							readwrite ? "textAreaInput" : "textArea" :
-							readwrite ? "textInput" : "string";
-						break;
+				if (Types != null) {
+					string[] t = Types.Split(',');
+					if (readwrite) {
+						if (t.Length > 1)
+							Type = t[1];
+					} else
+						Type = t[0];
+				}
+				if (string.IsNullOrEmpty(Type)) { 
+					switch (fld.Type.Name) {
+						case "Int32":
+							Type = readwrite ? "intInput" : "int";
+							break;
+						case "Decimal":
+							Type = readwrite ? "decimalInput" : "decimal";
+							break;
+						case "Double":
+							Type = readwrite ? "doubleInput" : "double";
+							break;
+						case "Boolean":
+							Type = readwrite ? "checkboxInput" : "checkbox";
+							break;
+						case "DateTime":
+							Type = readwrite ? "dateInput" : "date";
+							break;
+						default:
+							Type = fld.Length == 0 ?
+								readwrite ? "textAreaInput" : "textArea" :
+								readwrite ? "textInput" : "string";
+							break;
+					}
 				}
 			}
 			if (Type == "textInput" && Size == 0 && fld.Length > 0)
 				Size = (int)Math.Floor(fld.Length);
 			Options["readonly"] = !readwrite;
-		}
-	}
-
-	/// <summary>
-	/// Special FieldAttribute for select fields
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-	public class SelectAttribute : FieldAttribute {
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="options">The options - each JObject shold have an id and a value (at least). 
-		/// If they have a category, a categorised select is created.</param>
-		/// <param name="readwrite">True if the user can input to the field.</param>
-		public SelectAttribute(JObjectEnumerable options, bool readwrite) {
-			Type = readwrite ? "selectInput" : "select";
-			SelectOptions = options;
-		}
-
-		/// <summary>
-		/// Constructor for an input select.
-		/// </summary>
-		/// <param name="options">The options - each JObject shold have an id and a value (at least). 
-		/// If they have a category, a categorised select is created.</param>
-		public SelectAttribute(JObjectEnumerable options)
-			: this(options, true) {
-		}
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="options">The options - each JObject shold have an id and a value (at least). 
-		/// If they have a category, a categorised select is created.</param>
-		/// <param name="readwrite">True if the user can input to the field.</param>
-		public SelectAttribute(IEnumerable<JObject> options, bool readwrite)
-			: this(new JObjectEnumerable(options), readwrite) {
-		}
-
-		/// <summary>
-		/// Set the select options.
-		/// Each JObject shold have an id and a value (at least). 
-		/// If they have a category, a categorised select is created.
-		/// </summary>
-		public JObjectEnumerable SelectOptions {
-			set { Options["selectOptions"] = (JArray)value; }
 		}
 	}
 

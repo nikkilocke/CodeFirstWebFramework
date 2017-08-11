@@ -29,6 +29,8 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public WebServer() {
 			try {
+				AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+				VersionSuffix = "-v" + AppVersion;
 				modules = new Dictionary<string, Namespace>();
 				loadedAssemblies = new HashSet<string>();
 				var baseType = typeof(AppModule);
@@ -90,6 +92,13 @@ namespace CodeFirstWebFramework {
 				Log(string.Format("{0}:Error logging {1}", format, ex.Message));
 			}
 		}
+
+		static public string AppVersion;
+
+		/// <summary>
+		/// Version suffix for including in url's to defeat long-term caching of (e.g.) javascript and css files
+		/// </summary>
+		static public string VersionSuffix;
 
 		/// <summary>
 		/// Start WebServer listening for connections

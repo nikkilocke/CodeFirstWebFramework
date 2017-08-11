@@ -82,8 +82,7 @@ namespace CodeFirstWebFramework {
 
 		private bool? _securityOn;
 
-		public bool SecurityOn
-		{
+		public bool SecurityOn {
 			get {
 				if (_securityOn == null)
 					_securityOn = Database.QueryOne("SELECT idUser FROM User") != null;
@@ -103,17 +102,22 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// True if user does have write access
 		/// </summary>
-		public bool ReadWrite
-		{
+		public bool ReadWrite {
 			get { return UserAccessLevel >= AccessLevel.ReadWrite; }
 		}
 
 		/// <summary>
 		/// True if user has Admin access
 		/// </summary>
-		public bool Admin
-		{
+		public bool Admin {
 			get { return UserAccessLevel >= AccessLevel.Admin; }
+		}
+
+		/// <summary>
+		/// Version suffix for including in url's to defeat long-term caching of (e.g.) javascript and css files
+		/// </summary>
+		public string VersionSuffix {
+			get { return WebServer.VersionSuffix; }
 		}
 
 		Database _db;

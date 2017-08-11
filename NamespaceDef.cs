@@ -206,6 +206,7 @@ namespace CodeFirstWebFramework {
 
 		public ModuleInfo ParseUri(string uri, out string filename) {
 			filename = uri.Split('?', '&')[0];
+			filename = filename.Replace(WebServer.VersionSuffix, "");	// Remove VersionSuffix, which is just there to stop caching between versions
 			if (filename.StartsWith("/"))
 				filename = filename.Substring(1);
 			if (filename == "") filename = "home/default";

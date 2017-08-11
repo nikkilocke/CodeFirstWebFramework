@@ -441,15 +441,13 @@ namespace CodeFirstWebFramework {
 		/// The application version
 		/// </summary>
 		[DoNotStore]
-		public string AppVersion
-		{
-			get { return Assembly.GetEntryAssembly().GetName().Version.ToString(); }
+		public string AppVersion {
+			get { return WebServer.AppVersion; }
 		}
 		/// <summary>
 		/// Record id
 		/// </summary>
-		public override int? Id
-		{
+		public override int? Id {
 			get { return idSettings; }
 			set { idSettings = value; }
 		}

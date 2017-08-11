@@ -54,8 +54,9 @@ namespace Phone {
 
 		public override void Default() {
 			insertMenuOption(new MenuOption("New number", "/home/PhoneNumber?id=0"));
-			DataTableForm form = new DataTableForm(this, typeof(PhoneNumber));
-			form.Select = "/home/PhoneNumber";
+			DataTableForm form = new DataTableForm(this, typeof(PhoneNumber)) {
+				Select = "/home/PhoneNumber"
+			};
 			form.Show();
 		}
 
@@ -66,9 +67,10 @@ namespace Phone {
 		[Auth(AccessLevel.ReadOnly)]
 		public void PhoneNumber(int id) {
 			PhoneNumber n = Database.Get<PhoneNumber>(id);
-			Form form = new Form(this, typeof(PhoneNumber));
-			form.CanDelete = n.PhoneNumberId != null;
-			form.Data = n.ToJToken();
+			Form form = new Form(this, typeof(PhoneNumber)) {
+				CanDelete = n.PhoneNumberId != null,
+				Data = n.ToJToken()
+			};
 			form.Show();
 		}
 
@@ -85,8 +87,9 @@ namespace Phone {
 
 		public void AnalysisList() {
 			insertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0&from=/home/analysislist"));
-			DataTableForm form = new DataTableForm(this, typeof(Analysis));
-			form.Select = "/home/Analysis";
+			DataTableForm form = new DataTableForm(this, typeof(Analysis)) {
+				Select = "/home/Analysis"
+			};
 			form.Show();
 		}
 
@@ -97,9 +100,10 @@ namespace Phone {
 		[Auth(AccessLevel.ReadWrite, Name = "Update Analysis Codes")]
 		public void Analysis(int id) {
 			Analysis a = Database.Get<Analysis>(id);
-			Form form = new Form(this, typeof(Analysis));
-			form.CanDelete = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null;
-			form.Data = a.ToJToken();
+			Form form = new Form(this, typeof(Analysis)) {
+				CanDelete = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null,
+				Data = a.ToJToken()
+			};
 			form.Show();
 		}
 
@@ -115,8 +119,9 @@ namespace Phone {
 
 		public void CostCentreList() {
 			insertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0&from=/home/costcentrelist"));
-			DataTableForm form = new DataTableForm(this, typeof(CostCentre));
-			form.Select = "/home/CostCentre";
+			DataTableForm form = new DataTableForm(this, typeof(CostCentre)) {
+				Select = "/home/CostCentre"
+			};
 			form.Show();
 		}
 
@@ -127,9 +132,10 @@ namespace Phone {
 		[Auth(AccessLevel.ReadWrite, Name = "Update Cost Centres")]
 		public void CostCentre(int id) {
 			CostCentre a = Database.Get<CostCentre>(id);
-			Form form = new Form(this, typeof(CostCentre));
-			form.CanDelete = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null;
-			form.Data = a.ToJToken();
+			Form form = new Form(this, typeof(CostCentre)) {
+				CanDelete = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null,
+				Data = a.ToJToken()
+			};
 			form.Show();
 		}
 
@@ -143,25 +149,28 @@ namespace Phone {
 		}
 
 		/// <summary>
-		/// Import vcard file. Uses hand-written form in Phone/home/import.tmpl. Submit button calls ImportFile.
+		/// Import vcard file. Submit button calls ImportFile.
 		/// </summary>
 		public void Import() {
-			DumbForm f = new DumbForm(this, true);
+			DumbForm f = new DumbForm(this, true) {
+				Data = new JObject().AddRange("analysis", 1, "prefix", "+44")
+			};
 			f.Add(new FieldAttribute() {
 				Data = "file",
 				Heading = "File to import",
 				Type = "file"
 			});
-			f.Add(new SelectAttribute(Database.Query("SELECT AnalysisId as id, AnalysisName AS value FROM Analysis ORDER BY AnalysisName")) {
+			FieldAttribute fld = new FieldAttribute() {
 				Data = "analysis",
 				Heading = "Analysis"
-			});
+			};
+			fld.MakeSelectable(Database.Query("SELECT AnalysisId as id, AnalysisName AS value FROM Analysis ORDER BY AnalysisName"));
+			f.Add(fld);
 			f.Add(new FieldAttribute() {
 				Data = "prefix",
 				Heading = "International prefix to remove",
 				Type = "textInput"
 			});
-			f.Data = new JObject().AddRange("analysis", 1, "prefix", "+44");
 			f.Show();
 		}
 
@@ -171,7 +180,6 @@ namespace Phone {
 		public void ImportSave(UploadedFile file, int analysis, string prefix) {
 			Utils.Check(Database.Get("Analysis", analysis) != null, "You must choose an analysis code");
 			Method = "import";		// Show import.tmpl again
-			StringBuilder results = new StringBuilder();
 			new BatchJob(this, delegate () {
 				int lineNo = 0;
 				try {
@@ -204,13 +212,9 @@ namespace Phone {
 										PhoneKey = key
 									});
 									if (p.PhoneNumberId > 0) {
-										string message = string.Format("Existing number:{0} {1}", name, line);
-										Batch.Status = message;
-										results.AppendLine(message);
+										Batch.Status = string.Format("Existing number:{0} {1}", name, line);
 									} else {
-										string message = string.Format("New number:{0} {1}", name, line);
-										Batch.Status = message;
-										results.AppendLine(message);
+										Batch.Status = string.Format("New number:{0} {1}", name, line);
 										p.Name = name + " " + tag;
 										p.Number = line;
 										p.PhoneKey = key;

@@ -148,6 +148,10 @@ namespace CodeFirstWebFramework {
 			user.Password = "";
 			HeaderDetailForm f = new HeaderDetailForm(module, new Form(module, user.GetType()), 
 				new ListForm(module, typeof(Permission), true, "Module", "Function", "FunctionAccessLevel"));
+			f.Header.Insert(f.Header.IndexOf("Password") + 1, new FieldAttribute() {
+				Data = "RepeatPassword",
+				Type = "passwordInput"
+			});
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
 			f.Header["AccessLevel"].MakeSelectable(levels.Select());
 			f.Detail["FunctionAccessLevel"].MakeSelectable(levels.Select());
@@ -230,6 +234,7 @@ namespace CodeFirstWebFramework {
 			User user = (User)header.To(t.Type);
 			bool passwordChanged = false;
 			bool firstUser = !module.SecurityOn;
+			Utils.Check(header.AsString("Password") + "" == header.AsString("RepeatPassword") + "", "Passwords do not match");
 			if (user.idUser > 0) {
 				// Existing record
 				User u = module.Database.Get<User>((int)user.idUser);
@@ -249,7 +254,7 @@ namespace CodeFirstWebFramework {
 			}
 			if (passwordChanged) {
 				// New record
-				string error = user.PasswordValid();
+				string error = user.PasswordValid(user.Password);
 				if (error != null)
 					throw new CheckException(error);
 				user.Password = user.HashPassword(user.Password);
@@ -282,6 +287,38 @@ namespace CodeFirstWebFramework {
 			module.Database.Execute("DELETE FROM User WHERE iduser = " + id);
 			module.Database.Commit();
 			return new AjaxReturn() { message = "User deleted" };
+		}
+
+		public void ChangePassword() {
+			Utils.Check(module.Session.User != null, "You must log in first");
+			Form f = new Form(module, true);
+			f.Add(new FieldAttribute() {
+				Data = "OldPassword",
+				Type = "passwordInput"
+			});
+			f.Add(new FieldAttribute() {
+				Data = "NewPassword",
+				Type = "passwordInput"
+			});
+			f.Add(new FieldAttribute() {
+				Data = "RepeatNewPassword",
+				Type = "passwordInput"
+			});
+			f.Data = new JObject();
+			f.Show();
+		}
+
+		public AjaxReturn ChangePasswordSave(JObject json) {
+			User user = module.Session.User;
+			Utils.Check(user != null, "You must log in first");
+			Utils.Check(user.HashPassword(json.AsString("OldPassword")) == user.Password, "Old password does not match");
+			string password = json.AsString("NewPassword");
+			Utils.Check(password == json.AsString("RepeatNewPassword"), "Passwords do not match");
+			string error = user.PasswordValid(password);
+			if (error != null)
+				throw new CheckException(error);
+			user.Password = user.HashPassword(password);
+			return module.SaveRecord(user);
 		}
 
 		public void Login() {
@@ -332,8 +369,11 @@ namespace CodeFirstWebFramework {
 				new MenuOption("Backup", "/admin/backup"),
 				new MenuOption("Restore", "/admin/restore")
 				);
-			if(SecurityOn)
+			if (SecurityOn) {
+				if (Session.User != null)
+					insertMenuOption(new MenuOption("Change password", "/admin/changepassword"));
 				insertMenuOption(new MenuOption(Session.User == null ? "Login" : "Logout", "/admin/login"));
+			}
 		}
 
 		[Auth(AccessLevel.Any)]
@@ -389,6 +429,16 @@ namespace CodeFirstWebFramework {
 
 		public AjaxReturn EditUserDelete(int id) {
 			return new AdminHelper(this).EditUserDelete(id);
+		}
+
+		[Auth(AccessLevel.Any)]
+		public void ChangePassword() {
+			new AdminHelper(this).ChangePassword();
+		}
+
+		[Auth(AccessLevel.Any)]
+		public AjaxReturn ChangePasswordSave(JObject json) {
+			return new AdminHelper(this).ChangePasswordSave(json);
 		}
 
 		[Auth(AccessLevel.Any)]

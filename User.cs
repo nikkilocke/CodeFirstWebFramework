@@ -35,10 +35,10 @@ namespace CodeFirstWebFramework {
 		/// Check supplied password is valid
 		/// </summary>
 		/// <returns>null if valid, or error message explaining why if not</returns>
-		public virtual string PasswordValid() {
-			if (string.IsNullOrWhiteSpace(Password))
+		public virtual string PasswordValid(string password) {
+			if (string.IsNullOrWhiteSpace(password))
 				return "Password may not be empty";
-			if (Password.Length < 6)
+			if (password.Length < 6)
 				return "Password must be at least 6 characters";
 			return null;
 		}

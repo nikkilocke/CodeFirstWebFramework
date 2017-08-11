@@ -14,6 +14,14 @@ If you want to build and/or modify the framework, you will require Visual Studio
 
 You can convert the project to an earlier version of Visual Studio, or build it with Mono - to do that you just need to add all the .cs files to the project (whereas Visual Studio 2017 searches the directory automatically), and add all the required NuGet packages listed in the existing `.csproj` file.
 
+## Sample projects which use CodeFirstWebFramework
+
+A simple phone number database project is provided with the source, which demonstrates some of the principles, and uses most of the automatic behaviour built in to CodeFirstWebFramework.
+
+The [AccountServer](https://github.com/nikkilocke/AccountServer) github project is a much more complex project, which uses templates extensively (it was originally written before the Form classes existed, so some of the simpler templates could be replaced by Forms), and overrides Database, Settings, Admin and AccessLevel.
+
+I would be pleased to hear of any other projects which use it - you can email me from my website at [http://www.trumphurst.com/contact.php](http://www.trumphurst.com/contact.php).
+
 ## Config files
  
 The first time you run a program that calls `Config.Load`, if there is no existing Config file with the same name as the program (but a .config extension), it will create one with the default values, which you can then edit. Note that the config file is loaded when the program runs - if you change it, you have to restart the program for the new values to take effect. 
@@ -190,7 +198,6 @@ Note that CodeFirstWebFramework Mustache templates preserve newlines in template
 |// {{*mustache*}}|Is replaced by {{*mustache*}}. This is so you can hide mustache in a comment in javascript files to avoid apparent syntax errors.|
 |'!{{*mustache*}}'|Is replaced by {{*mustache*}}. This is so you can hide mustache a string in javascript files to avoid apparent syntax errors.|
 
-
 ## Database class
 
 The provided Database class provides extensive methods for reading objects from the database, updating and inserting, transactions, etc. It has a built-in Upgrade method that will find all the tables and views defined in the C# code, and create or update all the table structures in the database to match.
@@ -251,6 +258,29 @@ A method may also have named parameters. CallMethod will look for request parame
 A method may also return something - if so, the Call method will call WriteResponse to convert the returned type to a response. Streams and strings are returned unchanged - any other non-null return value is converted to a json object. The javascript provided often uses Ajax calls (e.g. to save a form), and many of these expect an object of type `AjaxReturn` to return the status and results of a call.
 
 A method may instead call WriteResponse or Respond itself to send back results, if the default behaviour is not sufficient. Or even write the result itself - in which case it should set ResponseSent to true, to prevent the default processing.
+
+### Caching and versioning
+
+All pages delivered from an AppModule are set to disable web browser caching by default - it is assumed that most code-driven pages may be different on every call. You can allow caching by setting CacheAllowed during the call.
+
+By default web browsers will cache apparently static files - like `default.css` and `default.js`, for example, which are loaded as script files from `default.tmpl`. This becomes an issue when a new version of your app is installed, and the file has changed, but the web server does not bother to load it. While testing, you can get round this with a forced refresh of your browser, but you cannot expect end users to know about this. So there is a built-in mechanism for defeating the caching - append `{{VersionSuffix}}` to the filename in your template file. This suffix includes the program version number, so when you change the version number, the web browser will think it is loading a different filename, and not use its cache. The suffix is automatically removed from the filename by the web server before looking for the file on disk.
+
+### Batch (long running) code
+
+If the code in response to a web request is going to run for longer than a second or so, you should take advantage of the built-in batch running facilities, to give the user feedback on the progress of the code. See the `Phone` test app `ImportSave` method for an example.
+
+At the start of your method, create a `BatchJob`. The constructor takes a `delegate` or `Action` containing code to run the job. `CodeFirstWebFramework` will automatically redirect the browser to `/admin/batchstatus`, which shows the progress of the batch, and redirects back to the original page (or another page of your choice) when the batch is finished.
+
+Inside the delegate, the `Batch` property contains the BatchJob instance. `BatchJob` has the following properties to help the job communicate with the user:
+
+|Property|Usage|
+|--------|-----|
+|Records|The number of records the batch will process, for the progress bar.|
+|Record|The current record being processed, for the progress bar.|
+|Status|A string describing what is happening now.|
+
+Any exceptions inside the delegate will be caught, logged, and the message displayed to the user.
+
 
 ## Default.js
 
@@ -323,6 +353,21 @@ You can allow the user to select an item from the list by setting the Select pro
 ### HeaderDetailForm
 
 This is a header Form followed by a ListForm containing lines for that header. The Data provided must contain a header property containing the header data, and a detail enumerable containing the detail lines.
+
+### Form Save and Delete methods, and the AjaxReturn class
+
+Form Save and Delete methods return an `AjaxReturn` object to the calling javascript. This contains fields for communicating with the javascript (in lower case, following javascript conventions). These are:
+
+|Field|Purpose|
+|-----|-------|
+|error|If an exception occurs in a method which returns an `AjaxReturn`, it is trapped automatically, and the message placed here. Or you can set this yourself to indicate a reason the call has failed.|
+|message|This message is displayed at the top of the form.|
+|redirect|This instructs the javascript to redirect to a different page.|
+|confirm|Ask the user to confirm something (with this prompt), and resubmit with confirm parameter if the user says yes.|
+|id|For a Save method, this should be set to the id of a newly saved record. If set, the javascript will reload this record into the form.|
+|data|Arbitrary data to send to the javascript. For instance, `batchstatus` uses this to get the batch progress data.|
+
+Note that `AppModule` provides `SaveRecord` and `DeleteRecord` methods which will save or delete a record and return a suitably filled in AjaxReturn. For simple single record updates you can do your validation on the supplied data, then return the result of `SaveRecord`. Note that the `Utils.Check` method (which checks its first argument is true, and thors an exception with the supplied message if not) is a useful shorthand for validation checks.
 
 ## Help
 

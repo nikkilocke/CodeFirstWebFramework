@@ -16,11 +16,20 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.0.11</Version>
-    <AssemblyVersion>1.0.11.0</AssemblyVersion>
-    <FileVersion>1.0.11.0</FileVersion>
-    <PackageReleaseNotes>Added missing theme.min.css.
-New DumbForm for (e.g.) file uploads.</PackageReleaseNotes>
+    <Version>1.0.12</Version>
+    <AssemblyVersion>1.0.12.0</AssemblyVersion>
+    <FileVersion>1.0.12.0</FileVersion>
+    <PackageReleaseNotes>Change password option. Must enter new passwords twice to ensure they are the same.
+Added VersionSuffix to defeat web browser caching between versions.
+Allow explicitly setting values to null when updating database records.
+Allow numeric values in bool fields (0 = false, anything else true).
+New Types attribute in [Field] contains readonly and readwrite field types, separated by comma.
+Remove [Select] attribute, and use MakeSelectable instead.
+</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\net45\CodeFirstWebFramework.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

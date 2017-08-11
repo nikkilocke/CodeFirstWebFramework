@@ -122,12 +122,18 @@ namespace CodeFirstWebFramework {
 			get { return Name ?? Data; }
 		}
 
+		/// <summary>
+		/// Turn a field into a select or selectInput
+		/// </summary>
 		public FieldAttribute MakeSelectable(JObjectEnumerable values) {
 			Options["selectOptions"] = (JArray)values;
 			Type = Options.AsBool("readonly") ? "select" : "selectInput";
 			return this;
 		}
 
+		/// <summary>
+		/// Turn a field into a select or selectInput
+		/// </summary>
 		public FieldAttribute MakeSelectable(IEnumerable<JObject> values) {
 			return MakeSelectable(new JObjectEnumerable(values));
 		}
@@ -721,6 +727,10 @@ namespace CodeFirstWebFramework {
 			: base(module, t, readwrite, fieldNames) {
 		}
 
+		/// <summary>
+		/// Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't
+		/// exist, it uses the default template for the form (/dumbform.tmpl).
+		/// </summary>
 		public override void Show() {
 			Show("DumbForm");
 		}

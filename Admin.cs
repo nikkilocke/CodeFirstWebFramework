@@ -18,6 +18,9 @@ namespace CodeFirstWebFramework {
 			this.module = module;
 		}
 
+		/// <summary>
+		/// Create form to edit settings
+		/// </summary>
 		public void EditSettings() {
 			Form form = new Form(module, typeof(Settings)) {
 				Data = module.Settings.ToJToken()
@@ -33,6 +36,9 @@ namespace CodeFirstWebFramework {
 			form.Show();
 		}
 
+		/// <summary>
+		/// Update settings
+		/// </summary>
 		public AjaxReturn EditSettingsSave(JObject json) {
 			module.Database.BeginTransaction();
 			json["idSettings"] = 1;
@@ -128,6 +134,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Create datatable to list users
+		/// </summary>
 		public void Users() {
 			Table t = module.Database.TableFor("User");
 			DataTableForm f = new DataTableForm(module, t.Type) {
@@ -139,10 +148,16 @@ namespace CodeFirstWebFramework {
 			f.Show();
 		}
 
+		/// <summary>
+		/// List users for Users form
+		/// </summary>
 		public JObjectEnumerable UsersListing() {
 			return module.Database.Query("SELECT * FROM User ORDER BY Login");
 		}
 
+		/// <summary>
+		/// Create form to edit an individual user
+		/// </summary>
 		public void EditUser(int id) {
 			User user = module.Database.Get<User>(id);
 			user.Password = "";
@@ -171,6 +186,9 @@ namespace CodeFirstWebFramework {
 			module.Form = f;
 		}
 
+		/// <summary>
+		/// List permissions for individual modules
+		/// </summary>
 		public IEnumerable<Permission> permissions(int user) {
 			Dictionary<string, Permission> modules = new Dictionary<string, Permission>();
 			if (user != 1) {
@@ -227,6 +245,9 @@ namespace CodeFirstWebFramework {
 			return modules.Keys.OrderBy(k => k).Select(k => modules[k]);
 		}
 
+		/// <summary>
+		/// Update user
+		/// </summary>
 		public AjaxReturn EditUserSave(JObject json) {
 			module.Database.BeginTransaction();
 			Table t = module.Database.TableFor("User");
@@ -278,6 +299,9 @@ namespace CodeFirstWebFramework {
 			return r;
 		}
 
+		/// <summary>
+		/// Delete user
+		/// </summary>
 		public AjaxReturn EditUserDelete(int id) {
 			module.Database.BeginTransaction();
 			User user = module.Database.Get<User>(id);
@@ -289,6 +313,9 @@ namespace CodeFirstWebFramework {
 			return new AjaxReturn() { message = "User deleted" };
 		}
 
+		/// <summary>
+		/// Create form to change user's password
+		/// </summary>
 		public void ChangePassword() {
 			Utils.Check(module.Session.User != null, "You must log in first");
 			Form f = new Form(module, true);
@@ -308,6 +335,9 @@ namespace CodeFirstWebFramework {
 			f.Show();
 		}
 
+		/// <summary>
+		/// Update user's password
+		/// </summary>
 		public AjaxReturn ChangePasswordSave(JObject json) {
 			User user = module.Session.User;
 			Utils.Check(user != null, "You must log in first");
@@ -321,6 +351,9 @@ namespace CodeFirstWebFramework {
 			return module.SaveRecord(user);
 		}
 
+		/// <summary>
+		/// Display login template, and log user in if form data is posted
+		/// </summary>
 		public void Login() {
 			if (module.Method == "logout")
 				module.Session.User = null;
@@ -361,6 +394,9 @@ namespace CodeFirstWebFramework {
 	[Auth(AccessLevel.Admin)]
 	public class AdminModule : AppModule {
 
+		/// <summary>
+		/// Add menu options
+		/// </summary>
 		protected override void Init() {
 			base.Init();
 			insertMenuOptions(
@@ -376,14 +412,23 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Display default template
+		/// </summary>
 		[Auth(AccessLevel.Any)]
 		public override void Default() {
 		}
 
+		/// <summary>
+		/// Display settings form
+		/// </summary>
 		public void EditSettings() {
 			new AdminHelper(this).EditSettings();
 		}
 
+		/// <summary>
+		/// Update settings
+		/// </summary>
 		public AjaxReturn EditSettingsSave(JObject json) {
 			return new AdminHelper(this).EditSettingsSave(json);
 		}
@@ -410,42 +455,72 @@ namespace CodeFirstWebFramework {
 			new AdminHelper(this).Restore();
 		}
 
+		/// <summary>
+		/// Display users list form
+		/// </summary>
 		public void Users() {
 			insertMenuOption(new MenuOption("New User", "/admin/EditUser?id=0&from=%2Fadmin%2Fusers"));
 			new AdminHelper(this).Users();
 		}
 
+		/// <summary>
+		/// Return user list for Users form
+		/// </summary>
+		/// <returns></returns>
 		public JObjectEnumerable UsersListing() {
 			return new AdminHelper(this).UsersListing();
 		}
 
+		/// <summary>
+		/// Display form for individual user
+		/// </summary>
 		public void EditUser(int id) {
 			new AdminHelper(this).EditUser(id);
 		}
 
+		/// <summary>
+		/// Update user
+		/// </summary>
 		public AjaxReturn EditUserSave(JObject json) {
 			return new AdminHelper(this).EditUserSave(json);
 		}
 
+		/// <summary>
+		/// Delete user
+		/// </summary>
 		public AjaxReturn EditUserDelete(int id) {
 			return new AdminHelper(this).EditUserDelete(id);
 		}
 
+		/// <summary>
+		/// Change user's password form
+		/// </summary>
 		[Auth(AccessLevel.Any)]
 		public void ChangePassword() {
 			new AdminHelper(this).ChangePassword();
 		}
 
+		/// <summary>
+		/// Update user's password
+		/// </summary>
+		/// <param name="json"></param>
+		/// <returns></returns>
 		[Auth(AccessLevel.Any)]
 		public AjaxReturn ChangePasswordSave(JObject json) {
 			return new AdminHelper(this).ChangePasswordSave(json);
 		}
 
+		/// <summary>
+		/// Login form
+		/// </summary>
 		[Auth(AccessLevel.Any)]
 		public void Login() {
 			new AdminHelper(this).Login();
 		}
 
+		/// <summary>
+		/// Logout then show login form
+		/// </summary>
 		[Auth(AccessLevel.Any)]
 		public void Logout() {
 			new AdminHelper(this).Login();

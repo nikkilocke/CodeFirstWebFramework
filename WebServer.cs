@@ -25,7 +25,10 @@ namespace CodeFirstWebFramework {
 		HashSet<string> loadedAssemblies;
 
 		/// <summary>
-		/// Constructor
+		/// Constructor.
+		/// You must call Config.Load before calling this.
+		/// Sets up all servers specified in the config file, loading any additional assemblies required.
+		/// Upgrades all databases to match the latest code.
 		/// </summary>
 		public WebServer() {
 			try {
@@ -93,6 +96,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// The version number from the application.
+		/// </summary>
 		static public string AppVersion;
 
 		/// <summary>

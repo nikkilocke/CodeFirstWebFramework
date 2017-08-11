@@ -82,6 +82,9 @@ namespace CodeFirstWebFramework {
 
 		private bool? _securityOn;
 
+		/// <summary>
+		/// True if there are users in the database, so security should be checked
+		/// </summary>
 		public bool SecurityOn {
 			get {
 				if (_securityOn == null)
@@ -90,6 +93,9 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Access level of the currently logged in user
+		/// </summary>
 		public int UserAccessLevel;
 
 		/// <summary>
@@ -677,8 +683,10 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Check the security for accewss to a method
+		/// Check the security for access to a method
 		/// </summary>
+		/// <param name="info">The ModuleInfo for the relevant module</param>
+		/// <param name="mtd">The method name (lower case)</param>
 		/// <param name="accessLevel">The user's access level to this method</param>
 		public bool HasAccess(ModuleInfo info, string mtd, out int accessLevel) {
 			if (!SecurityOn) {
@@ -760,6 +768,10 @@ namespace CodeFirstWebFramework {
 		protected virtual void Init() {
 		}
 
+		/// <summary>
+		/// Add multiple menu options to the default Menu (checking security - no add if no access)
+		/// </summary>
+		/// <param name="opts"></param>
 		protected void insertMenuOptions(params MenuOption [] opts) {
 			foreach (MenuOption o in opts)
 				insertMenuOption(o);

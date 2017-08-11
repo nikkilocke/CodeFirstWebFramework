@@ -1,5 +1,7 @@
 # CodeFirstWebFramework Documentation
 
+## [Api documentation link](Api.md)
+
 ## Building a project which uses CodeFirstWebFramework
 
 Download the latest NuGet `CodeFirstWebFramework` package using the NuGet package manager.

@@ -13,7 +13,6 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		/// <param name="name"></param>
 		public ModuleInfo(string name, Type t) {
 			Name = name;
 			Type = t;
@@ -36,14 +35,24 @@ namespace CodeFirstWebFramework {
 		/// Name of module
 		/// </summary>
 		public string Name;
+
+		/// <summary>
+		/// AppModule type
+		/// </summary>
 		public Type Type;
+
 		/// <summary>
 		/// Uncamelled name for display
 		/// </summary>
 		public string UnCamelName {
 			get { return Name.UnCamel(); }
 		}
+
+		/// <summary>
+		/// The AuthAttribute associated with this module (or one with Any access if there is none)
+		/// </summary>
 		public AuthAttribute Auth;
+
 		/// <summary>
 		/// Auth access level (or AccessLevel.Any)
 		/// </summary>
@@ -204,6 +213,11 @@ namespace CodeFirstWebFramework {
 			return appModules.TryGetValue(name.ToLower(), out ModuleInfo m) ? m : null;
 		}
 
+		/// <summary>
+		/// Parse a uri and return the ModuleInfor associated with it (or null if none).
+		/// Sets filename to the proper relative filename (modulename/methodname.extension), stripping on VersionSuffix, 
+		/// and adding any defaults (home/default if uri is "/", for instance).
+		/// </summary>
 		public ModuleInfo ParseUri(string uri, out string filename) {
 			filename = uri.Split('?', '&')[0];
 			filename = filename.Replace(WebServer.VersionSuffix, "");	// Remove VersionSuffix, which is just there to stop caching between versions

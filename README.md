@@ -27,5 +27,6 @@ There is also built-in support for GitHub style Markdown (like this file), both 
 
 The DLL can actually run multiple web servers on the same port (distinguished by the server part of the url), or different ports, each of which can use the same or different C# code (distinguished by C# Namespaces) and use different databases. You can also customise the look and feel of each server, as the template code looks for templates in a folder named for the server, then a folder named for the app namespace, then in the CodeFirstWebFramework folder.
 
-[Full documentation is in contentFiles/Documentation.md](contentFiles/Documentation.md)
+[More documentation is in contentFiles/Documentation.md](contentFiles/Documentation.md)
 
+[Api documentation is in contentFiles/Api.md](contentFiles/Api.md)

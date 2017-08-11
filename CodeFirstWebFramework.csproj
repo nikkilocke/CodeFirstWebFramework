@@ -26,6 +26,7 @@ Allow numeric values in bool fields (0 = false, anything else true).
 New Types attribute in [Field] contains readonly and readwrite field types, separated by comma.
 Remove [Select] attribute, and use MakeSelectable instead.
 </PackageReleaseNotes>
+	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,11 +34,12 @@ Remove [Select] attribute, and use MakeSelectable instead.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.12.1" />
+    <PackageReference Include="Markdig" Version="0.13.0" />
     <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
     <PackageReference Include="mustache-sharp" Version="0.2.10" />
     <PackageReference Include="MySql.Data" Version="6.9.9" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Vsxmd" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>

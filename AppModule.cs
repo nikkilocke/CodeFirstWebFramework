@@ -804,7 +804,7 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Load the named template, and render using Mustache from the supplied object.
-		/// E.g. {{Body} in the template will be replaced with the obj.Body.ToString()
+		/// E.g. {{Body}} in the template will be replaced with the obj.Body.ToString()
 		/// Then split into &lt;head&gt; (goes to this.Head) and &lt;body&gt; (goes to this.Body)
 		/// (and also any other fields with the TemplateSection attribute).
 		/// If no body section, the whole remaining template goes into this.Body.
@@ -1073,7 +1073,7 @@ namespace CodeFirstWebFramework {
 	}
 
 	/// <summary>
-	/// Class to hold details of an uploaded file (from an <input type="file" />)
+	/// Class to hold details of an uploaded file (from an &lt;input type="file" /&gt;)
 	/// </summary>
 	public class UploadedFile {
 

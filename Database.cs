@@ -212,6 +212,9 @@ namespace CodeFirstWebFramework {
 			db = getDatabase(type, connectionString);
 		}
 
+		/// <summary>
+		/// The module which created this database
+		/// </summary>
 		public AppModule Module;
 
 		/// <summary>

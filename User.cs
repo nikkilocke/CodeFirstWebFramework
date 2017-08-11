@@ -84,8 +84,14 @@ namespace CodeFirstWebFramework {
 
 		public int AccessLevel;
 
+		/// <summary>
+		/// True if this AuthAttribute is not to appear on the list of module permissions
+		/// </summary>
 		public bool Hide;
 
+		/// <summary>
+		/// Name to use (instead of module/method). AuthAttributes with the same name are grouped in the UI.
+		/// </summary>
 		public string Name;
 	}
 
@@ -94,12 +100,30 @@ namespace CodeFirstWebFramework {
 	/// Derive a class from this to provide additional levels.
 	/// </summary>
 	public class AccessLevel {
-		public const int Any = -1;			// Allow access to anyone
-		public const int Unspecified = 0;	// No level specified - you will check the level in code, presumably
+		/// <summary>
+		/// Allow access to anyone
+		/// </summary>
+		public const int Any = -1;
+		/// <summary>
+		/// No level specified - you will check the level in code, presumably
+		/// </summary>
+		public const int Unspecified = 0;
+		/// <summary>
+		/// Read only
+		/// </summary>
 		public const int ReadOnly = 10;
+		/// <summary>
+		/// Read Write
+		/// </summary>
 		public const int ReadWrite = 20;
-		public const int Admin = 1000;		// Administrator - do not change this value - should allow access to anything
-		public const int None = 0;			// No access (a User.AccessLevel)
+		/// <summary>
+		/// Administrator - do not change this value - should allow access to anything
+		/// </summary>
+		public const int Admin = 1000;
+		/// <summary>
+		/// // No access (a User.AccessLevel)
+		/// </summary>
+		public const int None = 0;
 
 		/// <summary>
 		/// Return the options for a selectInput field to select AccessLevel.

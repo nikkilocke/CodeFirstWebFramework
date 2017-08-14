@@ -22,6 +22,7 @@
     <PackageReleaseNotes>Change password option. Must enter new passwords twice to ensure they are the same.
 Added VersionSuffix to defeat web browser caching between versions.
 Allow explicitly setting values to null when updating database records.
+Added full API documentation.
 Allow numeric values in bool fields (0 = false, anything else true).
 New Types attribute in [Field] contains readonly and readwrite field types, separated by comma.
 Remove [Select] attribute, and use MakeSelectable instead.

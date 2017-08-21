@@ -11,7 +11,7 @@ This will load (or create) the config file, analyse the code for classes which s
 
 The database is a local SQLite database by default, but can be set (in the config file) to any accessable MySql or Sql Server database. The default port and a number of other settings can also be overridden in the config file.
 
-This starts the web server which will server any html or other files placed in a subfolder with the same name as the main namespace of your project.
+The web server will serve any html or other files placed in a subfolder with the same name as the main namespace of your project.
 
 However, this is only the beginning. Instead of serving html files, the server can construct the html by merging Mustache .tmpl files with the default.tmpl file. This allows you to make the default.tmpl file a standard look and feel for the whole website, with individual page data being inserted in it as appropriate.
 

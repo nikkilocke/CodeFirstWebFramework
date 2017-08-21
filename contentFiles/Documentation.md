@@ -35,7 +35,7 @@ The Config file has the following main variables
 |Variable|Description|Default|
 |-----------|---------------|---------|
 |Database|The type of database - SQLite, MySql, or SQLServer|SQLite|
-|ConnectionString|For the type of database|a .db file with the same name as the program, in tge user’s data area|
+|ConnectionString|For the type of database|a .db file with the same name as the program, in the user’s data area|
 |Namespace|The C# Namespace in which to search for modules and methods to call for a request page|The Namespace of the entry assembly|
 |Port|The port the web server listens on|8080|
 |ServerName|The Url used to access the server|localhost|
@@ -51,7 +51,7 @@ The web server can actually handle requests for more than 1 web app. Each web ap
 |Namespace|The C# Namespace in which to search for modules and methods to call for a request page|
 |AdditionalAssemblies|Array of additional assemblies (DLL or EXE) to load into the program. This facility allows you to add additional web apps from separate files, and have them all run in your single web server.|
 |ServerName|The Url used to access the app|
-|ServerAlias|Other Urls for this app, separated by spaces|
+|ServerAlias|Other Urls for this app, separated by spaces. You can use an asterisk (\*) wildcard in the ServerAlias (e.g. `*.trumphurst.com`).|
 |Port|The port the web server listens on|
 |Email|Email used as from address when sending emails|
 |Title|Default app name to use in web page title|
@@ -198,13 +198,13 @@ Note that CodeFirstWebFramework Mustache templates preserve newlines in template
 |{{include *filename*}}|Searches for *filename* in the search folders, and reads it in.|
 |{{{*variable*}}}|Having replaced *variable*, html quotes it, so that html special characters are rendered as expected. For example if the variable contains &lt;B&gt;, it appears in the rendered html page as is, instead of turning on bold print.|
 |// {{*mustache*}}|Is replaced by {{*mustache*}}. This is so you can hide mustache in a comment in javascript files to avoid apparent syntax errors.|
-|'!{{*mustache*}}'|Is replaced by {{*mustache*}}. This is so you can hide mustache a string in javascript files to avoid apparent syntax errors.|
+|'!{{*mustache*}}'|Is replaced by {{*mustache*}}. This is so you can hide mustache in a string in javascript files to avoid apparent syntax errors.|
 
 ## Database class
 
 The provided Database class provides extensive methods for reading objects from the database, updating and inserting, transactions, etc. It has a built-in Upgrade method that will find all the tables and views defined in the C# code, and create or update all the table structures in the database to match.
 
-As your program evolves, you may find it necessary to run additional code when upgrading the database from one version to another (e.g. to fill in new fields with specific values, or maybe you are splitting a table into 2 related tables). To cater for this, there is a DbVersion field in the Settings table, which is automatically compared with the CurrentDbVersion virtual property in the Database class. You can create a subclass of Database for each of your Namespaces (web apps), and override `CurrentDbVersion` property, and the `PreUpgradeFromVersion` and `PostUpgradeFromVersion` virtual methods to run any such code. The `PreUpgradeFromVersion` is run before any changes are made to the database structure, and `PostUpgradeFromVersion` is run after.
+As your program evolves, you may find it necessary to run additional code when upgrading the database from one version to another (e.g. to fill in new fields with specific values, or maybe you are splitting a table into 2 related tables). To cater for this, there is a DbVersion field in the Settings table, which is automatically compared with the CurrentDbVersion virtual property in the Database class. You can create a subclass of Database for each of your Namespaces (web apps), and override the `CurrentDbVersion` property, and the `PreUpgradeFromVersion` and `PostUpgradeFromVersion` virtual methods to run any such code. The `PreUpgradeFromVersion` is run before any changes are made to the database structure, and `PostUpgradeFromVersion` is run after.
 
 ### Database tables
 
@@ -302,7 +302,6 @@ You can further modify this behaviour with the following attributes:
 |---------|-----------|
 |ReadOnly|Makes the field read only|
 |Writeable|Makes the field writeable, even if it would be read only by default|
-|Select(IEnumerable<JObject> values, bool readWrite = true)|Makes the field a select dropdown. Values is an enumerable list of JObjects which contain as a minimum an id (to place in the field when returning the value) and a value (to display to the user)|
 
 You can also apply the Field attribute, which has the following fields which may be set to modify the behaviour:
 
@@ -319,6 +318,8 @@ You can also apply the Field attribute, which has the following fields which may
 |Visible|Set to false to hide the field (but it is still searchable).|
 
 For very fine control, you can set any of the other properties supported in the javascript by supplying property name, value pairs to the constructor, or by adding these properties to the field's `Options` JObject later in the code (the Form's `this` property can return the FieldAttribute for any field by name).
+
+You can make a field into a select drop-down by calling `MakeSelect(IEnumerable<JObject> values)`. Values is an enumerable list of JObjects which contain as a minimum an id (to place in the field when returning the value) and a value (to display to the user).
 
 All the Form classes have a field called `Data`, which may be set to a JToken containing the form data - if none is supplied, the DataTable and List forms will make an Ajax callback to get the data to the current method with `Listing` added to the end.
 
@@ -338,7 +339,7 @@ The DataTableForm class creates a jquery datatable - this is a table which is a 
 
 There is a Select property, which can be set to a url to call when the user selects a record from a list. If a url, an id parameter will be added, containing the id field from the selected record.
 
-There is the built-in ability to filter out records with zero values - if you set a field's "nonZero" option to either True or False, the javascript will add a button to show or hide zero values (if you set it to True, zero values are hidden, and vice versa).
+There is the built-in ability to filter out records with zero values - if you set a field's "nonZero" option to either True or False, the javascript will add a button to show or hide zero values (if you set it to True, zero values are hidden to start with, and vice versa).
 
 ### Form
 
@@ -350,7 +351,7 @@ If a `canDelete` property is added to Options, a Delete button will be provided,
 
 This creates a possibly editable editable list of records. 
 
-You can allow the user to select an item from the list by setting the Select propertyto a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Save` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
+You can allow the user to select an item from the list by setting the Select property to a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Save` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
 
 ### HeaderDetailForm
 
@@ -370,6 +371,10 @@ Form Save and Delete methods return an `AjaxReturn` object to the calling javasc
 |data|Arbitrary data to send to the javascript. For instance, `batchstatus` uses this to get the batch progress data.|
 
 Note that `AppModule` provides `SaveRecord` and `DeleteRecord` methods which will save or delete a record and return a suitably filled in AjaxReturn. For simple single record updates you can do your validation on the supplied data, then return the result of `SaveRecord`. Note that the `Utils.Check` method (which checks its first argument is true, and thors an exception with the supplied message if not) is a useful shorthand for validation checks.
+
+## DumbForm
+
+This creates an ordinary html form, with the Save button submitting the form, by default to the original method name with `Save` added to the end (you can alter this with the `submit` property).
 
 ## Help
 

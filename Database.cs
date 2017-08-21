@@ -44,80 +44,85 @@ namespace CodeFirstWebFramework {
 		/// <param name="code"></param>
 		/// <param name="database"></param>
 		void upgrade(Table code, Table database) {
-			if (database == null) {
-				db.CreateTable(code);
-				return;
-			}
-			bool view = code is View;
-			if (view != database is View) {
-				db.DropTable(database);
-				db.CreateTable(code);
-				return;
-			}
-			if (view) {
-				bool? result = db.ViewsMatch(code as View, database as View);
-				if (result == true)
+			try {
+				if (database == null) {
+					db.CreateTable(code);
 					return;
-				if (result == false) {
+				}
+				bool view = code is View;
+				if (view != database is View) {
 					db.DropTable(database);
 					db.CreateTable(code);
 					return;
 				}
-			}
-			List<Field> insert = new List<Field>();
-			List<Field> update = new List<Field>();
-			List<Field> remove = new List<Field>();
-			List<Field> insertFK = new List<Field>();
-			List<Field> dropFK = new List<Field>();
-			List<Index> insertIndex = new List<Index>();
-			List<Index> dropIndex = new List<Index>();
-			foreach (Field f1 in code.Fields) {
-				Field f2 = database.FieldFor(f1.Name);
-				if (f2 == null)
-					insert.Add(f1);
-				else {
-					if (!db.FieldsMatch(code, f1, f2)) {
-						update.Add(f1);
+				if (view) {
+					bool? result = db.ViewsMatch(code as View, database as View);
+					if (result == true)
+						return;
+					if (result == false) {
+						db.DropTable(database);
+						db.CreateTable(code);
+						return;
 					}
-					if (f1.ForeignKey == null) {
-						if (f2.ForeignKey != null)
-							dropFK.Add(f2);
-					} else {
-						if (f2.ForeignKey == null)
-							insertFK.Add(f1);
-						else if (f1.ForeignKey.Table.Name != f2.ForeignKey.Table.Name) {
-							dropFK.Add(f2);
-							insertFK.Add(f1);
+				}
+				List<Field> insert = new List<Field>();
+				List<Field> update = new List<Field>();
+				List<Field> remove = new List<Field>();
+				List<Field> insertFK = new List<Field>();
+				List<Field> dropFK = new List<Field>();
+				List<Index> insertIndex = new List<Index>();
+				List<Index> dropIndex = new List<Index>();
+				foreach (Field f1 in code.Fields) {
+					Field f2 = database.FieldFor(f1.Name);
+					if (f2 == null)
+						insert.Add(f1);
+					else {
+						if (!db.FieldsMatch(code, f1, f2)) {
+							update.Add(f1);
+						}
+						if (f1.ForeignKey == null) {
+							if (f2.ForeignKey != null)
+								dropFK.Add(f2);
+						} else {
+							if (f2.ForeignKey == null)
+								insertFK.Add(f1);
+							else if (f1.ForeignKey.Table.Name != f2.ForeignKey.Table.Name) {
+								dropFK.Add(f2);
+								insertFK.Add(f1);
+							}
 						}
 					}
 				}
-			}
-			foreach (Field f2 in database.Fields) {
-				if (code.FieldFor(f2.Name) == null) {
-					remove.Add(f2);
-					if (f2.ForeignKey != null)
-						dropFK.Add(f2);
+				foreach (Field f2 in database.Fields) {
+					if (code.FieldFor(f2.Name) == null) {
+						remove.Add(f2);
+						if (f2.ForeignKey != null)
+							dropFK.Add(f2);
+					}
 				}
-			}
-			foreach (Index i1 in code.Indexes) {
-				Index i2 = database.Indexes.Where(i => i.FieldList == i1.FieldList).FirstOrDefault();
-				if (i2 == null) {
-					insertIndex.Add(i1);
+				foreach (Index i1 in code.Indexes) {
+					Index i2 = database.Indexes.Where(i => i.FieldList == i1.FieldList).FirstOrDefault();
+					if (i2 == null) {
+						insertIndex.Add(i1);
+					}
 				}
-			}
-			foreach (Index i2 in database.Indexes) {
-				if (code.Indexes.Where(i => i.FieldList == i2.FieldList).FirstOrDefault() == null)
-					dropIndex.Add(i2);
-			}
-			if (view) {
-				if (insert.Count == 0 && update.Count == 0 && remove.Count == 0)
+				foreach (Index i2 in database.Indexes) {
+					if (code.Indexes.Where(i => i.FieldList == i2.FieldList).FirstOrDefault() == null)
+						dropIndex.Add(i2);
+				}
+				if (view) {
+					if (insert.Count == 0 && update.Count == 0 && remove.Count == 0)
+						return;
+					db.DropTable(database);
+					db.CreateTable(code);
 					return;
-				db.DropTable(database);
-				db.CreateTable(code);
-				return;
+				}
+				if (insert.Count != 0 || update.Count != 0 || remove.Count != 0 || insertFK.Count != 0 || dropFK.Count != 0 || insertIndex.Count != 0 || dropIndex.Count != 0)
+					db.UpgradeTable(code, database, insert, update, remove, insertFK, dropFK, insertIndex, dropIndex);
+			} catch {
+				WebServer.Log("Error upgrading table {0} in database {1}", code.Name, this.UniqueIdentifier);
+				throw;
 			}
-			if (insert.Count != 0 || update.Count != 0 || remove.Count != 0 || insertFK.Count != 0 || dropFK.Count != 0 || insertIndex.Count != 0 || dropIndex.Count != 0)
-				db.UpgradeTable(code, database, insert, update, remove, insertFK, dropFK, insertIndex, dropIndex);
 		}
 
 		/// <summary>

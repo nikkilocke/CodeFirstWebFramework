@@ -12,15 +12,33 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	[Table]
     public class User : JsonObject {
+		/// <summary>
+		/// Unique id.
+		/// </summary>
 		[Primary]
 		public int? idUser;
+		/// <summary>
+		/// Login name.
+		/// </summary>
 		[Unique("Login")]
 		public string Login;
+		/// <summary>
+		/// Email -c an be used instead of login name to login.
+		/// </summary>
 		[Unique("Email")]
 		public string Email;
+		/// <summary>
+		/// Password.
+		/// </summary>
 		[Field(Type = "passwordInput")]
 		public string Password;
+		/// <summary>
+		/// See AccessLevel class for possible values
+		/// </summary>
 		public int AccessLevel;
+		/// <summary>
+		/// True if user has different permissions for different modules/methods.
+		/// </summary>
 		public bool ModulePermissions;
 
 		/// <summary>
@@ -49,23 +67,47 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	[Table]
 	public class Permission : JsonObject {
+		/// <summary>
+		/// User to whom this Permission applies.
+		/// </summary>
 		[Field(Visible = false)]
 		[ForeignKey("User")]
 		[Primary(1, AutoIncrement = false)]
 		public int? UserId;
+		/// <summary>
+		/// Module name, or Name from module level AuthAttribute if there is one specified.
+		/// Multiple module-level AuthAttributes with the same name have the same Permission record.
+		/// </summary>
 		[Primary(2, AutoIncrement = false)]
 		[ReadOnly]
 		public string Module;
+		/// <summary>
+		/// Method name, or Name from method level AuthAttribute if there is one specified.
+		/// "-" for a module-level Permission.
+		/// Multiple method-level AuthAttributes with the same name have the same Permission record.
+		/// </summary>
 		[Primary(3, AutoIncrement = false)]
 		[ReadOnly]
 		public string Method;
+		/// <summary>
+		/// Show method name in human-readable format.
+		/// </summary>
 		[DoNotStore]
 		public string Function {
 			get {
 				return Method == "-" ? "All" : Method.UnCamel();
 			}
 		}
+		/// <summary>
+		/// The AccessLevel granted to this user for this module/method.
+		/// </summary>
 		public int FunctionAccessLevel;
+		/// <summary>
+		/// Min access level needed for a user to be able to access this module/method.
+		/// For example. for a module, the lowest access level of all the methods (not counting
+		/// AccessLevel.Any), or the module access level, whichever is the less.
+		/// Used in the UI to remove irrelevant access levels from the drop-down list.
+		/// </summary>
 		[DoNotStore]
 		public int MinAccessLevel;
 	}
@@ -75,13 +117,23 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class AuthAttribute : Attribute {
+		/// <summary>
+		/// Constructor - level will be set to Any.
+		/// </summary>
 		public AuthAttribute() : this(0) {
 		}
 
+		/// <summary>
+		/// Constructor with specific access level.
+		/// </summary>
+		/// <param name="AccessLevel"></param>
 		public AuthAttribute(int AccessLevel) {
 			this.AccessLevel = AccessLevel;
 		}
 
+		/// <summary>
+		/// The AccessLevel required to see this module or method.
+		/// </summary>
 		public int AccessLevel;
 
 		/// <summary>

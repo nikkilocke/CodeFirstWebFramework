@@ -16,17 +16,13 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.0.12</Version>
-    <AssemblyVersion>1.0.12.0</AssemblyVersion>
-    <FileVersion>1.0.12.0</FileVersion>
-    <PackageReleaseNotes>Change password option. Must enter new passwords twice to ensure they are the same.
-Added VersionSuffix to defeat web browser caching between versions.
-Allow explicitly setting values to null when updating database records.
-Added full API documentation.
-Allow numeric values in bool fields (0 = false, anything else true).
-New Types attribute in [Field] contains readonly and readwrite field types, separated by comma.
-Remove [Select] attribute, and use MakeSelectable instead.
-</PackageReleaseNotes>
+    <Version>1.0.13</Version>
+    <AssemblyVersion>1.0.13.0</AssemblyVersion>
+    <FileVersion>1.0.13.0</FileVersion>
+    <PackageReleaseNotes>Minor changes to javascript.
+Improved and corrected documentation.
+If an error occurs during database upgrade, report which database and table it was in.
+Added LICENCE.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 

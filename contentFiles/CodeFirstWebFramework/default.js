@@ -25,6 +25,8 @@ $.widget( "custom.catcomplete", $.ui.autocomplete, {
 	}
 });
 var dateStyle = { dateFormat: 'dd MM yy'};
+var True = true;
+var False = false;
 
 function addJQueryUiControls() {
 	if (bowser.firefox)
@@ -125,7 +127,7 @@ $(function() {
  * @returns {*|jQuery} Button
  */
 function addButton(text, url) {
-	return $('<button id="' + text.replace(/ /g, '') + '" data-goto="' + url + '"></button>')
+	return $('<button id="' + text.replace(/ /g, '') + (url ? '" data-goto="' + url : '') + '"></button>')
 		.text(text)
 		.appendTo($('#menu2'));
 }
@@ -1701,7 +1703,7 @@ function makeForm(selector, options) {
 		});
 		addJQueryUiControls();
 		if(options.readonly)
-			result.find('input,select,textarea').attr('disabled', true);
+			result.find('input,select,textarea,button.ui-multiselect').attr('disabled', true);
 	}
 	var drawn = false;
 
@@ -2120,7 +2122,7 @@ function makeListForm(selector, options) {
 		}
 		addJQueryUiControls();
 		if(options.readonly)
-			table.find('input,select,textarea').attr('disabled', true);
+			table.find('input,select,textarea,button.ui-multiselect').attr('disabled', true);
 	}
 	var drawn = false;
 	function dataReady(d) {

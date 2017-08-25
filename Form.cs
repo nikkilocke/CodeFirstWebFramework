@@ -403,7 +403,7 @@ namespace CodeFirstWebFramework {
 			if (f != null) {
 				if (parts.Length > 1)
 					f.Heading = parts[1];
-				else if (f.FieldName.StartsWith(Options.AsString("table")))	// If name starts with table name, remove table name from heading
+				else if (Options["table"] != null && f.FieldName.StartsWith(Options.AsString("table")))	// If name starts with table name, remove table name from heading
 					f.Heading = f.FieldName.Substring(Options.AsString("table").Length);
 				columns.Add(f.Options);
 			}

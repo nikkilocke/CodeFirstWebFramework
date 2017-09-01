@@ -695,27 +695,27 @@ var Type = {
 	},
 	textInput: {
 		defaultContent: function(index, col) {
-			return '<input type="text" data-col="' + col.name + '" size="' + col.size + '" ' + col.attributes + '/>';
+            return '<input type="text" data-col="' + col.name + '" size="' + (col.size ? col.size : col.maxlength) + '" maxlength="' + col.maxlength + '" ' + col.attributes + '/>';
 		},
 		draw: function(data, rowno, row) {
 			if(data == null)
 				data = "";
-			return '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + this.size + '" ' + this.attributes + '/>';
+			return '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + (this.size ? this.size : this.maxlength) + '" maxlength="' + this.maxlength + '" ' + this.attributes + '/>';
 		},
 		update: function(cell, data, rowno, row) {
 			colUpdate('input', cell, data, rowno, this, row);
 		},
-		size: 45
+		maxlength: 45
 	},
 	docIdInput: {
 		// Document number - also add a "Next" button to set value to <Next>
 		defaultContent: function(index, col) {
-			return '<input type="text" data-col="' + col.name + '" size="' + col.size + '" ' + col.attributes + '/>';
+            return '<input type="text" data-col="' + col.name + '" size="' + (col.size ? col.size : col.maxlength) + '" maxlength="' + col.maxlength + '" ' + col.attributes + '/>';
 		},
 		draw: function(data, rowno,  row) {
 			if(data == null)
 				data = "";
-			var result = '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + this.size + '" ' + this.attributes + '/>';
+            var result = '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + (this.size ? this.size : this.maxlength) + '" maxlength="' + this.maxlength + '" ' + this.attributes + '/>';
 			if(row.idDocument !== undefined && !row.idDocument)
 				result += '<button class="nextButton">Next</button>';
 			return result;
@@ -723,34 +723,34 @@ var Type = {
 		update: function(cell, data, rowno, row) {
 			colUpdate('input', cell, data, rowno, this, row);
 		},
-		size: 45
+        maxlength: 45
 	},
 	passwordInput: {
 		defaultContent: function(index, col) {
-			return '<input type="password" data-col="' + col.name + '" size="' + col.size + '" ' + col.attributes + '/>';
+            return '<input type="password" data-col="' + col.name + '" size="' + (col.size ? col.size : col.maxlength) + '" maxlength="' + col.maxlength + '" ' + col.attributes + '/>';
 		},
 		draw: function(data, rowno, row) {
 			if(data == null)
 				data = "";
-			return '<input type="password" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + this.size + '" ' + this.attributes + '/>';
+            return '<input type="password" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + (this.size ? this.size : this.maxlength) + '" maxlength="' + this.maxlength + '" ' + this.attributes + '/>';
 		},
 		update: function(cell, data, rowno, row) {
 			colUpdate('input', cell, data, rowno, this, row);
 		},
-		size: 45
+        maxlength: 45
 	},
 	textAreaInput: {
 		defaultContent: function(index, col) {
 			var rows = col.rows || 6;
 			var cols = col.cols || 50;
-			return '<textarea rows="' + rows + '" cols="' + cols + '" data-col="' + col.name + '" ' + col.attributes + '"></textarea>';
+            return '<textarea rows="' + rows + '" cols="' + cols + '" data-col="' + col.name + '" ' + (col.maxlength ? 'maxlength="' + col.maxlength + '" ' : '') + col.attributes + '"></textarea>';
 		},
 		draw: function(data, rowno, row) {
 			if(data == null)
 				data = "";
 			var rows = this.rows || 5;
 			var cols = this.cols || 50;
-			return '<textarea id="r' + rowno + 'c' + this.name + '" rows="' + rows + '" cols="' + cols + '" data-col="' + this.name + '" ' + this.attributes + '>' + _.escape(data) + '</textarea>';
+            return '<textarea id="r' + rowno + 'c' + this.name + '" rows="' + rows + '" cols="' + cols + '" data-col="' + this.name + '" ' + (this.maxlength ? 'maxlength="' + this.maxlength + '" ' : '') + this.attributes + '>' + _.escape(data) + '</textarea>';
 		},
 		update: function(cell, data, rowno, row) {
 			colUpdate('textarea', cell, data, rowno, this, row);
@@ -809,7 +809,7 @@ var Type = {
 		inputValue: function(field, row) {
 			return fromUnit($(field).val(), row.Unit);
 		},
-		attributes: 'size="7"',
+		maxlength: 7,
 		sClass: 'ni'
 	},
 	creditInput: {
@@ -3012,8 +3012,8 @@ function download(button, data) {
 			var quote = ui.item[0].id == 'csv' ? csvQuote : textQuote;
 			_.each(data, function(row) {
 				var rowText = '';
-				_.each(row, function(datum) {
-					if(rowText.length)
+				_.each(row, function(datum, index) {
+					if(index)
 						rowText += tab;
 					rowText += datum === null || datum === undefined ? '' : quote(datum + '');
 				});

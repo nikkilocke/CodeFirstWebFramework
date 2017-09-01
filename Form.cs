@@ -102,9 +102,9 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Number of characters to allow in input
 		/// </summary>
-		public int Size {
-			get { return Options.AsInt("size"); }
-			set { Options["size"] = value; }
+		public int MaxLength {
+			get { return Options.AsInt("maxlength"); }
+			set { Options["maxlength"] = value; }
 		}
 
 		/// <summary>
@@ -229,8 +229,8 @@ namespace CodeFirstWebFramework {
 					}
 				}
 			}
-			if (Type == "textInput" && Size == 0 && fld.Length > 0)
-				Size = (int)Math.Floor(fld.Length);
+			if (Type == "textInput" && MaxLength == 0 && fld.Length > 0)
+				MaxLength = (int)Math.Floor(fld.Length);
 			Options["readonly"] = !readwrite;
 		}
 	}

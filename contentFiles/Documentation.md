@@ -257,7 +257,7 @@ The simplest method has no parameters, and no return value. Once it has been cal
 
 A method may also have named parameters. CallMethod will look for request parameters with the same names, and fill in the parameters to the method accordingly. If the parameters don't match, or are not all supplied, it throws an Exception, which will  will return a 500 Internal Server error (along with details of the exception formatted with exception.tmpl).
 
-A method may also return something - if so, the Call method will call WriteResponse to convert the returned type to a response. Streams and strings are returned unchanged - any other non-null return value is converted to a json object. The javascript provided often uses Ajax calls (e.g. to save a form), and many of these expect an object of type `AjaxReturn` to return the status and results of a call.
+A method may also return something - if it returns a Form, the form is rendered. Otherwise the Call method will call WriteResponse to convert the returned type to a response. Streams and strings are returned unchanged - any other non-null return value is converted to a json object. The javascript provided often uses Ajax calls (e.g. to save a form), and many of these expect an object of type `AjaxReturn` to return the status and results of a call.
 
 A method may instead call WriteResponse or Respond itself to send back results, if the default behaviour is not sufficient. Or even write the result itself - in which case it should set ResponseSent to true, to prevent the default processing.
 
@@ -292,7 +292,7 @@ The provided default.js javascript file (which is pulled in by default.tmpl) has
 
 Default.js also provides the methods necessary to implement ajax-enabled forms. You can create these forms by hand in javascript, but there are C# classes to enable you to create them in C# code with the minimum of coding. There are 4 types of form.
 
-The C# forms are all based on the Form class. You can create a form to view or input a C# class by calling `Build(Type)`. This will add the necessary columns to the form. By default the types of each field are deduced from the members of the class, as modified by the attributes described under Database tables above. E.g. a ForeignKey field will appear as a select dropdown containing the records from the other table. By default, fields in a Table class will be read-write, and extra fields in a derived or other class (e.g. a View) will be read only.
+The C# forms are all based on the Form class. You can create a form to view or input a C# class in the constructor, or by calling by calling `Build(Type)`. This will add the necessary columns to the form. By default the types of each field are deduced from the members of the class, as modified by the attributes described under Database tables above. E.g. a ForeignKey field will appear as a select dropdown containing the records from the other table. By default, fields in a Table class will be read-write, and extra fields in a derived or other class (e.g. a View) will be read only.
 
 You can also include Properties (rather than Fields) in your form, or determine which specific fields you want, and their order in the form if you construct the form by providing a specific list of fields/properties.
 
@@ -331,7 +331,7 @@ These include:
 |table|The name of the table - used to strip off table prefixes from variable names.|
 |id|The name of the [Primary] id field of the table - default is "id" + the table name.|
 
-
+You can display the form in the web page by calling `Form.Show()`, or by returning the Form from your AppModule method.
 
 ### DataTable
 

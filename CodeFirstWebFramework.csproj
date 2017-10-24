@@ -16,12 +16,12 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.0.14</Version>
-    <AssemblyVersion>1.0.14.0</AssemblyVersion>
-    <FileVersion>1.0.14.0</FileVersion>
-    <PackageReleaseNotes>New field option MaxLength/maxlength for maximum length to be input, set from Length of field (with defaults).
-"size" option (javascript) is now used for the html size attribute (i.e. the width of the field on the screen, in character widths).
-Fixed bug in download button, which did not include empty fields at the beginning of lines.</PackageReleaseNotes>
+    <Version>1.0.15</Version>
+    <AssemblyVersion>1.0.15.0</AssemblyVersion>
+    <FileVersion>1.0.15.0</FileVersion>
+    <PackageReleaseNotes>AppModule methods can now return forms (they are shown, if so).
+AdminHelper now returns forms from EditSettings, Users and ChangePassword.
+</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 

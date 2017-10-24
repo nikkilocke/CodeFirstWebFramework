@@ -550,13 +550,16 @@ namespace CodeFirstWebFramework {
 						data = s.ReadToEnd();
 					}
 					if (context.Request.ContentType.StartsWith("multipart/form-data")) {
-						string boundary = "--" + (Regex.Split(context.Request.ContentType, "boundary=")[1]);
+						string boundary = Regex.Split(context.Request.ContentType, "boundary=")[1].Trim();
+						if (boundary.StartsWith("\"") && boundary.EndsWith("\""))
+							boundary = boundary.Substring(1, boundary.Length - 2);
+						boundary = "--" + boundary;
 						foreach (string part in Regex.Split("\r\n" + data, ".." + boundary, RegexOptions.Singleline)) {
 							if (part.Trim() == "" || part.Trim() == "--") continue;
 							int pos = part.IndexOf("\r\n\r\n");
 							string headers = part.Substring(0, pos);
 							string value = part.Substring(pos + 4);
-							Match match = new Regex(@"form-data; name=""(\w+)""").Match(headers);
+							Match match = new Regex(@"form-data; name=""?(\w+)""?").Match(headers);
 							if (match.Success) {
 								// This is a file upload
 								string field = match.Groups[1].Value;
@@ -594,6 +597,8 @@ namespace CodeFirstWebFramework {
 					Response.AddHeader("Expires", DateTime.UtcNow.ToString("R"));
 					if (method.ReturnType == typeof(void))
 						Respond();									// Builds response from template
+					else if(method.ReturnType.IsSubclassOf(typeof(BaseForm)))
+						(o as BaseForm).Show();
 					else
 						WriteResponse(o, null, HttpStatusCode.OK);	// Builds response from return value
 				}
@@ -605,7 +610,7 @@ namespace CodeFirstWebFramework {
 				}
 				if (ex is DatabaseException)
 					Log(((DatabaseException)ex).Sql);	// Log Sql of all database exceptions
-				if (method == null || method.ReturnType == typeof(void)) throw;	// Will produce exception page
+				if (method == null || method.ReturnType == typeof(void) || method.ReturnType.IsSubclassOf(typeof(BaseForm))) throw;	// Will produce exception page
 				// Send an AjaxReturn object indicating the error
 				WriteResponse(new AjaxReturn() { error = ex.Message }, null, HttpStatusCode.OK);
 			}

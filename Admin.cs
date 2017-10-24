@@ -21,7 +21,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Create form to edit settings
 		/// </summary>
-		public void EditSettings() {
+		public Form EditSettings() {
 			Form form = new Form(module, typeof(Settings)) {
 				Data = module.Settings.ToJToken()
 			};
@@ -33,7 +33,7 @@ namespace CodeFirstWebFramework {
 				Data = "AppVersion",
 				Type = "string"
 			});
-			form.Show();
+			return form;
 		}
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Create datatable to list users
 		/// </summary>
-		public void Users() {
+		public DataTableForm Users() {
 			Table t = module.Database.TableFor("User");
 			DataTableForm f = new DataTableForm(module, t.Type) {
 				Select = "/admin/edituser.html"
@@ -145,7 +145,7 @@ namespace CodeFirstWebFramework {
 			f.Remove("Password");
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
 			f["AccessLevel"].MakeSelectable(levels.Select());
-			f.Show();
+			return f;
 		}
 
 		/// <summary>
@@ -316,7 +316,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Create form to change user's password
 		/// </summary>
-		public void ChangePassword() {
+		public Form ChangePassword() {
 			Utils.Check(module.Session.User != null, "You must log in first");
 			Form f = new Form(module, true);
 			f.Add(new FieldAttribute() {
@@ -332,7 +332,7 @@ namespace CodeFirstWebFramework {
 				Type = "passwordInput"
 			});
 			f.Data = new JObject();
-			f.Show();
+			return f;
 		}
 
 		/// <summary>
@@ -422,8 +422,8 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Display settings form
 		/// </summary>
-		public void EditSettings() {
-			new AdminHelper(this).EditSettings();
+		public Form EditSettings() {
+			return new AdminHelper(this).EditSettings();
 		}
 
 		/// <summary>
@@ -458,9 +458,9 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Display users list form
 		/// </summary>
-		public void Users() {
+		public DataTableForm Users() {
 			insertMenuOption(new MenuOption("New User", "/admin/EditUser?id=0&from=%2Fadmin%2Fusers"));
-			new AdminHelper(this).Users();
+			return new AdminHelper(this).Users();
 		}
 
 		/// <summary>
@@ -496,8 +496,8 @@ namespace CodeFirstWebFramework {
 		/// Change user's password form
 		/// </summary>
 		[Auth(AccessLevel.Any)]
-		public void ChangePassword() {
-			new AdminHelper(this).ChangePassword();
+		public Form ChangePassword() {
+			return new AdminHelper(this).ChangePassword();
 		}
 
 		/// <summary>

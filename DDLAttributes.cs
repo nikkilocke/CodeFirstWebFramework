@@ -34,7 +34,7 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// Mark a field as part of a unique index
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
 	public class UniqueAttribute : Attribute {
 
 		/// <summary>

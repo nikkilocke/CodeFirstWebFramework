@@ -30,10 +30,10 @@ AdminHelper now returns forms from EditSettings, Users and ChangePassword.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.13.0" />
+    <PackageReference Include="Markdig" Version="0.13.4" />
     <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
     <PackageReference Include="mustache-sharp" Version="0.2.10" />
-    <PackageReference Include="MySql.Data" Version="6.9.9" />
+    <PackageReference Include="MySql.Data" Version="6.9.10" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Vsxmd" Version="1.2.0" />
   </ItemGroup>

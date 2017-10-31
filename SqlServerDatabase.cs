@@ -350,7 +350,10 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			if (o is double) return (Math.Round((decimal)o, 4)).ToString();
 			if (o is double) return ((decimal)o).ToString("0");
 			if (o is bool) return (bool)o ? "1" : "0";
-			if (o is DateTime) return "'" + ((DateTime)o).ToString("yyyy-MM-dd") + "'";
+			if (o is DateTime) {
+				DateTime dt = (DateTime)o;
+				return "'" + dt.ToString(dt.TimeOfDay == TimeSpan.Zero ? "yyyy-MM-dd" : "yyyy-MM-ddTHH:mm:ss") + "'";
+			}
 			return "'" + o.ToString().Replace("'", "''") + "'";
 		}
 

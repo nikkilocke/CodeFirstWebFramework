@@ -1446,8 +1446,8 @@ function makeDataTable(selector, options) {
 	}
 	// "Show All" functionality
 	_.each(nzColumns, function(nz) {
-		var zText = nz.zeroText || ('Show all ' + nz.heading);
-		var nzText = nz.nonZeroText || ('Only non-zero ' + nz.heading);
+		var zText = nz.zeroText || ((nz.col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading);
+		var nzText = nz.nonZeroText || ((nz.col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading);
 		//noinspection JSUnusedLocalSymbols
 		$('<button id="nz' + nz.col.name + '" data-nz="' + nz.hide + '"></button>').insertBefore($(selector))
 			.html(nz.hide ? nzText : zText)
@@ -2789,8 +2789,9 @@ function _setColObject(col, tableName, index) {
 		var split = col.split('/');
 		col = { data: split[0] };
 		if(split.length > 1) col.heading = split[1];
+		col.type = type;
 	} else {
-		type = myOption('type', col);
+		type = col.type;
 	}
 	if (type) _.defaults(col, Type[type]);
 	if(col.attributes == null)

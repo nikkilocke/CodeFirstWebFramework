@@ -900,7 +900,9 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Write the response to an Http request.
 		/// </summary>
-		/// <param name="o">The object to write ("Operation complete" if null)</param>
+		/// <param name="o">The object to write ("Operation complete" if null). 
+		/// May be a Stream, a string, a byte array or an object. If it is an object,
+		/// it is converted to json representation.</param>
 		/// <param name="contentType">The content type (suitable default is used if null)</param>
 		/// <param name="status">The Http return code</param>
 		public void WriteResponse(object o, string contentType, HttpStatusCode status) {
@@ -935,6 +937,9 @@ namespace CodeFirstWebFramework {
 					// String is sent unchanged
 					msg = Encoding.GetBytes((string)o);
 					Response.ContentType = contentType ?? "text/plain;charset=" + Charset;
+				} else if (o is byte[]) {
+					msg = o as byte[];
+					Response.ContentType = contentType ?? "application/binary";
 				} else {
 					// Anything else is sent as json
 					Response.ContentType = contentType ?? "application/json;charset=" + Charset;

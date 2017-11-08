@@ -454,7 +454,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public void Build(Type t) {
 			setTableName(t);
-			processFields(t);
+			processFields(t, false);
 		}
 
 		/// <summary>
@@ -523,11 +523,13 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Process all the fields from a type (do any base classes first)
 		/// </summary>
-		/// <param name="tbl"></param>
-		void processFields(Type tbl) {
+		/// <param name="tbl">Type being analysed</param>
+		/// <param name="inTable">True if this is a base class of a Table or Writeable object</param>
+		void processFields(Type tbl, bool inTable) {
+			inTable |= tbl.IsDefined(typeof(TableAttribute), false) || tbl.IsDefined(typeof(WriteableAttribute), false);
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
-				processFields(tbl.BaseType);
-			bool readwrite = ReadWrite && (tbl.IsDefined(typeof(TableAttribute), false) || tbl.IsDefined(typeof(WriteableAttribute), false));
+				processFields(tbl.BaseType, inTable);
+			bool readwrite = ReadWrite && inTable;
 			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
 				FieldAttribute f = FieldAttribute.FieldFor(Module.Database, field, readwrite || (ReadWrite && field.IsDefined(typeof(WriteableAttribute))));
 				if (f != null && RequireField(f))

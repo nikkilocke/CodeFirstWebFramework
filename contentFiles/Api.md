@@ -347,7 +347,7 @@
   - [Build()](#M-CodeFirstWebFramework-Form-Build-System-Type- 'CodeFirstWebFramework.Form.Build(System.Type)')
   - [IndexOf()](#M-CodeFirstWebFramework-Form-IndexOf-System-String- 'CodeFirstWebFramework.Form.IndexOf(System.String)')
   - [Insert()](#M-CodeFirstWebFramework-Form-Insert-System-Int32,CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.Insert(System.Int32,CodeFirstWebFramework.FieldAttribute)')
-  - [processFields(tbl)](#M-CodeFirstWebFramework-Form-processFields-System-Type- 'CodeFirstWebFramework.Form.processFields(System.Type)')
+  - [processFields(tbl,inTable)](#M-CodeFirstWebFramework-Form-processFields-System-Type,System-Boolean- 'CodeFirstWebFramework.Form.processFields(System.Type,System.Boolean)')
   - [Remove()](#M-CodeFirstWebFramework-Form-Remove-System-String- 'CodeFirstWebFramework.Form.Remove(System.String)')
   - [Replace()](#M-CodeFirstWebFramework-Form-Replace-System-Int32,CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.Replace(System.Int32,CodeFirstWebFramework.FieldAttribute)')
   - [RequireField()](#M-CodeFirstWebFramework-Form-RequireField-CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.RequireField(CodeFirstWebFramework.FieldAttribute)')
@@ -1724,7 +1724,7 @@ Write the response to an Http request.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| o | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | The object to write ("Operation complete" if null) |
+| o | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | The object to write ("Operation complete" if null). May be a Stream, a string, a byte array or an object. If it is an object, it is converted to json representation. |
 | contentType | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The content type (suitable default is used if null) |
 | status | [System.Net.HttpStatusCode](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Net.HttpStatusCode 'System.Net.HttpStatusCode') | The Http return code |
 
@@ -4098,8 +4098,8 @@ Insert a field from a C# class to the form
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Form-processFields-System-Type-'></a>
-### processFields(tbl) `method` [#](#M-CodeFirstWebFramework-Form-processFields-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-Form-processFields-System-Type,System-Boolean-'></a>
+### processFields(tbl,inTable) `method` [#](#M-CodeFirstWebFramework-Form-processFields-System-Type,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
@@ -4109,7 +4109,8 @@ Process all the fields from a type (do any base classes first)
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| tbl | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') |  |
+| tbl | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type being analysed |
+| inTable | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if this is a base class of a Table or Writeable object |
 
 <a name='M-CodeFirstWebFramework-Form-Remove-System-String-'></a>
 ### Remove() `method` [#](#M-CodeFirstWebFramework-Form-Remove-System-String- 'Go To Here') [=](#contents 'Back To Contents')

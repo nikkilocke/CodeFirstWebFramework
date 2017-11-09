@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -341,8 +341,10 @@ namespace CodeFirstWebFramework {
 		public AjaxReturn ChangePasswordSave(JObject json) {
 			User user = module.Session.User;
 			Utils.Check(user != null, "You must log in first");
-			Utils.Check(user.HashPassword(json.AsString("OldPassword")) == user.Password, "Old password does not match");
+			string oldPassword = json.AsString("OldPassword");
+			Utils.Check(user.HashPassword(oldPassword) == user.Password, "Old password does not match");
 			string password = json.AsString("NewPassword");
+			Utils.Check(oldPassword != password, "New password same as old");
 			Utils.Check(password == json.AsString("RepeatNewPassword"), "Passwords do not match");
 			string error = user.PasswordValid(password);
 			if (error != null)

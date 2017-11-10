@@ -597,7 +597,7 @@ namespace CodeFirstWebFramework {
 					Response.AddHeader("Expires", DateTime.UtcNow.ToString("R"));
 					if (method.ReturnType == typeof(void))
 						Respond();									// Builds response from template
-					else if(method.ReturnType.IsSubclassOf(typeof(BaseForm)))
+					else if(o is BaseForm)
 						(o as BaseForm).Show();
 					else
 						WriteResponse(o, null, HttpStatusCode.OK);	// Builds response from return value

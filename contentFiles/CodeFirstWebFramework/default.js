@@ -1917,6 +1917,11 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
  * Make the detail part of a header detail form
  * @param selector
  * @param options
+ * Additional options include:
+ * sortable - if true, user can drag and drop wors to sort data
+ * addRows - if true, user can add rows
+ * emptyRow - if addRows is true, this is the object to add for a new empty row
+ * hasData(row) - if addRows is true, this function to call to determine if a row has data in it
  */
 function makeListForm(selector, options) {
 	var table = $(selector);
@@ -2002,8 +2007,12 @@ function makeListForm(selector, options) {
 		col.index = index;
 		colCount = Math.max(colCount, c);
 	});
-	if(options.deleteRows && !options.readonly && rowsPerRecord == 1)
-		$('<th></th>').appendTo(row);
+	if(!options.readonly && rowsPerRecord == 1) {
+		if(options.deleteRows)
+			$('<th></th>').appendTo(row);
+		if(options.sortable)
+			$('<th></th>').appendTo(row);
+	}
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function() {
 		var col = table.fields[$(this).attr('data-col')];
@@ -2056,6 +2065,8 @@ function makeListForm(selector, options) {
 					}
 					cell = cell.next('td');
 				});
+				if(options.addRows)
+					checkForNewRow();
 			}
 		}
 	});
@@ -2091,28 +2102,51 @@ function makeListForm(selector, options) {
 			col.update(cell, data, rowIndex, rowData);
 			cell = cell.next('td');
 		});
-		if(options.deleteRows && !options.readonly && rowsPerRecord == 1) {
-			if(cell.length != 0)
-				cell.remove();
-			cell = $('<td class="deleteButton"></td>').appendTo(row);
-			$('<button class="deleteButton"><img src="/images/close.png" /></button>').appendTo(cell).click(function() {
-				var row = $(this).closest('tr');
-				var index = row.index();
-				var callback;
-				if(typeof(options.deleteRows) == "function")
-						callback = options.deleteRows.call(row, table.data[index]);
-				if(callback != false) {
-					unsavedInput = true;
-					$('button#Back').text('Cancel');
-					row.remove();
-					table.data.splice(index, 1);
-					if(typeof(callback) == 'function')
-						callback();
-				}
-			});
+		if(!options.readonly && rowsPerRecord == 1) {
+			if(options.deleteRows) {
+				if(cell.length != 0)
+					cell.remove();
+				cell = $('<td class="deleteButton"></td>').appendTo(row);
+				$('<button class="deleteButton"><img src="/images/close.png" /></button>').appendTo(cell).click(function() {
+					var row = $(this).closest('tr');
+					var index = row.index();
+					var callback;
+					if(typeof(options.deleteRows) == "function")
+							callback = options.deleteRows.call(row, table.data[index]);
+					if(callback != false) {
+						unsavedInput = true;
+						$('button#Back').text('Cancel');
+						row.remove();
+						table.data.splice(index, 1);
+						if(typeof(callback) == 'function')
+							callback();
+					}
+				});
+			}
+			if(options.sortable)
+				$('<td class="draghandle" data-row="' + rowIndex + '"><div class="ui-icon-arrowthick-2-n-s"/></td>').appendTo(row);
 		}
 	}
 
+	function hasData(row) {
+		if(options.hasData && typeof(options.hasData) == 'function')
+			return options.hasData(row);
+		for(var key in row)
+			if(!key.match(/^@/) && row[key])
+				return true;
+		
+	}
+	function checkForNewRow() {
+		var lastRow = data[data.length - 1];
+		if(lastRow == null || hasData(lastRow)) {
+			delete lastRow['@class'];
+			table.find('tbody tr.noDeleteButton').removeClass('noDeleteButton');
+			var newRow = options.emptyRow === undefined ? {} : _.clone(options.emptyRow);
+			newRow['@class'] = 'noDeleteButton';
+			table.addRow(newRow);
+			return true;
+		}
+	}
 	/**
 	 * Draw the whole form
 	 */
@@ -2123,10 +2157,36 @@ function makeListForm(selector, options) {
 		addJQueryUiControls();
 		if(options.readonly)
 			table.find('input,select,textarea,button.ui-multiselect').attr('disabled', true);
+		if(options.sortable && !options.readonly && rowsPerRecord == 1) {
+			table.find('tbody').sortable({
+				items: "> tr:not(.noDeleteButton)",
+				appendTo: "parent",
+				helper: "clone",
+				axis: 'y',
+				containment: table,
+				handle: 'td.draghandle',
+				update: function(event, ui) {
+					var data = [];
+					table.find('tbody tr td.draghandle').each(function(index) {
+						var r = parseInt($(this).attr('data-row'));
+						if(index != r) {
+							unsavedInput = true;
+							$('button#Back').text('Cancel');
+						}
+						data.push(table.data[r]);
+					});
+					if(data.length)
+						table.dataReady(data);
+				}
+			}).disableSelection();
+		}
 	}
 	var drawn = false;
 	function dataReady(d) {
 		table.data = d;
+		if(options.addRows && !options.readonly && rowsPerRecord == 1) {
+			checkForNewRow();
+		}
 		body.find('tr').remove();
 		draw();
 		if(!drawn && submitUrl) {

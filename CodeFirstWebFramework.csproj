@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net452</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Nikki Locke</Authors>
     <Company>Trumphurst Ltd</Company>
@@ -16,12 +16,20 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.0.15</Version>
-    <AssemblyVersion>1.0.15.0</AssemblyVersion>
-    <FileVersion>1.0.15.0</FileVersion>
-    <PackageReleaseNotes>AppModule methods can now return forms (they are shown, if so).
-AdminHelper now returns forms from EditSettings, Users and ChangePassword.
-</PackageReleaseNotes>
+    <Version>1.0.16</Version>
+    <AssemblyVersion>1.0.16.0</AssemblyVersion>
+    <FileVersion>1.0.16.0</FileVersion>
+    <PackageReleaseNotes>New sortable option on list forms, allows user to reorder lines by drag and drop.
+New addRows option (with associated hasData and emptyRecord options) add a blank row to the bottom of a list form. When the blank row is filled in, a new blank row appears.
+Better headings for nonZero buttons on fields which are checkboxes.
+Allow methods to return any subclass of BaseForm to have the form shown.
+Dates with times can be stored in the database.
+Api.md included.
+When changing passwords, the new password must be different from the old one.
+Superclasses of Tables and Writeable classes are also writeable by default.
+Improved parsing of multipart-form-data.
+WriteResponse now accepts a byte array as well as strings, streams, etc.
+Now built to .Net 4.5.2</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 
@@ -30,10 +38,10 @@ AdminHelper now returns forms from EditSettings, Users and ChangePassword.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.13.4" />
+    <PackageReference Include="Markdig" Version="0.14.3" />
     <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
     <PackageReference Include="mustache-sharp" Version="0.2.10" />
-    <PackageReference Include="MySql.Data" Version="6.9.10" />
+    <PackageReference Include="MySql.Data" Version="6.10.4" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Vsxmd" Version="1.2.0" />
   </ItemGroup>

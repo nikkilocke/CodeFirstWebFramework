@@ -167,6 +167,18 @@ button.deleteButton {
 tr.noDeleteButton button.deleteButton {
     visibility: hidden;
 }
+td.draghandle {
+	width: 32px;
+}
+td.draghandle div {
+	width: 16px;
+	height: 16px;
+	margin: 4px;
+	background-image:url("/libs/images/ui-icons_222222_256x240.png");
+}
+tr.noDeleteButton td.draghandle {
+    visibility: hidden;
+}
 tr.selected {
     background-color: #b0bed9 !important;
 }

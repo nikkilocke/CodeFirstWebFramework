@@ -16,20 +16,11 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.0.16</Version>
-    <AssemblyVersion>1.0.16.0</AssemblyVersion>
-    <FileVersion>1.0.16.0</FileVersion>
-    <PackageReleaseNotes>New sortable option on list forms, allows user to reorder lines by drag and drop.
-New addRows option (with associated hasData and emptyRecord options) add a blank row to the bottom of a list form. When the blank row is filled in, a new blank row appears.
-Better headings for nonZero buttons on fields which are checkboxes.
-Allow methods to return any subclass of BaseForm to have the form shown.
-Dates with times can be stored in the database.
-Api.md included.
-When changing passwords, the new password must be different from the old one.
-Superclasses of Tables and Writeable classes are also writeable by default.
-Improved parsing of multipart-form-data.
-WriteResponse now accepts a byte array as well as strings, streams, etc.
-Now built to .Net 4.5.2</PackageReleaseNotes>
+    <Version>1.0.17</Version>
+    <AssemblyVersion>1.0.17.0</AssemblyVersion>
+    <FileVersion>1.0.17.0</FileVersion>
+    <PackageReleaseNotes>Bug fix to ListForm.addRow functionality.
+Save button now saves and closes the form. new apply option adds an Apply button to the form, which does what Save used to do (i.e. Save and redisplay).</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 

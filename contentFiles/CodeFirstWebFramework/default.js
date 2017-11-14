@@ -1564,7 +1564,8 @@ function makeDataTable(selector, options) {
  * @param {boolean} [options.dialog] Show form as a dialog when Edit button is pushed
  * @param {string} [options.submitText} Text to use for Save buttons (default "Save")
  * @param {boolean} [options.readonly} No save (default false)
- * @param {boolean} [options.saveAndClose} Include Save and Close button (default true)
+ * @param {boolean} [options.apply} Include Apply button (default false)
+ * @param {string} [options.applyText} Text to use for Apply button (default "Apply")
  * @param {boolean} [options.saveAndNew} Include Save and New button (default false)
  * @param {*} [options.data] Existing data to display
  * @param {Array} options.columns
@@ -1608,11 +1609,11 @@ function makeForm(selector, options) {
 			postJson(submitHref, result.data, function(d) {
 				$('button#Back').text('Back');
 				if($(button).hasClass('goback')) {
-					goback();	// Save and Close
+					goback();	// Save
 				} else if($(button).hasClass('new')) {
 					window.location = urlParameter('id', 0);	// Save and New
 				} else if(tableName && d.id) {
-					window.location = urlParameter('id', d.id);	// Redisplay saved record
+					window.location = urlParameter('id', d.id);	// Apply - redisplay saved record
 				}
 			});
 		}
@@ -1765,13 +1766,13 @@ function makeForm(selector, options) {
                     // Add Buttons
 				if(!options.readonly) {
                     actionButton(options.submitText || 'Save')
+                        .addClass('goback')
                         .click(function (e) {
                             submitUrl(this);
                             e.preventDefault();
                         });
-                    if (options.saveAndClose !== false)
-                        actionButton((options.submitText || 'Save') + ' and Close')
-                            .addClass('goback')
+                    if (options.apply)
+                        actionButton(options.applyText || 'Apply')
                             .click(function (e) {
                                 submitUrl(this);
                                 e.preventDefault();
@@ -2137,9 +2138,10 @@ function makeListForm(selector, options) {
 		
 	}
 	function checkForNewRow() {
-		var lastRow = data[data.length - 1];
+        var lastRow = table.data[table.data.length - 1];
 		if(lastRow == null || hasData(lastRow)) {
-			delete lastRow['@class'];
+            if (lastRow)
+                delete lastRow['@class'];
 			table.find('tbody tr.noDeleteButton').removeClass('noDeleteButton');
 			var newRow = options.emptyRow === undefined ? {} : _.clone(options.emptyRow);
 			newRow['@class'] = 'noDeleteButton';
@@ -2193,13 +2195,13 @@ function makeListForm(selector, options) {
 			drawn = true;
 			if(!options.readonly) {
 				actionButton(options.submitText || 'Save')
+                    .addClass('goback')
 					.click(function (e) {
 						submitUrl(this);
 						e.preventDefault();
 					});
-				if (options.saveAndClose !== false)
-					actionButton((options.submitText || 'Save') + ' and Close')
-						.addClass('goback')
+				if (options.apply)
+					actionButton(options.applyText || 'Apply')
 						.click(function (e) {
 							submitUrl(this);
 							e.preventDefault();
@@ -2306,8 +2308,6 @@ function makeListForm(selector, options) {
  * @param {boolean} [options.dialog] Show form as a dialog when Edit button is pushed
  * @param {string} [options.submitText} Text to use for Save buttons (default "Save")
  * @param {boolean} [options.readonly} No save (default false)
- * @param {boolean} [options.saveAndClose} Include Save and Close button (default true)
- * @param {boolean} [options.saveAndNew} Include Save and New button (default false)
  * @param {*} [options.data] Existing data to display
  * @param {Array} options.columns
  * @param {function} [options.validate] Callback to validate data

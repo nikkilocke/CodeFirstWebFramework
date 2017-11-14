@@ -152,7 +152,7 @@ function jumpButton(text, url) {
 function actionButton(text) {
 	return $('<button id="' + text.replace(/ /g, '') + '"></button>')
 		.text(text)
-		.appendTo($('#menu3'));
+		.appendTo($('#menu3').show());
 }
 
 /**
@@ -1446,8 +1446,8 @@ function makeDataTable(selector, options) {
 	}
 	// "Show All" functionality
 	_.each(nzColumns, function(nz) {
-		var zText = nz.zeroText || ((nz.col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading);
-		var nzText = nz.nonZeroText || ((nz.col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading);
+        var zText = nz.zeroText || ((nz.col.type == 'checkbox' ? 'Exclude not ' : 'Only non-zero ') + nz.heading);
+        var nzText = nz.nonZeroText || ((nz.col.type == 'checkbox' ? 'Include not ' : 'Show all ') + nz.heading);
 		//noinspection JSUnusedLocalSymbols
 		$('<button id="nz' + nz.col.name + '" data-nz="' + nz.hide + '"></button>').insertBefore($(selector))
 			.html(nz.hide ? nzText : zText)

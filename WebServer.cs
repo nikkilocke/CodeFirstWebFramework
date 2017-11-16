@@ -262,7 +262,8 @@ namespace CodeFirstWebFramework {
 					log.AppendFormat("Request error: {0}\r\n", ex);
 					if (module == null || !module.ResponseSent) {
 						try {
-							module = new ErrorModule();
+							ModuleInfo info = server.NamespaceDef.GetModuleInfo("error");
+							module = info == null ? new ErrorModule() : (AppModule)Activator.CreateInstance(info.Type); 
 							module.Session = _empty;
 							module.Server = server;
 							module.ActiveModule = modules[server.Namespace];
@@ -275,7 +276,7 @@ namespace CodeFirstWebFramework {
 							module.WriteResponse(module.Template("exception", module), "text/html", HttpStatusCode.InternalServerError);
 						} catch (Exception ex1) {
 							log.AppendFormat("Error displaying exception: {0}\r\n", ex1);
-							if (module == null || !module.ResponseSent) {
+							if (module != null && !module.ResponseSent) {
 								try {
 									module.WriteResponse("Error displaying exception:" + ex.Message, "text/plain", HttpStatusCode.InternalServerError);
 								} catch {

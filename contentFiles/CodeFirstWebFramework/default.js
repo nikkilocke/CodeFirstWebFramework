@@ -1801,15 +1801,15 @@ function makeForm(selector, options) {
 				}
 			}
 		}
-		if(deleteUrl && !options.readonly) {
-			deleteButton = actionButton('Delete')
-				.click(function (e) {
-					if(confirm("Are you sure you want to delete this record"))
-						deleteUrl(this);
-					e.preventDefault();
-				});
-		}
 	}
+    if (deleteUrl && !options.readonly) {
+        deleteButton = actionButton('Delete')
+            .click(function (e) {
+                if (confirm("Are you sure you want to delete this record"))
+                    deleteUrl(this);
+                e.preventDefault();
+            });
+    }
 	result.fields = columns;
 	result.settings = options;
 	result.dataReady = dataReady;

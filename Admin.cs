@@ -22,7 +22,7 @@ namespace CodeFirstWebFramework {
 		/// Create form to edit settings
 		/// </summary>
 		public Form EditSettings() {
-			Form form = new Form(module, typeof(Settings)) {
+			Form form = new Form(module, module.Settings.GetType()) {
 				Data = module.Settings.ToJToken()
 			};
 			DirectoryInfo skinFolder = module.Server.DirectoryInfo("skin");

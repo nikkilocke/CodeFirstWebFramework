@@ -454,11 +454,10 @@
   - [Tables](#P-CodeFirstWebFramework-Namespace-Tables 'CodeFirstWebFramework.Namespace.Tables')
   - [ViewNames](#P-CodeFirstWebFramework-Namespace-ViewNames 'CodeFirstWebFramework.Namespace.ViewNames')
   - [GetAccessLevel()](#M-CodeFirstWebFramework-Namespace-GetAccessLevel 'CodeFirstWebFramework.Namespace.GetAccessLevel')
-  - [GetAccessLevelType()](#M-CodeFirstWebFramework-Namespace-GetAccessLevelType 'CodeFirstWebFramework.Namespace.GetAccessLevelType')
   - [GetDatabase(server)](#M-CodeFirstWebFramework-Namespace-GetDatabase-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.GetDatabase(CodeFirstWebFramework.ServerConfig)')
-  - [GetDatabaseType()](#M-CodeFirstWebFramework-Namespace-GetDatabaseType 'CodeFirstWebFramework.Namespace.GetDatabaseType')
+  - [GetInstanceOf\`\`1(args)](#M-CodeFirstWebFramework-Namespace-GetInstanceOf``1-System-Object[]- 'CodeFirstWebFramework.Namespace.GetInstanceOf``1(System.Object[])')
   - [GetModuleInfo()](#M-CodeFirstWebFramework-Namespace-GetModuleInfo-System-String- 'CodeFirstWebFramework.Namespace.GetModuleInfo(System.String)')
-  - [GetSettingsType()](#M-CodeFirstWebFramework-Namespace-GetSettingsType 'CodeFirstWebFramework.Namespace.GetSettingsType')
+  - [GetNamespaceType()](#M-CodeFirstWebFramework-Namespace-GetNamespaceType-System-Type- 'CodeFirstWebFramework.Namespace.GetNamespaceType(System.Type)')
   - [ParseUri()](#M-CodeFirstWebFramework-Namespace-ParseUri-System-String,System-String@- 'CodeFirstWebFramework.Namespace.ParseUri(System.String,System.String@)')
   - [processFields()](#M-CodeFirstWebFramework-Namespace-processFields-System-Type,System-Collections-Generic-List{CodeFirstWebFramework-Field}@,System-Collections-Generic-Dictionary{System-String,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}}@,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}@,System-String@- 'CodeFirstWebFramework.Namespace.processFields(System.Type,System.Collections.Generic.List{CodeFirstWebFramework.Field}@,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Tuple{System.Int32,CodeFirstWebFramework.Field}}}@,System.Collections.Generic.List{System.Tuple{System.Int32,CodeFirstWebFramework.Field}}@,System.String@)')
   - [processTable()](#M-CodeFirstWebFramework-Namespace-processTable-System-Type,CodeFirstWebFramework-ViewAttribute- 'CodeFirstWebFramework.Namespace.processTable(System.Type,CodeFirstWebFramework.ViewAttribute)')
@@ -5197,17 +5196,6 @@ Returns the AccessLevel object to use. If there is one in the namespace, returns
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Namespace-GetAccessLevelType'></a>
-### GetAccessLevelType() `method` [#](#M-CodeFirstWebFramework-Namespace-GetAccessLevelType 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Returns the type of the AccessLevel record to use for authorisation levels. If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.AccessLevel
-
-##### Parameters
-
-This method has no parameters.
-
 <a name='M-CodeFirstWebFramework-Namespace-GetDatabase-CodeFirstWebFramework-ServerConfig-'></a>
 ### GetDatabase(server) `method` [#](#M-CodeFirstWebFramework-Namespace-GetDatabase-CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -5221,16 +5209,24 @@ Returns the Database object to use. If there is one in the namespace, returns an
 | ---- | ---- | ----------- |
 | server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') | ConfigServer to pass to the database constructor |
 
-<a name='M-CodeFirstWebFramework-Namespace-GetDatabaseType'></a>
-### GetDatabaseType() `method` [#](#M-CodeFirstWebFramework-Namespace-GetDatabaseType 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-Namespace-GetInstanceOf``1-System-Object[]-'></a>
+### GetInstanceOf\`\`1(args) `method` [#](#M-CodeFirstWebFramework-Namespace-GetInstanceOf``1-System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Returns the type of the Database record to use to access the database. If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.Database
+If there is a subclass of T in the namespace, create an instance of it. Otherwise create an instance of T
 
 ##### Parameters
 
-This method has no parameters.
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| args | [System.Object[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object[] 'System.Object[]') | The constructor arguments |
+
+##### Generic Types
+
+| Name | Description |
+| ---- | ----------- |
+| T | The class to create |
 
 <a name='M-CodeFirstWebFramework-Namespace-GetModuleInfo-System-String-'></a>
 ### GetModuleInfo() `method` [#](#M-CodeFirstWebFramework-Namespace-GetModuleInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
@@ -5243,12 +5239,12 @@ Get the AppModule for a module name from the url
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Namespace-GetSettingsType'></a>
-### GetSettingsType() `method` [#](#M-CodeFirstWebFramework-Namespace-GetSettingsType 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-Namespace-GetNamespaceType-System-Type-'></a>
+### GetNamespaceType() `method` [#](#M-CodeFirstWebFramework-Namespace-GetNamespaceType-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Returns the type of the Settings record to be stored in the database. If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.Settings
+If there is a subclass of baseType in the namespace, returns that, otherwise baseType
 
 ##### Parameters
 
@@ -5259,7 +5255,7 @@ This method has no parameters.
 
 ##### Summary
 
-Parse a uri and return the ModuleInfor associated with it (or null if none). Sets filename to the proper relative filename (modulename/methodname.extension), stripping on VersionSuffix, and adding any defaults (home/default if uri is "/", for instance).
+Parse a uri and return the ModuleInfo associated with it (or null if none). Sets filename to the proper relative filename (modulename/methodname.extension), stripping on VersionSuffix, and adding any defaults (home/default if uri is "/", for instance).
 
 ##### Parameters
 

@@ -151,16 +151,25 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Returns the type of the Settings record to be stored in the database.
-		/// If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.Settings
+		/// If there is a subclass of baseType in the namespace, returns that, otherwise baseType
 		/// </summary>
-		public Type GetSettingsType() {
+		public Type GetNamespaceType(Type baseClass) {
 			foreach (Assembly assembly in assemblies) {
-				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Settings)))) {
+				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(baseClass))) {
 					return t;
 				}
 			}
-			return typeof(Settings);
+			return baseClass;
+		}
+
+		/// <summary>
+		/// If there is a subclass of T in the namespace, create an instance of it.
+		/// Otherwise create an instance of T
+		/// </summary>
+		/// <typeparam name="T">The class to create</typeparam>
+		/// <param name="args">The constructor arguments</param>
+		public T GetInstanceOf<T>(params object [] args) {
+			return (T)Activator.CreateInstance(GetNamespaceType(typeof(T)), args);
 		}
 
 		/// <summary>
@@ -169,20 +178,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="server">ConfigServer to pass to the database constructor</param>
 		public Database GetDatabase(ServerConfig server) {
-			return (Database)Activator.CreateInstance(GetDatabaseType(), server);
-		}
-
-		/// <summary>
-		/// Returns the type of the Database record to use to access the database.
-		/// If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.Database
-		/// </summary>
-		public Type GetDatabaseType() {
-			foreach (Assembly assembly in assemblies) {
-				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(Database)))) {
-					return t;
-				}
-			}
-			return typeof(Database);
+			return GetInstanceOf<Database>(server);
 		}
 
 		/// <summary>
@@ -190,20 +186,7 @@ namespace CodeFirstWebFramework {
 		/// If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.AccessLevel
 		/// </summary>
 		public AccessLevel GetAccessLevel() {
-			return (AccessLevel)Activator.CreateInstance(GetAccessLevelType());
-		}
-
-		/// <summary>
-		/// Returns the type of the AccessLevel record to use for authorisation levels.
-		/// If there is one in the namespace, returns that, otherwise CodeFirstWebFramework.AccessLevel
-		/// </summary>
-		public Type GetAccessLevelType() {
-			foreach (Assembly assembly in assemblies) {
-				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract && t.IsSubclassOf(typeof(AccessLevel)))) {
-					return t;
-				}
-			}
-			return typeof(AccessLevel);
+			return GetInstanceOf<AccessLevel>();
 		}
 
 		/// <summary>
@@ -214,7 +197,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Parse a uri and return the ModuleInfor associated with it (or null if none).
+		/// Parse a uri and return the ModuleInfo associated with it (or null if none).
 		/// Sets filename to the proper relative filename (modulename/methodname.extension), stripping on VersionSuffix, 
 		/// and adding any defaults (home/default if uri is "/", for instance).
 		/// </summary>

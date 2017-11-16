@@ -120,6 +120,8 @@ $(function() {
 	}, 100);
 });
 
+$(window).on("load", resize);
+
 /**
  * Add a goto button to menu 2
  * @param text Button text
@@ -127,9 +129,11 @@ $(function() {
  * @returns {*|jQuery} Button
  */
 function addButton(text, url) {
-	return $('<button id="' + text.replace(/ /g, '') + (url ? '" data-goto="' + url : '') + '"></button>')
+	var btn = $('<button id="' + text.replace(/ /g, '') + (url ? '" data-goto="' + url : '') + '"></button>')
 		.text(text)
-		.appendTo($('#menu2'));
+        .appendTo($('#menu2').show());
+    resize();
+    return btn;
 }
 
 /**
@@ -139,9 +143,11 @@ function addButton(text, url) {
  * @returns {*|jQuery} Button
  */
 function jumpButton(text, url) {
-	return $('<button id="' + text.replace(/ /g, '') + '" href="' + url + window.location.search + '"></button>')
+	var btn = $('<button id="' + text.replace(/ /g, '') + '" href="' + url + window.location.search + '"></button>')
 		.text(text)
-		.appendTo($('#menu2'));
+        .appendTo($('#menu2').show());
+    resize();
+    return btn;
 }
 
 /**
@@ -150,9 +156,11 @@ function jumpButton(text, url) {
  * @returns {*|jQuery} Button
  */
 function actionButton(text) {
-	return $('<button id="' + text.replace(/ /g, '') + '"></button>')
+	var btn = $('<button id="' + text.replace(/ /g, '') + '"></button>')
 		.text(text)
 		.appendTo($('#menu3').show());
+    resize();
+    return btn;
 }
 
 /**
@@ -1641,6 +1649,8 @@ function makeForm(selector, options) {
 		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
 		if(col.colspan)
 			col.cell.attr('colspan', col.colspan);
+        if (col.sClass)
+            col.cell.attr('class', col.sClass);
 		columns[col.name] = col;
 		col.index = index;
 	});

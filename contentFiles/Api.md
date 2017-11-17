@@ -321,6 +321,7 @@
   - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject})')
 - [FileSender](#T-CodeFirstWebFramework-FileSender 'CodeFirstWebFramework.FileSender')
   - [#ctor()](#M-CodeFirstWebFramework-FileSender-#ctor-System-String- 'CodeFirstWebFramework.FileSender.#ctor(System.String)')
+  - [ContentTypes](#F-CodeFirstWebFramework-FileSender-ContentTypes 'CodeFirstWebFramework.FileSender.ContentTypes')
   - [Filename](#F-CodeFirstWebFramework-FileSender-Filename 'CodeFirstWebFramework.FileSender.Filename')
   - [Default()](#M-CodeFirstWebFramework-FileSender-Default 'CodeFirstWebFramework.FileSender.Default')
 - [ForeignKey](#T-CodeFirstWebFramework-ForeignKey 'CodeFirstWebFramework.ForeignKey')
@@ -3828,6 +3829,13 @@ Create a FileSender for a file
 ##### Parameters
 
 This constructor has no parameters.
+
+<a name='F-CodeFirstWebFramework-FileSender-ContentTypes'></a>
+### ContentTypes `constants` [#](#F-CodeFirstWebFramework-FileSender-ContentTypes 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Dictionary to translate file extensions to content types in file responses. Add entries to this if you have your own mime types.
 
 <a name='F-CodeFirstWebFramework-FileSender-Filename'></a>
 ### Filename `constants` [#](#F-CodeFirstWebFramework-FileSender-Filename 'Go To Here') [=](#contents 'Back To Contents')

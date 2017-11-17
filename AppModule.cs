@@ -516,6 +516,12 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		protected string ConvertEncoding(string s) {
+			if (Charset == "windows-1252")
+				return s;
+			return Encoding.GetString(Encoding.GetEncoding(1252).GetBytes(s));
+		}
+
 		/// <summary>
 		/// Responds to a Url request. Set up the AppModule variables and call the given method
 		/// </summary>
@@ -567,12 +573,12 @@ namespace CodeFirstWebFramework {
 								if (match.Success) {
 									PostParameters.Add(field, new UploadedFile(Path.GetFileName(match.Groups[1].Value), value).ToJToken());
 								} else {
-									PostParameters.Add(field, value);
+									PostParameters.Add(field, ConvertEncoding(value));
 								}
 							}
 						}
 					} else {
-						PostParameters.AddRange(HttpUtility.ParseQueryString(data));
+						PostParameters.AddRange(HttpUtility.ParseQueryString(ConvertEncoding(data)));
 					}
 					Parameters.AddRange(PostParameters);
 					if (Config.PostLogging) {
@@ -1059,6 +1065,9 @@ namespace CodeFirstWebFramework {
 					break;
 				case ".pdf":
 					contentType = "application/pdf";
+					break;
+				case ".svg":
+					contentType = "image/svg+xml";
 					break;
 				case ".xls":
 					contentType = "application/x-msexcel";

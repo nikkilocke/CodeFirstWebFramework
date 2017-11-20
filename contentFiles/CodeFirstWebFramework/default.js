@@ -178,7 +178,7 @@ function message(m) {
 function resize() {
 	var top = $('#header').height();
 	// A small screen - should match "@media screen and (min-width:700px)" in default.css
-  	var auto = $(window).width() < 700;
+    var auto = !window.matchMedia("screen and (min-width:700px)").matches || window.matchMedia("print").matches;
 	$('#spacer').css('height', auto ? '' : top + 'px');
 	$('#body').css('height', auto ? '' : ($(window).height() - top - 16) + 'px');
 }
@@ -1378,7 +1378,7 @@ function makeDataTable(selector, options) {
 		// Turn into a function that goes to url, adding id of current row as parameter
 		var s = selectUrl;
 		selectUrl = function (row) {
-			goto(s + '?id=' + row[idName]);
+            goto(urlParameter('id', row[idName], s));
 		}
 	}
 	// If no data or data url supplied, use an Ajax call to this method + "Listing"
@@ -1972,7 +1972,7 @@ function makeListForm(selector, options) {
 	if(typeof(selectUrl) == 'string') {
 		var sel = selectUrl;
 		selectUrl = function(row) {
-			goto(sel + '?id=' + row[idName]);
+            goto(urlParameter('id', row[idName], sel));
 		}
 	}
 	if(typeof(selectUrl) == 'function') {

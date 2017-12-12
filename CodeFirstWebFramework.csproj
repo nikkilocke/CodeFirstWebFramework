@@ -29,7 +29,7 @@ Save button now saves and closes the form. new apply option adds an Apply button
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.14.3" />
+    <PackageReference Include="Markdig" Version="0.14.7" />
     <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
     <PackageReference Include="mustache-sharp" Version="0.2.10" />
     <PackageReference Include="MySql.Data" Version="6.10.4" />

@@ -40,7 +40,7 @@ $(function() {
 	resize();
 	$('#menuicon').click(function() {
 		// Small screen user has clicked menu icon - show/hide menu
-		$('#header').slideToggle();
+		$('#header,#spacer').slideToggle(resize);
 	});
 	$('body').on('click', 'button[href]', function() {
 		// Buttons with hrefs act like links
@@ -178,7 +178,7 @@ function message(m) {
 function resize() {
 	var top = $('#header').height();
 	// A small screen - should match "@media screen and (min-width:700px)" in default.css
-    var auto = !window.matchMedia("screen and (min-width:700px)").matches || window.matchMedia("print").matches;
+    var auto = !$('#header').is(':visible');
 	$('#spacer').css('height', auto ? '' : top + 'px');
 	$('#body').css('height', auto ? '' : ($(window).height() - top - 16) + 'px');
 }
@@ -1347,6 +1347,7 @@ var Forms = [];
  * 	{string} [heading] to use in button text (col.heading)
  * 	{string} [zeroText] prompt for button (Show all <heading>)
  * 	{string} [nonZeroText] prompt for button (Only non-zero <heading>)
+ * 	{string} [regex] regex matching data to hide (^([0\.]*|true|null)$) - NB: default hides ticked checkboxes
  * @param {string} selector
  * @param options
  * @param {string} [options.table] Name of SQL table
@@ -1401,11 +1402,14 @@ function makeDataTable(selector, options) {
 		var nz = myOption('nonZero', col);
 		if (nz != undefined) {
 			if (typeof(nz) == 'boolean') nz = {hide: nz};
+			nz.col = col;
 			if (nz.hide === undefined) nz.hide = true;
+			if (nz.heading === undefined) nz.heading = title;
+			if(nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude not ' : 'Only non-zero ') + nz.heading;
+			if(nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include not ' : 'Show all ') + nz.heading;
+			nz.regex = nz.regex === undefined ? /^([0\.]*|true|null)$/ : new Regex(nz.regex);
 			if (nzList.length)
 				nz.hide = nzList.shift() == 1;
-			nz.col = col;
-			if (nz.heading === undefined) nz.heading = title;
 			nzColumns.push(nz);
 		}
 		col.index = index;
@@ -1454,8 +1458,8 @@ function makeDataTable(selector, options) {
 	}
 	// "Show All" functionality
 	_.each(nzColumns, function(nz) {
-        var zText = nz.zeroText || ((nz.col.type == 'checkbox' ? 'Exclude not ' : 'Only non-zero ') + nz.heading);
-        var nzText = nz.nonZeroText || ((nz.col.type == 'checkbox' ? 'Include not ' : 'Show all ') + nz.heading);
+        var zText = nz.zeroText;
+        var nzText = nz.nonZeroText;
 		//noinspection JSUnusedLocalSymbols
 		$('<button id="nz' + nz.col.name + '" data-nz="' + nz.hide + '"></button>').insertBefore($(selector))
 			.html(nz.hide ? nzText : zText)
@@ -1467,7 +1471,7 @@ function makeDataTable(selector, options) {
 			});
 		$.fn.dataTable.ext.search.push(
 			function(settings, dataArray, dataIndex, data) {
-				return !nz.hide || !/^([0\.]*|true)$/.test(data[nz.col.data]);
+				return !nz.hide || !nz.regex.test(data[nz.col.data]);
 			}
 		);
 		if(nz.hide)
@@ -1982,6 +1986,12 @@ function makeListForm(selector, options) {
 	} else {
 		selectClick(selector, null);
 	}
+	if(options.addRows && (options.deleteRows === true)) {
+		options.deleteRows = function(data) {
+			if($(this).index() == table.data.length - 1)
+				return false;
+		};
+	}
 	$(selector).addClass('form');
 	$(selector).addClass('listform');
 	_setAjaxObject(options, 'Listing', '');
@@ -2123,7 +2133,7 @@ function makeListForm(selector, options) {
 					var index = row.index();
 					var callback;
 					if(typeof(options.deleteRows) == "function")
-							callback = options.deleteRows.call(row, table.data[index]);
+						callback = options.deleteRows.call(row, table.data[index]);
 					if(callback != false) {
 						unsavedInput = true;
 						$('button#Back').text('Cancel');
@@ -2142,8 +2152,9 @@ function makeListForm(selector, options) {
 	function hasData(row) {
 		if(options.hasData && typeof(options.hasData) == 'function')
 			return options.hasData(row);
+		emptyRow = options.emptyRow === undefined ? {} : options.emptyRow;
 		for(var key in row)
-			if(!key.match(/^@/) && row[key])
+			if(!key.match(/^@/) && row[key] && row[key] != emptyRow[key])
 				return true;
 		
 	}
@@ -2235,7 +2246,6 @@ function makeListForm(selector, options) {
 			get(options.ajax.url, null, dataReady);
 		}
 	}
-	refresh();
 	table.fields = columns;
 	table.settings = options;
 	table.dataReady = dataReady;
@@ -2297,6 +2307,7 @@ function makeListForm(selector, options) {
 			cell = cell.next();
 		}
 	};
+	refresh();
 	Forms.push(table);
 	return table;
 }

@@ -16,6 +16,7 @@
     height: 32px;
     top: 0;
     right: 0;
+    z-index: 100;
 }
 #heading {
     overflow: hidden;

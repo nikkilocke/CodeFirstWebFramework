@@ -404,7 +404,7 @@ namespace CodeFirstWebFramework {
 					Error = ex.Message;
 				}
 				_module.Log("Finished batch job {0}", Id);
-				WebServer.Log(_module.LogString.ToString());
+				WebServer.Log(LogType.Info, _module.LogString.ToString());
 				_module.LogString = null;
 				_module.Batch = null;
 				Finished = true;
@@ -920,6 +920,13 @@ namespace CodeFirstWebFramework {
 				Response.AddHeader("Expires", "0");
 			}
 			Response.StatusCode = (int)status;
+			if(status >= HttpStatusCode.BadRequest)
+				WebServer.Log(LogType.NotFound, "{0} {1}:{2}:Response {3} {4}",
+				Request.RemoteEndPoint.Address,
+				Request.Headers["X-Forwarded-For"],
+				Request.Url,
+				(int)status,
+				status);
 			Response.ContentEncoding = Encoding;
 			switch (contentType) {
 				case "text/plain":

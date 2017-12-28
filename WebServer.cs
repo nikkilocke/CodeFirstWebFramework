@@ -13,6 +13,16 @@ using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
+	/// Types of log message (these can individually be redirected to nowhere, log file, stdout, stderr)
+	/// </summary>
+	public enum LogType {
+		Debug,
+		Info,
+		NotFound,
+		Startup,
+		Error
+	}
+	/// <summary>
 	/// Web Server - listens for connections, and services them
 	/// </summary>
 	public class WebServer {
@@ -43,7 +53,7 @@ namespace CodeFirstWebFramework {
 				}
 				registerServer(databases, Config.Default.DefaultServer);
 			} catch (Exception ex) {
-				Log(ex.ToString());
+				Log(LogType.Error, ex.ToString());
 				throw;
 			}
 		}
@@ -77,23 +87,31 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Log message to console and trace
 		/// </summary>
-		static public void Log(string s) {
+		static public void Log(LogType type, string s) {
+			LogDestination[] logto = Config.Default.LogDestinations;
+			int t = (int)type;
+			LogDestination dest = t >= 0 && t < logto.Length ? logto[t] : LogDestination.Log;
+			if (dest == LogDestination.Null)
+				return;
 			s = s.Trim();
 			lock (_lock) {
-				System.Diagnostics.Trace.WriteLine(s);
-				if(Config.Default.LogToStdout)
+				if((dest & LogDestination.Log) != 0)
+					System.Diagnostics.Trace.WriteLine(s);
+				if ((dest & LogDestination.StdOut) != 0)
 					Console.WriteLine(s);
+				if ((dest & LogDestination.StdErr) != 0)
+					Console.Error.WriteLine(s);
 			}
 		}
 
 		/// <summary>
 		/// Log message to console and trace
 		/// </summary>
-		static public void Log(string format, params object[] args) {
+		static public void Log(LogType type, string format, params object[] args) {
 			try {
-				Log(string.Format(format, args));
+				Log(type, string.Format(format, args));
 			} catch (Exception ex) {
-				Log(string.Format("{0}:Error logging {1}", format, ex.Message));
+				Log(type, string.Format("{0}:Error logging {1}", format, ex.Message));
 			}
 		}
 
@@ -121,7 +139,7 @@ namespace CodeFirstWebFramework {
 				}
 				foreach (int port in ports) {
 					_listener.Prefixes.Add("http://+:" + port + "/");
-					Log("Listening on port {0}", port);
+					Log(LogType.Startup, "Listening on port {0}", port);
 				}
 				_sessions = new Dictionary<string, Session>();
 				_empty = new Session(null);
@@ -149,10 +167,10 @@ namespace CodeFirstWebFramework {
 					}
 				}
 			} catch (HttpListenerException ex) {
-				Log(ex.ToString());
+				Log(LogType.Error, ex.ToString());
 			} catch (ThreadAbortException) {
 			} catch (Exception ex) {
-				Log(ex.ToString());
+				Log(LogType.Error, ex.ToString());
 			}
 		}
 
@@ -184,103 +202,103 @@ namespace CodeFirstWebFramework {
 			StringBuilder log = new StringBuilder();	// Session log writes to here, and it is displayed at the end
 			context = (HttpListenerContext)listenerContext;
 			ServerConfig server = Config.Default.SettingsForHost(context.Request.Url);
-			if(server == null) {
+			log.AppendFormat("{0} {1}:{2}:[ms]:",
+				context.Request.RemoteEndPoint.Address,
+				context.Request.Headers["X-Forwarded-For"],
+				context.Request.RawUrl);
+			if (server == null) {
 				// Request not matching any of the Server array, and not on the default port
 				context.Response.StatusCode = 404;
 				context.Response.ContentType = "text/plain;charset=" + AppModule.Charset;
 				byte[] msg = AppModule.Encoding.GetBytes("Server not found");
 				context.Response.ContentLength64 = msg.Length;
-				Log("404 Server not found ");
+				log.Append("404 Server not found ");
 				using (Stream r = context.Response.OutputStream) {
 					r.Write(msg, 0, msg.Length);
 				}
-				return;
-			}
-			try {
-				log.AppendFormat("{0} {1}:{2}:[ms]:", 
-					context.Request.RemoteEndPoint.Address,
-					context.Request.Headers["X-Forwarded-For"],
-					context.Request.RawUrl);
-				Session session = null;
-				ModuleInfo info = modules[server.Namespace].ParseUri(context.Request.Url.AbsolutePath, out string filename);
-				string moduleName = null;
-				string methodName = null;
-				// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
-				if (info != null) {
-					// The AppModule exists - does it handle this extension?
-					string extension = Path.GetExtension(filename);
-					HandlesAttribute handles = info.Type.GetCustomAttribute<HandlesAttribute>(true);
-					if (string.IsNullOrWhiteSpace(extension) || handles.Extensions.Contains(extension.ToLower())) {
-						module = (AppModule)Activator.CreateInstance(info.Type);
-						module.Info = info;
-						moduleName = Path.GetDirectoryName(filename);
-						methodName = Path.GetFileNameWithoutExtension(filename);
+			} else {
+				try {
+					Session session = null;
+					ModuleInfo info = modules[server.Namespace].ParseUri(context.Request.Url.AbsolutePath, out string filename);
+					string moduleName = null;
+					string methodName = null;
+					// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
+					if (info != null) {
+						// The AppModule exists - does it handle this extension?
+						string extension = Path.GetExtension(filename);
+						HandlesAttribute handles = info.Type.GetCustomAttribute<HandlesAttribute>(true);
+						if (string.IsNullOrWhiteSpace(extension) || handles.Extensions.Contains(extension.ToLower())) {
+							module = (AppModule)Activator.CreateInstance(info.Type);
+							module.Info = info;
+							moduleName = Path.GetDirectoryName(filename);
+							methodName = Path.GetFileNameWithoutExtension(filename);
+						}
 					}
-				}
-				if (moduleName == null) {
-					// No AppModule found - treat url as a file request
-					moduleName = "FileSender";
-					module = new FileSender(filename);
-				}
-				// AppModule found - retrieve or create a session for it
-				Cookie cookie = context.Request.Cookies["session"];
-				if (cookie != null) {
-					_sessions.TryGetValue(cookie.Value, out session);
-					if (Config.Default.SessionLogging)
-						log.AppendFormat("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
-				}
-				if (session == null) {
-					if (moduleName == "FileSender") {
-						session = new Session(null);
-					} else {
-						session = new Session(this);
-						cookie = new Cookie("session", session.Cookie, "/");
+					if (moduleName == null) {
+						// No AppModule found - treat url as a file request
+						moduleName = "FileSender";
+						module = new FileSender(filename);
+					}
+					// AppModule found - retrieve or create a session for it
+					Cookie cookie = context.Request.Cookies["session"];
+					if (cookie != null) {
+						_sessions.TryGetValue(cookie.Value, out session);
 						if (Config.Default.SessionLogging)
-							log.AppendFormat("[{0} new session]", cookie.Value);
+							log.AppendFormat("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
 					}
-				}
-				if (cookie != null) {
-					context.Response.Cookies.Add(cookie);
-					cookie.Expires = session.Expires = Utils.Now.AddHours(1);
-				}
-				// Set up module
-				module.Server = server;
-				module.ActiveModule = modules[server.Namespace];
-				module.Session = session;
-				module.LogString = log;
-				if (moduleName.EndsWith("Module"))
-					moduleName = moduleName.Substring(0, moduleName.Length - 6);
-				using (module) {
-					// Call method
-					module.Call(context, moduleName, methodName);
-				}
-			} catch (Exception ex) {
-				while (ex is TargetInvocationException)
-					ex = ex.InnerException;
-				if (ex is System.Net.Sockets.SocketException) {
-					log.AppendFormat("Request error: {0}\r\n", ex.Message);
-				} else {
-					log.AppendFormat("Request error: {0}\r\n", ex);
-					if (module == null || !module.ResponseSent) {
-						try {
-							ModuleInfo info = server.NamespaceDef.GetModuleInfo("error");
-							module = info == null ? new ErrorModule() : (AppModule)Activator.CreateInstance(info.Type); 
-							module.Session = _empty;
-							module.Server = server;
-							module.ActiveModule = modules[server.Namespace];
-							module.LogString = log;
-							module.Context = context;
-							module.Module = "exception";
-							module.Method = "default";
-							module.Title = "Exception";
-							module.Exception = ex;
-							module.WriteResponse(module.Template("exception", module), "text/html", HttpStatusCode.InternalServerError);
-						} catch (Exception ex1) {
-							log.AppendFormat("Error displaying exception: {0}\r\n", ex1);
-							if (module != null && !module.ResponseSent) {
-								try {
-									module.WriteResponse("Error displaying exception:" + ex.Message, "text/plain", HttpStatusCode.InternalServerError);
-								} catch {
+					if (session == null) {
+						if (moduleName == "FileSender") {
+							session = new Session(null);
+						} else {
+							session = new Session(this);
+							cookie = new Cookie("session", session.Cookie, "/");
+							if (Config.Default.SessionLogging)
+								log.AppendFormat("[{0} new session]", cookie.Value);
+						}
+					}
+					if (cookie != null) {
+						context.Response.Cookies.Add(cookie);
+						cookie.Expires = session.Expires = Utils.Now.AddHours(1);
+					}
+					// Set up module
+					module.Server = server;
+					module.ActiveModule = modules[server.Namespace];
+					module.Session = session;
+					module.LogString = log;
+					if (moduleName.EndsWith("Module"))
+						moduleName = moduleName.Substring(0, moduleName.Length - 6);
+					using (module) {
+						// Call method
+						module.Call(context, moduleName, methodName);
+					}
+				} catch (Exception ex) {
+					while (ex is TargetInvocationException)
+						ex = ex.InnerException;
+					if (ex is System.Net.Sockets.SocketException) {
+						log.AppendFormat("Request error: {0}\r\n", ex.Message);
+					} else {
+						log.AppendFormat("Request error: {0}\r\n", ex);
+						if (module == null || !module.ResponseSent) {
+							try {
+								ModuleInfo info = server.NamespaceDef.GetModuleInfo("error");
+								module = info == null ? new ErrorModule() : (AppModule)Activator.CreateInstance(info.Type);
+								module.Session = _empty;
+								module.Server = server;
+								module.ActiveModule = modules[server.Namespace];
+								module.LogString = log;
+								module.Context = context;
+								module.Module = "exception";
+								module.Method = "default";
+								module.Title = "Exception";
+								module.Exception = ex;
+								module.WriteResponse(module.Template("exception", module), "text/html", HttpStatusCode.InternalServerError);
+							} catch (Exception ex1) {
+								log.AppendFormat("Error displaying exception: {0}\r\n", ex1);
+								if (module != null && !module.ResponseSent) {
+									try {
+										module.WriteResponse("Error displaying exception:" + ex.Message, "text/plain", HttpStatusCode.InternalServerError);
+									} catch {
+									}
 								}
 							}
 						}
@@ -289,12 +307,12 @@ namespace CodeFirstWebFramework {
 			}
 			if (context != null) {
 				try {
-						context.Response.Close();
+					context.Response.Close();
 				} catch {
 				}
 			}
 			try {
-				Log(log.ToString().Replace(":[ms]:", ":" + Math.Round((DateTime.Now - started).TotalMilliseconds, 0) + " ms:"));
+				Log(LogType.Info, log.ToString().Replace(":[ms]:", ":" + Math.Round((DateTime.Now - started).TotalMilliseconds, 0) + " ms:"));
 			} catch {
 			}
 		}

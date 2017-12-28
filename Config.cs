@@ -17,6 +17,16 @@ using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
+	/// Log destinations
+	/// </summary>
+	[Flags]
+	public enum LogDestination {
+		Log = 1,
+		StdOut = 2,
+		StdErr = 4,
+		Null = 0
+	}
+	/// <summary>
 	/// The config file from the data folder
 	/// </summary>
 	public class Config {
@@ -93,16 +103,15 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool PostLogging;
 		/// <summary>
-		/// Config setting to stop logging to stdout after a set time.
-		/// Useful for Linux systemctl, otherwise all the log output goes to syslog.
+		/// Where log output goes to for each LogType enum
 		/// </summary>
-		public TimeSpan StopLoggingToStdoutAfter = TimeSpan.MaxValue;
-		/// <summary>
-		/// Test whether StopLoggingToStdoutAfter has expired
-		/// </summary>
-		public bool LogToStdout {
-			get { return DateTime.Now - startup <= StopLoggingToStdoutAfter; }
-		}
+		public LogDestination[] LogDestinations = new LogDestination[] {
+			LogDestination.Log,
+			LogDestination.Log,
+			LogDestination.Log,
+			LogDestination.Log | LogDestination.StdOut,
+			LogDestination.Log | LogDestination.StdErr
+			};
 		/// <summary>
 		/// Command line flags extracted from program command line
 		/// </summary>
@@ -168,7 +177,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="filename">Plain filename - no folders allowed - will be in the data folder</param>
 		static public void Load(string filename) {
 			filename = fileFor(filename);
-			WebServer.Log("Loading config from {0}", filename);
+			WebServer.Log(LogType.Startup, "Loading config from {0}", filename);
 			using (StreamReader s = new StreamReader(filename)) {
 				Default = Utils.JsonTo<Config>(s.ReadToEnd());
 				Default.Filename = Path.GetFileNameWithoutExtension(filename);
@@ -224,7 +233,7 @@ namespace CodeFirstWebFramework {
 				new DailyLog(Path.Combine(DataPath, EntryModule + "Logs")).WriteLine("Started:config=" + configName);
 				Utils.Check(!string.IsNullOrEmpty(Config.Default.ConnectionString), "You must specify a ConnectionString in the " + configName + " file");
 			} catch (Exception ex) {
-				WebServer.Log(ex.ToString());
+				WebServer.Log(LogType.Error, ex.ToString());
 			}
 		}
 	}

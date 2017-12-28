@@ -120,7 +120,7 @@ namespace CodeFirstWebFramework {
 				if (insert.Count != 0 || update.Count != 0 || remove.Count != 0 || insertFK.Count != 0 || dropFK.Count != 0 || insertIndex.Count != 0 || dropIndex.Count != 0)
 					db.UpgradeTable(code, database, insert, update, remove, insertFK, dropFK, insertIndex, dropIndex);
 			} catch {
-				WebServer.Log("Error upgrading table {0} in database {1}", code.Name, this.UniqueIdentifier);
+				WebServer.Log(LogType.Error, "Error upgrading table {0} in database {1}", code.Name, this.UniqueIdentifier);
 				throw;
 			}
 		}
@@ -160,7 +160,7 @@ namespace CodeFirstWebFramework {
 				}
 				Commit();
 			} catch (Exception ex) {
-				WebServer.Log(ex.ToString());
+				WebServer.Log(LogType.Error, ex.ToString());
 				throw;
 			}
 			Logging = originalLevel;
@@ -503,7 +503,7 @@ namespace CodeFirstWebFramework {
 		/// Log sql to the log
 		/// </summary>
 		public void Log(string sql) {
-			WebServer.Log(sql);
+			WebServer.Log(LogType.Debug, sql);
 		}
 
 		/// <summary>
@@ -866,7 +866,7 @@ namespace CodeFirstWebFramework {
 			public void Dispose() {
 				double elapsed = (Utils.Now - _start).TotalMilliseconds;
 				if (elapsed > MaxTime)
-					WebServer.Log("{0}:{1}", elapsed, _message);
+					WebServer.Log(LogType.Debug, "{0}:{1}", elapsed, _message);
 			}
 
 			/// <summary>

@@ -92,6 +92,14 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool PostLogging;
 		/// <summary>
+		/// True if initial startup logging goes to stdout
+		/// </summary>
+		public bool LogStartupToStdout = true;
+		/// <summary>
+		/// True if remaining logging goes to stdout
+		/// </summary>
+		public bool LogToStdout = true;
+		/// <summary>
 		/// Command line flags extracted from program command line
 		/// </summary>
 		static public NameValueCollection CommandLineFlags;

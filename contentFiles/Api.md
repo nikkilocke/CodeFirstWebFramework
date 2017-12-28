@@ -157,6 +157,8 @@
   - [EntryModule](#F-CodeFirstWebFramework-Config-EntryModule 'CodeFirstWebFramework.Config.EntryModule')
   - [EntryNamespace](#F-CodeFirstWebFramework-Config-EntryNamespace 'CodeFirstWebFramework.Config.EntryNamespace')
   - [Filename](#F-CodeFirstWebFramework-Config-Filename 'CodeFirstWebFramework.Config.Filename')
+  - [LogStartupToStdout](#F-CodeFirstWebFramework-Config-LogStartupToStdout 'CodeFirstWebFramework.Config.LogStartupToStdout')
+  - [LogToStdout](#F-CodeFirstWebFramework-Config-LogToStdout 'CodeFirstWebFramework.Config.LogToStdout')
   - [Namespace](#F-CodeFirstWebFramework-Config-Namespace 'CodeFirstWebFramework.Config.Namespace')
   - [Port](#F-CodeFirstWebFramework-Config-Port 'CodeFirstWebFramework.Config.Port')
   - [PostLogging](#F-CodeFirstWebFramework-Config-PostLogging 'CodeFirstWebFramework.Config.PostLogging')
@@ -2098,6 +2100,20 @@ The namespace of the entry program
 ##### Summary
 
 The name of the file from which this config has been read
+
+<a name='F-CodeFirstWebFramework-Config-LogStartupToStdout'></a>
+### LogStartupToStdout `constants` [#](#F-CodeFirstWebFramework-Config-LogStartupToStdout 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+True if initial startup logging goes to stdout
+
+<a name='F-CodeFirstWebFramework-Config-LogToStdout'></a>
+### LogToStdout `constants` [#](#F-CodeFirstWebFramework-Config-LogToStdout 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+True if remaining logging goes to stdout
 
 <a name='F-CodeFirstWebFramework-Config-Namespace'></a>
 ### Namespace `constants` [#](#F-CodeFirstWebFramework-Config-Namespace 'Go To Here') [=](#contents 'Back To Contents')

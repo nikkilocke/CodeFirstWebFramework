@@ -157,8 +157,6 @@
   - [EntryModule](#F-CodeFirstWebFramework-Config-EntryModule 'CodeFirstWebFramework.Config.EntryModule')
   - [EntryNamespace](#F-CodeFirstWebFramework-Config-EntryNamespace 'CodeFirstWebFramework.Config.EntryNamespace')
   - [Filename](#F-CodeFirstWebFramework-Config-Filename 'CodeFirstWebFramework.Config.Filename')
-  - [LogStartupToStdout](#F-CodeFirstWebFramework-Config-LogStartupToStdout 'CodeFirstWebFramework.Config.LogStartupToStdout')
-  - [LogToStdout](#F-CodeFirstWebFramework-Config-LogToStdout 'CodeFirstWebFramework.Config.LogToStdout')
   - [Namespace](#F-CodeFirstWebFramework-Config-Namespace 'CodeFirstWebFramework.Config.Namespace')
   - [Port](#F-CodeFirstWebFramework-Config-Port 'CodeFirstWebFramework.Config.Port')
   - [PostLogging](#F-CodeFirstWebFramework-Config-PostLogging 'CodeFirstWebFramework.Config.PostLogging')
@@ -167,7 +165,9 @@
   - [SessionExpiryMinutes](#F-CodeFirstWebFramework-Config-SessionExpiryMinutes 'CodeFirstWebFramework.Config.SessionExpiryMinutes')
   - [SessionLogging](#F-CodeFirstWebFramework-Config-SessionLogging 'CodeFirstWebFramework.Config.SessionLogging')
   - [SlowQuery](#F-CodeFirstWebFramework-Config-SlowQuery 'CodeFirstWebFramework.Config.SlowQuery')
+  - [StopLoggingToStdoutAfter](#F-CodeFirstWebFramework-Config-StopLoggingToStdoutAfter 'CodeFirstWebFramework.Config.StopLoggingToStdoutAfter')
   - [DefaultServer](#P-CodeFirstWebFramework-Config-DefaultServer 'CodeFirstWebFramework.Config.DefaultServer')
+  - [LogToStdout](#P-CodeFirstWebFramework-Config-LogToStdout 'CodeFirstWebFramework.Config.LogToStdout')
   - [Load(filename)](#M-CodeFirstWebFramework-Config-Load-System-String- 'CodeFirstWebFramework.Config.Load(System.String)')
   - [Load(args)](#M-CodeFirstWebFramework-Config-Load-System-String[]- 'CodeFirstWebFramework.Config.Load(System.String[])')
   - [Save(filename)](#M-CodeFirstWebFramework-Config-Save-System-String- 'CodeFirstWebFramework.Config.Save(System.String)')
@@ -2101,20 +2101,6 @@ The namespace of the entry program
 
 The name of the file from which this config has been read
 
-<a name='F-CodeFirstWebFramework-Config-LogStartupToStdout'></a>
-### LogStartupToStdout `constants` [#](#F-CodeFirstWebFramework-Config-LogStartupToStdout 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-True if initial startup logging goes to stdout
-
-<a name='F-CodeFirstWebFramework-Config-LogToStdout'></a>
-### LogToStdout `constants` [#](#F-CodeFirstWebFramework-Config-LogToStdout 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-True if remaining logging goes to stdout
-
 <a name='F-CodeFirstWebFramework-Config-Namespace'></a>
 ### Namespace `constants` [#](#F-CodeFirstWebFramework-Config-Namespace 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -2171,12 +2157,26 @@ True if all session creation is to be logged
 
 Log all queries that take longer than this
 
+<a name='F-CodeFirstWebFramework-Config-StopLoggingToStdoutAfter'></a>
+### StopLoggingToStdoutAfter `constants` [#](#F-CodeFirstWebFramework-Config-StopLoggingToStdoutAfter 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Config setting to stop logging to stdout after a set time. Useful for Linux systemctl, otherwise all the log output goes to syslog.
+
 <a name='P-CodeFirstWebFramework-Config-DefaultServer'></a>
 ### DefaultServer `property` [#](#P-CodeFirstWebFramework-Config-DefaultServer 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
 A ServerConfig with the defaults from the main Config section
+
+<a name='P-CodeFirstWebFramework-Config-LogToStdout'></a>
+### LogToStdout `property` [#](#P-CodeFirstWebFramework-Config-LogToStdout 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Test whether StopLoggingToStdoutAfter has expired
 
 <a name='M-CodeFirstWebFramework-Config-Load-System-String-'></a>
 ### Load(filename) `method` [#](#M-CodeFirstWebFramework-Config-Load-System-String- 'Go To Here') [=](#contents 'Back To Contents')

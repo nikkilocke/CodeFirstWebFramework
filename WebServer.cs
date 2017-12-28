@@ -16,7 +16,6 @@ namespace CodeFirstWebFramework {
 	/// Web Server - listens for connections, and services them
 	/// </summary>
 	public class WebServer {
-		static bool startup = true;
 		HttpListener _listener;
 		bool _running;
 		Dictionary<string, Session> _sessions;
@@ -82,7 +81,7 @@ namespace CodeFirstWebFramework {
 			s = s.Trim();
 			lock (_lock) {
 				System.Diagnostics.Trace.WriteLine(s);
-				if((startup && Config.Default.LogStartupToStdout) || (!startup && Config.Default.LogToStdout))
+				if(Config.Default.LogToStdout)
 					Console.WriteLine(s);
 			}
 		}
@@ -141,7 +140,6 @@ namespace CodeFirstWebFramework {
 					}
 				}).Start();
 				_running = true;
-				startup = false;
 				_listener.Start();
 				while (_running) {
 					try {
@@ -164,7 +162,6 @@ namespace CodeFirstWebFramework {
 		public void Stop() {
 			_running = false;
 			_listener.Stop();
-			startup = true;
 		}
 
 		/// <summary>

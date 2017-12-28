@@ -20,6 +20,7 @@ namespace CodeFirstWebFramework {
 	/// The config file from the data folder
 	/// </summary>
 	public class Config {
+		static DateTime startup = DateTime.Now;
 		[JsonIgnore]
 		ServerConfig _default;
 		/// <summary>
@@ -92,13 +93,16 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool PostLogging;
 		/// <summary>
-		/// True if initial startup logging goes to stdout
+		/// Config setting to stop logging to stdout after a set time.
+		/// Useful for Linux systemctl, otherwise all the log output goes to syslog.
 		/// </summary>
-		public bool LogStartupToStdout = true;
+		public TimeSpan StopLoggingToStdoutAfter = TimeSpan.MaxValue;
 		/// <summary>
-		/// True if remaining logging goes to stdout
+		/// Test whether StopLoggingToStdoutAfter has expired
 		/// </summary>
-		public bool LogToStdout = true;
+		public bool LogToStdout {
+			get { return DateTime.Now - startup <= StopLoggingToStdoutAfter; }
+		}
 		/// <summary>
 		/// Command line flags extracted from program command line
 		/// </summary>

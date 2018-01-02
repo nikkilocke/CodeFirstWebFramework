@@ -366,7 +366,7 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 		}
 
 		int executeLog(string sql) {
-			WebServer.Log(LogType.Startup, sql);
+			Log.Startup.WriteLine(sql);
 			using (SqlCommand cmd = command(sql)) {
 				return cmd.ExecuteNonQuery();
 			}
@@ -376,7 +376,7 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			try {
 				return executeLog(sql);
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, ex.Message);
+				Log.Error.WriteLine(ex.Message);
 				return -1;
 			}
 		}

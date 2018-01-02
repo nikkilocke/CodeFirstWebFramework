@@ -17,16 +17,6 @@ using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
-	/// Log destinations
-	/// </summary>
-	[Flags]
-	public enum LogDestination {
-		Log = 1,
-		StdOut = 2,
-		StdErr = 4,
-		Null = 0
-	}
-	/// <summary>
 	/// The config file from the data folder
 	/// </summary>
 	public class Config {
@@ -91,27 +81,9 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public List<ServerConfig> Servers = new List<ServerConfig>();
 		/// <summary>
-		/// True if all session creation is to be logged
+		/// Logging configuration
 		/// </summary>
-		public bool SessionLogging;
-		/// <summary>
-		/// True if all database access sql is to be logged
-		/// </summary>
-		public int DatabaseLogging;
-		/// <summary>
-		/// True if post parameters are to be logged
-		/// </summary>
-		public bool PostLogging;
-		/// <summary>
-		/// Where log output goes to for each LogType enum
-		/// </summary>
-		public LogDestination[] LogDestinations = new LogDestination[] {
-			LogDestination.Log,
-			LogDestination.Log,
-			LogDestination.Log,
-			LogDestination.Log | LogDestination.StdOut,
-			LogDestination.Log | LogDestination.StdErr
-			};
+		public Log.Config Logging = new Log.Config();
 		/// <summary>
 		/// Command line flags extracted from program command line
 		/// </summary>
@@ -177,7 +149,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="filename">Plain filename - no folders allowed - will be in the data folder</param>
 		static public void Load(string filename) {
 			filename = fileFor(filename);
-			WebServer.Log(LogType.Startup, "Loading config from {0}", filename);
+			Log.Startup.WriteLine("Loading config from {0}", filename);
 			using (StreamReader s = new StreamReader(filename)) {
 				Default = Utils.JsonTo<Config>(s.ReadToEnd());
 				Default.Filename = Path.GetFileNameWithoutExtension(filename);
@@ -213,6 +185,8 @@ namespace CodeFirstWebFramework {
 					}
 				}
 				Config.CommandLineFlags = flags;
+				if(Config.Default.Logging != null)
+					Config.Default.Logging.Update();	// Set up logging
 				if (!string.IsNullOrWhiteSpace(flags["culture"])) {
 					CultureInfo c = new CultureInfo(flags["culture"]);
 					Thread.CurrentThread.CurrentCulture = c;
@@ -230,10 +204,9 @@ namespace CodeFirstWebFramework {
 					Utils._timeOffset = newDate - now;
 				}
 #endif
-				new DailyLog(Path.Combine(DataPath, EntryModule + "Logs")).WriteLine("Started:config=" + configName);
 				Utils.Check(!string.IsNullOrEmpty(Config.Default.ConnectionString), "You must specify a ConnectionString in the " + configName + " file");
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, ex.ToString());
+				Log.Error.WriteLine(ex.ToString());
 			}
 		}
 	}

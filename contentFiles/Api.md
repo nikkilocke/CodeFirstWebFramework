@@ -97,6 +97,7 @@
   - [Call()](#M-CodeFirstWebFramework-AppModule-Call-System-Net-HttpListenerContext,System-String,System-String- 'CodeFirstWebFramework.AppModule.Call(System.Net.HttpListenerContext,System.String,System.String)')
   - [CallMethod(method)](#M-CodeFirstWebFramework-AppModule-CallMethod-System-Reflection-MethodInfo@- 'CodeFirstWebFramework.AppModule.CallMethod(System.Reflection.MethodInfo@)')
   - [CloseDatabase()](#M-CodeFirstWebFramework-AppModule-CloseDatabase 'CodeFirstWebFramework.AppModule.CloseDatabase')
+  - [ConvertEncoding(s)](#M-CodeFirstWebFramework-AppModule-ConvertEncoding-System-String- 'CodeFirstWebFramework.AppModule.ConvertEncoding(System.String)')
   - [Default()](#M-CodeFirstWebFramework-AppModule-Default 'CodeFirstWebFramework.AppModule.Default')
   - [DeleteRecord()](#M-CodeFirstWebFramework-AppModule-DeleteRecord-System-String,System-Int32- 'CodeFirstWebFramework.AppModule.DeleteRecord(System.String,System.Int32)')
   - [Dispose()](#M-CodeFirstWebFramework-AppModule-Dispose 'CodeFirstWebFramework.AppModule.Dispose')
@@ -146,10 +147,10 @@
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Object[]- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Object[])')
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String,System-Object[]- 'CodeFirstWebFramework.CheckException.#ctor(System.Exception,System.String,System.Object[])')
 - [Config](#T-CodeFirstWebFramework-Config 'CodeFirstWebFramework.Config')
+- [Config](#T-CodeFirstWebFramework-Log-Config 'CodeFirstWebFramework.Log.Config')
   - [CommandLineFlags](#F-CodeFirstWebFramework-Config-CommandLineFlags 'CodeFirstWebFramework.Config.CommandLineFlags')
   - [ConnectionString](#F-CodeFirstWebFramework-Config-ConnectionString 'CodeFirstWebFramework.Config.ConnectionString')
   - [Database](#F-CodeFirstWebFramework-Config-Database 'CodeFirstWebFramework.Config.Database')
-  - [DatabaseLogging](#F-CodeFirstWebFramework-Config-DatabaseLogging 'CodeFirstWebFramework.Config.DatabaseLogging')
   - [DataPath](#F-CodeFirstWebFramework-Config-DataPath 'CodeFirstWebFramework.Config.DataPath')
   - [Default](#F-CodeFirstWebFramework-Config-Default 'CodeFirstWebFramework.Config.Default')
   - [DefaultNamespace](#F-CodeFirstWebFramework-Config-DefaultNamespace 'CodeFirstWebFramework.Config.DefaultNamespace')
@@ -157,28 +158,19 @@
   - [EntryModule](#F-CodeFirstWebFramework-Config-EntryModule 'CodeFirstWebFramework.Config.EntryModule')
   - [EntryNamespace](#F-CodeFirstWebFramework-Config-EntryNamespace 'CodeFirstWebFramework.Config.EntryNamespace')
   - [Filename](#F-CodeFirstWebFramework-Config-Filename 'CodeFirstWebFramework.Config.Filename')
-  - [LogDestinations](#F-CodeFirstWebFramework-Config-LogDestinations 'CodeFirstWebFramework.Config.LogDestinations')
+  - [Logging](#F-CodeFirstWebFramework-Config-Logging 'CodeFirstWebFramework.Config.Logging')
   - [Namespace](#F-CodeFirstWebFramework-Config-Namespace 'CodeFirstWebFramework.Config.Namespace')
   - [Port](#F-CodeFirstWebFramework-Config-Port 'CodeFirstWebFramework.Config.Port')
-  - [PostLogging](#F-CodeFirstWebFramework-Config-PostLogging 'CodeFirstWebFramework.Config.PostLogging')
   - [ServerName](#F-CodeFirstWebFramework-Config-ServerName 'CodeFirstWebFramework.Config.ServerName')
   - [Servers](#F-CodeFirstWebFramework-Config-Servers 'CodeFirstWebFramework.Config.Servers')
   - [SessionExpiryMinutes](#F-CodeFirstWebFramework-Config-SessionExpiryMinutes 'CodeFirstWebFramework.Config.SessionExpiryMinutes')
-  - [SessionLogging](#F-CodeFirstWebFramework-Config-SessionLogging 'CodeFirstWebFramework.Config.SessionLogging')
   - [SlowQuery](#F-CodeFirstWebFramework-Config-SlowQuery 'CodeFirstWebFramework.Config.SlowQuery')
   - [DefaultServer](#P-CodeFirstWebFramework-Config-DefaultServer 'CodeFirstWebFramework.Config.DefaultServer')
   - [Load(filename)](#M-CodeFirstWebFramework-Config-Load-System-String- 'CodeFirstWebFramework.Config.Load(System.String)')
   - [Load(args)](#M-CodeFirstWebFramework-Config-Load-System-String[]- 'CodeFirstWebFramework.Config.Load(System.String[])')
   - [Save(filename)](#M-CodeFirstWebFramework-Config-Save-System-String- 'CodeFirstWebFramework.Config.Save(System.String)')
   - [SettingsForHost()](#M-CodeFirstWebFramework-Config-SettingsForHost-System-Uri- 'CodeFirstWebFramework.Config.SettingsForHost(System.Uri)')
-- [DailyLog](#T-CodeFirstWebFramework-DailyLog 'CodeFirstWebFramework.DailyLog')
-  - [#ctor(logFolder)](#M-CodeFirstWebFramework-DailyLog-#ctor-System-String- 'CodeFirstWebFramework.DailyLog.#ctor(System.String)')
-  - [Close()](#M-CodeFirstWebFramework-DailyLog-Close 'CodeFirstWebFramework.DailyLog.Close')
-  - [Flush()](#M-CodeFirstWebFramework-DailyLog-Flush 'CodeFirstWebFramework.DailyLog.Flush')
-  - [Purge(before,folder)](#M-CodeFirstWebFramework-DailyLog-Purge-System-DateTime,System-String- 'CodeFirstWebFramework.DailyLog.Purge(System.DateTime,System.String)')
-  - [Purge()](#M-CodeFirstWebFramework-DailyLog-Purge-System-DateTime- 'CodeFirstWebFramework.DailyLog.Purge(System.DateTime)')
-  - [Write()](#M-CodeFirstWebFramework-DailyLog-Write-System-String- 'CodeFirstWebFramework.DailyLog.Write(System.String)')
-  - [WriteLine(line)](#M-CodeFirstWebFramework-DailyLog-WriteLine-System-String- 'CodeFirstWebFramework.DailyLog.WriteLine(System.String)')
+  - [Update()](#M-CodeFirstWebFramework-Log-Config-Update 'CodeFirstWebFramework.Log.Config.Update')
 - [Database](#T-CodeFirstWebFramework-Database 'CodeFirstWebFramework.Database')
   - [#ctor(server)](#M-CodeFirstWebFramework-Database-#ctor-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Database.#ctor(CodeFirstWebFramework.ServerConfig)')
   - [Logging](#F-CodeFirstWebFramework-Database-Logging 'CodeFirstWebFramework.Database.Logging')
@@ -213,7 +205,6 @@
   - [Insert()](#M-CodeFirstWebFramework-Database-Insert-System-String,CodeFirstWebFramework-JsonObject- 'CodeFirstWebFramework.Database.Insert(System.String,CodeFirstWebFramework.JsonObject)')
   - [Insert()](#M-CodeFirstWebFramework-Database-Insert-CodeFirstWebFramework-JsonObject- 'CodeFirstWebFramework.Database.Insert(CodeFirstWebFramework.JsonObject)')
   - [IsValidFieldname()](#M-CodeFirstWebFramework-Database-IsValidFieldname-System-String- 'CodeFirstWebFramework.Database.IsValidFieldname(System.String)')
-  - [Log()](#M-CodeFirstWebFramework-Database-Log-System-String- 'CodeFirstWebFramework.Database.Log(System.String)')
   - [LookupKey()](#M-CodeFirstWebFramework-Database-LookupKey-System-String,Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Database.LookupKey(System.String,Newtonsoft.Json.Linq.JObject)')
   - [LookupKey()](#M-CodeFirstWebFramework-Database-LookupKey-System-String,System-Object[]- 'CodeFirstWebFramework.Database.LookupKey(System.String,System.Object[])')
   - [PostUpgradeFromVersion(version)](#M-CodeFirstWebFramework-Database-PostUpgradeFromVersion-System-Int32- 'CodeFirstWebFramework.Database.PostUpgradeFromVersion(System.Int32)')
@@ -274,6 +265,14 @@
   - [#ctor()](#M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-Int32- 'CodeFirstWebFramework.DefaultValueAttribute.#ctor(System.Int32)')
   - [#ctor()](#M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-Boolean- 'CodeFirstWebFramework.DefaultValueAttribute.#ctor(System.Boolean)')
   - [Value](#F-CodeFirstWebFramework-DefaultValueAttribute-Value 'CodeFirstWebFramework.DefaultValueAttribute.Value')
+- [Destination](#T-CodeFirstWebFramework-Log-Destination 'CodeFirstWebFramework.Log.Destination')
+  - [Debug](#F-CodeFirstWebFramework-Log-Destination-Debug 'CodeFirstWebFramework.Log.Destination.Debug')
+  - [File](#F-CodeFirstWebFramework-Log-Destination-File 'CodeFirstWebFramework.Log.Destination.File')
+  - [Log](#F-CodeFirstWebFramework-Log-Destination-Log 'CodeFirstWebFramework.Log.Destination.Log')
+  - [Null](#F-CodeFirstWebFramework-Log-Destination-Null 'CodeFirstWebFramework.Log.Destination.Null')
+  - [StdErr](#F-CodeFirstWebFramework-Log-Destination-StdErr 'CodeFirstWebFramework.Log.Destination.StdErr')
+  - [StdOut](#F-CodeFirstWebFramework-Log-Destination-StdOut 'CodeFirstWebFramework.Log.Destination.StdOut')
+  - [Trace](#F-CodeFirstWebFramework-Log-Destination-Trace 'CodeFirstWebFramework.Log.Destination.Trace')
 - [DoNotStoreAttribute](#T-CodeFirstWebFramework-DoNotStoreAttribute 'CodeFirstWebFramework.DoNotStoreAttribute')
 - [DumbForm](#T-CodeFirstWebFramework-DumbForm 'CodeFirstWebFramework.DumbForm')
   - [#ctor(module,readwrite)](#M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Boolean- 'CodeFirstWebFramework.DumbForm.#ctor(CodeFirstWebFramework.AppModule,System.Boolean)')
@@ -406,12 +405,25 @@
   - [#ctor()](#M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'CodeFirstWebFramework.ListForm.#ctor(CodeFirstWebFramework.AppModule,System.Type,System.Boolean,System.String[])')
   - [Select](#P-CodeFirstWebFramework-ListForm-Select 'CodeFirstWebFramework.ListForm.Select')
   - [Show()](#M-CodeFirstWebFramework-ListForm-Show 'CodeFirstWebFramework.ListForm.Show')
-- [LogDestination](#T-CodeFirstWebFramework-LogDestination 'CodeFirstWebFramework.LogDestination')
-- [LogLevel](#T-CodeFirstWebFramework-LogLevel 'CodeFirstWebFramework.LogLevel')
-  - [None](#F-CodeFirstWebFramework-LogLevel-None 'CodeFirstWebFramework.LogLevel.None')
-  - [Reads](#F-CodeFirstWebFramework-LogLevel-Reads 'CodeFirstWebFramework.LogLevel.Reads')
-  - [Writes](#F-CodeFirstWebFramework-LogLevel-Writes 'CodeFirstWebFramework.LogLevel.Writes')
-- [LogType](#T-CodeFirstWebFramework-LogType 'CodeFirstWebFramework.LogType')
+- [Log](#T-CodeFirstWebFramework-Log 'CodeFirstWebFramework.Log')
+  - [#ctor()](#M-CodeFirstWebFramework-Log-#ctor-CodeFirstWebFramework-Log-Destination- 'CodeFirstWebFramework.Log.#ctor(CodeFirstWebFramework.Log.Destination)')
+  - [#ctor(config)](#M-CodeFirstWebFramework-Log-#ctor-System-String- 'CodeFirstWebFramework.Log.#ctor(System.String)')
+  - [DatabaseRead](#F-CodeFirstWebFramework-Log-DatabaseRead 'CodeFirstWebFramework.Log.DatabaseRead')
+  - [DatabaseWrite](#F-CodeFirstWebFramework-Log-DatabaseWrite 'CodeFirstWebFramework.Log.DatabaseWrite')
+  - [Debug](#F-CodeFirstWebFramework-Log-Debug 'CodeFirstWebFramework.Log.Debug')
+  - [Error](#F-CodeFirstWebFramework-Log-Error 'CodeFirstWebFramework.Log.Error')
+  - [Info](#F-CodeFirstWebFramework-Log-Info 'CodeFirstWebFramework.Log.Info')
+  - [LogFolder](#F-CodeFirstWebFramework-Log-LogFolder 'CodeFirstWebFramework.Log.LogFolder')
+  - [NotFound](#F-CodeFirstWebFramework-Log-NotFound 'CodeFirstWebFramework.Log.NotFound')
+  - [PostData](#F-CodeFirstWebFramework-Log-PostData 'CodeFirstWebFramework.Log.PostData')
+  - [Session](#F-CodeFirstWebFramework-Log-Session 'CodeFirstWebFramework.Log.Session')
+  - [Startup](#F-CodeFirstWebFramework-Log-Startup 'CodeFirstWebFramework.Log.Startup')
+  - [Trace](#F-CodeFirstWebFramework-Log-Trace 'CodeFirstWebFramework.Log.Trace')
+  - [On](#P-CodeFirstWebFramework-Log-On 'CodeFirstWebFramework.Log.On')
+  - [Close()](#M-CodeFirstWebFramework-Log-Close 'CodeFirstWebFramework.Log.Close')
+  - [Flush()](#M-CodeFirstWebFramework-Log-Flush 'CodeFirstWebFramework.Log.Flush')
+  - [WriteLine()](#M-CodeFirstWebFramework-Log-WriteLine-System-String- 'CodeFirstWebFramework.Log.WriteLine(System.String)')
+  - [WriteLine()](#M-CodeFirstWebFramework-Log-WriteLine-System-String,System-Object[]- 'CodeFirstWebFramework.Log.WriteLine(System.String,System.Object[])')
 - [MenuOption](#T-CodeFirstWebFramework-MenuOption 'CodeFirstWebFramework.MenuOption')
   - [#ctor(text,url)](#M-CodeFirstWebFramework-MenuOption-#ctor-System-String,System-String- 'CodeFirstWebFramework.MenuOption.#ctor(System.String,System.String)')
   - [#ctor(text,url,enabled)](#M-CodeFirstWebFramework-MenuOption-#ctor-System-String,System-String,System-Boolean- 'CodeFirstWebFramework.MenuOption.#ctor(System.String,System.String,System.Boolean)')
@@ -653,8 +665,6 @@
   - [AppVersion](#F-CodeFirstWebFramework-WebServer-AppVersion 'CodeFirstWebFramework.WebServer.AppVersion')
   - [VersionSuffix](#F-CodeFirstWebFramework-WebServer-VersionSuffix 'CodeFirstWebFramework.WebServer.VersionSuffix')
   - [Sessions](#P-CodeFirstWebFramework-WebServer-Sessions 'CodeFirstWebFramework.WebServer.Sessions')
-  - [Log()](#M-CodeFirstWebFramework-WebServer-Log-CodeFirstWebFramework-LogType,System-String- 'CodeFirstWebFramework.WebServer.Log(CodeFirstWebFramework.LogType,System.String)')
-  - [Log()](#M-CodeFirstWebFramework-WebServer-Log-CodeFirstWebFramework-LogType,System-String,System-Object[]- 'CodeFirstWebFramework.WebServer.Log(CodeFirstWebFramework.LogType,System.String,System.Object[])')
   - [ProcessRequest(listenerContext)](#M-CodeFirstWebFramework-WebServer-ProcessRequest-System-Object- 'CodeFirstWebFramework.WebServer.ProcessRequest(System.Object)')
   - [registerServer(databases,server)](#M-CodeFirstWebFramework-WebServer-registerServer-System-Collections-Generic-HashSet{System-String},CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.WebServer.registerServer(System.Collections.Generic.HashSet{System.String},CodeFirstWebFramework.ServerConfig)')
   - [Start()](#M-CodeFirstWebFramework-WebServer-Start 'CodeFirstWebFramework.WebServer.Start')
@@ -1520,6 +1530,23 @@ Close the database
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-AppModule-ConvertEncoding-System-String-'></a>
+### ConvertEncoding(s) `method` [#](#M-CodeFirstWebFramework-AppModule-ConvertEncoding-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Convert a "binary" string (decoded using windows-1252) to the correct encoding
+
+##### Returns
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| s | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+
 <a name='M-CodeFirstWebFramework-AppModule-Default'></a>
 ### Default() `method` [#](#M-CodeFirstWebFramework-AppModule-Default 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -2025,6 +2052,17 @@ CodeFirstWebFramework
 
 The config file from the data folder
 
+<a name='T-CodeFirstWebFramework-Log-Config'></a>
+## Config [#](#T-CodeFirstWebFramework-Log-Config 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework.Log
+
+##### Summary
+
+Strings to describe log destinations
+
 <a name='F-CodeFirstWebFramework-Config-CommandLineFlags'></a>
 ### CommandLineFlags `constants` [#](#F-CodeFirstWebFramework-Config-CommandLineFlags 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -2045,13 +2083,6 @@ The default connection string
 ##### Summary
 
 The default type of database
-
-<a name='F-CodeFirstWebFramework-Config-DatabaseLogging'></a>
-### DatabaseLogging `constants` [#](#F-CodeFirstWebFramework-Config-DatabaseLogging 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-True if all database access sql is to be logged
 
 <a name='F-CodeFirstWebFramework-Config-DataPath'></a>
 ### DataPath `constants` [#](#F-CodeFirstWebFramework-Config-DataPath 'Go To Here') [=](#contents 'Back To Contents')
@@ -2102,12 +2133,12 @@ The namespace of the entry program
 
 The name of the file from which this config has been read
 
-<a name='F-CodeFirstWebFramework-Config-LogDestinations'></a>
-### LogDestinations `constants` [#](#F-CodeFirstWebFramework-Config-LogDestinations 'Go To Here') [=](#contents 'Back To Contents')
+<a name='F-CodeFirstWebFramework-Config-Logging'></a>
+### Logging `constants` [#](#F-CodeFirstWebFramework-Config-Logging 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Where log output goes to for each LogType enum
+Logging configuration
 
 <a name='F-CodeFirstWebFramework-Config-Namespace'></a>
 ### Namespace `constants` [#](#F-CodeFirstWebFramework-Config-Namespace 'Go To Here') [=](#contents 'Back To Contents')
@@ -2122,13 +2153,6 @@ The default namespace
 ##### Summary
 
 The default port the web server listens on
-
-<a name='F-CodeFirstWebFramework-Config-PostLogging'></a>
-### PostLogging `constants` [#](#F-CodeFirstWebFramework-Config-PostLogging 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-True if post parameters are to be logged
 
 <a name='F-CodeFirstWebFramework-Config-ServerName'></a>
 ### ServerName `constants` [#](#F-CodeFirstWebFramework-Config-ServerName 'Go To Here') [=](#contents 'Back To Contents')
@@ -2150,13 +2174,6 @@ List of other servers listening
 ##### Summary
 
 Expire sessions after this number of minutes
-
-<a name='F-CodeFirstWebFramework-Config-SessionLogging'></a>
-### SessionLogging `constants` [#](#F-CodeFirstWebFramework-Config-SessionLogging 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-True if all session creation is to be logged
 
 <a name='F-CodeFirstWebFramework-Config-SlowQuery'></a>
 ### SlowQuery `constants` [#](#F-CodeFirstWebFramework-Config-SlowQuery 'Go To Here') [=](#contents 'Back To Contents')
@@ -2222,104 +2239,16 @@ The ServerConfig which applies to the provided url host part
 
 This method has no parameters.
 
-<a name='T-CodeFirstWebFramework-DailyLog'></a>
-## DailyLog [#](#T-CodeFirstWebFramework-DailyLog 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Namespace
-
-CodeFirstWebFramework
+<a name='M-CodeFirstWebFramework-Log-Config-Update'></a>
+### Update() `method` [#](#M-CodeFirstWebFramework-Log-Config-Update 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Class to maintain a dated log file
-
-<a name='M-CodeFirstWebFramework-DailyLog-#ctor-System-String-'></a>
-### #ctor(logFolder) `constructor` [#](#M-CodeFirstWebFramework-DailyLog-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Constructor
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| logFolder | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
-
-<a name='M-CodeFirstWebFramework-DailyLog-Close'></a>
-### Close() `method` [#](#M-CodeFirstWebFramework-DailyLog-Close 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Close the file
+Update the Log destinations
 
 ##### Parameters
 
 This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-DailyLog-Flush'></a>
-### Flush() `method` [#](#M-CodeFirstWebFramework-DailyLog-Flush 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Flush the file to disk
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-DailyLog-Purge-System-DateTime,System-String-'></a>
-### Purge(before,folder) `method` [#](#M-CodeFirstWebFramework-DailyLog-Purge-System-DateTime,System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Purges log files with names dated earlier than the given date
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| before | [System.DateTime](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.DateTime 'System.DateTime') | Date |
-| folder | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Folder to look for the log files in |
-
-##### Remarks
-
-Ignores files that don't look like daily log files
-
-<a name='M-CodeFirstWebFramework-DailyLog-Purge-System-DateTime-'></a>
-### Purge() `method` [#](#M-CodeFirstWebFramework-DailyLog-Purge-System-DateTime- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Purges log files with names dated earlier than the given date
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-DailyLog-Write-System-String-'></a>
-### Write() `method` [#](#M-CodeFirstWebFramework-DailyLog-Write-System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Write exact text given to the file
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-DailyLog-WriteLine-System-String-'></a>
-### WriteLine(line) `method` [#](#M-CodeFirstWebFramework-DailyLog-WriteLine-System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Write exact text given to the file
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| line | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Line to write or null to just flush the file when a new day starts |
 
 <a name='T-CodeFirstWebFramework-Database'></a>
 ## Database [#](#T-CodeFirstWebFramework-Database 'Go To Here') [=](#contents 'Back To Contents')
@@ -2350,7 +2279,7 @@ Constructor
 
 ##### Summary
 
-Level of logging
+Whether to log - set to false to suppress logging
 
 <a name='F-CodeFirstWebFramework-Database-Module'></a>
 ### Module `constants` [#](#F-CodeFirstWebFramework-Database-Module 'Go To Here') [=](#contents 'Back To Contents')
@@ -2678,17 +2607,6 @@ This method has no parameters.
 ##### Summary
 
 Determine if a name is a valid database field name
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-Database-Log-System-String-'></a>
-### Log() `method` [#](#M-CodeFirstWebFramework-Database-Log-System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Log sql to the log
 
 ##### Parameters
 
@@ -3367,6 +3285,66 @@ This constructor has no parameters.
 ##### Summary
 
 The default value
+
+<a name='T-CodeFirstWebFramework-Log-Destination'></a>
+## Destination [#](#T-CodeFirstWebFramework-Log-Destination 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework.Log
+
+##### Summary
+
+Log destinations
+
+<a name='F-CodeFirstWebFramework-Log-Destination-Debug'></a>
+### Debug `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Debug 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log to debug output
+
+<a name='F-CodeFirstWebFramework-Log-Destination-File'></a>
+### File `constants` [#](#F-CodeFirstWebFramework-Log-Destination-File 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log to file (specify with "file:name"
+
+<a name='F-CodeFirstWebFramework-Log-Destination-Log'></a>
+### Log `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Log 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log to dated log file in the LogFolder directory
+
+<a name='F-CodeFirstWebFramework-Log-Destination-Null'></a>
+### Null `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Null 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Do not log
+
+<a name='F-CodeFirstWebFramework-Log-Destination-StdErr'></a>
+### StdErr `constants` [#](#F-CodeFirstWebFramework-Log-Destination-StdErr 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log to stderr
+
+<a name='F-CodeFirstWebFramework-Log-Destination-StdOut'></a>
+### StdOut `constants` [#](#F-CodeFirstWebFramework-Log-Destination-StdOut 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log to stdout
+
+<a name='F-CodeFirstWebFramework-Log-Destination-Trace'></a>
+### Trace `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Trace 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log to trace output
 
 <a name='T-CodeFirstWebFramework-DoNotStoreAttribute'></a>
 ## DoNotStoreAttribute [#](#T-CodeFirstWebFramework-DoNotStoreAttribute 'Go To Here') [=](#contents 'Back To Contents')
@@ -4716,8 +4694,8 @@ Render the form to a web page using the appropriate template
 
 This method has no parameters.
 
-<a name='T-CodeFirstWebFramework-LogDestination'></a>
-## LogDestination [#](#T-CodeFirstWebFramework-LogDestination 'Go To Here') [=](#contents 'Back To Contents')
+<a name='T-CodeFirstWebFramework-Log'></a>
+## Log [#](#T-CodeFirstWebFramework-Log 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Namespace
 
@@ -4725,50 +4703,159 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Log destinations
+A class to manage logging to a variety of destinations
 
-<a name='T-CodeFirstWebFramework-LogLevel'></a>
-## LogLevel [#](#T-CodeFirstWebFramework-LogLevel 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Namespace
-
-CodeFirstWebFramework
+<a name='M-CodeFirstWebFramework-Log-#ctor-CodeFirstWebFramework-Log-Destination-'></a>
+### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Log-#ctor-CodeFirstWebFramework-Log-Destination- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Database log level
+Create Log with specific destination
 
-<a name='F-CodeFirstWebFramework-LogLevel-None'></a>
-### None `constants` [#](#F-CodeFirstWebFramework-LogLevel-None 'Go To Here') [=](#contents 'Back To Contents')
+##### Parameters
 
-##### Summary
+This constructor has no parameters.
 
-No logging
-
-<a name='F-CodeFirstWebFramework-LogLevel-Reads'></a>
-### Reads `constants` [#](#F-CodeFirstWebFramework-LogLevel-Reads 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-Log-#ctor-System-String-'></a>
+### #ctor(config) `constructor` [#](#M-CodeFirstWebFramework-Log-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Log reads and writes
+Parse config for log info and create Log accordingly
 
-<a name='F-CodeFirstWebFramework-LogLevel-Writes'></a>
-### Writes `constants` [#](#F-CodeFirstWebFramework-LogLevel-Writes 'Go To Here') [=](#contents 'Back To Contents')
+##### Parameters
 
-##### Summary
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| config | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
-Log writes
-
-<a name='T-CodeFirstWebFramework-LogType'></a>
-## LogType [#](#T-CodeFirstWebFramework-LogType 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Namespace
-
-CodeFirstWebFramework
+<a name='F-CodeFirstWebFramework-Log-DatabaseRead'></a>
+### DatabaseRead `constants` [#](#F-CodeFirstWebFramework-Log-DatabaseRead 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Types of log message (these can individually be redirected to nowhere, log file, stdout, stderr)
+Database access logging
+
+<a name='F-CodeFirstWebFramework-Log-DatabaseWrite'></a>
+### DatabaseWrite `constants` [#](#F-CodeFirstWebFramework-Log-DatabaseWrite 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Database write logging
+
+<a name='F-CodeFirstWebFramework-Log-Debug'></a>
+### Debug `constants` [#](#F-CodeFirstWebFramework-Log-Debug 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Debug logging
+
+<a name='F-CodeFirstWebFramework-Log-Error'></a>
+### Error `constants` [#](#F-CodeFirstWebFramework-Log-Error 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Exception and error logging
+
+<a name='F-CodeFirstWebFramework-Log-Info'></a>
+### Info `constants` [#](#F-CodeFirstWebFramework-Log-Info 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Ordinary web request logging (like access.log)
+
+<a name='F-CodeFirstWebFramework-Log-LogFolder'></a>
+### LogFolder `constants` [#](#F-CodeFirstWebFramework-Log-LogFolder 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Folder in which to put dated log files
+
+<a name='F-CodeFirstWebFramework-Log-NotFound'></a>
+### NotFound `constants` [#](#F-CodeFirstWebFramework-Log-NotFound 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Web request which failed logging
+
+<a name='F-CodeFirstWebFramework-Log-PostData'></a>
+### PostData `constants` [#](#F-CodeFirstWebFramework-Log-PostData 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Post data logging
+
+<a name='F-CodeFirstWebFramework-Log-Session'></a>
+### Session `constants` [#](#F-CodeFirstWebFramework-Log-Session 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Session logging
+
+<a name='F-CodeFirstWebFramework-Log-Startup'></a>
+### Startup `constants` [#](#F-CodeFirstWebFramework-Log-Startup 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Program startup logging
+
+<a name='F-CodeFirstWebFramework-Log-Trace'></a>
+### Trace `constants` [#](#F-CodeFirstWebFramework-Log-Trace 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Trace logging
+
+<a name='P-CodeFirstWebFramework-Log-On'></a>
+### On `property` [#](#P-CodeFirstWebFramework-Log-On 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Whether this type of logging is outputting anywhere
+
+<a name='M-CodeFirstWebFramework-Log-Close'></a>
+### Close() `method` [#](#M-CodeFirstWebFramework-Log-Close 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Close the file
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Log-Flush'></a>
+### Flush() `method` [#](#M-CodeFirstWebFramework-Log-Flush 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Flush the file to disk
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Log-WriteLine-System-String-'></a>
+### WriteLine() `method` [#](#M-CodeFirstWebFramework-Log-WriteLine-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log message to console and trace
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Log-WriteLine-System-String,System-Object[]-'></a>
+### WriteLine() `method` [#](#M-CodeFirstWebFramework-Log-WriteLine-System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Log message to console and trace
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-MenuOption'></a>
 ## MenuOption [#](#T-CodeFirstWebFramework-MenuOption 'Go To Here') [=](#contents 'Back To Contents')
@@ -7224,28 +7311,6 @@ Version suffix for including in url's to defeat long-term caching of (e.g.) java
 ##### Summary
 
 All Active Sessions
-
-<a name='M-CodeFirstWebFramework-WebServer-Log-CodeFirstWebFramework-LogType,System-String-'></a>
-### Log() `method` [#](#M-CodeFirstWebFramework-WebServer-Log-CodeFirstWebFramework-LogType,System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Log message to console and trace
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-WebServer-Log-CodeFirstWebFramework-LogType,System-String,System-Object[]-'></a>
-### Log() `method` [#](#M-CodeFirstWebFramework-WebServer-Log-CodeFirstWebFramework-LogType,System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Log message to console and trace
-
-##### Parameters
-
-This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-WebServer-ProcessRequest-System-Object-'></a>
 ### ProcessRequest(listenerContext) `method` [#](#M-CodeFirstWebFramework-WebServer-ProcessRequest-System-Object- 'Go To Here') [=](#contents 'Back To Contents')

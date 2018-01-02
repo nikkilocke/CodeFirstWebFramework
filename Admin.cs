@@ -78,15 +78,19 @@ namespace CodeFirstWebFramework {
 		/// Backup the database
 		/// </summary>
 		public void Backup() {
-			module.Database.Logging = LogLevel.None;
-			module.Database.BeginTransaction();
-			DateTime now = Utils.Now;
-			JObject result = new JObject().AddRange("BackupDate", now.ToString("yyyy-MM-dd HH:mm:ss"));
-			foreach (string name in module.Database.TableNames) {
-				result.Add(name, module.Database.Query("SELECT * FROM " + name));
+			try {
+				module.Database.Logging = false;
+				module.Database.BeginTransaction();
+				DateTime now = Utils.Now;
+				JObject result = new JObject().AddRange("BackupDate", now.ToString("yyyy-MM-dd HH:mm:ss"));
+				foreach (string name in module.Database.TableNames) {
+					result.Add(name, module.Database.Query("SELECT * FROM " + name));
+				}
+				module.Response.AddHeader("Content-disposition", "attachment; filename=Backup-" + now.ToString("yyyy-MM-dd-HH-mm-ss") + ".json");
+				module.WriteResponse(Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented), "application/json", System.Net.HttpStatusCode.OK);
+			} finally {
+				module.Database.Logging = true;
 			}
-			module.Response.AddHeader("Content-disposition", "attachment; filename=Backup-" + now.ToString("yyyy-MM-dd-HH-mm-ss") + ".json");
-			module.WriteResponse(Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented), "application/json", System.Net.HttpStatusCode.OK);
 		}
 
 		/// <summary>
@@ -97,39 +101,43 @@ namespace CodeFirstWebFramework {
 				new AppModule.BatchJob(module, delegate () {
 					module.Batch.Status = "Loading new data";
 					UploadedFile data = module.PostParameters.As<UploadedFile>("file");
-					module.Database.Logging = LogLevel.None;
-					module.Database.BeginTransaction();
-					JObject d = data.Content.JsonTo<JObject>();
-					List<Table> tables = module.Database.TableNames.Select(n => module.Database.TableFor(n)).ToList();
-					module.Batch.Records = tables.Count * 4;
-					foreach (Table t in tables) {
-						if (d[t.Name] != null) {
-							module.Batch.Records += ((JArray)d[t.Name]).Count;
-						}
-					}
-					module.Batch.Status = "Deleting existing data";
-					TableList orderedTables = new TableList(tables);
-					foreach (Table t in orderedTables) {
-						module.Database.Execute("DELETE FROM " + t.Name);
-						module.Batch.Record += 4;
-					}
-					module.Database.Logging = LogLevel.None;
-					foreach (Table t in orderedTables.Reverse<Table>()) {
-						if (d[t.Name] != null) {
-							module.Batch.Status = "Restoring " + t.Name + " data";
-							foreach (JObject record in (JArray)d[t.Name]) {
-								module.Database.Insert(t.Name, record);
-								module.Batch.Record++;
+					try {
+						module.Database.Logging = false;
+						module.Database.BeginTransaction();
+						JObject d = data.Content.JsonTo<JObject>();
+						List<Table> tables = module.Database.TableNames.Select(n => module.Database.TableFor(n)).ToList();
+						module.Batch.Records = tables.Count * 4;
+						foreach (Table t in tables) {
+							if (d[t.Name] != null) {
+								module.Batch.Records += ((JArray)d[t.Name]).Count;
 							}
 						}
+						module.Batch.Status = "Deleting existing data";
+						TableList orderedTables = new TableList(tables);
+						foreach (Table t in orderedTables) {
+							module.Database.Execute("DELETE FROM " + t.Name);
+							module.Batch.Record += 4;
+						}
+						module.Database.Logging = false;
+						foreach (Table t in orderedTables.Reverse<Table>()) {
+							if (d[t.Name] != null) {
+								module.Batch.Status = "Restoring " + t.Name + " data";
+								foreach (JObject record in (JArray)d[t.Name]) {
+									module.Database.Insert(t.Name, record);
+									module.Batch.Record++;
+								}
+							}
+						}
+						module.Batch.Status = "Checking database version";
+						module.Database.Upgrade();
+						module.Database.Commit();
+						module.Batch.Status = "Compacting database";
+						module.Database.Clean();
+						module.ReloadSettings();
+						module.Batch.Status = module.Message = "Database restored successfully";
+					} finally {
+						module.Database.Logging = true;
 					}
-					module.Batch.Status = "Checking database version";
-					module.Database.Upgrade();
-					module.Database.Commit();
-					module.Batch.Status = "Compacting database";
-					module.Database.Clean();
-					module.ReloadSettings();
-					module.Batch.Status = module.Message = "Database restored successfully";
 				});
 			}
 		}

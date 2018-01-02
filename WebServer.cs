@@ -13,16 +13,6 @@ using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
-	/// Types of log message (these can individually be redirected to nowhere, log file, stdout, stderr)
-	/// </summary>
-	public enum LogType {
-		Debug,
-		Info,
-		NotFound,
-		Startup,
-		Error
-	}
-	/// <summary>
 	/// Web Server - listens for connections, and services them
 	/// </summary>
 	public class WebServer {
@@ -53,7 +43,7 @@ namespace CodeFirstWebFramework {
 				}
 				registerServer(databases, Config.Default.DefaultServer);
 			} catch (Exception ex) {
-				Log(LogType.Error, ex.ToString());
+				Log.Error.WriteLine(ex.ToString());
 				throw;
 			}
 		}
@@ -85,37 +75,6 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Log message to console and trace
-		/// </summary>
-		static public void Log(LogType type, string s) {
-			LogDestination[] logto = Config.Default.LogDestinations;
-			int t = (int)type;
-			LogDestination dest = t >= 0 && t < logto.Length ? logto[t] : LogDestination.Log;
-			if (dest == LogDestination.Null)
-				return;
-			s = s.Trim();
-			lock (_lock) {
-				if((dest & LogDestination.Log) != 0)
-					System.Diagnostics.Trace.WriteLine(s);
-				if ((dest & LogDestination.StdOut) != 0)
-					Console.WriteLine(s);
-				if ((dest & LogDestination.StdErr) != 0)
-					Console.Error.WriteLine(s);
-			}
-		}
-
-		/// <summary>
-		/// Log message to console and trace
-		/// </summary>
-		static public void Log(LogType type, string format, params object[] args) {
-			try {
-				Log(type, string.Format(format, args));
-			} catch (Exception ex) {
-				Log(type, string.Format("{0}:Error logging {1}", format, ex.Message));
-			}
-		}
-
-		/// <summary>
 		/// The version number from the application.
 		/// </summary>
 		static public string AppVersion;
@@ -139,7 +98,7 @@ namespace CodeFirstWebFramework {
 				}
 				foreach (int port in ports) {
 					_listener.Prefixes.Add("http://+:" + port + "/");
-					Log(LogType.Startup, "Listening on port {0}", port);
+					Log.Startup.WriteLine("Listening on port {0}", port);
 				}
 				_sessions = new Dictionary<string, Session>();
 				_empty = new Session(null);
@@ -167,10 +126,10 @@ namespace CodeFirstWebFramework {
 					}
 				}
 			} catch (HttpListenerException ex) {
-				Log(LogType.Error, ex.ToString());
+				Log.Error.WriteLine(ex.ToString());
 			} catch (ThreadAbortException) {
 			} catch (Exception ex) {
-				Log(LogType.Error, ex.ToString());
+				Log.Error.WriteLine(ex.ToString());
 			}
 		}
 
@@ -243,8 +202,7 @@ namespace CodeFirstWebFramework {
 					Cookie cookie = context.Request.Cookies["session"];
 					if (cookie != null) {
 						_sessions.TryGetValue(cookie.Value, out session);
-						if (Config.Default.SessionLogging)
-							log.AppendFormat("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
+						Log.Session.WriteLine("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
 					}
 					if (session == null) {
 						if (moduleName == "FileSender") {
@@ -252,8 +210,7 @@ namespace CodeFirstWebFramework {
 						} else {
 							session = new Session(this);
 							cookie = new Cookie("session", session.Cookie, "/");
-							if (Config.Default.SessionLogging)
-								log.AppendFormat("[{0} new session]", cookie.Value);
+							Log.Session.WriteLine("[{0} new session]", cookie.Value);
 						}
 					}
 					if (cookie != null) {
@@ -312,7 +269,7 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			try {
-				Log(LogType.Info, log.ToString().Replace(":[ms]:", ":" + Math.Round((DateTime.Now - started).TotalMilliseconds, 0) + " ms:"));
+				Log.Info.WriteLine(log.ToString().Replace(":[ms]:", ":" + Math.Round((DateTime.Now - started).TotalMilliseconds, 0) + " ms:"));
 			} catch {
 			}
 		}

@@ -12,24 +12,6 @@ using Newtonsoft.Json.Linq;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
-	/// Database log level
-	/// </summary>
-	public enum LogLevel {
-		/// <summary>
-		/// No logging
-		/// </summary>
-		None = 0,
-		/// <summary>
-		/// Log writes
-		/// </summary>
-		Writes,
-		/// <summary>
-		/// Log reads and writes
-		/// </summary>
-		Reads
-	};
-
-	/// <summary>
 	/// Class used for accessing the database.
 	/// Programs may subclass this to add more functionality.
 	/// </summary>
@@ -37,6 +19,7 @@ namespace CodeFirstWebFramework {
 		DbInterface db;
 		ServerConfig server;
 		Dictionary<string, Table> _tables;
+		bool _startup;
 
 		/// <summary>
 		/// Make an individual table in the database correspond to the code Table class
@@ -120,7 +103,7 @@ namespace CodeFirstWebFramework {
 				if (insert.Count != 0 || update.Count != 0 || remove.Count != 0 || insertFK.Count != 0 || dropFK.Count != 0 || insertIndex.Count != 0 || dropIndex.Count != 0)
 					db.UpgradeTable(code, database, insert, update, remove, insertFK, dropFK, insertIndex, dropIndex);
 			} catch {
-				WebServer.Log(LogType.Error, "Error upgrading table {0} in database {1}", code.Name, this.UniqueIdentifier);
+				Log.Error.WriteLine("Error upgrading table {0} in database {1}", code.Name, this.UniqueIdentifier);
 				throw;
 			}
 		}
@@ -131,9 +114,8 @@ namespace CodeFirstWebFramework {
 		/// If the version was upgraded, call PostUpgradeFromVersion afterwards,
 		/// </summary>
 		public void Upgrade() {
-			LogLevel originalLevel = Logging;
-			Logging = LogLevel.Writes;
 			try {
+				_startup = true;
 				Dictionary<string, Table> dbTables = db.Tables();
 				int p = -1;
 				try {
@@ -160,10 +142,11 @@ namespace CodeFirstWebFramework {
 				}
 				Commit();
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, ex.ToString());
+				Log.Error.WriteLine(ex.ToString());
 				throw;
+			} finally {
+				_startup = false;
 			}
-			Logging = originalLevel;
 		}
 
 		/// <summary>
@@ -336,7 +319,10 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public int Execute(string sql) {
 			using (new Timer(sql)) {
-				if (Logging >= LogLevel.Writes) Log(sql);
+				if (_startup)
+					Log.Startup.WriteLine(sql);
+				if(Logging)
+					Log.DatabaseWrite.WriteLine(sql);
 				try {
 					return db.Execute(sql);
 				} catch (Exception ex) {
@@ -470,7 +456,10 @@ namespace CodeFirstWebFramework {
 					+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
 					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
 				using (new Timer(sql)) {
-					if (Logging >= LogLevel.Writes) Log(sql);
+					if (_startup)
+						Log.Startup.WriteLine(sql);
+					if (Logging)
+						Log.DatabaseWrite.WriteLine(sql);
 					int lastInsertId = db.Insert(table, sql, idField.AutoIncrement && !data.IsMissingOrNull(idName));
 					if (idField.AutoIncrement && data.IsMissingOrNull(idName))
 						data[idName] = lastInsertId;
@@ -500,16 +489,9 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Log sql to the log
+		/// Whether to log - set to false to suppress logging
 		/// </summary>
-		public void Log(string sql) {
-			WebServer.Log(LogType.Debug, sql);
-		}
-
-		/// <summary>
-		/// Level of logging
-		/// </summary>
-		public LogLevel Logging;
+		public bool Logging = true;
 
 		/// <summary>
 		/// Find the record id of a record given data containing a unique key
@@ -535,7 +517,8 @@ namespace CodeFirstWebFramework {
 		/// Query the database and return the records as JObjects
 		/// </summary>
 		public JObjectEnumerable Query(string sql) {
-			if (Logging >= LogLevel.Reads) Log(sql);
+			if (Logging)
+				Log.DatabaseRead.WriteLine(sql);
 			try {
 				using (new Timer(sql)) {
 					return new JObjectEnumerable(db.Query(sql));
@@ -794,10 +777,8 @@ namespace CodeFirstWebFramework {
 				data[idName] = idValue = result[idName];
 			}
 			List<Field> fields = table.Fields.Where(f => data[f.Name] != null && (f.Nullable || data[f.Name].Type != JTokenType.Null)).ToList();
-#if DEBUG
 			if (fields.Any(f => data[f.Name].Type == JTokenType.Null))
-				Log("Fields set to null " + string.Join(",", fields.Where(f => data[f.Name].Type == JTokenType.Null).Select(f => f.Name).ToArray()));
-#endif
+				Log.Debug.WriteLine("Fields set to null " + string.Join(",", fields.Where(f => data[f.Name].Type == JTokenType.Null).Select(f => f.Name).ToArray()));
 			checkForMissingFields(table, data, idValue == null);
 			try {
 				if (idValue != null) {
@@ -866,7 +847,7 @@ namespace CodeFirstWebFramework {
 			public void Dispose() {
 				double elapsed = (Utils.Now - _start).TotalMilliseconds;
 				if (elapsed > MaxTime)
-					WebServer.Log(LogType.Debug, "{0}:{1}", elapsed, _message);
+					Log.Trace.WriteLine("{0}:{1}", elapsed, _message);
 			}
 
 			/// <summary>

@@ -332,7 +332,7 @@ namespace CodeFirstWebFramework {
 		static void createDatabase(string connectionString) {
 			Match m = Regex.Match(connectionString, @"Data Source=([^;]+)", RegexOptions.IgnoreCase);
 			if (m.Success && !File.Exists(m.Groups[1].Value)) {
-				WebServer.Log(LogType.Startup, "Creating SQLite database {0}", m.Groups[1].Value);
+				Log.Startup.WriteLine("Creating SQLite database {0}", m.Groups[1].Value);
 				Directory.CreateDirectory(Path.GetDirectoryName(m.Groups[1].Value));
 				SqliteConnection.CreateFile(m.Groups[1].Value);
 			}
@@ -374,7 +374,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		int executeLog(string sql) {
-			WebServer.Log(LogType.Startup, sql);
+			Log.Startup.WriteLine(sql);
 			lock (_lock) {
 				using (SqliteCommand cmd = command(sql)) {
 					return cmd.ExecuteNonQuery();
@@ -386,7 +386,7 @@ namespace CodeFirstWebFramework {
 			try {
 				return executeLog(sql);
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, ex.Message);
+				Log.Error.WriteLine(ex.Message);
 				return -1;
 			}
 		}
@@ -459,7 +459,7 @@ namespace CodeFirstWebFramework {
 						return 0;
 				}
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, ex.ToString());
+				Log.Error.WriteLine(ex.ToString());
 				return 0;
 			}
 		}
@@ -494,7 +494,7 @@ namespace CodeFirstWebFramework {
 				executeLog("PRAGMA foreign_key_check");
 				executeLog("COMMIT TRANSACTION");
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, "Exception: {0}", ex);
+				Log.Error.WriteLine("Exception: {0}", ex);
 				executeLogSafe("ROLLBACK TRANSACTION");
 				throw;
 			} finally {
@@ -540,7 +540,7 @@ namespace CodeFirstWebFramework {
 				DateTime d2 = DateTime.Parse(args[1].ToString());
 				return (d1 - d2).TotalDays;
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, "Exception: {0}", ex);
+				Log.Error.WriteLine("Exception: {0}", ex);
 				return null;
 			}
 		}
@@ -552,7 +552,7 @@ namespace CodeFirstWebFramework {
 			try {
 				return Utils.Now.ToString("yyyy-MM-ddThh:mm:ss");
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, "Exception: {0}", ex);
+				Log.Error.WriteLine("Exception: {0}", ex);
 				return null;
 			}
 		}
@@ -571,7 +571,7 @@ namespace CodeFirstWebFramework {
 				if (contextData != null) d += (Decimal)contextData;
 				contextData = d;
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, "Exception: {0}", ex);
+				Log.Error.WriteLine("Exception: {0}", ex);
 			}
 		}
 
@@ -591,7 +591,7 @@ namespace CodeFirstWebFramework {
 			try {
 				return String.Join("", args.Select(a => a.ToString()).ToArray());
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, "Exception: {0}", ex);
+				Log.Error.WriteLine("Exception: {0}", ex);
 				return null;
 			}
 		}

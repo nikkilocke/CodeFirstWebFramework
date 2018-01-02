@@ -404,7 +404,7 @@ namespace CodeFirstWebFramework {
 					Error = ex.Message;
 				}
 				_module.Log("Finished batch job {0}", Id);
-				WebServer.Log(LogType.Info, _module.LogString.ToString());
+				CodeFirstWebFramework.Log.Info.WriteLine(_module.LogString.ToString());
 				_module.LogString = null;
 				_module.Batch = null;
 				Finished = true;
@@ -516,6 +516,11 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Convert a "binary" string (decoded using windows-1252) to the correct encoding
+		/// </summary>
+		/// <param name="s"></param>
+		/// <returns></returns>
 		protected string ConvertEncoding(string s) {
 			if (Charset == "windows-1252")
 				return s;
@@ -581,9 +586,9 @@ namespace CodeFirstWebFramework {
 						PostParameters.AddRange(HttpUtility.ParseQueryString(ConvertEncoding(data)));
 					}
 					Parameters.AddRange(PostParameters);
-					if (Config.PostLogging) {
+					if (CodeFirstWebFramework.Log.PostData.On) {
 						foreach (KeyValuePair<string, JToken> p in PostParameters) {
-							Log("\t{0}={1}", p.Key,
+							CodeFirstWebFramework.Log.PostData.WriteLine("\t{0}={1}", p.Key,
 								p.Key == "json" ? JObject.Parse(p.Value.ToString()).ToString(Formatting.Indented).Replace("\n", "\n\t") :
 								p.Value.Type == JTokenType.Object ? "file " + ((JObject)p.Value)["Name"] :
 								p.Value.ToString());
@@ -921,7 +926,7 @@ namespace CodeFirstWebFramework {
 			}
 			Response.StatusCode = (int)status;
 			if(status >= HttpStatusCode.BadRequest)
-				WebServer.Log(LogType.NotFound, "{0} {1}:{2}:Response {3} {4}",
+				CodeFirstWebFramework.Log.NotFound.WriteLine("{0} {1}:{2}:Response {3} {4}",
 				Request.RemoteEndPoint.Address,
 				Request.Headers["X-Forwarded-For"],
 				Request.Url,

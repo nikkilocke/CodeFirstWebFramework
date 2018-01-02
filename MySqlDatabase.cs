@@ -346,7 +346,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		int executeLog(string sql) {
-			WebServer.Log(LogType.Startup, sql);
+			Log.Startup.WriteLine(sql);
 			using (MySqlCommand cmd = command(sql)) {
 				return cmd.ExecuteNonQuery();
 			}
@@ -356,7 +356,7 @@ namespace CodeFirstWebFramework {
 			try {
 				return executeLog(sql);
 			} catch (Exception ex) {
-				WebServer.Log(LogType.Error, ex.Message);
+				Log.Error.WriteLine(ex.Message);
 				return -1;
 			}
 		}

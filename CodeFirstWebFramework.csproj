@@ -16,11 +16,12 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.0.17</Version>
-    <AssemblyVersion>1.0.17.0</AssemblyVersion>
-    <FileVersion>1.0.17.0</FileVersion>
-    <PackageReleaseNotes>Bug fix to ListForm.addRow functionality.
-Save button now saves and closes the form. new apply option adds an Apply button to the form, which does what Save used to do (i.e. Save and redisplay).</PackageReleaseNotes>
+    <Version>1.0.18</Version>
+    <AssemblyVersion>1.0.18.0</AssemblyVersion>
+    <FileVersion>1.0.18.0</FileVersion>
+    <PackageReleaseNotes>Better control of logging.
+Default is to only log startup and database upgrade to stdout (and log).
+Errors are logged to stderr (and log).</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 

@@ -1572,7 +1572,7 @@ function makeDataTable(selector, options) {
  * @param {string} [options.table] Name of SQL table
  * @param {string} [options.idName] Name of id field in table (id<table>)
  * @param {string|function} [options.select] Url to go to or function to call when a row is clicked
- * @param {string|*} [options.ajax] Ajax settings, or string url (current url + 'Listing')
+ * @param {string|*} [options.ajax] Ajax settings, or string url (current url + 'Data')
  * @param {boolean} [options.dialog] Show form as a dialog when Edit button is pushed
  * @param {string} [options.submitText} Text to use for Save buttons (default "Save")
  * @param {boolean} [options.readonly} No save (default false)

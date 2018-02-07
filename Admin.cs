@@ -25,10 +25,10 @@ namespace CodeFirstWebFramework {
 			Form form = new Form(module, module.Settings.GetType()) {
 				Data = module.Settings.ToJToken()
 			};
-			DirectoryInfo skinFolder = module.Server.DirectoryInfo("skin");
-			form["Skin"].MakeSelectable(skinFolder.EnumerateFiles("*.css")
-						.Where(f => File.Exists(Path.ChangeExtension(f.FullName, ".js")))
-						.Select(f => new JObject().AddRange("value", Path.GetFileNameWithoutExtension(f.Name))));
+			IDirectoryInfo skinFolder = module.DirectoryInfo("skin");
+			form["Skin"].MakeSelectable(skinFolder.Content("*.css")
+						.Where(f => skinFolder.Content(f.Name + ".js").Any())
+						.Select(f => new JObject().AddRange("value", f.Name)));
 			form.Add(new FieldAttribute() {
 				Data = "AppVersion",
 				Type = "string"
@@ -51,6 +51,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Return the status of the given batch job.
 		/// </summary>
+		[Auth(AccessLevel.Any)]
 		public AjaxReturn BatchStatus(int id) {
 			AjaxReturn result = new AjaxReturn();
 			AppModule.BatchJob batch = AppModule.GetBatchJob(id);
@@ -146,6 +147,7 @@ namespace CodeFirstWebFramework {
 		/// Create datatable to list users
 		/// </summary>
 		public DataTableForm Users() {
+			module.InsertMenuOption(new MenuOption("New User", "/admin/EditUser?id=0&from=%2Fadmin%2Fusers"));
 			Table t = module.Database.TableFor("User");
 			DataTableForm f = new DataTableForm(module, t.Type) {
 				Select = "/admin/edituser.html"
@@ -324,6 +326,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Create form to change user's password
 		/// </summary>
+		[Auth(AccessLevel.Any)]
 		public Form ChangePassword() {
 			Utils.Check(module.Session.User != null, "You must log in first");
 			Form f = new Form(module, true);
@@ -346,6 +349,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Update user's password
 		/// </summary>
+		[Auth(AccessLevel.Any)]
 		public AjaxReturn ChangePasswordSave(JObject json) {
 			User user = module.Session.User;
 			Utils.Check(user != null, "You must log in first");
@@ -364,6 +368,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Display login template, and log user in if form data is posted
 		/// </summary>
+		[Auth(AccessLevel.Any)]
 		public void Login() {
 			if (module.Method == "logout")
 				module.Session.User = null;
@@ -394,7 +399,14 @@ namespace CodeFirstWebFramework {
 				}
 				module.Message = "Login name or not found or password invalid";
 			}
+		}
 
+		/// <summary>
+		/// Logout then show login form
+		/// </summary>
+		[Auth(AccessLevel.Any)]
+		public void Logout() {
+			Login();
 		}
 	}
 
@@ -402,14 +414,14 @@ namespace CodeFirstWebFramework {
 	/// Admin module - provides BatchStatus, Backup and Restore. Uses AdminHelper for the implementation.
 	/// </summary>
 	[Auth(AccessLevel.Admin)]
+	[Implementation(typeof(AdminHelper))]
 	public class AdminModule : AppModule {
-
 		/// <summary>
 		/// Add menu options
 		/// </summary>
 		protected override void Init() {
 			base.Init();
-			insertMenuOptions(
+			InsertMenuOptions(
 				new MenuOption("Settings", "/admin/editsettings"),
 				new MenuOption("Users", "/admin/users"),
 				new MenuOption("Backup", "/admin/backup"),
@@ -417,8 +429,8 @@ namespace CodeFirstWebFramework {
 				);
 			if (SecurityOn) {
 				if (Session.User != null)
-					insertMenuOption(new MenuOption("Change password", "/admin/changepassword"));
-				insertMenuOption(new MenuOption(Session.User == null ? "Login" : "Logout", "/admin/login"));
+					InsertMenuOption(new MenuOption("Change password", "/admin/changepassword"));
+				InsertMenuOption(new MenuOption(Session.User == null ? "Login" : "Logout", "/admin/login"));
 			}
 		}
 
@@ -429,111 +441,6 @@ namespace CodeFirstWebFramework {
 		public override void Default() {
 		}
 
-		/// <summary>
-		/// Display settings form
-		/// </summary>
-		public Form EditSettings() {
-			return new AdminHelper(this).EditSettings();
-		}
-
-		/// <summary>
-		/// Update settings
-		/// </summary>
-		public AjaxReturn EditSettingsSave(JObject json) {
-			return new AdminHelper(this).EditSettingsSave(json);
-		}
-
-		/// <summary>
-		/// Return the status of the batch
-		/// </summary>
-		[Auth(AccessLevel.Any)]
-		public AjaxReturn BatchStatus(int id) {
-			return new AdminHelper(this).BatchStatus(id);
-		}
-
-		/// <summary>
-		/// Backup the database
-		/// </summary>
-		public void Backup() {
-			new AdminHelper(this).Backup();
-		}
-
-		/// <summary>
-		/// Restore the database.
-		/// </summary>
-		public void Restore() {
-			new AdminHelper(this).Restore();
-		}
-
-		/// <summary>
-		/// Display users list form
-		/// </summary>
-		public DataTableForm Users() {
-			insertMenuOption(new MenuOption("New User", "/admin/EditUser?id=0&from=%2Fadmin%2Fusers"));
-			return new AdminHelper(this).Users();
-		}
-
-		/// <summary>
-		/// Return user list for Users form
-		/// </summary>
-		/// <returns></returns>
-		public JObjectEnumerable UsersListing() {
-			return new AdminHelper(this).UsersListing();
-		}
-
-		/// <summary>
-		/// Display form for individual user
-		/// </summary>
-		public void EditUser(int id) {
-			new AdminHelper(this).EditUser(id);
-		}
-
-		/// <summary>
-		/// Update user
-		/// </summary>
-		public AjaxReturn EditUserSave(JObject json) {
-			return new AdminHelper(this).EditUserSave(json);
-		}
-
-		/// <summary>
-		/// Delete user
-		/// </summary>
-		public AjaxReturn EditUserDelete(int id) {
-			return new AdminHelper(this).EditUserDelete(id);
-		}
-
-		/// <summary>
-		/// Change user's password form
-		/// </summary>
-		[Auth(AccessLevel.Any)]
-		public Form ChangePassword() {
-			return new AdminHelper(this).ChangePassword();
-		}
-
-		/// <summary>
-		/// Update user's password
-		/// </summary>
-		/// <param name="json"></param>
-		/// <returns></returns>
-		[Auth(AccessLevel.Any)]
-		public AjaxReturn ChangePasswordSave(JObject json) {
-			return new AdminHelper(this).ChangePasswordSave(json);
-		}
-
-		/// <summary>
-		/// Login form
-		/// </summary>
-		[Auth(AccessLevel.Any)]
-		public void Login() {
-			new AdminHelper(this).Login();
-		}
-
-		/// <summary>
-		/// Logout then show login form
-		/// </summary>
-		[Auth(AccessLevel.Any)]
-		public void Logout() {
-			new AdminHelper(this).Login();
-		}
 	}
 }
+	

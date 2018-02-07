@@ -199,4 +199,26 @@ namespace CodeFirstWebFramework {
 	public class DoNotStoreAttribute : Attribute {
 	}
 
+	/// <summary>
+	/// Attribute which indicates an AppModule class uses a helper class 
+	/// to implement some or all of its methods.
+	/// The helper class must have a constructor which takes a single AppModule parameter.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+	public class ImplementationAttribute : Attribute {
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="helperClass">Type of helper class. 
+		/// It must have a constructor which takes a single AppModule parameter.</param>
+		public ImplementationAttribute(Type helperClass) {
+			Helper = helperClass;
+		}
+
+		/// <summary>
+		/// The helper class type.
+		/// </summary>
+		public Type Helper { get; private set; }
+	}
+
 }

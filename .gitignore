@@ -11,3 +11,11 @@ Phone/bin
 /*.manifest
 /*.def
 /*.suo
+/Phone/docs
+/Phone/app.config
+/Properties/launchSettings.json
+/.vs
+/.gitmodules
+/*.user
+/CodeFirstWebFramework.zip
+/*.cmd

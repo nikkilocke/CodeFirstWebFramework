@@ -22,6 +22,17 @@ namespace CodeFirstWebFramework {
 			if (Auth.Name == null)
 				Auth.Name = name;
 			AuthMethods = new Dictionary<string, AuthAttribute>(StringComparer.OrdinalIgnoreCase);
+			addMethods(t);
+			foreach (ImplementationAttribute implementation in this.GetType().GetCustomAttributes<ImplementationAttribute>()) {
+				addMethods(implementation.Helper);
+			}
+		}
+
+		/// <summary>
+		/// Look for Auth attributes on all the methods of a type, and add them to the dictionary
+		/// </summary>
+		/// <param name="t"></param>
+		void addMethods(Type t) {
 			foreach (MethodInfo m in t.GetMethods()) {
 				AuthAttribute a = m.GetCustomAttribute<AuthAttribute>(true);
 				if (a != null) {
@@ -31,6 +42,7 @@ namespace CodeFirstWebFramework {
 				}
 			}
 		}
+
 		/// <summary>
 		/// Name of module
 		/// </summary>
@@ -100,10 +112,28 @@ namespace CodeFirstWebFramework {
 		public string Name { get; private set; }
 
 		/// <summary>
+		/// Create a Namespace object for the server.
+		/// Looks for a class called "Namespace" in the server's Namespace which is a subclass of Namespace, 
+		/// and has a constructor accepting a single ServerConfig argument.
+		/// If not found, creates a base Namespace object
+		/// </summary>
+		/// <param name="server"></param>
+		/// <returns></returns>
+		public static Namespace Create(ServerConfig server) {
+			Type t = Type.GetType(server.Namespace + ".Namespace");
+			if(t != null && !t.IsAbstract && t.IsSubclassOf(typeof(Namespace))) { 
+				ConstructorInfo ctor = t.GetConstructor(new[] { typeof(ServerConfig) });
+				if(ctor != null)
+					return (Namespace)ctor.Invoke(new object[] { server });
+			}
+			return new Namespace(server);
+		}
+
+		/// <summary>
 		/// Constructor - uses reflection to get the information
 		/// </summary>
-		public Namespace(string name) {
-			Name = name;
+		public Namespace(ServerConfig server) {
+			Name = server.Namespace;
 			appModules = new Dictionary<string, ModuleInfo>();
 			assemblies = new List<Assembly>();
 			tables = new Dictionary<string, Table>();
@@ -111,7 +141,7 @@ namespace CodeFirstWebFramework {
 			List<Type> views = new List<Type>();
 			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
 				bool relevant = false;
-				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == name && !t.IsAbstract)) {
+				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract)) {
 					relevant = true;
 					if (t.IsSubclassOf(typeof(AppModule))) {
 						string n = t.Name;
@@ -148,7 +178,13 @@ namespace CodeFirstWebFramework {
 				processTable(tbl, tbl.GetCustomAttribute<ViewAttribute>());
 			}
 			foreignKeys = null;
+			FileSystem = GetInstanceOf<FileSystem>();
 		}
+
+		/// <summary>
+		/// The FileSystem for this Namespace
+		/// </summary>
+		public FileSystem FileSystem;
 
 		/// <summary>
 		/// If there is a subclass of baseType in the namespace, returns that, otherwise baseType
@@ -198,10 +234,10 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Parse a uri and return the ModuleInfo associated with it (or null if none).
-		/// Sets filename to the proper relative filename (modulename/methodname.extension), stripping on VersionSuffix, 
+		/// Sets filename to the proper relative filename (modulename/methodname.extension), stripping off VersionSuffix, 
 		/// and adding any defaults (home/default if uri is "/", for instance).
 		/// </summary>
-		public ModuleInfo ParseUri(string uri, out string filename) {
+		virtual public ModuleInfo ParseUri(string uri, out string filename) {
 			filename = uri.Split('?', '&')[0];
 			filename = filename.Replace(WebServer.VersionSuffix, "");	// Remove VersionSuffix, which is just there to stop caching between versions
 			if (filename.StartsWith("/"))

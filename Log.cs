@@ -247,6 +247,7 @@ namespace CodeFirstWebFramework {
 				if (_sw != null) {
 					_sw.Close();
 				}
+				Directory.CreateDirectory(LogFolder);
 				_sw = new StreamWriter(new FileStream(fileName(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite), Encoding.UTF8);
 				_sw.AutoFlush = true;
 			}

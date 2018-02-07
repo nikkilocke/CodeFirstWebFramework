@@ -44,7 +44,7 @@ namespace Phone {
 	public class HomeModule : AppModule {
 
 		protected override void Init() {
-			insertMenuOptions(
+			InsertMenuOptions(
 				new MenuOption("Phone Numbers", "/home/Default"),
 				new MenuOption("Analysis", "/home/AnalysisList"),
 				new MenuOption("Cost centres", "/home/CostCentreList"),
@@ -53,7 +53,7 @@ namespace Phone {
 		}
 
 		public override void Default() {
-			insertMenuOption(new MenuOption("New number", "/home/PhoneNumber?id=0"));
+			InsertMenuOption(new MenuOption("New number", "/home/PhoneNumber?id=0"));
 			DataTableForm form = new DataTableForm(this, typeof(PhoneNumber)) {
 				Select = "/home/PhoneNumber"
 			};
@@ -86,7 +86,7 @@ namespace Phone {
 		}
 
 		public void AnalysisList() {
-			insertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0&from=/home/analysislist"));
+			InsertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0&from=/home/analysislist"));
 			DataTableForm form = new DataTableForm(this, typeof(Analysis)) {
 				Select = "/home/Analysis"
 			};
@@ -118,7 +118,7 @@ namespace Phone {
 		}
 
 		public void CostCentreList() {
-			insertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0&from=/home/costcentrelist"));
+			InsertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0&from=/home/costcentrelist"));
 			DataTableForm form = new DataTableForm(this, typeof(CostCentre)) {
 				Select = "/home/CostCentre"
 			};

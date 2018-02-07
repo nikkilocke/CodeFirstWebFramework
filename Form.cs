@@ -292,7 +292,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		protected void Show(string formType) {
 			string filename = System.IO.Path.Combine(Module.Module, Module.Method).ToLower();
-			if (!Module.Server.FileInfo(filename + ".tmpl").Exists)
+			if (!Module.FileInfo(filename + ".tmpl").Exists)
 				filename = formType.ToLower();
 			Module.Form = this;
 			Module.WriteResponse(Module.Template(filename, Module), "text/html", System.Net.HttpStatusCode.OK);
@@ -439,6 +439,7 @@ namespace CodeFirstWebFramework {
 
 		void setTableName(Type t) {
 			Type table = t;
+			Options["table"] = t.Name;
 			while (table != typeof(JsonObject)) {
 				if (table.IsDefined(typeof(TableAttribute), false)) {
 					Options["table"] = table.Name;
@@ -472,6 +473,14 @@ namespace CodeFirstWebFramework {
 			}
 			if (found)
 				columns.RemoveAt(i);
+		}
+
+		/// <summary>
+		/// Remove the named fields
+		/// </summary>
+		public void Remove(params string [] names) {
+			foreach (string name in names)
+				Remove(name);
 		}
 
 		/// <summary>
@@ -551,6 +560,14 @@ namespace CodeFirstWebFramework {
 		/// <param name="t">Type to display in the form</param>
 		public DataTableForm(AppModule module, Type t) 
 			: base(module, t, false) {
+		}
+
+
+		/// <summary>
+		/// DataTable for C# type t with specific fields in specific order
+		/// </summary>
+		public DataTableForm(AppModule module, Type t, bool readwrite, params string[] fieldNames)
+			: base(module, t, readwrite, fieldNames) {
 		}
 
 		/// <summary>

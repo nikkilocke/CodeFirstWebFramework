@@ -28,7 +28,7 @@ I would be pleased to hear of any other projects which use it - you can email me
  
 The first time you run a program that calls `Config.Load`, if there is no existing Config file with the same name as the program (but a .config extension), it will create one with the default values, which you can then edit. Note that the config file is loaded when the program runs - if you change it, you have to restart the program for the new values to take effect. 
 
-The Config file lives in the Common Application Data folder - `C:\ProgramData\AccountServer` in Windows, `/usr/share/AccountServer` in Linux.
+The Config file lives in the Common Application Data folder - "C:\ProgramData\\__ProgramName__" in Windows, "/usr/share/__ProgramName__" in Linux, where __ProgramName__ is the name of the exe file, without the extension.
  
 The Config file has the following main variables
  
@@ -168,6 +168,7 @@ So, for example, if the program is called Phone, Namespace Phone, and the web re
 * C:\Program Data\Phone\CodeFirstWebFramework\scripts\default.js
 * C:\Program Files\Phone\CodeFirstWebFramework\scripts\default.js
 
+This behaviour is implemented in FileSystem.cs. If you would like different behaviour, or would like to get "files" from elsewhere (e.g. from the database), create a subclass of FileSystem with the same name, but in your namespace.
 
 ## Mustache templates
 
@@ -196,7 +197,7 @@ Note that CodeFirstWebFramework Mustache templates preserve newlines in template
 |Markup|Function|
 |------|--------|
 |{{include *filename*}}|Searches for *filename* in the search folders, and reads it in.|
-|{{{*variable*}}}|Having replaced *variable*, html quotes it, so that html special characters are rendered as expected. For example if the variable contains &lt;B&gt;, it appears in the rendered html page as is, instead of turning on bold print.|
+|{{{*variable*}}}|Having replaced *variable*, html quotes it, so that html special characters are rendered as expected. For example if the variable contains `<B>`, it appears in the rendered html page as is, instead of turning on bold print.|
 |// {{*mustache*}}|Is replaced by {{*mustache*}}. This is so you can hide mustache in a comment in javascript files to avoid apparent syntax errors.|
 |'!{{*mustache*}}'|Is replaced by {{*mustache*}}. This is so you can hide mustache in a string in javascript files to avoid apparent syntax errors.|
 
@@ -208,7 +209,9 @@ As your program evolves, you may find it necessary to run additional code when u
 
 ### Database tables
 
-Database tables are declared as C# classes, which must be subclasses of `JsonObject`, and have the `[Table]` attribute. Most tables will have a unique, auto-increment integer field as the primary key - this should be given the `[Primary]` attribute. Some of the javascript code assumes by default that the primary key is called `idTableName` (where TableName is the class name), although there are facilities to change this in forms. This field is referred to as the record id below. 
+Database tables are declared as C# classes, which must be subclasses of `JsonObject`, and have the `[Table]` attribute. Most tables will have a unique, auto-increment nullable integer (`int?`) field as the primary key - this should be given the `[Primary]` attribute. Some of the javascript code assumes by default that the primary key is called `idTableName` (where TableName is the class name), although there are facilities to change this in forms. This field is referred to as the record id below. 
+
+JsonObject has an Id attribute, which will return (or set) the [Primary] field, if it is of type `int?`.
 
 In order to make SQL statements joining tables easier to write, it is often preferable to make your field names globally unique. To make this easier, the framework understands that variable names are often preceded by their table name (e.g. in the Document table, a field called DocumentName), and it will strip off the table name when displaying headings and prompts to the user.
 
@@ -229,11 +232,11 @@ You can also create classes which are mapped to views on the database - use the 
 
 Data is typically retrieved using the `Query`, `QueryOne` and Get methods, each of which has multiple overrides. `Query` always returns an Enumerable with a series of records, and `QueryOne` and Get return a single record (or, possibly, null).
 
-Query can accept a SQL string which should return the records - these are returned as JObjectEnumerable. There is a templated override Query<Type> which returns an IEnumerable<Type>, so, for example, if you have a class called `Document` you could iterate through all the Documents with:
+`Query` can accept a SQL string which should return the records - these are returned as JObjectEnumerable. There is a templated override `Query<Type>` which returns an `IEnumerable<Type>`, so, for example, if you have a class called `Document` you could iterate through all the Documents with:
 
     foreach(Document d in Database.Query<Document>("SELECT * FROM Document"))
 
-The Get methods return the record with a particular id. There is also an override which takes a partly filled in JObject or C# class object, and returns the record whose primary or unique keys match it.
+The `Get` methods return the record with a particular id. There is also an override which takes a partly filled in `JObject` or C# class object, and returns the record whose primary or unique keys match it.
 
 To help you build queries, there is a `Quote` method which accepts any type, and quotes it appropriately for the type of database you are using.
 
@@ -241,9 +244,11 @@ The `In` methods make is easy to build correctly quoted `IN(...)` SQL statements
 
 The `Cast` method lets you cast one type to another in a query in whatever syntax applies to your particular database.
 
-You can update, insert and delete data with the `Update`, `Insert` and `Delete` methods, which will accept a C# class object, or a JObject and a table name. If you call `Update` on a record which has a null or zero record id, a new record will be inserted, and the record id in the passed object updated to reflect the inserted value.
+You can update, insert and delete data with the `Update`, `Insert` and `Delete` methods, which will accept a C# class object, or a `JObject` and a table name. If you call `Update` on a record which has a null or zero record id, a new record will be inserted, and the record id in the passed object updated to reflect the inserted value.
 
 You can also execute arbitrary SQL statements with the `Execute` method.
+
+`BeginTransaction`, `Commit` and `Rollback` methods are provided for transactions. If a transaction is not committed by the time the AppModule method returns (or the batch finishes, in the case of a background-executing Batch), the transaction will be rolled back automatically.
 
 ## AppModule class
 
@@ -251,11 +256,17 @@ Every Namespace which implements a web app must have at least one class derived 
 
 The WebServer class will determine which class is required, and then creates an object of that class, and calls its `Call` method. This collects the parameters, and calls CallMethod to find the correct method and call it.
 
+The WebServer finds the appropriate AppModule class, and separates the url into module name and method name by calling Namespace.ParseUrl. The default implementation considers all urls with 0, 1 or 2 parts (e.g. `http://server/`__module__`/`__method__`.`__extension__`?parameters`, `http://server/`__module__ or `http://server/`) as candidates to call code. If __module__ is missing, `home` is assumed. If __method__ is missing `default` is assumed. ParseUrl then looks for an AppModule subclass called __module__ or __module__`Module` (case is not significant). If no module is found, then a `FileSender` module is created to find and return the file from the file system.
+
+You can change this module searching behaviour by creating a subclass of `Namespace` (with the same name, but in your own Namespace), and overriding this method.
+
+You can also create an AppModule called `FileSender` in your own Namespace to override the `FileSender` class (but it must have a constructor that accepts a single filename string in its constructor).
+
 ### Method parameters and returns
 
-The simplest method has no parameters, and no return value. Once it has been called (by a web request for `/class/method.html`), on its return the Call method will see that no response has been sent yet, and call Respond, which looks for a template file with the same name (i.e. /class/method.tmpl), fills in that template using the AppModule, and returns the resulting html. Any parameters provided in the request are supplied in the `AppModule.GetParameters` and `AppModule.PostParameters` NameValueCollections. There is also an `AppModule.Parameters` NameValueCollection which is a merge of both of the above.
+The simplest method has no parameters, and no return value. Once it has been called (by a web request for `/class/method.html`), on its return the Call method will see that no response has been sent yet, and call Respond, which looks for a template file with the same name (i.e. `/class/method.tmpl`), fills in that template using the AppModule, and returns the resulting html. Any parameters provided in the request are supplied in the `AppModule.GetParameters` and `AppModule.PostParameters` NameValueCollections. There is also an `AppModule.Parameters` NameValueCollection which is a merge of both of the above.
 
-A method may also have named parameters. CallMethod will look for request parameters with the same names, and fill in the parameters to the method accordingly. If the parameters don't match, or are not all supplied, it throws an Exception, which will  will return a 500 Internal Server error (along with details of the exception formatted with exception.tmpl).
+A method may also have named parameters. CallMethod will look for request parameters with the same names, and fill in the parameters to the method accordingly. If the parameters don't match, or are not all supplied, it throws an Exception, which will return a 500 Internal Server error (along with details of the exception formatted with exception.tmpl).
 
 A method may also return something - if it returns a Form, the form is rendered. Otherwise the Call method will call WriteResponse to convert the returned type to a response. Streams and strings are returned unchanged - any other non-null return value is converted to a json object. The javascript provided often uses Ajax calls (e.g. to save a form), and many of these expect an object of type `AjaxReturn` to return the status and results of a call.
 
@@ -292,7 +303,7 @@ The provided default.js javascript file (which is pulled in by default.tmpl) has
 
 Default.js also provides the methods necessary to implement ajax-enabled forms. You can create these forms by hand in javascript, but there are C# classes to enable you to create them in C# code with the minimum of coding. There are 4 types of form.
 
-The C# forms are all based on the Form class. You can create a form to view or input a C# class in the constructor, or by calling by calling `Build(Type)`. This will add the necessary columns to the form. By default the types of each field are deduced from the members of the class, as modified by the attributes described under Database tables above. E.g. a ForeignKey field will appear as a select dropdown containing the records from the other table. By default, fields in a Table class will be read-write, and extra fields in a derived or other class (e.g. a View) will be read only.
+The C# forms are all based on the Form class. You can create a form to view or input a C# class in the constructor, or by calling `Build(Type)`. This will add the necessary columns to the form. By default the types of each field are deduced from the members of the class, as modified by the attributes described under Database tables above. E.g. a ForeignKey field will appear as a select dropdown containing the records from the other table. By default, fields in a Table class will be read-write, and extra fields in a derived or other class (e.g. a View) will be read only.
 
 You can also include Properties (rather than Fields) in your form, or determine which specific fields you want, and their order in the form if you construct the form by providing a specific list of fields/properties.
 
@@ -339,19 +350,20 @@ The DataTableForm class creates a jquery datatable - this is a table which is a 
 
 There is a Select property, which can be set to a url to call when the user selects a record from a list. If a url, an id parameter will be added, containing the id field from the selected record.
 
-There is the built-in ability to filter out records with zero values - if you set a field's "nonZero" option to either True or False, the javascript will add a button to show or hide zero values (if you set it to True, zero values are hidden to start with, and vice versa).
+There is the built-in ability to filter out records with zero values - if you set a field's `nonZero` option to either True or False, the javascript will add a button to show or hide zero values (if you set it to True, zero values are hidden to start with, and vice versa, except for `checkbox` fields, which work the other way round - i.e. checked values are not shown by default - because the checkbox is often used to mark a record as hidden, or to be deleted). You can fine tune this behaviour by setting nonZero to a JObject containing some of the fields documented in the javascript (see dovumentation for `makeDataTable` in `default.js`).
+
 
 ### Form
 
-The Form class creates an input or display form. For input forms, "Save" and "Save and Close" buttons are provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Save` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
+The Form class creates an input or display form. For input forms, a "Save" button is provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Save` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
 
-If a `canDelete` property is added to Options, a Delete button will be provided, which calls the current method with `Delete` added to the end, providing the record id as a parameter. You can override this url by adding a `delete` property to Options.
+If a `canDelete` property is added to Options, a "Delete" button will be provided, which calls the current method with `Delete` added to the end, providing the record id as a parameter. You can override this url by adding a `delete` property to Options.
 
 ### ListForm
 
 This creates a possibly editable editable list of records. 
 
-You can allow the user to select an item from the list by setting the Select property to a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Save` added to the end. This expects an AjaxReturn object to be returned indicating success or failure, and including the Primary id of any newly-created record. You can override this url by adding a `submit` property to Options.
+You can allow the user to select an item from the list by setting the Select property to a url to call with the record id in an `id` parameter. If you do not do so, Save buttons will be provided, which will include the amended form data as a json object called `json` in the post parameters to the current method with `Save` added to the end. This expects an AjaxReturn object to be returned indicating success or failure. You can override this url by adding a `submit` property to Options.
 
 ### HeaderDetailForm
 
@@ -370,7 +382,7 @@ Form Save and Delete methods return an `AjaxReturn` object to the calling javasc
 |id|For a Save method, this should be set to the id of a newly saved record. If set, the javascript will reload this record into the form.|
 |data|Arbitrary data to send to the javascript. For instance, `batchstatus` uses this to get the batch progress data.|
 
-Note that `AppModule` provides `SaveRecord` and `DeleteRecord` methods which will save or delete a record and return a suitably filled in AjaxReturn. For simple single record updates you can do your validation on the supplied data, then return the result of `SaveRecord`. Note that the `Utils.Check` method (which checks its first argument is true, and thors an exception with the supplied message if not) is a useful shorthand for validation checks.
+Note that `AppModule` provides `SaveRecord` and `DeleteRecord` methods which will save or delete a record and return a suitably filled in AjaxReturn. For simple single record updates you can do your validation on the supplied data, then return the result of `SaveRecord`. Note that the `Utils.Check` method (which checks its first argument is true, and throws an exception with the supplied message if not) is a useful shorthand for validation checks.
 
 ## DumbForm
 
@@ -392,7 +404,7 @@ It can also contain any other markdown you wish. The C# Help AppModule will use 
 
 The files referred to can be linked to anywhere (e.g. `/help/installation.md`). When any of the md files in the help folder are displayed, they are automatically included in `/help/default.tmpl`, which implements the Table of Contents, Next, Previous and Up links. You can even template a help file itself - instead of creating a .md file, create a .tmpl file of the same name, and you can include Mustache in the file. This would probably be most useful if you have your own Help class (derived from CodeFirstWebFramework.Help) with its own variables to use in the template.
 
-The help becomes context sensitive, because every AppModule has a Help property, which will automatically contain a link to any file file in the help folder with the name *module*_*method*.md, or, if that doesn't exist, the name *module*.md. You can add this link to your `/default.tmpl` file to provide a context-sensitive help link. Note it will be an empty string if there is no such file, which you can test for with code like `{{#if Help}}<a href="{{Help}}">Help</a>{{/if}}`.
+The help becomes context sensitive, because every AppModule has a Help property, which will automatically contain a link to any file in the help folder with the name *module*_*method*.md, or, if that doesn't exist, the name *module*.md. You can add this link to your `/default.tmpl` file to provide a context-sensitive help link. Note it will be an empty string if there is no such file, which you can test for with code like `{{#if Help}}<a href="{{Help}}">Help</a>{{/if}}`.
 
 ## Login and security
 
@@ -407,4 +419,31 @@ If there are no users on file, there is no login security. Once you add a user, 
 All other users have an `AccessLevel`, which can be set to `None`, `ReadOnly`, `ReadWrite` or `Admin`. Any functionality which requires login requires one of these access levels. If you require additional levels in your application, create a new class derived from `AccessLevel`, with constants for the new levels. Any distinct values will be included automatically in the drop-down list of levels, or you can override the `Select` method to provide the data for the list if the default implementation is not sufficient. Note that the core code assumes `ReadOnly`, `ReadWrite` and `Admin` levels remain with their specific values, but space has been left to add intermediate values.
 
 The user can also gain finer control over who has access to what by ticking `Module Permissions`. This will show a list of all the modules and/or methods which require an access level, and you can set the user's level for each one individually. By default, this shows every module and method with an `Auth` attribute, but you can remove some of them from the display by setting `Hide` on the attribute to `true` (the permission used will be that on the module), or show multiple `Auth` method attributes as a single row by setting a `Name` on the attribute - all attributes with the same `Name` are shown as a single row. If you don't specify a `Name`, it is derived from the method name by un-camel-casing the name.
+
+## Namespaces
+
+The provided Namespace class has one object for each of the Namespaces in the config file. The Namespace class is responsible for building the list of AppModules which belong to the Namespace, finding the Database and AccessLevel classes defined in the Namespace, building the list of database Tables and Views for the Namespace, and parsing the Uri for a request to decide which AppModule will handle it. 
+
+By default, the system uses the base CodeFirstWebFramework Namespace class, but you can create a derived class in your own Namespace (which must also be called "Namespace"). This is useful because the ParseUri method is virtual, so you can override it to create your own naming scheme - e.g. to provide a CMS where urls map to database records. 
+
+## FileSystem
+
+FileSystem provides an interface to search the list of directories for a file or directory. 
+
+If you want to store templates or other "files" in the database, or change how files are retrieved from the filesystem, you can also create your own subclass of FileSystem (with the same name, but in your Namespace), create IFileInfo and IDirectoryInfo implementations which retrieve file contents from the database, and override the FileInfo and DirectoryInfo methods to return them.
+
+## Error reporting and the ErrorModule
+
+By default, if an exception is thrown while in an AppModule method, it is trapped by the system, and displayed to the user using an instance of ErrorModule. There is an issue here, however - if you have your own AppModule class with additional fields and/or properties, and your `default.tmpl` wrapper page refers to any of them, the error cannot be displayed, because the base class ErrorModule is a CodeFirstWebFramework.AppModule, not one of yours.
+
+In this case, you must define your own ErrorModule class derived from your own AppModule. It does not have to have any particular properties, fields or methods - an empty class will do.
+
+## AdminModule and the Implementation Attribute
+
+The same issue occurs with the AdminModule AppModule. The default implementation is based on CodeFirstWebFramework.AppModule, and you will want one based on your own AppModule. There is a handy work-round for this - if you declare your AdminModule as follows:
+
+	[Implementation(typeof(AdminHelper))]
+	public class AdminModule : AppModule {
+
+it will automatically "inherit" all the methods in CodeFirstWebFramework.AdminHelper - i.e. for all methods declares in AdminHelper, an AdminHelper object will be created with its module set to AppModule, and the method in it called. This makes it trivial to extend AdminModule, but base it on your own AppModule, without having to rewrite all the methods.
 

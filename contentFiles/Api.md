@@ -21,27 +21,14 @@
   - [EditUserDelete()](#M-CodeFirstWebFramework-AdminHelper-EditUserDelete-System-Int32- 'CodeFirstWebFramework.AdminHelper.EditUserDelete(System.Int32)')
   - [EditUserSave()](#M-CodeFirstWebFramework-AdminHelper-EditUserSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminHelper.EditUserSave(Newtonsoft.Json.Linq.JObject)')
   - [Login()](#M-CodeFirstWebFramework-AdminHelper-Login 'CodeFirstWebFramework.AdminHelper.Login')
+  - [Logout()](#M-CodeFirstWebFramework-AdminHelper-Logout 'CodeFirstWebFramework.AdminHelper.Logout')
   - [permissions()](#M-CodeFirstWebFramework-AdminHelper-permissions-System-Int32- 'CodeFirstWebFramework.AdminHelper.permissions(System.Int32)')
   - [Restore()](#M-CodeFirstWebFramework-AdminHelper-Restore 'CodeFirstWebFramework.AdminHelper.Restore')
   - [Users()](#M-CodeFirstWebFramework-AdminHelper-Users 'CodeFirstWebFramework.AdminHelper.Users')
   - [UsersListing()](#M-CodeFirstWebFramework-AdminHelper-UsersListing 'CodeFirstWebFramework.AdminHelper.UsersListing')
 - [AdminModule](#T-CodeFirstWebFramework-AdminModule 'CodeFirstWebFramework.AdminModule')
-  - [Backup()](#M-CodeFirstWebFramework-AdminModule-Backup 'CodeFirstWebFramework.AdminModule.Backup')
-  - [BatchStatus()](#M-CodeFirstWebFramework-AdminModule-BatchStatus-System-Int32- 'CodeFirstWebFramework.AdminModule.BatchStatus(System.Int32)')
-  - [ChangePassword()](#M-CodeFirstWebFramework-AdminModule-ChangePassword 'CodeFirstWebFramework.AdminModule.ChangePassword')
-  - [ChangePasswordSave(json)](#M-CodeFirstWebFramework-AdminModule-ChangePasswordSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminModule.ChangePasswordSave(Newtonsoft.Json.Linq.JObject)')
   - [Default()](#M-CodeFirstWebFramework-AdminModule-Default 'CodeFirstWebFramework.AdminModule.Default')
-  - [EditSettings()](#M-CodeFirstWebFramework-AdminModule-EditSettings 'CodeFirstWebFramework.AdminModule.EditSettings')
-  - [EditSettingsSave()](#M-CodeFirstWebFramework-AdminModule-EditSettingsSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminModule.EditSettingsSave(Newtonsoft.Json.Linq.JObject)')
-  - [EditUser()](#M-CodeFirstWebFramework-AdminModule-EditUser-System-Int32- 'CodeFirstWebFramework.AdminModule.EditUser(System.Int32)')
-  - [EditUserDelete()](#M-CodeFirstWebFramework-AdminModule-EditUserDelete-System-Int32- 'CodeFirstWebFramework.AdminModule.EditUserDelete(System.Int32)')
-  - [EditUserSave()](#M-CodeFirstWebFramework-AdminModule-EditUserSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminModule.EditUserSave(Newtonsoft.Json.Linq.JObject)')
   - [Init()](#M-CodeFirstWebFramework-AdminModule-Init 'CodeFirstWebFramework.AdminModule.Init')
-  - [Login()](#M-CodeFirstWebFramework-AdminModule-Login 'CodeFirstWebFramework.AdminModule.Login')
-  - [Logout()](#M-CodeFirstWebFramework-AdminModule-Logout 'CodeFirstWebFramework.AdminModule.Logout')
-  - [Restore()](#M-CodeFirstWebFramework-AdminModule-Restore 'CodeFirstWebFramework.AdminModule.Restore')
-  - [Users()](#M-CodeFirstWebFramework-AdminModule-Users 'CodeFirstWebFramework.AdminModule.Users')
-  - [UsersListing()](#M-CodeFirstWebFramework-AdminModule-UsersListing 'CodeFirstWebFramework.AdminModule.UsersListing')
 - [AjaxReturn](#T-CodeFirstWebFramework-AjaxReturn 'CodeFirstWebFramework.AjaxReturn')
   - [confirm](#F-CodeFirstWebFramework-AjaxReturn-confirm 'CodeFirstWebFramework.AjaxReturn.confirm')
   - [data](#F-CodeFirstWebFramework-AjaxReturn-data 'CodeFirstWebFramework.AjaxReturn.data')
@@ -100,14 +87,19 @@
   - [ConvertEncoding(s)](#M-CodeFirstWebFramework-AppModule-ConvertEncoding-System-String- 'CodeFirstWebFramework.AppModule.ConvertEncoding(System.String)')
   - [Default()](#M-CodeFirstWebFramework-AppModule-Default 'CodeFirstWebFramework.AppModule.Default')
   - [DeleteRecord()](#M-CodeFirstWebFramework-AppModule-DeleteRecord-System-String,System-Int32- 'CodeFirstWebFramework.AppModule.DeleteRecord(System.String,System.Int32)')
+  - [DirectoryInfo(foldername)](#M-CodeFirstWebFramework-AppModule-DirectoryInfo-System-String- 'CodeFirstWebFramework.AppModule.DirectoryInfo(System.String)')
   - [Dispose()](#M-CodeFirstWebFramework-AppModule-Dispose 'CodeFirstWebFramework.AppModule.Dispose')
+  - [ExtractSection(name,template,defaultValue)](#M-CodeFirstWebFramework-AppModule-ExtractSection-System-String,System-String@,System-String- 'CodeFirstWebFramework.AppModule.ExtractSection(System.String,System.String@,System.String)')
+  - [FileInfo(filename)](#M-CodeFirstWebFramework-AppModule-FileInfo-System-String- 'CodeFirstWebFramework.AppModule.FileInfo(System.String)')
   - [GetBatchJob()](#M-CodeFirstWebFramework-AppModule-GetBatchJob-System-Int32- 'CodeFirstWebFramework.AppModule.GetBatchJob(System.Int32)')
   - [HasAccess()](#M-CodeFirstWebFramework-AppModule-HasAccess-System-String- 'CodeFirstWebFramework.AppModule.HasAccess(System.String)')
   - [HasAccess(info,mtd,accessLevel)](#M-CodeFirstWebFramework-AppModule-HasAccess-CodeFirstWebFramework-ModuleInfo,System-String,System-Int32@- 'CodeFirstWebFramework.AppModule.HasAccess(CodeFirstWebFramework.ModuleInfo,System.String,System.Int32@)')
   - [Init()](#M-CodeFirstWebFramework-AppModule-Init 'CodeFirstWebFramework.AppModule.Init')
-  - [insertMenuOption()](#M-CodeFirstWebFramework-AppModule-insertMenuOption-CodeFirstWebFramework-MenuOption- 'CodeFirstWebFramework.AppModule.insertMenuOption(CodeFirstWebFramework.MenuOption)')
-  - [insertMenuOptions(opts)](#M-CodeFirstWebFramework-AppModule-insertMenuOptions-CodeFirstWebFramework-MenuOption[]- 'CodeFirstWebFramework.AppModule.insertMenuOptions(CodeFirstWebFramework.MenuOption[])')
-  - [LoadTemplate(filename,obj)](#M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object- 'CodeFirstWebFramework.AppModule.LoadTemplate(System.String,System.Object)')
+  - [InsertMenuOption()](#M-CodeFirstWebFramework-AppModule-InsertMenuOption-CodeFirstWebFramework-MenuOption- 'CodeFirstWebFramework.AppModule.InsertMenuOption(CodeFirstWebFramework.MenuOption)')
+  - [InsertMenuOptions(opts)](#M-CodeFirstWebFramework-AppModule-InsertMenuOptions-CodeFirstWebFramework-MenuOption[]- 'CodeFirstWebFramework.AppModule.InsertMenuOptions(CodeFirstWebFramework.MenuOption[])')
+  - [LoadFile(filename)](#M-CodeFirstWebFramework-AppModule-LoadFile-System-String- 'CodeFirstWebFramework.AppModule.LoadFile(System.String)')
+  - [LoadFile()](#M-CodeFirstWebFramework-AppModule-LoadFile-CodeFirstWebFramework-IFileInfo- 'CodeFirstWebFramework.AppModule.LoadFile(CodeFirstWebFramework.IFileInfo)')
+  - [LoadTemplate()](#M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object- 'CodeFirstWebFramework.AppModule.LoadTemplate(System.String,System.Object)')
   - [Log()](#M-CodeFirstWebFramework-AppModule-Log-System-String- 'CodeFirstWebFramework.AppModule.Log(System.String)')
   - [Log()](#M-CodeFirstWebFramework-AppModule-Log-System-String,System-Object[]- 'CodeFirstWebFramework.AppModule.Log(System.String,System.Object[])')
   - [Redirect()](#M-CodeFirstWebFramework-AppModule-Redirect-System-String- 'CodeFirstWebFramework.AppModule.Redirect(System.String)')
@@ -115,6 +107,7 @@
   - [Respond()](#M-CodeFirstWebFramework-AppModule-Respond 'CodeFirstWebFramework.AppModule.Respond')
   - [SaveRecord()](#M-CodeFirstWebFramework-AppModule-SaveRecord-CodeFirstWebFramework-JsonObject- 'CodeFirstWebFramework.AppModule.SaveRecord(CodeFirstWebFramework.JsonObject)')
   - [Template()](#M-CodeFirstWebFramework-AppModule-Template-System-String,System-Object- 'CodeFirstWebFramework.AppModule.Template(System.String,System.Object)')
+  - [TextTemplate(text,obj)](#M-CodeFirstWebFramework-AppModule-TextTemplate-System-String,System-Object- 'CodeFirstWebFramework.AppModule.TextTemplate(System.String,System.Object)')
   - [WriteResponse(o,contentType,status)](#M-CodeFirstWebFramework-AppModule-WriteResponse-System-Object,System-String,System-Net-HttpStatusCode- 'CodeFirstWebFramework.AppModule.WriteResponse(System.Object,System.String,System.Net.HttpStatusCode)')
 - [AuthAttribute](#T-CodeFirstWebFramework-AuthAttribute 'CodeFirstWebFramework.AuthAttribute')
   - [#ctor()](#M-CodeFirstWebFramework-AuthAttribute-#ctor 'CodeFirstWebFramework.AuthAttribute.#ctor')
@@ -240,6 +233,7 @@
   - [ToString()](#M-CodeFirstWebFramework-DatabaseException-ToString 'CodeFirstWebFramework.DatabaseException.ToString')
 - [DataTableForm](#T-CodeFirstWebFramework-DataTableForm 'CodeFirstWebFramework.DataTableForm')
   - [#ctor(module,t)](#M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type- 'CodeFirstWebFramework.DataTableForm.#ctor(CodeFirstWebFramework.AppModule,System.Type)')
+  - [#ctor()](#M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'CodeFirstWebFramework.DataTableForm.#ctor(CodeFirstWebFramework.AppModule,System.Type,System.Boolean,System.String[])')
   - [Select](#P-CodeFirstWebFramework-DataTableForm-Select 'CodeFirstWebFramework.DataTableForm.Select')
   - [RequireField()](#M-CodeFirstWebFramework-DataTableForm-RequireField-CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.DataTableForm.RequireField(CodeFirstWebFramework.FieldAttribute)')
   - [Show()](#M-CodeFirstWebFramework-DataTableForm-Show 'CodeFirstWebFramework.DataTableForm.Show')
@@ -273,6 +267,12 @@
   - [StdErr](#F-CodeFirstWebFramework-Log-Destination-StdErr 'CodeFirstWebFramework.Log.Destination.StdErr')
   - [StdOut](#F-CodeFirstWebFramework-Log-Destination-StdOut 'CodeFirstWebFramework.Log.Destination.StdOut')
   - [Trace](#F-CodeFirstWebFramework-Log-Destination-Trace 'CodeFirstWebFramework.Log.Destination.Trace')
+- [DirectoryInfo](#T-CodeFirstWebFramework-DirectoryInfo 'CodeFirstWebFramework.DirectoryInfo')
+  - [#ctor()](#M-CodeFirstWebFramework-DirectoryInfo-#ctor-System-String,System-IO-DirectoryInfo- 'CodeFirstWebFramework.DirectoryInfo.#ctor(System.String,System.IO.DirectoryInfo)')
+  - [Exists](#P-CodeFirstWebFramework-DirectoryInfo-Exists 'CodeFirstWebFramework.DirectoryInfo.Exists')
+  - [Name](#P-CodeFirstWebFramework-DirectoryInfo-Name 'CodeFirstWebFramework.DirectoryInfo.Name')
+  - [Path](#P-CodeFirstWebFramework-DirectoryInfo-Path 'CodeFirstWebFramework.DirectoryInfo.Path')
+  - [Content()](#M-CodeFirstWebFramework-DirectoryInfo-Content-System-String- 'CodeFirstWebFramework.DirectoryInfo.Content(System.String)')
 - [DoNotStoreAttribute](#T-CodeFirstWebFramework-DoNotStoreAttribute 'CodeFirstWebFramework.DoNotStoreAttribute')
 - [DumbForm](#T-CodeFirstWebFramework-DumbForm 'CodeFirstWebFramework.DumbForm')
   - [#ctor(module,readwrite)](#M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Boolean- 'CodeFirstWebFramework.DumbForm.#ctor(CodeFirstWebFramework.AppModule,System.Boolean)')
@@ -319,11 +319,23 @@
   - [FieldFor(field,readwrite)](#M-CodeFirstWebFramework-FieldAttribute-FieldFor-System-Reflection-PropertyInfo,System-Boolean- 'CodeFirstWebFramework.FieldAttribute.FieldFor(System.Reflection.PropertyInfo,System.Boolean)')
   - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-CodeFirstWebFramework-JObjectEnumerable- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(CodeFirstWebFramework.JObjectEnumerable)')
   - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject})')
+- [FileInfo](#T-CodeFirstWebFramework-FileInfo 'CodeFirstWebFramework.FileInfo')
+  - [#ctor()](#M-CodeFirstWebFramework-FileInfo-#ctor-System-String,System-IO-FileInfo- 'CodeFirstWebFramework.FileInfo.#ctor(System.String,System.IO.FileInfo)')
+  - [Exists](#P-CodeFirstWebFramework-FileInfo-Exists 'CodeFirstWebFramework.FileInfo.Exists')
+  - [Extension](#P-CodeFirstWebFramework-FileInfo-Extension 'CodeFirstWebFramework.FileInfo.Extension')
+  - [LastWriteTimeUtc](#P-CodeFirstWebFramework-FileInfo-LastWriteTimeUtc 'CodeFirstWebFramework.FileInfo.LastWriteTimeUtc')
+  - [Name](#P-CodeFirstWebFramework-FileInfo-Name 'CodeFirstWebFramework.FileInfo.Name')
+  - [Path](#P-CodeFirstWebFramework-FileInfo-Path 'CodeFirstWebFramework.FileInfo.Path')
+  - [Content()](#M-CodeFirstWebFramework-FileInfo-Content-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.FileInfo.Content(CodeFirstWebFramework.AppModule)')
+  - [Stream()](#M-CodeFirstWebFramework-FileInfo-Stream-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.FileInfo.Stream(CodeFirstWebFramework.AppModule)')
 - [FileSender](#T-CodeFirstWebFramework-FileSender 'CodeFirstWebFramework.FileSender')
   - [#ctor()](#M-CodeFirstWebFramework-FileSender-#ctor-System-String- 'CodeFirstWebFramework.FileSender.#ctor(System.String)')
   - [ContentTypes](#F-CodeFirstWebFramework-FileSender-ContentTypes 'CodeFirstWebFramework.FileSender.ContentTypes')
   - [Filename](#F-CodeFirstWebFramework-FileSender-Filename 'CodeFirstWebFramework.FileSender.Filename')
   - [Default()](#M-CodeFirstWebFramework-FileSender-Default 'CodeFirstWebFramework.FileSender.Default')
+- [FileSystem](#T-CodeFirstWebFramework-FileSystem 'CodeFirstWebFramework.FileSystem')
+  - [DirectoryInfo(module,foldername)](#M-CodeFirstWebFramework-FileSystem-DirectoryInfo-CodeFirstWebFramework-AppModule,System-String- 'CodeFirstWebFramework.FileSystem.DirectoryInfo(CodeFirstWebFramework.AppModule,System.String)')
+  - [FileInfo(module,filename)](#M-CodeFirstWebFramework-FileSystem-FileInfo-CodeFirstWebFramework-AppModule,System-String- 'CodeFirstWebFramework.FileSystem.FileInfo(CodeFirstWebFramework.AppModule,System.String)')
 - [ForeignKey](#T-CodeFirstWebFramework-ForeignKey 'CodeFirstWebFramework.ForeignKey')
   - [#ctor(table,field)](#M-CodeFirstWebFramework-ForeignKey-#ctor-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field- 'CodeFirstWebFramework.ForeignKey.#ctor(CodeFirstWebFramework.Table,CodeFirstWebFramework.Field)')
   - [Field](#P-CodeFirstWebFramework-ForeignKey-Field 'CodeFirstWebFramework.ForeignKey.Field')
@@ -350,6 +362,7 @@
   - [Insert()](#M-CodeFirstWebFramework-Form-Insert-System-Int32,CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.Insert(System.Int32,CodeFirstWebFramework.FieldAttribute)')
   - [processFields(tbl,inTable)](#M-CodeFirstWebFramework-Form-processFields-System-Type,System-Boolean- 'CodeFirstWebFramework.Form.processFields(System.Type,System.Boolean)')
   - [Remove()](#M-CodeFirstWebFramework-Form-Remove-System-String- 'CodeFirstWebFramework.Form.Remove(System.String)')
+  - [Remove()](#M-CodeFirstWebFramework-Form-Remove-System-String[]- 'CodeFirstWebFramework.Form.Remove(System.String[])')
   - [Replace()](#M-CodeFirstWebFramework-Form-Replace-System-Int32,CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.Replace(System.Int32,CodeFirstWebFramework.FieldAttribute)')
   - [RequireField()](#M-CodeFirstWebFramework-Form-RequireField-CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.RequireField(CodeFirstWebFramework.FieldAttribute)')
   - [Show()](#M-CodeFirstWebFramework-Form-Show 'CodeFirstWebFramework.Form.Show')
@@ -370,9 +383,25 @@
   - [Previous](#F-CodeFirstWebFramework-Help-Previous 'CodeFirstWebFramework.Help.Previous')
   - [CallMethod()](#M-CodeFirstWebFramework-Help-CallMethod-System-Reflection-MethodInfo@- 'CodeFirstWebFramework.Help.CallMethod(System.Reflection.MethodInfo@)')
   - [Default()](#M-CodeFirstWebFramework-Help-Default 'CodeFirstWebFramework.Help.Default')
-  - [LoadHelpFrom()](#M-CodeFirstWebFramework-Help-LoadHelpFrom-System-IO-FileInfo- 'CodeFirstWebFramework.Help.LoadHelpFrom(System.IO.FileInfo)')
+  - [LoadHelpFrom()](#M-CodeFirstWebFramework-Help-LoadHelpFrom-CodeFirstWebFramework-IFileInfo- 'CodeFirstWebFramework.Help.LoadHelpFrom(CodeFirstWebFramework.IFileInfo)')
   - [parseContents(current)](#M-CodeFirstWebFramework-Help-parseContents-System-String- 'CodeFirstWebFramework.Help.parseContents(System.String)')
-  - [ReturnHelpFrom()](#M-CodeFirstWebFramework-Help-ReturnHelpFrom-System-IO-FileInfo- 'CodeFirstWebFramework.Help.ReturnHelpFrom(System.IO.FileInfo)')
+  - [ReturnHelpFrom()](#M-CodeFirstWebFramework-Help-ReturnHelpFrom-CodeFirstWebFramework-IFileInfo- 'CodeFirstWebFramework.Help.ReturnHelpFrom(CodeFirstWebFramework.IFileInfo)')
+- [IDirectoryInfo](#T-CodeFirstWebFramework-IDirectoryInfo 'CodeFirstWebFramework.IDirectoryInfo')
+  - [Exists](#P-CodeFirstWebFramework-IDirectoryInfo-Exists 'CodeFirstWebFramework.IDirectoryInfo.Exists')
+  - [Name](#P-CodeFirstWebFramework-IDirectoryInfo-Name 'CodeFirstWebFramework.IDirectoryInfo.Name')
+  - [Path](#P-CodeFirstWebFramework-IDirectoryInfo-Path 'CodeFirstWebFramework.IDirectoryInfo.Path')
+  - [Content()](#M-CodeFirstWebFramework-IDirectoryInfo-Content-System-String- 'CodeFirstWebFramework.IDirectoryInfo.Content(System.String)')
+- [IFileInfo](#T-CodeFirstWebFramework-IFileInfo 'CodeFirstWebFramework.IFileInfo')
+  - [Exists](#P-CodeFirstWebFramework-IFileInfo-Exists 'CodeFirstWebFramework.IFileInfo.Exists')
+  - [Extension](#P-CodeFirstWebFramework-IFileInfo-Extension 'CodeFirstWebFramework.IFileInfo.Extension')
+  - [LastWriteTimeUtc](#P-CodeFirstWebFramework-IFileInfo-LastWriteTimeUtc 'CodeFirstWebFramework.IFileInfo.LastWriteTimeUtc')
+  - [Name](#P-CodeFirstWebFramework-IFileInfo-Name 'CodeFirstWebFramework.IFileInfo.Name')
+  - [Path](#P-CodeFirstWebFramework-IFileInfo-Path 'CodeFirstWebFramework.IFileInfo.Path')
+  - [Content()](#M-CodeFirstWebFramework-IFileInfo-Content-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.IFileInfo.Content(CodeFirstWebFramework.AppModule)')
+  - [Stream()](#M-CodeFirstWebFramework-IFileInfo-Stream-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.IFileInfo.Stream(CodeFirstWebFramework.AppModule)')
+- [ImplementationAttribute](#T-CodeFirstWebFramework-ImplementationAttribute 'CodeFirstWebFramework.ImplementationAttribute')
+  - [#ctor(helperClass)](#M-CodeFirstWebFramework-ImplementationAttribute-#ctor-System-Type- 'CodeFirstWebFramework.ImplementationAttribute.#ctor(System.Type)')
+  - [Helper](#P-CodeFirstWebFramework-ImplementationAttribute-Helper 'CodeFirstWebFramework.ImplementationAttribute.Helper')
 - [Index](#T-CodeFirstWebFramework-Index 'CodeFirstWebFramework.Index')
   - [#ctor(name,fields)](#M-CodeFirstWebFramework-Index-#ctor-System-String,CodeFirstWebFramework-Field[]- 'CodeFirstWebFramework.Index.#ctor(System.String,CodeFirstWebFramework.Field[])')
   - [#ctor(name,fields)](#M-CodeFirstWebFramework-Index-#ctor-System-String,System-String[]- 'CodeFirstWebFramework.Index.#ctor(System.String,System.String[])')
@@ -441,6 +470,7 @@
   - [Type](#F-CodeFirstWebFramework-ModuleInfo-Type 'CodeFirstWebFramework.ModuleInfo.Type')
   - [LowestAccessLevel](#P-CodeFirstWebFramework-ModuleInfo-LowestAccessLevel 'CodeFirstWebFramework.ModuleInfo.LowestAccessLevel')
   - [UnCamelName](#P-CodeFirstWebFramework-ModuleInfo-UnCamelName 'CodeFirstWebFramework.ModuleInfo.UnCamelName')
+  - [addMethods(t)](#M-CodeFirstWebFramework-ModuleInfo-addMethods-System-Type- 'CodeFirstWebFramework.ModuleInfo.addMethods(System.Type)')
 - [MySqlDatabase](#T-CodeFirstWebFramework-MySqlDatabase 'CodeFirstWebFramework.MySqlDatabase')
   - [#ctor(db,connectionString)](#M-CodeFirstWebFramework-MySqlDatabase-#ctor-CodeFirstWebFramework-Database,System-String- 'CodeFirstWebFramework.MySqlDatabase.#ctor(CodeFirstWebFramework.Database,System.String)')
   - [BeginTransaction()](#M-CodeFirstWebFramework-MySqlDatabase-BeginTransaction 'CodeFirstWebFramework.MySqlDatabase.BeginTransaction')
@@ -463,12 +493,14 @@
   - [UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex)](#M-CodeFirstWebFramework-MySqlDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'CodeFirstWebFramework.MySqlDatabase.UpgradeTable(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table,System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Index},System.Collections.Generic.List{CodeFirstWebFramework.Index})')
   - [ViewsMatch()](#M-CodeFirstWebFramework-MySqlDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'CodeFirstWebFramework.MySqlDatabase.ViewsMatch(CodeFirstWebFramework.View,CodeFirstWebFramework.View)')
 - [Namespace](#T-CodeFirstWebFramework-Namespace 'CodeFirstWebFramework.Namespace')
-  - [#ctor()](#M-CodeFirstWebFramework-Namespace-#ctor-System-String- 'CodeFirstWebFramework.Namespace.#ctor(System.String)')
+  - [#ctor()](#M-CodeFirstWebFramework-Namespace-#ctor-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.#ctor(CodeFirstWebFramework.ServerConfig)')
+  - [FileSystem](#F-CodeFirstWebFramework-Namespace-FileSystem 'CodeFirstWebFramework.Namespace.FileSystem')
   - [Modules](#P-CodeFirstWebFramework-Namespace-Modules 'CodeFirstWebFramework.Namespace.Modules')
   - [Name](#P-CodeFirstWebFramework-Namespace-Name 'CodeFirstWebFramework.Namespace.Name')
   - [TableNames](#P-CodeFirstWebFramework-Namespace-TableNames 'CodeFirstWebFramework.Namespace.TableNames')
   - [Tables](#P-CodeFirstWebFramework-Namespace-Tables 'CodeFirstWebFramework.Namespace.Tables')
   - [ViewNames](#P-CodeFirstWebFramework-Namespace-ViewNames 'CodeFirstWebFramework.Namespace.ViewNames')
+  - [Create(server)](#M-CodeFirstWebFramework-Namespace-Create-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.Create(CodeFirstWebFramework.ServerConfig)')
   - [GetAccessLevel()](#M-CodeFirstWebFramework-Namespace-GetAccessLevel 'CodeFirstWebFramework.Namespace.GetAccessLevel')
   - [GetDatabase(server)](#M-CodeFirstWebFramework-Namespace-GetDatabase-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.GetDatabase(CodeFirstWebFramework.ServerConfig)')
   - [GetInstanceOf\`\`1(args)](#M-CodeFirstWebFramework-Namespace-GetInstanceOf``1-System-Object[]- 'CodeFirstWebFramework.Namespace.GetInstanceOf``1(System.Object[])')
@@ -504,13 +536,7 @@
   - [ServerAlias](#F-CodeFirstWebFramework-ServerConfig-ServerAlias 'CodeFirstWebFramework.ServerConfig.ServerAlias')
   - [ServerName](#F-CodeFirstWebFramework-ServerConfig-ServerName 'CodeFirstWebFramework.ServerConfig.ServerName')
   - [Title](#F-CodeFirstWebFramework-ServerConfig-Title 'CodeFirstWebFramework.ServerConfig.Title')
-  - [DirectoryInfo()](#M-CodeFirstWebFramework-ServerConfig-DirectoryInfo-System-String- 'CodeFirstWebFramework.ServerConfig.DirectoryInfo(System.String)')
-  - [FileInfo(filename)](#M-CodeFirstWebFramework-ServerConfig-FileInfo-System-String- 'CodeFirstWebFramework.ServerConfig.FileInfo(System.String)')
-  - [LoadFile(filename)](#M-CodeFirstWebFramework-ServerConfig-LoadFile-System-String- 'CodeFirstWebFramework.ServerConfig.LoadFile(System.String)')
-  - [LoadFile()](#M-CodeFirstWebFramework-ServerConfig-LoadFile-System-IO-FileInfo- 'CodeFirstWebFramework.ServerConfig.LoadFile(System.IO.FileInfo)')
-  - [LoadTemplate()](#M-CodeFirstWebFramework-ServerConfig-LoadTemplate-System-String,System-Object- 'CodeFirstWebFramework.ServerConfig.LoadTemplate(System.String,System.Object)')
   - [Matches()](#M-CodeFirstWebFramework-ServerConfig-Matches-System-Uri- 'CodeFirstWebFramework.ServerConfig.Matches(System.Uri)')
-  - [TextTemplate(text,obj)](#M-CodeFirstWebFramework-ServerConfig-TextTemplate-System-String,System-Object- 'CodeFirstWebFramework.ServerConfig.TextTemplate(System.String,System.Object)')
 - [Session](#T-CodeFirstWebFramework-WebServer-Session 'CodeFirstWebFramework.WebServer.Session')
   - [#ctor(server)](#M-CodeFirstWebFramework-WebServer-Session-#ctor-CodeFirstWebFramework-WebServer- 'CodeFirstWebFramework.WebServer.Session.#ctor(CodeFirstWebFramework.WebServer)')
   - [Expires](#F-CodeFirstWebFramework-WebServer-Session-Expires 'CodeFirstWebFramework.WebServer.Session.Expires')
@@ -870,6 +896,17 @@ Display login template, and log user in if form data is posted
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-AdminHelper-Logout'></a>
+### Logout() `method` [#](#M-CodeFirstWebFramework-AdminHelper-Logout 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Logout then show login form
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-AdminHelper-permissions-System-Int32-'></a>
 ### permissions() `method` [#](#M-CodeFirstWebFramework-AdminHelper-permissions-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -925,56 +962,6 @@ CodeFirstWebFramework
 
 Admin module - provides BatchStatus, Backup and Restore. Uses AdminHelper for the implementation.
 
-<a name='M-CodeFirstWebFramework-AdminModule-Backup'></a>
-### Backup() `method` [#](#M-CodeFirstWebFramework-AdminModule-Backup 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Backup the database
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-BatchStatus-System-Int32-'></a>
-### BatchStatus() `method` [#](#M-CodeFirstWebFramework-AdminModule-BatchStatus-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Return the status of the batch
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-ChangePassword'></a>
-### ChangePassword() `method` [#](#M-CodeFirstWebFramework-AdminModule-ChangePassword 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Change user's password form
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-ChangePasswordSave-Newtonsoft-Json-Linq-JObject-'></a>
-### ChangePasswordSave(json) `method` [#](#M-CodeFirstWebFramework-AdminModule-ChangePasswordSave-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Update user's password
-
-##### Returns
-
-
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| json | [Newtonsoft.Json.Linq.JObject](#T-Newtonsoft-Json-Linq-JObject 'Newtonsoft.Json.Linq.JObject') |  |
-
 <a name='M-CodeFirstWebFramework-AdminModule-Default'></a>
 ### Default() `method` [#](#M-CodeFirstWebFramework-AdminModule-Default 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -986,126 +973,12 @@ Display default template
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-AdminModule-EditSettings'></a>
-### EditSettings() `method` [#](#M-CodeFirstWebFramework-AdminModule-EditSettings 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Display settings form
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-EditSettingsSave-Newtonsoft-Json-Linq-JObject-'></a>
-### EditSettingsSave() `method` [#](#M-CodeFirstWebFramework-AdminModule-EditSettingsSave-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Update settings
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-EditUser-System-Int32-'></a>
-### EditUser() `method` [#](#M-CodeFirstWebFramework-AdminModule-EditUser-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Display form for individual user
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-EditUserDelete-System-Int32-'></a>
-### EditUserDelete() `method` [#](#M-CodeFirstWebFramework-AdminModule-EditUserDelete-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Delete user
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-EditUserSave-Newtonsoft-Json-Linq-JObject-'></a>
-### EditUserSave() `method` [#](#M-CodeFirstWebFramework-AdminModule-EditUserSave-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Update user
-
-##### Parameters
-
-This method has no parameters.
-
 <a name='M-CodeFirstWebFramework-AdminModule-Init'></a>
 ### Init() `method` [#](#M-CodeFirstWebFramework-AdminModule-Init 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
 Add menu options
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-Login'></a>
-### Login() `method` [#](#M-CodeFirstWebFramework-AdminModule-Login 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Login form
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-Logout'></a>
-### Logout() `method` [#](#M-CodeFirstWebFramework-AdminModule-Logout 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Logout then show login form
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-Restore'></a>
-### Restore() `method` [#](#M-CodeFirstWebFramework-AdminModule-Restore 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Restore the database.
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-Users'></a>
-### Users() `method` [#](#M-CodeFirstWebFramework-AdminModule-Users 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Display users list form
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-AdminModule-UsersListing'></a>
-### UsersListing() `method` [#](#M-CodeFirstWebFramework-AdminModule-UsersListing 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Return user list for Users form
-
-##### Returns
-
-
 
 ##### Parameters
 
@@ -1569,6 +1442,19 @@ Delete a record from the database
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-AppModule-DirectoryInfo-System-String-'></a>
+### DirectoryInfo(foldername) `method` [#](#M-CodeFirstWebFramework-AppModule-DirectoryInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Get the IDirectoryInfo matching the foldername
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| foldername | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings" |
+
 <a name='M-CodeFirstWebFramework-AppModule-Dispose'></a>
 ### Dispose() `method` [#](#M-CodeFirstWebFramework-AppModule-Dispose 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -1579,6 +1465,38 @@ Close the database (unless a batch job is using it)
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AppModule-ExtractSection-System-String,System-String@,System-String-'></a>
+### ExtractSection(name,template,defaultValue) `method` [#](#M-CodeFirstWebFramework-AppModule-ExtractSection-System-String,System-String@,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Extract the named html element from the template
+
+##### Returns
+
+The content of the element, or defaultValue
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Element to extract |
+| template | [System.String@](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String@ 'System.String@') | The template - will have the whole element removed |
+| defaultValue | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Text to return if the named element is not present |
+
+<a name='M-CodeFirstWebFramework-AppModule-FileInfo-System-String-'></a>
+### FileInfo(filename) `method` [#](#M-CodeFirstWebFramework-AppModule-FileInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Get the IFileInfo matching the filename
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings.html" |
 
 <a name='M-CodeFirstWebFramework-AppModule-GetBatchJob-System-Int32-'></a>
 ### GetBatchJob() `method` [#](#M-CodeFirstWebFramework-AppModule-GetBatchJob-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
@@ -1628,8 +1546,8 @@ Perform any initialisation or validation that applies to all calls to this modul
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-AppModule-insertMenuOption-CodeFirstWebFramework-MenuOption-'></a>
-### insertMenuOption() `method` [#](#M-CodeFirstWebFramework-AppModule-insertMenuOption-CodeFirstWebFramework-MenuOption- 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-AppModule-InsertMenuOption-CodeFirstWebFramework-MenuOption-'></a>
+### InsertMenuOption() `method` [#](#M-CodeFirstWebFramework-AppModule-InsertMenuOption-CodeFirstWebFramework-MenuOption- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
@@ -1639,8 +1557,8 @@ Add a menu option to the default Menu (checking security - no add if no access)
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-AppModule-insertMenuOptions-CodeFirstWebFramework-MenuOption[]-'></a>
-### insertMenuOptions(opts) `method` [#](#M-CodeFirstWebFramework-AppModule-insertMenuOptions-CodeFirstWebFramework-MenuOption[]- 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-AppModule-InsertMenuOptions-CodeFirstWebFramework-MenuOption[]-'></a>
+### InsertMenuOptions(opts) `method` [#](#M-CodeFirstWebFramework-AppModule-InsertMenuOptions-CodeFirstWebFramework-MenuOption[]- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
@@ -1652,19 +1570,40 @@ Add multiple menu options to the default Menu (checking security - no add if no 
 | ---- | ---- | ----------- |
 | opts | [CodeFirstWebFramework.MenuOption[]](#T-CodeFirstWebFramework-MenuOption[] 'CodeFirstWebFramework.MenuOption[]') |  |
 
-<a name='M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object-'></a>
-### LoadTemplate(filename,obj) `method` [#](#M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-AppModule-LoadFile-System-String-'></a>
+### LoadFile(filename) `method` [#](#M-CodeFirstWebFramework-AppModule-LoadFile-System-String- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
-Read a Mustache template file from one of the search folders, and perform the variable substitutions using obj as the object.
+Load the contents of the file from one of the search folders.
 
 ##### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | like a url - e.g. "admin/backup" |
-| obj | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | Object to use for substitutions |
+| filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url |
+
+<a name='M-CodeFirstWebFramework-AppModule-LoadFile-CodeFirstWebFramework-IFileInfo-'></a>
+### LoadFile() `method` [#](#M-CodeFirstWebFramework-AppModule-LoadFile-CodeFirstWebFramework-IFileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Load the contents of a specific file. If it is a .tmpl file, perform our extra substitutions to support {{include}}, //{{}}, '!{{}} and {{{}}}
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object-'></a>
+### LoadTemplate() `method` [#](#M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Load a template and perform Mustache substitutions on it using obj.
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-Log-System-String-'></a>
 ### Log() `method` [#](#M-CodeFirstWebFramework-AppModule-Log-System-String- 'Go To Here') [=](#contents 'Back To Contents')
@@ -1742,6 +1681,20 @@ Load the named template, and render using Mustache from the supplied object. E.g
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AppModule-TextTemplate-System-String,System-Object-'></a>
+### TextTemplate(text,obj) `method` [#](#M-CodeFirstWebFramework-AppModule-TextTemplate-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Perform Mustache substitutions on a template
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| text | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The template |
+| obj | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | The object to use |
 
 <a name='M-CodeFirstWebFramework-AppModule-WriteResponse-System-Object,System-String,System-Net-HttpStatusCode-'></a>
 ### WriteResponse(o,contentType,status) `method` [#](#M-CodeFirstWebFramework-AppModule-WriteResponse-System-Object,System-String,System-Net-HttpStatusCode- 'Go To Here') [=](#contents 'Back To Contents')
@@ -3009,6 +2962,17 @@ Constructor
 | module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | Creating module |
 | t | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type to display in the form |
 
+<a name='M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]-'></a>
+### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+DataTable for C# type t with specific fields in specific order
+
+##### Parameters
+
+This constructor has no parameters.
+
 <a name='P-CodeFirstWebFramework-DataTableForm-Select'></a>
 ### Select `property` [#](#P-CodeFirstWebFramework-DataTableForm-Select 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -3345,6 +3309,60 @@ Log to stdout
 ##### Summary
 
 Log to trace output
+
+<a name='T-CodeFirstWebFramework-DirectoryInfo'></a>
+## DirectoryInfo [#](#T-CodeFirstWebFramework-DirectoryInfo 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+IDirectoryInfo that uses the filesystem
+
+<a name='M-CodeFirstWebFramework-DirectoryInfo-#ctor-System-String,System-IO-DirectoryInfo-'></a>
+### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DirectoryInfo-#ctor-System-String,System-IO-DirectoryInfo- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Construct from a System.IO.DirectoryInfo
+
+##### Parameters
+
+This constructor has no parameters.
+
+<a name='P-CodeFirstWebFramework-DirectoryInfo-Exists'></a>
+### Exists `property` [#](#P-CodeFirstWebFramework-DirectoryInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Whether the directory exists
+
+<a name='P-CodeFirstWebFramework-DirectoryInfo-Name'></a>
+### Name `property` [#](#P-CodeFirstWebFramework-DirectoryInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Directory name
+
+<a name='P-CodeFirstWebFramework-DirectoryInfo-Path'></a>
+### Path `property` [#](#P-CodeFirstWebFramework-DirectoryInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Path
+
+<a name='M-CodeFirstWebFramework-DirectoryInfo-Content-System-String-'></a>
+### Content() `method` [#](#M-CodeFirstWebFramework-DirectoryInfo-Content-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Search the directory for files matching the pattern
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-DoNotStoreAttribute'></a>
 ## DoNotStoreAttribute [#](#T-CodeFirstWebFramework-DoNotStoreAttribute 'Go To Here') [=](#contents 'Back To Contents')
@@ -3796,6 +3814,85 @@ Turn a field into a select or selectInput
 
 This method has no parameters.
 
+<a name='T-CodeFirstWebFramework-FileInfo'></a>
+## FileInfo [#](#T-CodeFirstWebFramework-FileInfo 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+IFileInfo that uses the filesystem
+
+<a name='M-CodeFirstWebFramework-FileInfo-#ctor-System-String,System-IO-FileInfo-'></a>
+### #ctor() `constructor` [#](#M-CodeFirstWebFramework-FileInfo-#ctor-System-String,System-IO-FileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Construct from a System.IO.FileInfo
+
+##### Parameters
+
+This constructor has no parameters.
+
+<a name='P-CodeFirstWebFramework-FileInfo-Exists'></a>
+### Exists `property` [#](#P-CodeFirstWebFramework-FileInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Whether the file exists
+
+<a name='P-CodeFirstWebFramework-FileInfo-Extension'></a>
+### Extension `property` [#](#P-CodeFirstWebFramework-FileInfo-Extension 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+File extension
+
+<a name='P-CodeFirstWebFramework-FileInfo-LastWriteTimeUtc'></a>
+### LastWriteTimeUtc `property` [#](#P-CodeFirstWebFramework-FileInfo-LastWriteTimeUtc 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+The modification time
+
+<a name='P-CodeFirstWebFramework-FileInfo-Name'></a>
+### Name `property` [#](#P-CodeFirstWebFramework-FileInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+File name without extension
+
+<a name='P-CodeFirstWebFramework-FileInfo-Path'></a>
+### Path `property` [#](#P-CodeFirstWebFramework-FileInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Path
+
+<a name='M-CodeFirstWebFramework-FileInfo-Content-CodeFirstWebFramework-AppModule-'></a>
+### Content() `method` [#](#M-CodeFirstWebFramework-FileInfo-Content-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+File content
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-FileInfo-Stream-CodeFirstWebFramework-AppModule-'></a>
+### Stream() `method` [#](#M-CodeFirstWebFramework-FileInfo-Stream-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Stream containing content
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='T-CodeFirstWebFramework-FileSender'></a>
 ## FileSender [#](#T-CodeFirstWebFramework-FileSender 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -3842,6 +3939,45 @@ Default behaviour is to return the file contents, processing .tmpl and .md files
 ##### Parameters
 
 This method has no parameters.
+
+<a name='T-CodeFirstWebFramework-FileSystem'></a>
+## FileSystem [#](#T-CodeFirstWebFramework-FileSystem 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Interface to the file system which converts file names into IFileInfo objects, and directory names into IDirectoryInfo objects
+
+<a name='M-CodeFirstWebFramework-FileSystem-DirectoryInfo-CodeFirstWebFramework-AppModule,System-String-'></a>
+### DirectoryInfo(module,foldername) `method` [#](#M-CodeFirstWebFramework-FileSystem-DirectoryInfo-CodeFirstWebFramework-AppModule,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Search the list of folders for a folder matching the foldername
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | AppModule making the call |
+| foldername | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings.html" |
+
+<a name='M-CodeFirstWebFramework-FileSystem-FileInfo-CodeFirstWebFramework-AppModule,System-String-'></a>
+### FileInfo(module,filename) `method` [#](#M-CodeFirstWebFramework-FileSystem-FileInfo-CodeFirstWebFramework-AppModule,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Search the list of folders for a file matching the filename
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | AppModule making the call |
+| filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings.html" |
 
 <a name='T-CodeFirstWebFramework-ForeignKey'></a>
 ## ForeignKey [#](#T-CodeFirstWebFramework-ForeignKey 'Go To Here') [=](#contents 'Back To Contents')
@@ -4118,6 +4254,17 @@ Remove the named field
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-Form-Remove-System-String[]-'></a>
+### Remove() `method` [#](#M-CodeFirstWebFramework-Form-Remove-System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Remove the named fields
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-Form-Replace-System-Int32,CodeFirstWebFramework-FieldAttribute-'></a>
 ### Replace() `method` [#](#M-CodeFirstWebFramework-Form-Replace-System-Int32,CodeFirstWebFramework-FieldAttribute- 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -4314,8 +4461,8 @@ Display a help file from the url
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Help-LoadHelpFrom-System-IO-FileInfo-'></a>
-### LoadHelpFrom() `method` [#](#M-CodeFirstWebFramework-Help-LoadHelpFrom-System-IO-FileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-Help-LoadHelpFrom-CodeFirstWebFramework-IFileInfo-'></a>
+### LoadHelpFrom() `method` [#](#M-CodeFirstWebFramework-Help-LoadHelpFrom-CodeFirstWebFramework-IFileInfo- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
@@ -4338,8 +4485,8 @@ Set up Next, Previous and Parent by finding the current file in the default.md t
 | ---- | ---- | ----------- |
 | current | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Current file |
 
-<a name='M-CodeFirstWebFramework-Help-ReturnHelpFrom-System-IO-FileInfo-'></a>
-### ReturnHelpFrom() `method` [#](#M-CodeFirstWebFramework-Help-ReturnHelpFrom-System-IO-FileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-Help-ReturnHelpFrom-CodeFirstWebFramework-IFileInfo-'></a>
+### ReturnHelpFrom() `method` [#](#M-CodeFirstWebFramework-Help-ReturnHelpFrom-CodeFirstWebFramework-IFileInfo- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
@@ -4348,6 +4495,148 @@ Render the Markdown help text from file in a web page. Allows caching and suppor
 ##### Parameters
 
 This method has no parameters.
+
+<a name='T-CodeFirstWebFramework-IDirectoryInfo'></a>
+## IDirectoryInfo [#](#T-CodeFirstWebFramework-IDirectoryInfo 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Interface to "directories" the web server can access. An interface is used so a Namespace can deliver content from the database instead of the file system
+
+<a name='P-CodeFirstWebFramework-IDirectoryInfo-Exists'></a>
+### Exists `property` [#](#P-CodeFirstWebFramework-IDirectoryInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Whether the directory exists
+
+<a name='P-CodeFirstWebFramework-IDirectoryInfo-Name'></a>
+### Name `property` [#](#P-CodeFirstWebFramework-IDirectoryInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Directory name
+
+<a name='P-CodeFirstWebFramework-IDirectoryInfo-Path'></a>
+### Path `property` [#](#P-CodeFirstWebFramework-IDirectoryInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Path
+
+<a name='M-CodeFirstWebFramework-IDirectoryInfo-Content-System-String-'></a>
+### Content() `method` [#](#M-CodeFirstWebFramework-IDirectoryInfo-Content-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+List of IFileInfo items in the directory
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='T-CodeFirstWebFramework-IFileInfo'></a>
+## IFileInfo [#](#T-CodeFirstWebFramework-IFileInfo 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Interface to "files" the web server can access. An interface is used so a Namespace can deliver content from the database instead of the file system
+
+<a name='P-CodeFirstWebFramework-IFileInfo-Exists'></a>
+### Exists `property` [#](#P-CodeFirstWebFramework-IFileInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Whether the file exists
+
+<a name='P-CodeFirstWebFramework-IFileInfo-Extension'></a>
+### Extension `property` [#](#P-CodeFirstWebFramework-IFileInfo-Extension 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+File extension
+
+<a name='P-CodeFirstWebFramework-IFileInfo-LastWriteTimeUtc'></a>
+### LastWriteTimeUtc `property` [#](#P-CodeFirstWebFramework-IFileInfo-LastWriteTimeUtc 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+The modification time
+
+<a name='P-CodeFirstWebFramework-IFileInfo-Name'></a>
+### Name `property` [#](#P-CodeFirstWebFramework-IFileInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+File name (without extension)
+
+<a name='P-CodeFirstWebFramework-IFileInfo-Path'></a>
+### Path `property` [#](#P-CodeFirstWebFramework-IFileInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Path
+
+<a name='M-CodeFirstWebFramework-IFileInfo-Content-CodeFirstWebFramework-AppModule-'></a>
+### Content() `method` [#](#M-CodeFirstWebFramework-IFileInfo-Content-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Text of the file
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-IFileInfo-Stream-CodeFirstWebFramework-AppModule-'></a>
+### Stream() `method` [#](#M-CodeFirstWebFramework-IFileInfo-Stream-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Stream containing content
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='T-CodeFirstWebFramework-ImplementationAttribute'></a>
+## ImplementationAttribute [#](#T-CodeFirstWebFramework-ImplementationAttribute 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Attribute which indicates an AppModule class uses a helper class to implement some or all of its methods. The helper class must have a constructor which takes a single AppModule parameter.
+
+<a name='M-CodeFirstWebFramework-ImplementationAttribute-#ctor-System-Type-'></a>
+### #ctor(helperClass) `constructor` [#](#M-CodeFirstWebFramework-ImplementationAttribute-#ctor-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Constructor.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| helperClass | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type of helper class. It must have a constructor which takes a single AppModule parameter. |
+
+<a name='P-CodeFirstWebFramework-ImplementationAttribute-Helper'></a>
+### Helper `property` [#](#P-CodeFirstWebFramework-ImplementationAttribute-Helper 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+The helper class type.
 
 <a name='T-CodeFirstWebFramework-Index'></a>
 ## Index [#](#T-CodeFirstWebFramework-Index 'Go To Here') [=](#contents 'Back To Contents')
@@ -5003,6 +5292,19 @@ Lowest Access level for any method. Returns AccessLevel.Any if all methods have 
 
 Uncamelled name for display
 
+<a name='M-CodeFirstWebFramework-ModuleInfo-addMethods-System-Type-'></a>
+### addMethods(t) `method` [#](#M-CodeFirstWebFramework-ModuleInfo-addMethods-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Look for Auth attributes on all the methods of a type, and add them to the dictionary
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| t | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') |  |
+
 <a name='T-CodeFirstWebFramework-MySqlDatabase'></a>
 ## MySqlDatabase [#](#T-CodeFirstWebFramework-MySqlDatabase 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -5266,8 +5568,8 @@ CodeFirstWebFramework
 
 Desribes a namespace with AppModules which makes up a WebApp
 
-<a name='M-CodeFirstWebFramework-Namespace-#ctor-System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Namespace-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+<a name='M-CodeFirstWebFramework-Namespace-#ctor-CodeFirstWebFramework-ServerConfig-'></a>
+### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Namespace-#ctor-CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
 
 ##### Summary
 
@@ -5276,6 +5578,13 @@ Constructor - uses reflection to get the information
 ##### Parameters
 
 This constructor has no parameters.
+
+<a name='F-CodeFirstWebFramework-Namespace-FileSystem'></a>
+### FileSystem `constants` [#](#F-CodeFirstWebFramework-Namespace-FileSystem 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+The FileSystem for this Namespace
 
 <a name='P-CodeFirstWebFramework-Namespace-Modules'></a>
 ### Modules `property` [#](#P-CodeFirstWebFramework-Namespace-Modules 'Go To Here') [=](#contents 'Back To Contents')
@@ -5311,6 +5620,23 @@ Dictionary of tables defined in this namespace
 ##### Summary
 
 List of the view names
+
+<a name='M-CodeFirstWebFramework-Namespace-Create-CodeFirstWebFramework-ServerConfig-'></a>
+### Create(server) `method` [#](#M-CodeFirstWebFramework-Namespace-Create-CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Create a Namespace object for the server. Looks for a class called "Namespace" in the server's Namespace which is a subclass of Namespace, and has a constructor accepting a single ServerConfig argument. If not found, creates a base Namespace object
+
+##### Returns
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') |  |
 
 <a name='M-CodeFirstWebFramework-Namespace-GetAccessLevel'></a>
 ### GetAccessLevel() `method` [#](#M-CodeFirstWebFramework-Namespace-GetAccessLevel 'Go To Here') [=](#contents 'Back To Contents')
@@ -5382,7 +5708,7 @@ This method has no parameters.
 
 ##### Summary
 
-Parse a uri and return the ModuleInfo associated with it (or null if none). Sets filename to the proper relative filename (modulename/methodname.extension), stripping on VersionSuffix, and adding any defaults (home/default if uri is "/", for instance).
+Parse a uri and return the ModuleInfo associated with it (or null if none). Sets filename to the proper relative filename (modulename/methodname.extension), stripping off VersionSuffix, and adding any defaults (home/default if uri is "/", for instance).
 
 ##### Parameters
 
@@ -5633,69 +5959,6 @@ Name part of the url
 
 Title for web pages
 
-<a name='M-CodeFirstWebFramework-ServerConfig-DirectoryInfo-System-String-'></a>
-### DirectoryInfo() `method` [#](#M-CodeFirstWebFramework-ServerConfig-DirectoryInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Search the list of folders for a folder matching the foldername
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-ServerConfig-FileInfo-System-String-'></a>
-### FileInfo(filename) `method` [#](#M-CodeFirstWebFramework-ServerConfig-FileInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Search the list of folders for a file matching the filename
-
-##### Returns
-
-
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings.html" |
-
-<a name='M-CodeFirstWebFramework-ServerConfig-LoadFile-System-String-'></a>
-### LoadFile(filename) `method` [#](#M-CodeFirstWebFramework-ServerConfig-LoadFile-System-String- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Load the contents of the file from one of the search folders.
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url |
-
-<a name='M-CodeFirstWebFramework-ServerConfig-LoadFile-System-IO-FileInfo-'></a>
-### LoadFile() `method` [#](#M-CodeFirstWebFramework-ServerConfig-LoadFile-System-IO-FileInfo- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Load the contents of a specific file. If it is a .tmpl file, perform our extra substitutions to support {{include}}, //{{}}, '!{{}} and {{{}}}
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-ServerConfig-LoadTemplate-System-String,System-Object-'></a>
-### LoadTemplate() `method` [#](#M-CodeFirstWebFramework-ServerConfig-LoadTemplate-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Load a template and perform Mustache substitutions on it using obj.
-
-##### Parameters
-
-This method has no parameters.
-
 <a name='M-CodeFirstWebFramework-ServerConfig-Matches-System-Uri-'></a>
 ### Matches() `method` [#](#M-CodeFirstWebFramework-ServerConfig-Matches-System-Uri- 'Go To Here') [=](#contents 'Back To Contents')
 
@@ -5706,20 +5969,6 @@ Whether this server serves for the host name
 ##### Parameters
 
 This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-ServerConfig-TextTemplate-System-String,System-Object-'></a>
-### TextTemplate(text,obj) `method` [#](#M-CodeFirstWebFramework-ServerConfig-TextTemplate-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
-
-##### Summary
-
-Perform Mustache substitutions on a template
-
-##### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| text | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The template |
-| obj | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | The object to use |
 
 <a name='T-CodeFirstWebFramework-WebServer-Session'></a>
 ## Session [#](#T-CodeFirstWebFramework-WebServer-Session 'Go To Here') [=](#contents 'Back To Contents')

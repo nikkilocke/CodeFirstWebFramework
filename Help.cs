@@ -43,10 +43,10 @@ namespace CodeFirstWebFramework {
 				Redirect("/help/default.md");
 				return;
 			}
-			FileInfo file = Server.FileInfo(Module + "/" + Method + ".md");
+			IFileInfo file = FileInfo(Module + "/" + Method + ".md");
 			if (!file.Exists) {
 				// Maybe this is a templated help file
-				file = Server.FileInfo(Module + "/" + Method + ".tmpl");
+				file = FileInfo(Module + "/" + Method + ".tmpl");
 			}
 			ReturnHelpFrom(file);
 		}
@@ -69,15 +69,15 @@ namespace CodeFirstWebFramework {
 		/// If the file is itself a template, fill it in first (output will be Markdown).
 		/// Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
 		/// </summary>
-		protected string LoadHelpFrom(FileInfo file) {
+		protected string LoadHelpFrom(IFileInfo file) {
 			if (Method != "default") {
 				// Read the default.md file for the table of contents, to populate Next, Previous, etc.
 				parseContents((Method + ".md").ToLower());
 			}
-			Body = Server.LoadFile(file);
+			Body = LoadFile(file);
 			if (file.Extension == ".tmpl") {
 				// Do the templating of the contents themselves
-				Body = Server.TextTemplate(Body, this);
+				Body = TextTemplate(Body, this);
 				System.Diagnostics.Debug.WriteLine(Body);
 			}
 			string s = LoadTemplate("/help/default", this); // Place the content in the default.tmpl wrapper
@@ -91,7 +91,7 @@ namespace CodeFirstWebFramework {
 		/// If the file is itself a template, fill it in first (output will be Markdown).
 		/// Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
 		/// </summary>
-		protected void ReturnHelpFrom(FileInfo file) {
+		protected void ReturnHelpFrom(IFileInfo file) {
 			if (!file.Exists) {
 				WriteResponse("", "text/plain", HttpStatusCode.NotFound);
 				return;
@@ -118,13 +118,13 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="current">Current file</param>
 		void parseContents(string current) {
-			FileInfo file = Server.FileInfo("/help/default.md");
+			IFileInfo file = FileInfo("/help/default.md");
 			Regex regex = new Regex(@"^(\#+) \[(.+)\]\((.*)\)");
 			int level = 0;
 			bool found = false;
 			string previous = null;
 			List<string> links = new List<string>();
-			using (StreamReader r = new StreamReader(file.FullName)) {
+			using (StreamReader r = new StreamReader(file.Stream(this))) {
 				string line;
 				while((line = r.ReadLine()) != null) {
 					Match m = regex.Match(line);

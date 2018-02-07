@@ -21,7 +21,7 @@ namespace CodeFirstWebFramework {
 		Dictionary<string, Session> _sessions;
 		static object _lock = new object();
 		Session _empty;
-		Dictionary<string, Namespace> modules;      // All the different web modules we are running
+		Dictionary<string, Namespace> webmodules;      // All the different web modules we are running
 		HashSet<string> loadedAssemblies;
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace CodeFirstWebFramework {
 			try {
 				AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
 				VersionSuffix = "-v" + AppVersion;
-				modules = new Dictionary<string, Namespace>();
+				webmodules = new Dictionary<string, Namespace>();
 				loadedAssemblies = new HashSet<string>();
 				var baseType = typeof(AppModule);
 				HashSet<string> databases = new HashSet<string>();
@@ -54,8 +54,8 @@ namespace CodeFirstWebFramework {
 		/// <param name="databases">HashSet of databases already upgraded</param>
 		/// <param name="server">ServerConfig to register</param>
 		void registerServer(HashSet<string> databases, ServerConfig server) {
-			if (modules.ContainsKey(server.Namespace)) {
-				server.NamespaceDef = modules[server.Namespace];
+			if (webmodules.ContainsKey(server.Namespace)) {
+				server.NamespaceDef = webmodules[server.Namespace];
 			} else {
 				foreach(string assembly in server.AdditionalAssemblies) {
 					if (loadedAssemblies.Contains(assembly))
@@ -63,8 +63,8 @@ namespace CodeFirstWebFramework {
 					Assembly.Load(assembly);
 					loadedAssemblies.Add(assembly);
 				}
-				server.NamespaceDef = new Namespace(server.Namespace);
-				modules[server.Namespace] = server.NamespaceDef;
+				server.NamespaceDef = Namespace.Create(server);
+				webmodules[server.Namespace] = server.NamespaceDef;
 			}
 			using (Database db = server.NamespaceDef.GetDatabase(server)) {
 				if (!databases.Contains(db.UniqueIdentifier)) {
@@ -178,7 +178,7 @@ namespace CodeFirstWebFramework {
 			} else {
 				try {
 					Session session = null;
-					ModuleInfo info = modules[server.Namespace].ParseUri(context.Request.Url.AbsolutePath, out string filename);
+					ModuleInfo info = webmodules[server.Namespace].ParseUri(context.Request.Url.AbsolutePath, out string filename);
 					string moduleName = null;
 					string methodName = null;
 					// Urls of the form /ModuleName[/MethodName][.html] call a C# AppModule
@@ -196,7 +196,7 @@ namespace CodeFirstWebFramework {
 					if (moduleName == null) {
 						// No AppModule found - treat url as a file request
 						moduleName = "FileSender";
-						module = new FileSender(filename);
+						module = server.NamespaceDef.GetInstanceOf<FileSender>(filename);
 					}
 					// AppModule found - retrieve or create a session for it
 					Cookie cookie = context.Request.Cookies["session"];
@@ -219,7 +219,7 @@ namespace CodeFirstWebFramework {
 					}
 					// Set up module
 					module.Server = server;
-					module.ActiveModule = modules[server.Namespace];
+					module.ActiveModule = webmodules[server.Namespace];
 					module.Session = session;
 					module.LogString = log;
 					if (moduleName.EndsWith("Module"))
@@ -241,7 +241,7 @@ namespace CodeFirstWebFramework {
 								module = info == null ? new ErrorModule() : (AppModule)Activator.CreateInstance(info.Type);
 								module.Session = _empty;
 								module.Server = server;
-								module.ActiveModule = modules[server.Namespace];
+								module.ActiveModule = webmodules[server.Namespace];
 								module.LogString = log;
 								module.Context = context;
 								module.Module = "exception";

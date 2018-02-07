@@ -1405,8 +1405,8 @@ function makeDataTable(selector, options) {
 			nz.col = col;
 			if (nz.hide === undefined) nz.hide = true;
 			if (nz.heading === undefined) nz.heading = title;
-			if(nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude not ' : 'Only non-zero ') + nz.heading;
-			if(nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include not ' : 'Show all ') + nz.heading;
+			if(nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading;
+			if(nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading;
 			nz.regex = nz.regex === undefined ? /^([0\.]*|true|null)$/ : new Regex(nz.regex);
 			if (nzList.length)
 				nz.hide = nzList.shift() == 1;

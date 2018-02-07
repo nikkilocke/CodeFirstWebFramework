@@ -698,7 +698,7 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			Init();
-			return method.Invoke(this, parms.Count == 0 ? null : parms.ToArray());
+			return method.Invoke(self, parms.Count == 0 ? null : parms.ToArray());
 		}
 
 		/// <summary>

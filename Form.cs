@@ -265,9 +265,9 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Form data passed to javascript.
 		/// </summary>
-		public JToken Data {
+		public object Data {
 			get { return Options["data"]; }
-			set { Options["data"] = value; }
+			set { Options["data"] = value.ToJToken(); }
 		}
 
 		/// <summary>

@@ -2337,6 +2337,7 @@ function makeListForm(selector, options) {
 function makeDumbForm(selector, options) {
 	var tableName = myOption('table', options);
 	var submitUrl = myOption('submit', options);
+    var canDelete = myOption('canDelete', options);
 	var deleteButton;
 	if(submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
@@ -2344,6 +2345,17 @@ function makeDumbForm(selector, options) {
 	if(submitUrl) {
 		$(selector).closest('form').attr("action", submitUrl);
 	}
+    var deleteUrl = canDelete ? myOption('delete', options) : null;
+    if (deleteUrl === undefined) {
+        deleteUrl = defaultUrl('Delete');
+    }
+    if (typeof (deleteUrl) == 'string') {
+        var deleteHref = deleteUrl;
+        //noinspection JSUnusedLocalSymbols
+        deleteUrl = function (button) {
+            postJson(deleteHref, result.data, goback);
+        }
+    }
 	$(selector).addClass('form');
 	_setAjaxObject(options, 'Data', '');
 	var row;
@@ -2451,6 +2463,14 @@ function makeDumbForm(selector, options) {
 			}
 		}
 	}
+    if (deleteUrl && !options.readonly) {
+        deleteButton = actionButton('Delete')
+            .click(function (e) {
+                if (confirm("Are you sure you want to delete this record"))
+                    deleteUrl(this);
+                e.preventDefault();
+            });
+    }
 	result.fields = columns;
 	result.settings = options;
 	result.dataReady = dataReady;

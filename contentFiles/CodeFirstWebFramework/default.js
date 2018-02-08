@@ -176,9 +176,9 @@ function message(m) {
  * Layout the window after a resize
  */
 function resize() {
-	var top = $('#header').height();
+	var top = $('#outerheader').height();
 	// A small screen - should match "@media screen and (min-width:700px)" in default.css
-    var auto = !$('#header').is(':visible');
+    var auto = !$('#outerheader').is(':visible');
 	$('#spacer').css('height', auto ? '' : top + 'px');
 	$('#body').css('height', auto ? '' : ($(window).height() - top - 16) + 'px');
 }

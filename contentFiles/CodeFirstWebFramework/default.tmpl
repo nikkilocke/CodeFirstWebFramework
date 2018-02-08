@@ -22,6 +22,7 @@
 </head>
 <body>
 <img id="menuicon" src="/images/menu.png" />
+<div id="outerheader">
 <div id="header">
 {{#if Session.User}}<div class="loginuser">{{Session.User.Login}}</div>{{/if}}
 <div id="heading">{{Config.Filename}} - {{{Server.Namespace}}} - {{{Title}}}</div>
@@ -31,6 +32,7 @@
 	{{#if Help}}<button target="help" href="{{Help}}">Help</button>{{/if}}
 </div>
 <div id="menu2">&nbsp;{{#each Menu}}<button id="{{Id}}" href="{{Url}}"{{#if Disabled}} disabled="disabled"{{/if}}>{{Text}}</button>{{/each}}</div>
+</div>
 <div id="menu3">&nbsp;</div>
 </div>
 <div id="spacer"></div>

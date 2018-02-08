@@ -50,6 +50,7 @@
   - [Form](#F-CodeFirstWebFramework-AppModule-Form 'CodeFirstWebFramework.AppModule.Form')
   - [GetParameters](#F-CodeFirstWebFramework-AppModule-GetParameters 'CodeFirstWebFramework.AppModule.GetParameters')
   - [Head](#F-CodeFirstWebFramework-AppModule-Head 'CodeFirstWebFramework.AppModule.Head')
+  - [HeaderScript](#F-CodeFirstWebFramework-AppModule-HeaderScript 'CodeFirstWebFramework.AppModule.HeaderScript')
   - [Info](#F-CodeFirstWebFramework-AppModule-Info 'CodeFirstWebFramework.AppModule.Info')
   - [LogString](#F-CodeFirstWebFramework-AppModule-LogString 'CodeFirstWebFramework.AppModule.LogString')
   - [Menu](#F-CodeFirstWebFramework-AppModule-Menu 'CodeFirstWebFramework.AppModule.Menu')
@@ -1150,6 +1151,13 @@ Parameters from Url
 ##### Summary
 
 Goes into the web page header
+
+<a name='F-CodeFirstWebFramework-AppModule-HeaderScript'></a>
+### HeaderScript `constants` [#](#F-CodeFirstWebFramework-AppModule-HeaderScript 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Additional text to include in the template header.
 
 <a name='F-CodeFirstWebFramework-AppModule-Info'></a>
 ### Info `constants` [#](#F-CodeFirstWebFramework-AppModule-Info 'Go To Here') [=](#contents 'Back To Contents')

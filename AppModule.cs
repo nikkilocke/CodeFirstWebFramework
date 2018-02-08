@@ -322,6 +322,11 @@ namespace CodeFirstWebFramework {
 		public string Head;
 
 		/// <summary>
+		/// Additional text to include in the template header.
+		/// </summary>
+		public string HeaderScript;
+
+		/// <summary>
 		/// Goes into the web page body
 		/// </summary>
 		[TemplateSection]

@@ -190,6 +190,8 @@ All .tmpl files are rendered into a string, which is then searched for xml eleme
 
 Note that you can add additional string fields to your own AppModules, marked with the `[TemplateSection]` attribute, and these will be treated the same as title, head and body above.
 
+The `default.tmpl` file provided with CodeFirstWebFramework also places the contents of the `AppModule.HeaderScript` string into the html header - this can be used to add additional code to the web page for a particular module or method, without having to create a .tmpl file for it.
+
 See [CodeFirstWebFramework/admin/batch.tmpl](CodeFirstWebFramework/admin/batch.tmpl) and [CodeFirstWebFramework/default.tmpl](CodeFirstWebFramework/default.tmpl) for examples.
 
 Note that CodeFirstWebFramework Mustache templates preserve newlines in templates, and provide a number of enhancements to standard Mustache-Sharp, as follows:
@@ -200,6 +202,8 @@ Note that CodeFirstWebFramework Mustache templates preserve newlines in template
 |{{{*variable*}}}|Having replaced *variable*, html quotes it, so that html special characters are rendered as expected. For example if the variable contains `<B>`, it appears in the rendered html page as is, instead of turning on bold print.|
 |// {{*mustache*}}|Is replaced by {{*mustache*}}. This is so you can hide mustache in a comment in javascript files to avoid apparent syntax errors.|
 |'!{{*mustache*}}'|Is replaced by {{*mustache*}}. This is so you can hide mustache in a string in javascript files to avoid apparent syntax errors.|
+
+The `default.tmpl` file provided with CodeFirstWebFramework uses the include tag above to include the file `default.inc`. This file is empty by default, but if you provide one in your application folder, it will be included. This is useful if you want to use the default template provided, but want to add additional script, or load css or js files, in all your web pages.
 
 ## Database class
 

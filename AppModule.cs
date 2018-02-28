@@ -776,7 +776,7 @@ namespace CodeFirstWebFramework {
 			IFileInfo f = FileInfo(filename.ToLower());
 			if (!f.Exists)
 				f = FileInfo(filename);
-			Utils.Check(f.Exists, "File not found:{0}", filename);
+			Utils.Check(f.Exists, "File not found:'{0}'", filename);
 			return LoadFile(f);
 		}
 
@@ -785,10 +785,10 @@ namespace CodeFirstWebFramework {
 		/// If it is a .tmpl file, perform our extra substitutions to support {{include}}, //{{}}, '!{{}} and {{{}}}
 		/// </summary>
 		public string LoadFile(IFileInfo f) {
-			Utils.Check(f.Exists, "File not found:{0}", f.Path + f.Name);
+			Utils.Check(f.Exists, "File not found:'{0}'", f.Path + f.Name);
 			string text = f.Content(this);
 			if (f.Extension == ".tmpl") {
-				text = Regex.Replace(text, @"\{\{ *include +(.*) *\}\}", delegate (Match m) {
+				text = Regex.Replace(text, @"\{\{ *include +(.*?) *\}\}", delegate (Match m) {
 					return LoadFile(m.Groups[1].Value);
 				});
 				text = Regex.Replace(text, @"//[\s]*{{([^{}]+)}}[\s]*$", "{{$1}}");

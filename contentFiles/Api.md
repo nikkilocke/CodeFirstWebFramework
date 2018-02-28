@@ -662,6 +662,7 @@
   - [Capitalise()](#M-CodeFirstWebFramework-Utils-Capitalise-System-String- 'CodeFirstWebFramework.Utils.Capitalise(System.String)')
   - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String- 'CodeFirstWebFramework.Utils.Check(System.Boolean,System.String)')
   - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Object[]- 'CodeFirstWebFramework.Utils.Check(System.Boolean,System.String,System.Object[])')
+  - [CopyFrom\`\`1()](#M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object- 'CodeFirstWebFramework.Utils.CopyFrom``1(``0,System.Object)')
   - [ExtractNumber()](#M-CodeFirstWebFramework-Utils-ExtractNumber-System-String- 'CodeFirstWebFramework.Utils.ExtractNumber(System.String)')
   - [IsAllNull()](#M-CodeFirstWebFramework-Utils-IsAllNull-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Utils.IsAllNull(Newtonsoft.Json.Linq.JObject)')
   - [IsDecimal()](#M-CodeFirstWebFramework-Utils-IsDecimal-System-String- 'CodeFirstWebFramework.Utils.IsDecimal(System.String)')
@@ -7254,6 +7255,17 @@ This method has no parameters.
 ##### Summary
 
 Assert condition is true, throw a CheckException if not.
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object-'></a>
+### CopyFrom\`\`1() `method` [#](#M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Copy all the relevant properties of the source object into this object.
 
 ##### Parameters
 

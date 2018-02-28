@@ -21,7 +21,9 @@
     <FileVersion>1.1.0.0</FileVersion>
     <PackageReleaseNotes>Ability to override where files come from (FileSystem class).
 Ability to override translation of url into AppModule (Namespace class).
-Implementation attribute to make implementing subclasses of AdminModule easier.</PackageReleaseNotes>
+Implementation attribute to make implementing subclasses of AdminModule easier.
+Default.inc include file and HeaderScript AppModule property to make it easier to add to default.tmpl without replacing it.
+Keep menu 3 visible on phones.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 

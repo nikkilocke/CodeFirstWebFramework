@@ -225,6 +225,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Copy all the relevant properties of the source object into this object.
+		/// </summary>
+		public static void CopyFrom<T>(this T self, object source) {
+			_converter.Populate(source.ToJToken().CreateReader(), self);
+		}
+
+		/// <summary>
 		/// Regex to match decimals
 		/// </summary>
 		public static Regex DecimalRegex = new Regex(@"^[+-]?\d+(:?\.\d*)?$", RegexOptions.Compiled);

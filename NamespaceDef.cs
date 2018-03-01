@@ -23,7 +23,7 @@ namespace CodeFirstWebFramework {
 				Auth.Name = name;
 			AuthMethods = new Dictionary<string, AuthAttribute>(StringComparer.OrdinalIgnoreCase);
 			addMethods(t);
-			foreach (ImplementationAttribute implementation in this.GetType().GetCustomAttributes<ImplementationAttribute>()) {
+			foreach (ImplementationAttribute implementation in t.GetCustomAttributes<ImplementationAttribute>()) {
 				addMethods(implementation.Helper);
 			}
 		}
@@ -38,7 +38,8 @@ namespace CodeFirstWebFramework {
 				if (a != null) {
 					if (a.Name == null)
 						a.Name = m.Name;
-					AuthMethods[m.Name] = a;
+					if(!AuthMethods.ContainsKey(m.Name))
+						AuthMethods[m.Name] = a;
 				}
 			}
 		}

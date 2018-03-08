@@ -2982,8 +2982,7 @@ function addOptionsToSelect(select, data, val, col) {
 		if(opt.hide && id != val)
 			return;
 		var option = $('<option></option>');
-		if(opt.id !== undefined)
-			option.attr('value', opt.id);
+        option.attr('value', id);
 		option.text(date ? formatDate(opt.value) : opt.value);
 		if(id == val)
 			found = true;

@@ -670,7 +670,12 @@ var Type = {
 		draw: function(data, rowno, row) {
 			return '<input type="text" id="r' + rowno + 'c' + this.name + '" class="autoComplete" data-col="' + this.name + '" value="' + data + '" ' + this.attributes + '/>';
 		},
-		update: function(cell, data, rowno, row) {
+        update: function (cell, data, rowno, row) {
+            if (data == null)
+                data = this && this.emptyValue != null ? this.emptyValue : '';
+            var value = _.find(this.selectOptions, function (v) { return v.id == data });
+            if (value && value.value !== undefined)
+                data = value.value;
 			var i = cell.find('input');
 			if(i.length && i.attr('id')) {
 				i.val(data);
@@ -685,7 +690,7 @@ var Type = {
 			var options = {
 				source: function(req, resp) {
 					var re = $.ui.autocomplete.escapeRegex(req.term);
-					var matcher = new RegExp((this.matchBeginning ? '^' : '') + re, "i" );
+					var matcher = new RegExp((self.matchBeginning ? '^' : '') + re, "i" );
 					resp(_.filter(self.selectOptions, function(o) {
 						return !o.hide && matcher.test(o.value);
 					}));
@@ -1874,8 +1879,8 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 				if(msg) return;
 			}
 			postJson(submitHref, {
-				header: result.data.header,
-				detail: result.data.detail
+				header: result.header.data,
+				detail: result.detail.data
 				}, function(d) {
 					if($(button).hasClass('goback'))
 						goback();
@@ -1908,15 +1913,16 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	}
 	function dataReady(d) {
 		result.data = d;
-		if (!options.header.data && !options.header.ajax)
-			result.header.dataReady(options.data.header);
-		if (!options.detail.data && !options.detail.ajax)
-			result.detail.dataReady(options.data.detail);
+		if (d.header)
+			result.header.dataReady(d.header);
+		if (d.detail)
+			result.detail.dataReady(d.detail);
 	}
 	var result = {
 		header: makeForm(headerSelector, options.header),
 		detail: makeListForm(detailSelector, options.detail),
-		data: options.data
+		data: options.data,
+		dataReady: dataReady
 	};
 	result.detail.header = result.header;
 	nextPreviousButtons(result.data);
@@ -2086,9 +2092,9 @@ function makeListForm(selector, options) {
 					}
 					cell = cell.next('td');
 				});
-				if(options.addRows)
-					checkForNewRow();
 			}
+			if(options.addRows)
+				checkForNewRow();
 		}
 	});
 	/**
@@ -2099,11 +2105,12 @@ function makeListForm(selector, options) {
 		var row = null;
 		var cell = null;
 		var rowData = table.data[rowIndex];
-		var rowno = 1;
-		function newRow(r) {
-			if(r.length == 0) {
-				r = $('<tr></tr>').appendTo(body);
-			}
+        var rowno = 1;
+        var isNewRow;
+        function newRow(r) {
+            isNewRow = r.length == 0;
+            if (isNewRow)
+                r = $('<tr></tr>').appendTo(body);
 			row = r;
 			if(rowData["@class"])
 				row.addClass(rowData["@class"]);
@@ -2123,21 +2130,21 @@ function makeListForm(selector, options) {
 			col.update(cell, data, rowIndex, rowData);
 			cell = cell.next('td');
 		});
-		if(!options.readonly && rowsPerRecord == 1) {
+		if(isNewRow && !options.readonly && rowsPerRecord == 1) {
 			if(options.deleteRows) {
 				if(cell.length != 0)
 					cell.remove();
 				cell = $('<td class="deleteButton"></td>').appendTo(row);
 				$('<button class="deleteButton"><img src="/images/close.png" /></button>').appendTo(cell).click(function() {
-					var row = $(this).closest('tr');
-					var index = row.index();
+					var thisrow = $(this).closest('tr');
+					var index = thisrow.index();
 					var callback;
 					if(typeof(options.deleteRows) == "function")
-						callback = options.deleteRows.call(row, table.data[index]);
+						callback = options.deleteRows.call(thisrow, table.data[index]);
 					if(callback != false) {
 						unsavedInput = true;
 						$('button#Back').text('Cancel');
-						row.remove();
+						thisrow.remove();
 						table.data.splice(index, 1);
 						if(typeof(callback) == 'function')
 							callback();
@@ -2170,6 +2177,7 @@ function makeListForm(selector, options) {
 			return true;
 		}
 	}
+	var dragFrom, dragTo;
 	/**
 	 * Draw the whole form
 	 */
@@ -2184,10 +2192,14 @@ function makeListForm(selector, options) {
 			table.find('tbody').sortable({
 				items: "> tr:not(.noDeleteButton)",
 				appendTo: "parent",
-				helper: "clone",
+				// helper: "clone",
 				axis: 'y',
 				containment: table,
 				handle: 'td.draghandle',
+				start: function (event, ui) {
+					dragFrom = ui.item.index();
+					console.log('Start: from=' + dragFrom);
+				},
 				update: function(event, ui) {
 					var data = [];
 					table.find('tbody tr td.draghandle').each(function(index) {
@@ -2198,8 +2210,13 @@ function makeListForm(selector, options) {
 						}
 						data.push(table.data[r]);
 					});
-					if(data.length)
+					if(data.length) {
+						dragTo = ui.item.index();
+						console.log('Update: from=' + dragFrom + ' to=' + dragTo);
 						table.dataReady(data);
+						if(dragFrom != dragTo)
+							table.triggerHandler('dragged.row', [dragFrom, dragTo]);
+					}
 				}
 			}).disableSelection();
 		}
@@ -2277,7 +2294,7 @@ function makeListForm(selector, options) {
 	table.drawRow = function(r) {
 		if(typeof(r) != 'number')
 			r = table.rowIndex(r);
-		draw(r);
+		drawRow(r);
 	};
 	/**
 	 * Add a new row

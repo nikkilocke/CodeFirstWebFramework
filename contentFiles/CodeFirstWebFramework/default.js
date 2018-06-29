@@ -2648,7 +2648,7 @@ function postData(url, data, asForm, success, timeout) {
 				if(result.confirm) {
 					// C# code wants a confirmation
 					if(confirm(result.confirm)) {
-						url += /\?/.test(url) ? '?' : '&';
+						url += /\?/.test(url) ? '&' : '?';
 						url += 'confirm';
 						postData(url, data, asForm, success, timeout);
 					}

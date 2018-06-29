@@ -544,6 +544,7 @@ namespace CodeFirstWebFramework {
 			List<Table> tables = tableNames.Select(n => TableFor(n)).ToList();
 			List<Field> allFields = new List<Field>();
 			List<Table> processed = new List<Table>();
+			int joinCount = 0;
 			foreach (Table q in tables) {
 				processed.Add(q);
 				Field pk = q.PrimaryKey;
@@ -570,7 +571,7 @@ namespace CodeFirstWebFramework {
 				}
 				foreach (Field fk in q.Fields.Where(f => f.ForeignKey != null && f.ForeignKey.Table.Indexes.Length > 1 && tables.IndexOf(f.ForeignKey.Table) < 0)) {
 					Table master = fk.ForeignKey.Table;
-					string joinName = q.Name + "_" + master.Name;
+					string joinName = q.Name + "_" + master.Name + ++joinCount;
 					joins.Add("LEFT JOIN " + master.Name + " AS " + joinName + " ON " + joinName + "." + fk.ForeignKey.Field.Name + " = " + q.Name + "." + fk.Name);
 					int i = allFields.IndexOf(fk);
 					if (i <= 0)		// Do not remove first field, which will be key of first file

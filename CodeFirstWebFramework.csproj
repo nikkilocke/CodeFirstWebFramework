@@ -30,6 +30,8 @@ Refreshing list form with delete or sortable options repeated sort tags.
 HeaderDetailForm submitted unsorted data on save.
 ListForm with addRows option did not check for new row if changed event handler returned false.
 Calling drawRow on a list form drew the whole form instead of just the relevant row.
+A Table with two foreign keys pointing to the same table caused the query builder to emit invalid SQL.
+Confirm AjaxReturn functionality did not work (confirm was not added to url correctly).
 </PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>

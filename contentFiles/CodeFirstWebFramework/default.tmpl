@@ -28,7 +28,7 @@
 <div id="header">
 {{#if Session.User}}<div class="loginuser">{{Session.User.Login}}</div>{{/if}}
 <div id="heading">{{Config.Filename}} - {{{Server.Namespace}}} - {{{Title}}}</div>
-<div id="menu1">&nbsp;{{#each Server.NamespaceDef.Modules}}
+<div id="menu1">&nbsp;{{#each Modules}}
 	<button id="{{Name}}" href="/{{Name}}/default.html">{{UnCamelName}}</button>{{/each}}
 	<button target="help" href="/help/default.md">Help Contents</button>
 	{{#if Help}}<button target="help" href="{{Help}}">Help</button>{{/if}}

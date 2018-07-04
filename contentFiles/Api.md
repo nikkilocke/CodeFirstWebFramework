@@ -72,6 +72,7 @@
   - [Database](#P-CodeFirstWebFramework-AppModule-Database 'CodeFirstWebFramework.AppModule.Database')
   - [Help](#P-CodeFirstWebFramework-AppModule-Help 'CodeFirstWebFramework.AppModule.Help')
   - [Jobs](#P-CodeFirstWebFramework-AppModule-Jobs 'CodeFirstWebFramework.AppModule.Jobs')
+  - [Modules](#P-CodeFirstWebFramework-AppModule-Modules 'CodeFirstWebFramework.AppModule.Modules')
   - [ReadOnly](#P-CodeFirstWebFramework-AppModule-ReadOnly 'CodeFirstWebFramework.AppModule.ReadOnly')
   - [ReadWrite](#P-CodeFirstWebFramework-AppModule-ReadWrite 'CodeFirstWebFramework.AppModule.ReadWrite')
   - [Request](#P-CodeFirstWebFramework-AppModule-Request 'CodeFirstWebFramework.AppModule.Request')
@@ -1306,6 +1307,13 @@ Return the url of any help file found in the help folder which applies to this m
 ##### Summary
 
 All Modules running batch jobs
+
+<a name='P-CodeFirstWebFramework-AppModule-Modules'></a>
+### Modules `property` [#](#P-CodeFirstWebFramework-AppModule-Modules 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+List of modules for templates (e.g. to auto-generate a module menu)
 
 <a name='P-CodeFirstWebFramework-AppModule-ReadOnly'></a>
 ### ReadOnly `property` [#](#P-CodeFirstWebFramework-AppModule-ReadOnly 'Go To Here') [=](#contents 'Back To Contents')

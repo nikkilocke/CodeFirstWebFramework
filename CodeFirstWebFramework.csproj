@@ -22,6 +22,7 @@
     <PackageReleaseNotes>Enhancements:
 Added dragged.row event fired when user drags a sortable ListForm item.
 Added dataReady function to HeaderDetailForm.
+Added Modules list for main menu as virtual function in AppModule so it can be overridden.
 
 Bug fixes:
 Auto-complete options with id and value did not translate id into value.

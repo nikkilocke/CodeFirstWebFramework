@@ -345,6 +345,14 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// List of modules for templates (e.g. to auto-generate a module menu)
+		/// </summary>
+		public virtual IEnumerable<ModuleInfo> Modules {
+			get { return Server.NamespaceDef.Modules; }
+		}
+
+
+		/// <summary>
 		/// The Form to render, if any
 		/// </summary>
 		public BaseForm Form;

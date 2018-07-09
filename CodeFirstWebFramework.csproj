@@ -16,24 +16,14 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.1.6</Version>
-    <AssemblyVersion>1.1.6.0</AssemblyVersion>
-    <FileVersion>1.1.6.0</FileVersion>
+    <Version>1.1.7</Version>
+    <AssemblyVersion>1.1.7.0</AssemblyVersion>
+    <FileVersion>1.1.7.0</FileVersion>
     <PackageReleaseNotes>Enhancements:
-Added dragged.row event fired when user drags a sortable ListForm item.
-Added dataReady function to HeaderDetailForm.
-Added Modules list for main menu as virtual function in AppModule so it can be overridden.
+Added CookieTimeoutMinutes to Config.
 
 Bug fixes:
-Auto-complete options with id and value did not translate id into value.
-Auto-complete matchBeginning option did not work.
-Refreshing list form with delete or sortable options repeated sort tags.
-HeaderDetailForm submitted unsorted data on save.
-ListForm with addRows option did not check for new row if changed event handler returned false.
-Calling drawRow on a list form drew the whole form instead of just the relevant row.
-A Table with two foreign keys pointing to the same table caused the query builder to emit invalid SQL.
-Confirm AjaxReturn functionality did not work (confirm was not added to url correctly).
-</PackageReleaseNotes>
+Attempting to access a page which needs a logged in user but returned a form did not redirect to the login page.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 

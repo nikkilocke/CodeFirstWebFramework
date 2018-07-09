@@ -145,6 +145,7 @@
 - [Config](#T-CodeFirstWebFramework-Log-Config 'CodeFirstWebFramework.Log.Config')
   - [CommandLineFlags](#F-CodeFirstWebFramework-Config-CommandLineFlags 'CodeFirstWebFramework.Config.CommandLineFlags')
   - [ConnectionString](#F-CodeFirstWebFramework-Config-ConnectionString 'CodeFirstWebFramework.Config.ConnectionString')
+  - [CookieTimeoutMinutes](#F-CodeFirstWebFramework-Config-CookieTimeoutMinutes 'CodeFirstWebFramework.Config.CookieTimeoutMinutes')
   - [Database](#F-CodeFirstWebFramework-Config-Database 'CodeFirstWebFramework.Config.Database')
   - [DataPath](#F-CodeFirstWebFramework-Config-DataPath 'CodeFirstWebFramework.Config.DataPath')
   - [Default](#F-CodeFirstWebFramework-Config-Default 'CodeFirstWebFramework.Config.Default')
@@ -530,6 +531,7 @@
 - [ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig')
   - [AdditionalAssemblies](#F-CodeFirstWebFramework-ServerConfig-AdditionalAssemblies 'CodeFirstWebFramework.ServerConfig.AdditionalAssemblies')
   - [ConnectionString](#F-CodeFirstWebFramework-ServerConfig-ConnectionString 'CodeFirstWebFramework.ServerConfig.ConnectionString')
+  - [CookieTimeoutMinutes](#F-CodeFirstWebFramework-ServerConfig-CookieTimeoutMinutes 'CodeFirstWebFramework.ServerConfig.CookieTimeoutMinutes')
   - [Database](#F-CodeFirstWebFramework-ServerConfig-Database 'CodeFirstWebFramework.ServerConfig.Database')
   - [Email](#F-CodeFirstWebFramework-ServerConfig-Email 'CodeFirstWebFramework.ServerConfig.Email')
   - [Namespace](#F-CodeFirstWebFramework-ServerConfig-Namespace 'CodeFirstWebFramework.ServerConfig.Namespace')
@@ -2046,6 +2048,13 @@ Command line flags extracted from program command line
 ##### Summary
 
 The default connection string
+
+<a name='F-CodeFirstWebFramework-Config-CookieTimeoutMinutes'></a>
+### CookieTimeoutMinutes `constants` [#](#F-CodeFirstWebFramework-Config-CookieTimeoutMinutes 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Cookie timeout in minutes
 
 <a name='F-CodeFirstWebFramework-Config-Database'></a>
 ### Database `constants` [#](#F-CodeFirstWebFramework-Config-Database 'Go To Here') [=](#contents 'Back To Contents')
@@ -5919,6 +5928,13 @@ Additional Assemblies to load to provide the required functionality
 ##### Summary
 
 Database connection string
+
+<a name='F-CodeFirstWebFramework-ServerConfig-CookieTimeoutMinutes'></a>
+### CookieTimeoutMinutes `constants` [#](#F-CodeFirstWebFramework-ServerConfig-CookieTimeoutMinutes 'Go To Here') [=](#contents 'Back To Contents')
+
+##### Summary
+
+Cookie timeout in minutes
 
 <a name='F-CodeFirstWebFramework-ServerConfig-Database'></a>
 ### Database `constants` [#](#F-CodeFirstWebFramework-ServerConfig-Database 'Go To Here') [=](#contents 'Back To Contents')

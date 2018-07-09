@@ -215,7 +215,7 @@ namespace CodeFirstWebFramework {
 					}
 					if (cookie != null) {
 						context.Response.Cookies.Add(cookie);
-						cookie.Expires = session.Expires = Utils.Now.AddHours(1);
+						cookie.Expires = session.Expires = Utils.Now.AddMinutes(server.CookieTimeoutMinutes);
 					}
 					// Set up module
 					module.Server = server;

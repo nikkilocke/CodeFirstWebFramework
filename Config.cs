@@ -85,6 +85,10 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public Log.Config Logging = new Log.Config();
 		/// <summary>
+		/// Cookie timeout in minutes
+		/// </summary>
+		public int CookieTimeoutMinutes = 60;
+		/// <summary>
 		/// Command line flags extracted from program command line
 		/// </summary>
 		static public NameValueCollection CommandLineFlags;
@@ -115,7 +119,8 @@ namespace CodeFirstWebFramework {
 						_default = new ServerConfig() {
 							ServerName = ServerName,
 							Email = Email,
-							Namespace = Namespace
+							Namespace = Namespace,
+							CookieTimeoutMinutes = CookieTimeoutMinutes
 						};
 				}
 				return _default;
@@ -251,6 +256,10 @@ namespace CodeFirstWebFramework {
 		/// Additional Assemblies to load to provide the required functionality
 		/// </summary>
 		public string [] AdditionalAssemblies = new string [0];
+		/// <summary>
+		/// Cookie timeout in minutes
+		/// </summary>
+		public int CookieTimeoutMinutes = 60;
 		/// <summary>
 		/// Details of the namespace
 		/// </summary>

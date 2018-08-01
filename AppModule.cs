@@ -663,7 +663,7 @@ namespace CodeFirstWebFramework {
 			}
 			if (!HasAccess(Info, Method, out UserAccessLevel)) {
 				if (Session.User == null && method.ReturnType != typeof(AjaxReturn)) {
-					SessionData.redirect = Request.Url.AbsoluteUri;
+					SessionData.redirect = Request.Url.PathAndQuery;
 					Redirect("/admin/login");
 					return null;
 				}

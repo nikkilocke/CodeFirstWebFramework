@@ -430,7 +430,7 @@ namespace CodeFirstWebFramework {
 			if (SecurityOn) {
 				if (Session.User != null)
 					InsertMenuOption(new MenuOption("Change password", "/admin/changepassword"));
-				InsertMenuOption(new MenuOption(Session.User == null ? "Login" : "Logout", "/admin/login"));
+				InsertMenuOption(new MenuOption(Session.User == null ? "Login" : "Logout", Session.User == null ? "/admin/login" : "/admin/logout"));
 			}
 		}
 

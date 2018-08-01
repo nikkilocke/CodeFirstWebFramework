@@ -164,7 +164,7 @@ namespace CodeFirstWebFramework {
 			log.AppendFormat("{0} {1}:{2}:[ms]:",
 				context.Request.RemoteEndPoint.Address,
 				context.Request.Headers["X-Forwarded-For"],
-				context.Request.RawUrl);
+				context.Request.Url.OriginalString);
 			if (server == null) {
 				// Request not matching any of the Server array, and not on the default port
 				context.Response.StatusCode = 404;

@@ -1,5 +1,7 @@
-<a name='contents'></a>
-# Contents [#](#contents 'Go To Here')
+<a name='assembly'></a>
+# CodeFirstWebFramework
+
+## Contents
 
 - [AccessLevel](#T-CodeFirstWebFramework-AccessLevel 'CodeFirstWebFramework.AccessLevel')
   - [Admin](#F-CodeFirstWebFramework-AccessLevel-Admin 'CodeFirstWebFramework.AccessLevel.Admin')
@@ -702,11 +704,8 @@
   - [Stop()](#M-CodeFirstWebFramework-WebServer-Stop 'CodeFirstWebFramework.WebServer.Stop')
 - [WriteableAttribute](#T-CodeFirstWebFramework-WriteableAttribute 'CodeFirstWebFramework.WriteableAttribute')
 
-<a name='assembly'></a>
-# CodeFirstWebFramework [#](#assembly 'Go To Here') [=](#contents 'Back To Contents')
-
 <a name='T-CodeFirstWebFramework-AccessLevel'></a>
-## AccessLevel [#](#T-CodeFirstWebFramework-AccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+## AccessLevel `type`
 
 ##### Namespace
 
@@ -714,63 +713,65 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Predefined access levels. Derive a class from this to provide additional levels.
+Predefined access levels.
+Derive a class from this to provide additional levels.
 
 <a name='F-CodeFirstWebFramework-AccessLevel-Admin'></a>
-### Admin `constants` [#](#F-CodeFirstWebFramework-AccessLevel-Admin 'Go To Here') [=](#contents 'Back To Contents')
+### Admin `constants`
 
 ##### Summary
 
 Administrator - do not change this value - should allow access to anything
 
 <a name='F-CodeFirstWebFramework-AccessLevel-Any'></a>
-### Any `constants` [#](#F-CodeFirstWebFramework-AccessLevel-Any 'Go To Here') [=](#contents 'Back To Contents')
+### Any `constants`
 
 ##### Summary
 
 Allow access to anyone
 
 <a name='F-CodeFirstWebFramework-AccessLevel-None'></a>
-### None `constants` [#](#F-CodeFirstWebFramework-AccessLevel-None 'Go To Here') [=](#contents 'Back To Contents')
+### None `constants`
 
 ##### Summary
 
 // No access (a User.AccessLevel)
 
 <a name='F-CodeFirstWebFramework-AccessLevel-ReadOnly'></a>
-### ReadOnly `constants` [#](#F-CodeFirstWebFramework-AccessLevel-ReadOnly 'Go To Here') [=](#contents 'Back To Contents')
+### ReadOnly `constants`
 
 ##### Summary
 
 Read only
 
 <a name='F-CodeFirstWebFramework-AccessLevel-ReadWrite'></a>
-### ReadWrite `constants` [#](#F-CodeFirstWebFramework-AccessLevel-ReadWrite 'Go To Here') [=](#contents 'Back To Contents')
+### ReadWrite `constants`
 
 ##### Summary
 
 Read Write
 
 <a name='F-CodeFirstWebFramework-AccessLevel-Unspecified'></a>
-### Unspecified `constants` [#](#F-CodeFirstWebFramework-AccessLevel-Unspecified 'Go To Here') [=](#contents 'Back To Contents')
+### Unspecified `constants`
 
 ##### Summary
 
 No level specified - you will check the level in code, presumably
 
 <a name='M-CodeFirstWebFramework-AccessLevel-Select'></a>
-### Select() `method` [#](#M-CodeFirstWebFramework-AccessLevel-Select 'Go To Here') [=](#contents 'Back To Contents')
+### Select() `method`
 
 ##### Summary
 
-Return the options for a selectInput field to select AccessLevel. NB Must always have 0, "None" as the first item.
+Return the options for a selectInput field to select AccessLevel.
+NB Must always have 0, "None" as the first item.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-AdminHelper'></a>
-## AdminHelper [#](#T-CodeFirstWebFramework-AdminHelper 'Go To Here') [=](#contents 'Back To Contents')
+## AdminHelper `type`
 
 ##### Namespace
 
@@ -781,7 +782,7 @@ CodeFirstWebFramework
 Class to provide Admin functions - called from Admin AppModule.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-#ctor-CodeFirstWebFramework-AppModule-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-AdminHelper-#ctor-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -792,7 +793,7 @@ Create AdminHelper for supplied module
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Backup'></a>
-### Backup() `method` [#](#M-CodeFirstWebFramework-AdminHelper-Backup 'Go To Here') [=](#contents 'Back To Contents')
+### Backup() `method`
 
 ##### Summary
 
@@ -803,7 +804,7 @@ Backup the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-BatchStatus-System-Int32-'></a>
-### BatchStatus() `method` [#](#M-CodeFirstWebFramework-AdminHelper-BatchStatus-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### BatchStatus() `method`
 
 ##### Summary
 
@@ -814,7 +815,7 @@ Return the status of the given batch job.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-ChangePassword'></a>
-### ChangePassword() `method` [#](#M-CodeFirstWebFramework-AdminHelper-ChangePassword 'Go To Here') [=](#contents 'Back To Contents')
+### ChangePassword() `method`
 
 ##### Summary
 
@@ -825,7 +826,7 @@ Create form to change user's password
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-ChangePasswordSave-Newtonsoft-Json-Linq-JObject-'></a>
-### ChangePasswordSave() `method` [#](#M-CodeFirstWebFramework-AdminHelper-ChangePasswordSave-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### ChangePasswordSave() `method`
 
 ##### Summary
 
@@ -836,7 +837,7 @@ Update user's password
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-EditSettings'></a>
-### EditSettings() `method` [#](#M-CodeFirstWebFramework-AdminHelper-EditSettings 'Go To Here') [=](#contents 'Back To Contents')
+### EditSettings() `method`
 
 ##### Summary
 
@@ -847,7 +848,7 @@ Create form to edit settings
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-EditSettingsSave-Newtonsoft-Json-Linq-JObject-'></a>
-### EditSettingsSave() `method` [#](#M-CodeFirstWebFramework-AdminHelper-EditSettingsSave-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### EditSettingsSave() `method`
 
 ##### Summary
 
@@ -858,7 +859,7 @@ Update settings
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-EditUser-System-Int32-'></a>
-### EditUser() `method` [#](#M-CodeFirstWebFramework-AdminHelper-EditUser-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### EditUser() `method`
 
 ##### Summary
 
@@ -869,7 +870,7 @@ Create form to edit an individual user
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-EditUserDelete-System-Int32-'></a>
-### EditUserDelete() `method` [#](#M-CodeFirstWebFramework-AdminHelper-EditUserDelete-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### EditUserDelete() `method`
 
 ##### Summary
 
@@ -880,7 +881,7 @@ Delete user
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-EditUserSave-Newtonsoft-Json-Linq-JObject-'></a>
-### EditUserSave() `method` [#](#M-CodeFirstWebFramework-AdminHelper-EditUserSave-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### EditUserSave() `method`
 
 ##### Summary
 
@@ -891,7 +892,7 @@ Update user
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Login'></a>
-### Login() `method` [#](#M-CodeFirstWebFramework-AdminHelper-Login 'Go To Here') [=](#contents 'Back To Contents')
+### Login() `method`
 
 ##### Summary
 
@@ -902,7 +903,7 @@ Display login template, and log user in if form data is posted
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Logout'></a>
-### Logout() `method` [#](#M-CodeFirstWebFramework-AdminHelper-Logout 'Go To Here') [=](#contents 'Back To Contents')
+### Logout() `method`
 
 ##### Summary
 
@@ -913,7 +914,7 @@ Logout then show login form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-permissions-System-Int32-'></a>
-### permissions() `method` [#](#M-CodeFirstWebFramework-AdminHelper-permissions-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### permissions() `method`
 
 ##### Summary
 
@@ -924,7 +925,7 @@ List permissions for individual modules
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Restore'></a>
-### Restore() `method` [#](#M-CodeFirstWebFramework-AdminHelper-Restore 'Go To Here') [=](#contents 'Back To Contents')
+### Restore() `method`
 
 ##### Summary
 
@@ -935,7 +936,7 @@ Restore the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Users'></a>
-### Users() `method` [#](#M-CodeFirstWebFramework-AdminHelper-Users 'Go To Here') [=](#contents 'Back To Contents')
+### Users() `method`
 
 ##### Summary
 
@@ -946,7 +947,7 @@ Create datatable to list users
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminHelper-UsersListing'></a>
-### UsersListing() `method` [#](#M-CodeFirstWebFramework-AdminHelper-UsersListing 'Go To Here') [=](#contents 'Back To Contents')
+### UsersListing() `method`
 
 ##### Summary
 
@@ -957,7 +958,7 @@ List users for Users form
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-AdminModule'></a>
-## AdminModule [#](#T-CodeFirstWebFramework-AdminModule 'Go To Here') [=](#contents 'Back To Contents')
+## AdminModule `type`
 
 ##### Namespace
 
@@ -968,7 +969,7 @@ CodeFirstWebFramework
 Admin module - provides BatchStatus, Backup and Restore. Uses AdminHelper for the implementation.
 
 <a name='M-CodeFirstWebFramework-AdminModule-Default'></a>
-### Default() `method` [#](#M-CodeFirstWebFramework-AdminModule-Default 'Go To Here') [=](#contents 'Back To Contents')
+### Default() `method`
 
 ##### Summary
 
@@ -979,7 +980,7 @@ Display default template
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AdminModule-Init'></a>
-### Init() `method` [#](#M-CodeFirstWebFramework-AdminModule-Init 'Go To Here') [=](#contents 'Back To Contents')
+### Init() `method`
 
 ##### Summary
 
@@ -990,7 +991,7 @@ Add menu options
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-AjaxReturn'></a>
-## AjaxReturn [#](#T-CodeFirstWebFramework-AjaxReturn 'Go To Here') [=](#contents 'Back To Contents')
+## AjaxReturn `type`
 
 ##### Namespace
 
@@ -1001,49 +1002,50 @@ CodeFirstWebFramework
 Generic return type used for Ajax requests
 
 <a name='F-CodeFirstWebFramework-AjaxReturn-confirm'></a>
-### confirm `constants` [#](#F-CodeFirstWebFramework-AjaxReturn-confirm 'Go To Here') [=](#contents 'Back To Contents')
+### confirm `constants`
 
 ##### Summary
 
 Ask the user to confirm something, and resubmit with confirm parameter if the user says yes
 
 <a name='F-CodeFirstWebFramework-AjaxReturn-data'></a>
-### data `constants` [#](#F-CodeFirstWebFramework-AjaxReturn-data 'Go To Here') [=](#contents 'Back To Contents')
+### data `constants`
 
 ##### Summary
 
 Arbitrary data which the caller needs
 
 <a name='F-CodeFirstWebFramework-AjaxReturn-error'></a>
-### error `constants` [#](#F-CodeFirstWebFramework-AjaxReturn-error 'Go To Here') [=](#contents 'Back To Contents')
+### error `constants`
 
 ##### Summary
 
 Exception message - if not null or empty, request has failed
 
 <a name='F-CodeFirstWebFramework-AjaxReturn-id'></a>
-### id `constants` [#](#F-CodeFirstWebFramework-AjaxReturn-id 'Go To Here') [=](#contents 'Back To Contents')
+### id `constants`
 
 ##### Summary
 
-If a record has been saved, this is the id of the record. Usually used to re-read the page, especially when the request was to create a new record.
+If a record has been saved, this is the id of the record.
+Usually used to re-read the page, especially when the request was to create a new record.
 
 <a name='F-CodeFirstWebFramework-AjaxReturn-message'></a>
-### message `constants` [#](#F-CodeFirstWebFramework-AjaxReturn-message 'Go To Here') [=](#contents 'Back To Contents')
+### message `constants`
 
 ##### Summary
 
 Message for user
 
 <a name='F-CodeFirstWebFramework-AjaxReturn-redirect'></a>
-### redirect `constants` [#](#F-CodeFirstWebFramework-AjaxReturn-redirect 'Go To Here') [=](#contents 'Back To Contents')
+### redirect `constants`
 
 ##### Summary
 
 Where to redirect to on completion
 
 <a name='M-CodeFirstWebFramework-AjaxReturn-ToString'></a>
-### ToString() `method` [#](#M-CodeFirstWebFramework-AjaxReturn-ToString 'Go To Here') [=](#contents 'Back To Contents')
+### ToString() `method`
 
 ##### Summary
 
@@ -1054,7 +1056,7 @@ Show as a string (for logs)
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-AppModule'></a>
-## AppModule [#](#T-CodeFirstWebFramework-AppModule 'Go To Here') [=](#contents 'Back To Contents')
+## AppModule `type`
 
 ##### Namespace
 
@@ -1062,10 +1064,16 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Base class for all app modules. Derive a class from this to server a folder of that name (you can add "Module" on the end of the name to avoid name clashes) Create public methods to serve requests in that folder. If the method has arguments, the named arguments will be filled in from the GET or POST request arguments (converting json to C# objects as required) - see Call below. If the method returns something, it will be returned using WriteResponse (below). If the method is void, a template in the corresponding folder will be filled in, with the AppModule as the argument, and returned.
+Base class for all app modules.
+Derive a class from this to server a folder of that name (you can add "Module" on the end of the name to avoid name clashes)
+Create public methods to serve requests in that folder. If the method has arguments, the named arguments will be filled
+in from the GET or POST request arguments (converting json to C# objects as required) - see Call below. 
+If the method returns something, it will be returned using WriteResponse (below).
+If the method is void, a template in the corresponding folder will be filled in, with the AppModule as the argument,
+and returned.
 
 <a name='M-CodeFirstWebFramework-AppModule-#ctor'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-AppModule-#ctor 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -1076,7 +1084,7 @@ Default constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-#ctor-CodeFirstWebFramework-AppModule-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-AppModule-#ctor-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -1087,308 +1095,310 @@ Make a new module with settings copied from another
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-AppModule-ActiveModule'></a>
-### ActiveModule `constants` [#](#F-CodeFirstWebFramework-AppModule-ActiveModule 'Go To Here') [=](#contents 'Back To Contents')
+### ActiveModule `constants`
 
 ##### Summary
 
 The Namespace in which this module is running
 
 <a name='F-CodeFirstWebFramework-AppModule-Batch'></a>
-### Batch `constants` [#](#F-CodeFirstWebFramework-AppModule-Batch 'Go To Here') [=](#contents 'Back To Contents')
+### Batch `constants`
 
 ##### Summary
 
 BatchJob started by this module
 
 <a name='F-CodeFirstWebFramework-AppModule-Body'></a>
-### Body `constants` [#](#F-CodeFirstWebFramework-AppModule-Body 'Go To Here') [=](#contents 'Back To Contents')
+### Body `constants`
 
 ##### Summary
 
 Goes into the web page body
 
 <a name='F-CodeFirstWebFramework-AppModule-Charset'></a>
-### Charset `constants` [#](#F-CodeFirstWebFramework-AppModule-Charset 'Go To Here') [=](#contents 'Back To Contents')
+### Charset `constants`
 
 ##### Summary
 
 Charset for web output
 
 <a name='F-CodeFirstWebFramework-AppModule-Context'></a>
-### Context `constants` [#](#F-CodeFirstWebFramework-AppModule-Context 'Go To Here') [=](#contents 'Back To Contents')
+### Context `constants`
 
 ##### Summary
 
 The Context from the web request that created this AppModule
 
 <a name='F-CodeFirstWebFramework-AppModule-Encoding'></a>
-### Encoding `constants` [#](#F-CodeFirstWebFramework-AppModule-Encoding 'Go To Here') [=](#contents 'Back To Contents')
+### Encoding `constants`
 
 ##### Summary
 
 Character encoding for web output
 
 <a name='F-CodeFirstWebFramework-AppModule-Exception'></a>
-### Exception `constants` [#](#F-CodeFirstWebFramework-AppModule-Exception 'Go To Here') [=](#contents 'Back To Contents')
+### Exception `constants`
 
 ##### Summary
 
 Any exception thrown handling a web request
 
 <a name='F-CodeFirstWebFramework-AppModule-Form'></a>
-### Form `constants` [#](#F-CodeFirstWebFramework-AppModule-Form 'Go To Here') [=](#contents 'Back To Contents')
+### Form `constants`
 
 ##### Summary
 
 The Form to render, if any
 
 <a name='F-CodeFirstWebFramework-AppModule-GetParameters'></a>
-### GetParameters `constants` [#](#F-CodeFirstWebFramework-AppModule-GetParameters 'Go To Here') [=](#contents 'Back To Contents')
+### GetParameters `constants`
 
 ##### Summary
 
 Parameters from Url
 
 <a name='F-CodeFirstWebFramework-AppModule-Head'></a>
-### Head `constants` [#](#F-CodeFirstWebFramework-AppModule-Head 'Go To Here') [=](#contents 'Back To Contents')
+### Head `constants`
 
 ##### Summary
 
 Goes into the web page header
 
 <a name='F-CodeFirstWebFramework-AppModule-HeaderScript'></a>
-### HeaderScript `constants` [#](#F-CodeFirstWebFramework-AppModule-HeaderScript 'Go To Here') [=](#contents 'Back To Contents')
+### HeaderScript `constants`
 
 ##### Summary
 
 Additional text to include in the template header.
 
 <a name='F-CodeFirstWebFramework-AppModule-Info'></a>
-### Info `constants` [#](#F-CodeFirstWebFramework-AppModule-Info 'Go To Here') [=](#contents 'Back To Contents')
+### Info `constants`
 
 ##### Summary
 
 Security information about this module
 
 <a name='F-CodeFirstWebFramework-AppModule-LogString'></a>
-### LogString `constants` [#](#F-CodeFirstWebFramework-AppModule-LogString 'Go To Here') [=](#contents 'Back To Contents')
+### LogString `constants`
 
 ##### Summary
 
 The data which is logged when the web request completes.
 
 <a name='F-CodeFirstWebFramework-AppModule-Menu'></a>
-### Menu `constants` [#](#F-CodeFirstWebFramework-AppModule-Menu 'Go To Here') [=](#contents 'Back To Contents')
+### Menu `constants`
 
 ##### Summary
 
 Module menu - line 2 of page top menu
 
 <a name='F-CodeFirstWebFramework-AppModule-Message'></a>
-### Message `constants` [#](#F-CodeFirstWebFramework-AppModule-Message 'Go To Here') [=](#contents 'Back To Contents')
+### Message `constants`
 
 ##### Summary
 
 Alert message to show user
 
 <a name='F-CodeFirstWebFramework-AppModule-Method'></a>
-### Method `constants` [#](#F-CodeFirstWebFramework-AppModule-Method 'Go To Here') [=](#contents 'Back To Contents')
+### Method `constants`
 
 ##### Summary
 
-The current Method (from the url - lower case). Used by Respond to decide which template file to use.
+The current Method (from the url - lower case).
+Used by Respond to decide which template file to use.
 
 <a name='F-CodeFirstWebFramework-AppModule-Module'></a>
-### Module `constants` [#](#F-CodeFirstWebFramework-AppModule-Module 'Go To Here') [=](#contents 'Back To Contents')
+### Module `constants`
 
 ##### Summary
 
-The current module (from the url - lower case). Used by Respond to decide which template file to use.
+The current module (from the url - lower case).
+Used by Respond to decide which template file to use.
 
 <a name='F-CodeFirstWebFramework-AppModule-OriginalMethod'></a>
-### OriginalMethod `constants` [#](#F-CodeFirstWebFramework-AppModule-OriginalMethod 'Go To Here') [=](#contents 'Back To Contents')
+### OriginalMethod `constants`
 
 ##### Summary
 
 The original value of Method (from the url - lower case).
 
 <a name='F-CodeFirstWebFramework-AppModule-OriginalModule'></a>
-### OriginalModule `constants` [#](#F-CodeFirstWebFramework-AppModule-OriginalModule 'Go To Here') [=](#contents 'Back To Contents')
+### OriginalModule `constants`
 
 ##### Summary
 
 The original value of Module (from the url - lower case).
 
 <a name='F-CodeFirstWebFramework-AppModule-Parameters'></a>
-### Parameters `constants` [#](#F-CodeFirstWebFramework-AppModule-Parameters 'Go To Here') [=](#contents 'Back To Contents')
+### Parameters `constants`
 
 ##### Summary
 
 Get & Post parameters combined
 
 <a name='F-CodeFirstWebFramework-AppModule-PostParameters'></a>
-### PostParameters `constants` [#](#F-CodeFirstWebFramework-AppModule-PostParameters 'Go To Here') [=](#contents 'Back To Contents')
+### PostParameters `constants`
 
 ##### Summary
 
 Parameters from POST
 
 <a name='F-CodeFirstWebFramework-AppModule-Server'></a>
-### Server `constants` [#](#F-CodeFirstWebFramework-AppModule-Server 'Go To Here') [=](#contents 'Back To Contents')
+### Server `constants`
 
 ##### Summary
 
 The Server handling this request
 
 <a name='F-CodeFirstWebFramework-AppModule-Session'></a>
-### Session `constants` [#](#F-CodeFirstWebFramework-AppModule-Session 'Go To Here') [=](#contents 'Back To Contents')
+### Session `constants`
 
 ##### Summary
 
 So templates can access Session
 
 <a name='F-CodeFirstWebFramework-AppModule-Title'></a>
-### Title `constants` [#](#F-CodeFirstWebFramework-AppModule-Title 'Go To Here') [=](#contents 'Back To Contents')
+### Title `constants`
 
 ##### Summary
 
 Used for the web page title
 
 <a name='F-CodeFirstWebFramework-AppModule-UserAccessLevel'></a>
-### UserAccessLevel `constants` [#](#F-CodeFirstWebFramework-AppModule-UserAccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### UserAccessLevel `constants`
 
 ##### Summary
 
 Access level of the currently logged in user
 
 <a name='P-CodeFirstWebFramework-AppModule-Admin'></a>
-### Admin `property` [#](#P-CodeFirstWebFramework-AppModule-Admin 'Go To Here') [=](#contents 'Back To Contents')
+### Admin `property`
 
 ##### Summary
 
 True if user has Admin access
 
 <a name='P-CodeFirstWebFramework-AppModule-CacheAllowed'></a>
-### CacheAllowed `property` [#](#P-CodeFirstWebFramework-AppModule-CacheAllowed 'Go To Here') [=](#contents 'Back To Contents')
+### CacheAllowed `property`
 
 ##### Summary
 
 Set to true if the web server is allowed to cache this page. Normally false, as pages are generated dynamically.
 
 <a name='P-CodeFirstWebFramework-AppModule-Config'></a>
-### Config `property` [#](#P-CodeFirstWebFramework-AppModule-Config 'Go To Here') [=](#contents 'Back To Contents')
+### Config `property`
 
 ##### Summary
 
 The Config file data
 
 <a name='P-CodeFirstWebFramework-AppModule-CopyFrom'></a>
-### CopyFrom `property` [#](#P-CodeFirstWebFramework-AppModule-CopyFrom 'Go To Here') [=](#contents 'Back To Contents')
+### CopyFrom `property`
 
 ##### Summary
 
 Copy main settings from another AppModule
 
 <a name='P-CodeFirstWebFramework-AppModule-Database'></a>
-### Database `property` [#](#P-CodeFirstWebFramework-AppModule-Database 'Go To Here') [=](#contents 'Back To Contents')
+### Database `property`
 
 ##### Summary
 
 The Database for this AppModule
 
 <a name='P-CodeFirstWebFramework-AppModule-Help'></a>
-### Help `property` [#](#P-CodeFirstWebFramework-AppModule-Help 'Go To Here') [=](#contents 'Back To Contents')
+### Help `property`
 
 ##### Summary
 
 Return the url of any help file found in the help folder which applies to this module (and maybe method)
 
 <a name='P-CodeFirstWebFramework-AppModule-Jobs'></a>
-### Jobs `property` [#](#P-CodeFirstWebFramework-AppModule-Jobs 'Go To Here') [=](#contents 'Back To Contents')
+### Jobs `property`
 
 ##### Summary
 
 All Modules running batch jobs
 
 <a name='P-CodeFirstWebFramework-AppModule-Modules'></a>
-### Modules `property` [#](#P-CodeFirstWebFramework-AppModule-Modules 'Go To Here') [=](#contents 'Back To Contents')
+### Modules `property`
 
 ##### Summary
 
 List of modules for templates (e.g. to auto-generate a module menu)
 
 <a name='P-CodeFirstWebFramework-AppModule-ReadOnly'></a>
-### ReadOnly `property` [#](#P-CodeFirstWebFramework-AppModule-ReadOnly 'Go To Here') [=](#contents 'Back To Contents')
+### ReadOnly `property`
 
 ##### Summary
 
 True if user does not have write access
 
 <a name='P-CodeFirstWebFramework-AppModule-ReadWrite'></a>
-### ReadWrite `property` [#](#P-CodeFirstWebFramework-AppModule-ReadWrite 'Go To Here') [=](#contents 'Back To Contents')
+### ReadWrite `property`
 
 ##### Summary
 
 True if user does have write access
 
 <a name='P-CodeFirstWebFramework-AppModule-Request'></a>
-### Request `property` [#](#P-CodeFirstWebFramework-AppModule-Request 'Go To Here') [=](#contents 'Back To Contents')
+### Request `property`
 
 ##### Summary
 
 The Web Request (from Context)
 
 <a name='P-CodeFirstWebFramework-AppModule-Response'></a>
-### Response `property` [#](#P-CodeFirstWebFramework-AppModule-Response 'Go To Here') [=](#contents 'Back To Contents')
+### Response `property`
 
 ##### Summary
 
 The Web Response (from Context)
 
 <a name='P-CodeFirstWebFramework-AppModule-ResponseSent'></a>
-### ResponseSent `property` [#](#P-CodeFirstWebFramework-AppModule-ResponseSent 'Go To Here') [=](#contents 'Back To Contents')
+### ResponseSent `property`
 
 ##### Summary
 
 True if a response has been sent to the request (and the default response should not be created)
 
 <a name='P-CodeFirstWebFramework-AppModule-SecurityOn'></a>
-### SecurityOn `property` [#](#P-CodeFirstWebFramework-AppModule-SecurityOn 'Go To Here') [=](#contents 'Back To Contents')
+### SecurityOn `property`
 
 ##### Summary
 
 True if there are users in the database, so security should be checked
 
 <a name='P-CodeFirstWebFramework-AppModule-SessionData'></a>
-### SessionData `property` [#](#P-CodeFirstWebFramework-AppModule-SessionData 'Go To Here') [=](#contents 'Back To Contents')
+### SessionData `property`
 
 ##### Summary
 
 Session data in dynamic form
 
 <a name='P-CodeFirstWebFramework-AppModule-Settings'></a>
-### Settings `property` [#](#P-CodeFirstWebFramework-AppModule-Settings 'Go To Here') [=](#contents 'Back To Contents')
+### Settings `property`
 
 ##### Summary
 
 The Settings record from the database
 
 <a name='P-CodeFirstWebFramework-AppModule-Today'></a>
-### Today `property` [#](#P-CodeFirstWebFramework-AppModule-Today 'Go To Here') [=](#contents 'Back To Contents')
+### Today `property`
 
 ##### Summary
 
 Today's date (yyyy-MM-dd)
 
 <a name='P-CodeFirstWebFramework-AppModule-VersionSuffix'></a>
-### VersionSuffix `property` [#](#P-CodeFirstWebFramework-AppModule-VersionSuffix 'Go To Here') [=](#contents 'Back To Contents')
+### VersionSuffix `property`
 
 ##### Summary
 
 Version suffix for including in url's to defeat long-term caching of (e.g.) javascript and css files
 
 <a name='M-CodeFirstWebFramework-AppModule-Call-System-Net-HttpListenerContext,System-String,System-String-'></a>
-### Call() `method` [#](#M-CodeFirstWebFramework-AppModule-Call-System-Net-HttpListenerContext,System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Call() `method`
 
 ##### Summary
 
@@ -1399,7 +1409,7 @@ Responds to a Url request. Set up the AppModule variables and call the given met
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-CallMethod-System-Reflection-MethodInfo@-'></a>
-### CallMethod(method) `method` [#](#M-CodeFirstWebFramework-AppModule-CallMethod-System-Reflection-MethodInfo@- 'Go To Here') [=](#contents 'Back To Contents')
+### CallMethod(method) `method`
 
 ##### Summary
 
@@ -1409,10 +1419,11 @@ Call the method named by Method, and return its result
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| method | [System.Reflection.MethodInfo@](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Reflection.MethodInfo@ 'System.Reflection.MethodInfo@') | Also return the MethodInfo so caller knows what return type it has. Will be set to null if there is no such named method. |
+| method | [System.Reflection.MethodInfo@](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Reflection.MethodInfo@ 'System.Reflection.MethodInfo@') | Also return the MethodInfo so caller knows what return type it has.
+Will be set to null if there is no such named method. |
 
 <a name='M-CodeFirstWebFramework-AppModule-CloseDatabase'></a>
-### CloseDatabase() `method` [#](#M-CodeFirstWebFramework-AppModule-CloseDatabase 'Go To Here') [=](#contents 'Back To Contents')
+### CloseDatabase() `method`
 
 ##### Summary
 
@@ -1423,7 +1434,7 @@ Close the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-ConvertEncoding-System-String-'></a>
-### ConvertEncoding(s) `method` [#](#M-CodeFirstWebFramework-AppModule-ConvertEncoding-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### ConvertEncoding(s) `method`
 
 ##### Summary
 
@@ -1440,7 +1451,7 @@ Convert a "binary" string (decoded using windows-1252) to the correct encoding
 | s | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
 <a name='M-CodeFirstWebFramework-AppModule-Default'></a>
-### Default() `method` [#](#M-CodeFirstWebFramework-AppModule-Default 'Go To Here') [=](#contents 'Back To Contents')
+### Default() `method`
 
 ##### Summary
 
@@ -1451,7 +1462,7 @@ Method to call if no method supplied in url
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-DeleteRecord-System-String,System-Int32-'></a>
-### DeleteRecord() `method` [#](#M-CodeFirstWebFramework-AppModule-DeleteRecord-System-String,System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### DeleteRecord() `method`
 
 ##### Summary
 
@@ -1462,7 +1473,7 @@ Delete a record from the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-DirectoryInfo-System-String-'></a>
-### DirectoryInfo(foldername) `method` [#](#M-CodeFirstWebFramework-AppModule-DirectoryInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### DirectoryInfo(foldername) `method`
 
 ##### Summary
 
@@ -1475,7 +1486,7 @@ Get the IDirectoryInfo matching the foldername
 | foldername | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings" |
 
 <a name='M-CodeFirstWebFramework-AppModule-Dispose'></a>
-### Dispose() `method` [#](#M-CodeFirstWebFramework-AppModule-Dispose 'Go To Here') [=](#contents 'Back To Contents')
+### Dispose() `method`
 
 ##### Summary
 
@@ -1486,7 +1497,7 @@ Close the database (unless a batch job is using it)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-ExtractSection-System-String,System-String@,System-String-'></a>
-### ExtractSection(name,template,defaultValue) `method` [#](#M-CodeFirstWebFramework-AppModule-ExtractSection-System-String,System-String@,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### ExtractSection(name,template,defaultValue) `method`
 
 ##### Summary
 
@@ -1505,7 +1516,7 @@ The content of the element, or defaultValue
 | defaultValue | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Text to return if the named element is not present |
 
 <a name='M-CodeFirstWebFramework-AppModule-FileInfo-System-String-'></a>
-### FileInfo(filename) `method` [#](#M-CodeFirstWebFramework-AppModule-FileInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### FileInfo(filename) `method`
 
 ##### Summary
 
@@ -1518,7 +1529,7 @@ Get the IFileInfo matching the filename
 | filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings.html" |
 
 <a name='M-CodeFirstWebFramework-AppModule-GetBatchJob-System-Int32-'></a>
-### GetBatchJob() `method` [#](#M-CodeFirstWebFramework-AppModule-GetBatchJob-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### GetBatchJob() `method`
 
 ##### Summary
 
@@ -1529,7 +1540,7 @@ Get batch job from id (for status/progress display)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-HasAccess-System-String-'></a>
-### HasAccess() `method` [#](#M-CodeFirstWebFramework-AppModule-HasAccess-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### HasAccess() `method`
 
 ##### Summary
 
@@ -1540,7 +1551,7 @@ Check the security for access to a url
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-HasAccess-CodeFirstWebFramework-ModuleInfo,System-String,System-Int32@-'></a>
-### HasAccess(info,mtd,accessLevel) `method` [#](#M-CodeFirstWebFramework-AppModule-HasAccess-CodeFirstWebFramework-ModuleInfo,System-String,System-Int32@- 'Go To Here') [=](#contents 'Back To Contents')
+### HasAccess(info,mtd,accessLevel) `method`
 
 ##### Summary
 
@@ -1555,18 +1566,19 @@ Check the security for access to a method
 | accessLevel | [System.Int32@](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32@ 'System.Int32@') | The user's access level to this method |
 
 <a name='M-CodeFirstWebFramework-AppModule-Init'></a>
-### Init() `method` [#](#M-CodeFirstWebFramework-AppModule-Init 'Go To Here') [=](#contents 'Back To Contents')
+### Init() `method`
 
 ##### Summary
 
-Perform any initialisation or validation that applies to all calls to this module (e.g. login or supervisor checks)
+Perform any initialisation or validation that applies to all calls to this module
+(e.g. login or supervisor checks)
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-InsertMenuOption-CodeFirstWebFramework-MenuOption-'></a>
-### InsertMenuOption() `method` [#](#M-CodeFirstWebFramework-AppModule-InsertMenuOption-CodeFirstWebFramework-MenuOption- 'Go To Here') [=](#contents 'Back To Contents')
+### InsertMenuOption() `method`
 
 ##### Summary
 
@@ -1577,7 +1589,7 @@ Add a menu option to the default Menu (checking security - no add if no access)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-InsertMenuOptions-CodeFirstWebFramework-MenuOption[]-'></a>
-### InsertMenuOptions(opts) `method` [#](#M-CodeFirstWebFramework-AppModule-InsertMenuOptions-CodeFirstWebFramework-MenuOption[]- 'Go To Here') [=](#contents 'Back To Contents')
+### InsertMenuOptions(opts) `method`
 
 ##### Summary
 
@@ -1590,7 +1602,7 @@ Add multiple menu options to the default Menu (checking security - no add if no 
 | opts | [CodeFirstWebFramework.MenuOption[]](#T-CodeFirstWebFramework-MenuOption[] 'CodeFirstWebFramework.MenuOption[]') |  |
 
 <a name='M-CodeFirstWebFramework-AppModule-LoadFile-System-String-'></a>
-### LoadFile(filename) `method` [#](#M-CodeFirstWebFramework-AppModule-LoadFile-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### LoadFile(filename) `method`
 
 ##### Summary
 
@@ -1603,18 +1615,19 @@ Load the contents of the file from one of the search folders.
 | filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url |
 
 <a name='M-CodeFirstWebFramework-AppModule-LoadFile-CodeFirstWebFramework-IFileInfo-'></a>
-### LoadFile() `method` [#](#M-CodeFirstWebFramework-AppModule-LoadFile-CodeFirstWebFramework-IFileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### LoadFile() `method`
 
 ##### Summary
 
-Load the contents of a specific file. If it is a .tmpl file, perform our extra substitutions to support {{include}}, //{{}}, '!{{}} and {{{}}}
+Load the contents of a specific file.
+If it is a .tmpl file, perform our extra substitutions to support {{include}}, //{{}}, '!{{}} and {{{}}}
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object-'></a>
-### LoadTemplate() `method` [#](#M-CodeFirstWebFramework-AppModule-LoadTemplate-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### LoadTemplate() `method`
 
 ##### Summary
 
@@ -1625,7 +1638,7 @@ Load a template and perform Mustache substitutions on it using obj.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-Log-System-String-'></a>
-### Log() `method` [#](#M-CodeFirstWebFramework-AppModule-Log-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Log() `method`
 
 ##### Summary
 
@@ -1636,7 +1649,7 @@ Log to LogString (for showing in console with response data)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-Log-System-String,System-Object[]-'></a>
-### Log() `method` [#](#M-CodeFirstWebFramework-AppModule-Log-System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### Log() `method`
 
 ##### Summary
 
@@ -1647,7 +1660,7 @@ Log to LogString (for showing in console with response data)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-Redirect-System-String-'></a>
-### Redirect() `method` [#](#M-CodeFirstWebFramework-AppModule-Redirect-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Redirect() `method`
 
 ##### Summary
 
@@ -1658,7 +1671,7 @@ Perform a web redirect to redirect the browser to another url.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-ReloadSettings'></a>
-### ReloadSettings() `method` [#](#M-CodeFirstWebFramework-AppModule-ReloadSettings 'Go To Here') [=](#contents 'Back To Contents')
+### ReloadSettings() `method`
 
 ##### Summary
 
@@ -1669,7 +1682,7 @@ Force the Settings record to be reloaded from the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-Respond'></a>
-### Respond() `method` [#](#M-CodeFirstWebFramework-AppModule-Respond 'Go To Here') [=](#contents 'Back To Contents')
+### Respond() `method`
 
 ##### Summary
 
@@ -1680,7 +1693,7 @@ Render the template Module/Method.tmpl from this.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-SaveRecord-CodeFirstWebFramework-JsonObject-'></a>
-### SaveRecord() `method` [#](#M-CodeFirstWebFramework-AppModule-SaveRecord-CodeFirstWebFramework-JsonObject- 'Go To Here') [=](#contents 'Back To Contents')
+### SaveRecord() `method`
 
 ##### Summary
 
@@ -1691,18 +1704,23 @@ Save an arbitrary JObject to the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-Template-System-String,System-Object-'></a>
-### Template() `method` [#](#M-CodeFirstWebFramework-AppModule-Template-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### Template() `method`
 
 ##### Summary
 
-Load the named template, and render using Mustache from the supplied object. E.g. {{Body}} in the template will be replaced with the obj.Body.ToString() Then split into <head> (goes to this.Head) and <body> (goes to this.Body) (and also any other fields with the TemplateSection attribute). If no body section, the whole remaining template goes into this.Body. Then render the default template from this.
+Load the named template, and render using Mustache from the supplied object.
+E.g. {{Body}} in the template will be replaced with the obj.Body.ToString()
+Then split into <head> (goes to this.Head) and <body> (goes to this.Body)
+(and also any other fields with the TemplateSection attribute).
+If no body section, the whole remaining template goes into this.Body.
+Then render the default template from this.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-TextTemplate-System-String,System-Object-'></a>
-### TextTemplate(text,obj) `method` [#](#M-CodeFirstWebFramework-AppModule-TextTemplate-System-String,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### TextTemplate(text,obj) `method`
 
 ##### Summary
 
@@ -1716,7 +1734,7 @@ Perform Mustache substitutions on a template
 | obj | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | The object to use |
 
 <a name='M-CodeFirstWebFramework-AppModule-WriteResponse-System-Object,System-String,System-Net-HttpStatusCode-'></a>
-### WriteResponse(o,contentType,status) `method` [#](#M-CodeFirstWebFramework-AppModule-WriteResponse-System-Object,System-String,System-Net-HttpStatusCode- 'Go To Here') [=](#contents 'Back To Contents')
+### WriteResponse(o,contentType,status) `method`
 
 ##### Summary
 
@@ -1726,12 +1744,14 @@ Write the response to an Http request.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| o | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | The object to write ("Operation complete" if null). May be a Stream, a string, a byte array or an object. If it is an object, it is converted to json representation. |
+| o | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') | The object to write ("Operation complete" if null). 
+May be a Stream, a string, a byte array or an object. If it is an object,
+it is converted to json representation. |
 | contentType | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The content type (suitable default is used if null) |
 | status | [System.Net.HttpStatusCode](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Net.HttpStatusCode 'System.Net.HttpStatusCode') | The Http return code |
 
 <a name='T-CodeFirstWebFramework-AuthAttribute'></a>
-## AuthAttribute [#](#T-CodeFirstWebFramework-AuthAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## AuthAttribute `type`
 
 ##### Namespace
 
@@ -1742,7 +1762,7 @@ CodeFirstWebFramework
 Attribute to use on AppModule or method to limit access
 
 <a name='M-CodeFirstWebFramework-AuthAttribute-#ctor'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-AuthAttribute-#ctor 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -1753,7 +1773,7 @@ Constructor - level will be set to Any.
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-AuthAttribute-#ctor-System-Int32-'></a>
-### #ctor(AccessLevel) `constructor` [#](#M-CodeFirstWebFramework-AuthAttribute-#ctor-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(AccessLevel) `constructor`
 
 ##### Summary
 
@@ -1766,28 +1786,28 @@ Constructor with specific access level.
 | AccessLevel | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') |  |
 
 <a name='F-CodeFirstWebFramework-AuthAttribute-AccessLevel'></a>
-### AccessLevel `constants` [#](#F-CodeFirstWebFramework-AuthAttribute-AccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### AccessLevel `constants`
 
 ##### Summary
 
 The AccessLevel required to see this module or method.
 
 <a name='F-CodeFirstWebFramework-AuthAttribute-Hide'></a>
-### Hide `constants` [#](#F-CodeFirstWebFramework-AuthAttribute-Hide 'Go To Here') [=](#contents 'Back To Contents')
+### Hide `constants`
 
 ##### Summary
 
 True if this AuthAttribute is not to appear on the list of module permissions
 
 <a name='F-CodeFirstWebFramework-AuthAttribute-Name'></a>
-### Name `constants` [#](#F-CodeFirstWebFramework-AuthAttribute-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `constants`
 
 ##### Summary
 
 Name to use (instead of module/method). AuthAttributes with the same name are grouped in the UI.
 
 <a name='T-CodeFirstWebFramework-BaseForm'></a>
-## BaseForm [#](#T-CodeFirstWebFramework-BaseForm 'Go To Here') [=](#contents 'Back To Contents')
+## BaseForm `type`
 
 ##### Namespace
 
@@ -1798,7 +1818,7 @@ CodeFirstWebFramework
 Base class for all supported forms
 
 <a name='M-CodeFirstWebFramework-BaseForm-#ctor-CodeFirstWebFramework-AppModule-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-BaseForm-#ctor-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -1809,50 +1829,52 @@ Constructor
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-BaseForm-Module'></a>
-### Module `constants` [#](#F-CodeFirstWebFramework-BaseForm-Module 'Go To Here') [=](#contents 'Back To Contents')
+### Module `constants`
 
 ##### Summary
 
 Module creating the form
 
 <a name='F-CodeFirstWebFramework-BaseForm-Options'></a>
-### Options `constants` [#](#F-CodeFirstWebFramework-BaseForm-Options 'Go To Here') [=](#contents 'Back To Contents')
+### Options `constants`
 
 ##### Summary
 
 Form options passed to javascript.
 
 <a name='P-CodeFirstWebFramework-BaseForm-Data'></a>
-### Data `property` [#](#P-CodeFirstWebFramework-BaseForm-Data 'Go To Here') [=](#contents 'Back To Contents')
+### Data `property`
 
 ##### Summary
 
 Form data passed to javascript.
 
 <a name='M-CodeFirstWebFramework-BaseForm-Show'></a>
-### Show() `method` [#](#M-CodeFirstWebFramework-BaseForm-Show 'Go To Here') [=](#contents 'Back To Contents')
+### Show() `method`
 
 ##### Summary
 
-Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't exist, it uses the default template for the form (e.g. /datatable.tmpl).
+Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't
+exist, it uses the default template for the form (e.g. /datatable.tmpl).
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-BaseForm-Show-System-String-'></a>
-### Show() `method` [#](#M-CodeFirstWebFramework-BaseForm-Show-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Show() `method`
 
 ##### Summary
 
-Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't exist, it uses the default template for the form /formType.tmpl.
+Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't
+exist, it uses the default template for the form /formType.tmpl.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-AppModule-BatchJob'></a>
-## BatchJob [#](#T-CodeFirstWebFramework-AppModule-BatchJob 'Go To Here') [=](#contents 'Back To Contents')
+## BatchJob `type`
 
 ##### Namespace
 
@@ -1863,7 +1885,7 @@ CodeFirstWebFramework.AppModule
 Background batch job (e.g. import, restore)
 
 <a name='M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-Action-'></a>
-### #ctor(module,action) `constructor` [#](#M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-Action- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,action) `constructor`
 
 ##### Summary
 
@@ -1877,7 +1899,7 @@ Create a batch job that redirects back to the module's original method on comple
 | action | [System.Action](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Action 'System.Action') | Action to run the job |
 
 <a name='M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String,System-Action-'></a>
-### #ctor(module,redirect,action) `constructor` [#](#M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String,System-Action- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,redirect,action) `constructor`
 
 ##### Summary
 
@@ -1892,63 +1914,63 @@ Create a batch job that redirects somewhere specific
 | action | [System.Action](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Action 'System.Action') | Action to run the job |
 
 <a name='F-CodeFirstWebFramework-AppModule-BatchJob-Error'></a>
-### Error `constants` [#](#F-CodeFirstWebFramework-AppModule-BatchJob-Error 'Go To Here') [=](#contents 'Back To Contents')
+### Error `constants`
 
 ##### Summary
 
 Error message (e.g. on exception)
 
 <a name='F-CodeFirstWebFramework-AppModule-BatchJob-Finished'></a>
-### Finished `constants` [#](#F-CodeFirstWebFramework-AppModule-BatchJob-Finished 'Go To Here') [=](#contents 'Back To Contents')
+### Finished `constants`
 
 ##### Summary
 
 True if the batch job has finished
 
 <a name='F-CodeFirstWebFramework-AppModule-BatchJob-Records'></a>
-### Records `constants` [#](#F-CodeFirstWebFramework-AppModule-BatchJob-Records 'Go To Here') [=](#contents 'Back To Contents')
+### Records `constants`
 
 ##### Summary
 
 Total number of records (for progress bar)
 
 <a name='F-CodeFirstWebFramework-AppModule-BatchJob-Status'></a>
-### Status `constants` [#](#F-CodeFirstWebFramework-AppModule-BatchJob-Status 'Go To Here') [=](#contents 'Back To Contents')
+### Status `constants`
 
 ##### Summary
 
 For status/progress display
 
 <a name='P-CodeFirstWebFramework-AppModule-BatchJob-Id'></a>
-### Id `property` [#](#P-CodeFirstWebFramework-AppModule-BatchJob-Id 'Go To Here') [=](#contents 'Back To Contents')
+### Id `property`
 
 ##### Summary
 
 Job id
 
 <a name='P-CodeFirstWebFramework-AppModule-BatchJob-PercentComplete'></a>
-### PercentComplete `property` [#](#P-CodeFirstWebFramework-AppModule-BatchJob-PercentComplete 'Go To Here') [=](#contents 'Back To Contents')
+### PercentComplete `property`
 
 ##### Summary
 
 For progress display
 
 <a name='P-CodeFirstWebFramework-AppModule-BatchJob-Record'></a>
-### Record `property` [#](#P-CodeFirstWebFramework-AppModule-BatchJob-Record 'Go To Here') [=](#contents 'Back To Contents')
+### Record `property`
 
 ##### Summary
 
 To indicate progress (0...Records)
 
 <a name='P-CodeFirstWebFramework-AppModule-BatchJob-Redirect'></a>
-### Redirect `property` [#](#P-CodeFirstWebFramework-AppModule-BatchJob-Redirect 'Go To Here') [=](#contents 'Back To Contents')
+### Redirect `property`
 
 ##### Summary
 
 Where redirecting to on completion
 
 <a name='T-CodeFirstWebFramework-CheckException'></a>
-## CheckException [#](#T-CodeFirstWebFramework-CheckException 'Go To Here') [=](#contents 'Back To Contents')
+## CheckException `type`
 
 ##### Namespace
 
@@ -1959,7 +1981,7 @@ CodeFirstWebFramework
 Exception thrown by Check assertion function
 
 <a name='M-CodeFirstWebFramework-CheckException-#ctor-System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-CheckException-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -1970,7 +1992,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -1981,7 +2003,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -1992,7 +2014,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Object[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -2003,7 +2025,7 @@ Constructor accepting string.Format arguments
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String,System-Object[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -2014,7 +2036,7 @@ Constructor accepting string.Format arguments
 This constructor has no parameters.
 
 <a name='T-CodeFirstWebFramework-Config'></a>
-## Config [#](#T-CodeFirstWebFramework-Config 'Go To Here') [=](#contents 'Back To Contents')
+## Config `type`
 
 ##### Namespace
 
@@ -2025,7 +2047,7 @@ CodeFirstWebFramework
 The config file from the data folder
 
 <a name='T-CodeFirstWebFramework-Log-Config'></a>
-## Config [#](#T-CodeFirstWebFramework-Log-Config 'Go To Here') [=](#contents 'Back To Contents')
+## Config `type`
 
 ##### Namespace
 
@@ -2036,140 +2058,140 @@ CodeFirstWebFramework.Log
 Strings to describe log destinations
 
 <a name='F-CodeFirstWebFramework-Config-CommandLineFlags'></a>
-### CommandLineFlags `constants` [#](#F-CodeFirstWebFramework-Config-CommandLineFlags 'Go To Here') [=](#contents 'Back To Contents')
+### CommandLineFlags `constants`
 
 ##### Summary
 
 Command line flags extracted from program command line
 
 <a name='F-CodeFirstWebFramework-Config-ConnectionString'></a>
-### ConnectionString `constants` [#](#F-CodeFirstWebFramework-Config-ConnectionString 'Go To Here') [=](#contents 'Back To Contents')
+### ConnectionString `constants`
 
 ##### Summary
 
 The default connection string
 
 <a name='F-CodeFirstWebFramework-Config-CookieTimeoutMinutes'></a>
-### CookieTimeoutMinutes `constants` [#](#F-CodeFirstWebFramework-Config-CookieTimeoutMinutes 'Go To Here') [=](#contents 'Back To Contents')
+### CookieTimeoutMinutes `constants`
 
 ##### Summary
 
 Cookie timeout in minutes
 
 <a name='F-CodeFirstWebFramework-Config-Database'></a>
-### Database `constants` [#](#F-CodeFirstWebFramework-Config-Database 'Go To Here') [=](#contents 'Back To Contents')
+### Database `constants`
 
 ##### Summary
 
 The default type of database
 
 <a name='F-CodeFirstWebFramework-Config-DataPath'></a>
-### DataPath `constants` [#](#F-CodeFirstWebFramework-Config-DataPath 'Go To Here') [=](#contents 'Back To Contents')
+### DataPath `constants`
 
 ##### Summary
 
 The data folder
 
 <a name='F-CodeFirstWebFramework-Config-Default'></a>
-### Default `constants` [#](#F-CodeFirstWebFramework-Config-Default 'Go To Here') [=](#contents 'Back To Contents')
+### Default `constants`
 
 ##### Summary
 
 The default (and only) Config file
 
 <a name='F-CodeFirstWebFramework-Config-DefaultNamespace'></a>
-### DefaultNamespace `constants` [#](#F-CodeFirstWebFramework-Config-DefaultNamespace 'Go To Here') [=](#contents 'Back To Contents')
+### DefaultNamespace `constants`
 
 ##### Summary
 
 The default namespace to use if none supplied
 
 <a name='F-CodeFirstWebFramework-Config-Email'></a>
-### Email `constants` [#](#F-CodeFirstWebFramework-Config-Email 'Go To Here') [=](#contents 'Back To Contents')
+### Email `constants`
 
 ##### Summary
 
 The default email address to send from
 
 <a name='F-CodeFirstWebFramework-Config-EntryModule'></a>
-### EntryModule `constants` [#](#F-CodeFirstWebFramework-Config-EntryModule 'Go To Here') [=](#contents 'Back To Contents')
+### EntryModule `constants`
 
 ##### Summary
 
 The name of the program
 
 <a name='F-CodeFirstWebFramework-Config-EntryNamespace'></a>
-### EntryNamespace `constants` [#](#F-CodeFirstWebFramework-Config-EntryNamespace 'Go To Here') [=](#contents 'Back To Contents')
+### EntryNamespace `constants`
 
 ##### Summary
 
 The namespace of the entry program
 
 <a name='F-CodeFirstWebFramework-Config-Filename'></a>
-### Filename `constants` [#](#F-CodeFirstWebFramework-Config-Filename 'Go To Here') [=](#contents 'Back To Contents')
+### Filename `constants`
 
 ##### Summary
 
 The name of the file from which this config has been read
 
 <a name='F-CodeFirstWebFramework-Config-Logging'></a>
-### Logging `constants` [#](#F-CodeFirstWebFramework-Config-Logging 'Go To Here') [=](#contents 'Back To Contents')
+### Logging `constants`
 
 ##### Summary
 
 Logging configuration
 
 <a name='F-CodeFirstWebFramework-Config-Namespace'></a>
-### Namespace `constants` [#](#F-CodeFirstWebFramework-Config-Namespace 'Go To Here') [=](#contents 'Back To Contents')
+### Namespace `constants`
 
 ##### Summary
 
 The default namespace
 
 <a name='F-CodeFirstWebFramework-Config-Port'></a>
-### Port `constants` [#](#F-CodeFirstWebFramework-Config-Port 'Go To Here') [=](#contents 'Back To Contents')
+### Port `constants`
 
 ##### Summary
 
 The default port the web server listens on
 
 <a name='F-CodeFirstWebFramework-Config-ServerName'></a>
-### ServerName `constants` [#](#F-CodeFirstWebFramework-Config-ServerName 'Go To Here') [=](#contents 'Back To Contents')
+### ServerName `constants`
 
 ##### Summary
 
 The default server name
 
 <a name='F-CodeFirstWebFramework-Config-Servers'></a>
-### Servers `constants` [#](#F-CodeFirstWebFramework-Config-Servers 'Go To Here') [=](#contents 'Back To Contents')
+### Servers `constants`
 
 ##### Summary
 
 List of other servers listening
 
 <a name='F-CodeFirstWebFramework-Config-SessionExpiryMinutes'></a>
-### SessionExpiryMinutes `constants` [#](#F-CodeFirstWebFramework-Config-SessionExpiryMinutes 'Go To Here') [=](#contents 'Back To Contents')
+### SessionExpiryMinutes `constants`
 
 ##### Summary
 
 Expire sessions after this number of minutes
 
 <a name='F-CodeFirstWebFramework-Config-SlowQuery'></a>
-### SlowQuery `constants` [#](#F-CodeFirstWebFramework-Config-SlowQuery 'Go To Here') [=](#contents 'Back To Contents')
+### SlowQuery `constants`
 
 ##### Summary
 
 Log all queries that take longer than this
 
 <a name='P-CodeFirstWebFramework-Config-DefaultServer'></a>
-### DefaultServer `property` [#](#P-CodeFirstWebFramework-Config-DefaultServer 'Go To Here') [=](#contents 'Back To Contents')
+### DefaultServer `property`
 
 ##### Summary
 
 A ServerConfig with the defaults from the main Config section
 
 <a name='M-CodeFirstWebFramework-Config-Load-System-String-'></a>
-### Load(filename) `method` [#](#M-CodeFirstWebFramework-Config-Load-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Load(filename) `method`
 
 ##### Summary
 
@@ -2182,11 +2204,12 @@ Load a config by name
 | filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Plain filename - no folders allowed - will be in the data folder |
 
 <a name='M-CodeFirstWebFramework-Config-Load-System-String[]-'></a>
-### Load(args) `method` [#](#M-CodeFirstWebFramework-Config-Load-System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### Load(args) `method`
 
 ##### Summary
 
-Read any config file specified in the command line, or ProgramName.config if none. Also fill in the CommandLineFlags.
+Read any config file specified in the command line, or ProgramName.config if none.
+Also fill in the CommandLineFlags.
 
 ##### Parameters
 
@@ -2195,7 +2218,7 @@ Read any config file specified in the command line, or ProgramName.config if non
 | args | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | The program arguments |
 
 <a name='M-CodeFirstWebFramework-Config-Save-System-String-'></a>
-### Save(filename) `method` [#](#M-CodeFirstWebFramework-Config-Save-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Save(filename) `method`
 
 ##### Summary
 
@@ -2208,7 +2231,7 @@ Save this configuration by name
 | filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Simple name - no folders allowed - it will be saved in the data folder |
 
 <a name='M-CodeFirstWebFramework-Config-SettingsForHost-System-Uri-'></a>
-### SettingsForHost() `method` [#](#M-CodeFirstWebFramework-Config-SettingsForHost-System-Uri- 'Go To Here') [=](#contents 'Back To Contents')
+### SettingsForHost() `method`
 
 ##### Summary
 
@@ -2219,7 +2242,7 @@ The ServerConfig which applies to the provided url host part
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Log-Config-Update'></a>
-### Update() `method` [#](#M-CodeFirstWebFramework-Log-Config-Update 'Go To Here') [=](#contents 'Back To Contents')
+### Update() `method`
 
 ##### Summary
 
@@ -2230,7 +2253,7 @@ Update the Log destinations
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-Database'></a>
-## Database [#](#T-CodeFirstWebFramework-Database 'Go To Here') [=](#contents 'Back To Contents')
+## Database `type`
 
 ##### Namespace
 
@@ -2238,10 +2261,11 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Class used for accessing the database. Programs may subclass this to add more functionality.
+Class used for accessing the database.
+Programs may subclass this to add more functionality.
 
 <a name='M-CodeFirstWebFramework-Database-#ctor-CodeFirstWebFramework-ServerConfig-'></a>
-### #ctor(server) `constructor` [#](#M-CodeFirstWebFramework-Database-#ctor-CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(server) `constructor`
 
 ##### Summary
 
@@ -2251,52 +2275,55 @@ Constructor
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') | ServerConfig optionally containing the database type and connection string (Config.Default is used for items not supplied) |
+| server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') | ServerConfig optionally containing the database type and connection string 
+(Config.Default is used for items not supplied) |
 
 <a name='F-CodeFirstWebFramework-Database-Logging'></a>
-### Logging `constants` [#](#F-CodeFirstWebFramework-Database-Logging 'Go To Here') [=](#contents 'Back To Contents')
+### Logging `constants`
 
 ##### Summary
 
 Whether to log - set to false to suppress logging
 
 <a name='F-CodeFirstWebFramework-Database-Module'></a>
-### Module `constants` [#](#F-CodeFirstWebFramework-Database-Module 'Go To Here') [=](#contents 'Back To Contents')
+### Module `constants`
 
 ##### Summary
 
 The module which created this database
 
 <a name='P-CodeFirstWebFramework-Database-CurrentDbVersion'></a>
-### CurrentDbVersion `property` [#](#P-CodeFirstWebFramework-Database-CurrentDbVersion 'Go To Here') [=](#contents 'Back To Contents')
+### CurrentDbVersion `property`
 
 ##### Summary
 
-A database version number stored in the Settings table. Used to check if any extra changes need to be made on version change.
+A database version number stored in the Settings table. Used to check if any extra changes
+need to be made on version change.
 
 <a name='P-CodeFirstWebFramework-Database-TableNames'></a>
-### TableNames `property` [#](#P-CodeFirstWebFramework-Database-TableNames 'Go To Here') [=](#contents 'Back To Contents')
+### TableNames `property`
 
 ##### Summary
 
 Return the names of all the tables
 
 <a name='P-CodeFirstWebFramework-Database-UniqueIdentifier'></a>
-### UniqueIdentifier `property` [#](#P-CodeFirstWebFramework-Database-UniqueIdentifier 'Go To Here') [=](#contents 'Back To Contents')
+### UniqueIdentifier `property`
 
 ##### Summary
 
-Return a unique identifier based on the connection string so different Database objects accessing the same database can be recognised as the same.
+Return a unique identifier based on the connection string so different Database objects
+accessing the same database can be recognised as the same.
 
 <a name='P-CodeFirstWebFramework-Database-ViewNames'></a>
-### ViewNames `property` [#](#P-CodeFirstWebFramework-Database-ViewNames 'Go To Here') [=](#contents 'Back To Contents')
+### ViewNames `property`
 
 ##### Summary
 
 Return the names of all the views
 
 <a name='M-CodeFirstWebFramework-Database-BeginTransaction'></a>
-### BeginTransaction() `method` [#](#M-CodeFirstWebFramework-Database-BeginTransaction 'Go To Here') [=](#contents 'Back To Contents')
+### BeginTransaction() `method`
 
 ##### Summary
 
@@ -2307,7 +2334,7 @@ Start a transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Cast-System-String,System-String-'></a>
-### Cast() `method` [#](#M-CodeFirstWebFramework-Database-Cast-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Cast() `method`
 
 ##### Summary
 
@@ -2318,7 +2345,7 @@ Return SQL to cast a value to a type
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-CheckValidFieldname-System-String-'></a>
-### CheckValidFieldname(f) `method` [#](#M-CodeFirstWebFramework-Database-CheckValidFieldname-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### CheckValidFieldname(f) `method`
 
 ##### Summary
 
@@ -2331,7 +2358,7 @@ Check a field name is valid, throw an exception if not.
 | f | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
 <a name='M-CodeFirstWebFramework-Database-Clean'></a>
-### Clean() `method` [#](#M-CodeFirstWebFramework-Database-Clean 'Go To Here') [=](#contents 'Back To Contents')
+### Clean() `method`
 
 ##### Summary
 
@@ -2342,7 +2369,7 @@ Clean and compact the database.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Commit'></a>
-### Commit() `method` [#](#M-CodeFirstWebFramework-Database-Commit 'Go To Here') [=](#contents 'Back To Contents')
+### Commit() `method`
 
 ##### Summary
 
@@ -2353,7 +2380,7 @@ Commit a transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-delete-CodeFirstWebFramework-Table,Newtonsoft-Json-Linq-JObject-'></a>
-### delete(table,data) `method` [#](#M-CodeFirstWebFramework-Database-delete-CodeFirstWebFramework-Table,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### delete(table,data) `method`
 
 ##### Summary
 
@@ -2367,7 +2394,7 @@ Delete a record by content.
 | data | [Newtonsoft.Json.Linq.JObject](#T-Newtonsoft-Json-Linq-JObject 'Newtonsoft.Json.Linq.JObject') | Content - if this matches a unique key, that is the record which will be deleted |
 
 <a name='M-CodeFirstWebFramework-Database-Delete-System-String,Newtonsoft-Json-Linq-JObject-'></a>
-### Delete(tableName,data) `method` [#](#M-CodeFirstWebFramework-Database-Delete-System-String,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Delete(tableName,data) `method`
 
 ##### Summary
 
@@ -2381,7 +2408,7 @@ Delete a record by content.
 | data | [Newtonsoft.Json.Linq.JObject](#T-Newtonsoft-Json-Linq-JObject 'Newtonsoft.Json.Linq.JObject') | Content - if this matches a unique key, that is the record which will be deleted |
 
 <a name='M-CodeFirstWebFramework-Database-Delete-System-String,System-Int32-'></a>
-### Delete() `method` [#](#M-CodeFirstWebFramework-Database-Delete-System-String,System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### Delete() `method`
 
 ##### Summary
 
@@ -2392,7 +2419,7 @@ Delete a record by id.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Delete-CodeFirstWebFramework-JsonObject-'></a>
-### Delete(data) `method` [#](#M-CodeFirstWebFramework-Database-Delete-CodeFirstWebFramework-JsonObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Delete(data) `method`
 
 ##### Summary
 
@@ -2405,18 +2432,19 @@ Delete a record by content.
 | data | [CodeFirstWebFramework.JsonObject](#T-CodeFirstWebFramework-JsonObject 'CodeFirstWebFramework.JsonObject') | Content - if this matches a unique key, that is the record which will be deleted |
 
 <a name='M-CodeFirstWebFramework-Database-Dispose'></a>
-### Dispose() `method` [#](#M-CodeFirstWebFramework-Database-Dispose 'Go To Here') [=](#contents 'Back To Contents')
+### Dispose() `method`
 
 ##### Summary
 
-Dispose of the database. Any uncommitted transaction will be rolled back, and the connection will be closed.
+Dispose of the database.
+Any uncommitted transaction will be rolled back, and the connection will be closed.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-EmptyRecord-System-String-'></a>
-### EmptyRecord() `method` [#](#M-CodeFirstWebFramework-Database-EmptyRecord-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### EmptyRecord() `method`
 
 ##### Summary
 
@@ -2427,18 +2455,19 @@ Create an empty record for the given table as a JObject
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-EmptyRecord``1'></a>
-### EmptyRecord\`\`1() `method` [#](#M-CodeFirstWebFramework-Database-EmptyRecord``1 'Go To Here') [=](#contents 'Back To Contents')
+### EmptyRecord\`\`1() `method`
 
 ##### Summary
 
-Create an empty record as a C# object NB If called with T a base class of the class used to create the table, returns an object of the derived class
+Create an empty record as a C# object
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Execute-System-String-'></a>
-### Execute() `method` [#](#M-CodeFirstWebFramework-Database-Execute-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Execute() `method`
 
 ##### Summary
 
@@ -2449,7 +2478,7 @@ Execute arbitrary SQL
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Exists-System-String,System-Nullable{System-Int32}-'></a>
-### Exists() `method` [#](#M-CodeFirstWebFramework-Database-Exists-System-String,System-Nullable{System-Int32}- 'Go To Here') [=](#contents 'Back To Contents')
+### Exists() `method`
 
 ##### Summary
 
@@ -2460,29 +2489,33 @@ Find out if a record with the given id exists in the table
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-ForeignKey-System-String,Newtonsoft-Json-Linq-JObject-'></a>
-### ForeignKey() `method` [#](#M-CodeFirstWebFramework-Database-ForeignKey-System-String,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### ForeignKey() `method`
 
 ##### Summary
 
-Given data that represents a unique key in a table, if a record matching the key exists, return its record id, otherwise create a new record using the data and return its id.
+Given data that represents a unique key in a table, if a record matching the key
+exists, return its record id, otherwise create a new record using the data and
+return its id.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-ForeignKey-System-String,System-Object[]-'></a>
-### ForeignKey() `method` [#](#M-CodeFirstWebFramework-Database-ForeignKey-System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### ForeignKey() `method`
 
 ##### Summary
 
-Given name, value pairs that represents a unique key in a table, if a record matching the key exists, return its record id, otherwise create a new record using the data and return its id.
+Given name, value pairs that represents a unique key in a table, if a record matching the key
+exists, return its record id, otherwise create a new record using the data and
+return its id.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Get-System-String,System-Int32-'></a>
-### Get() `method` [#](#M-CodeFirstWebFramework-Database-Get-System-String,System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### Get() `method`
 
 ##### Summary
 
@@ -2493,29 +2526,31 @@ Get a record by id
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Get``1-System-Int32-'></a>
-### Get\`\`1() `method` [#](#M-CodeFirstWebFramework-Database-Get``1-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### Get\`\`1() `method`
 
 ##### Summary
 
-Get a record by id NB If called with T a base class of the class used to create the table, returns an object of the derived class
+Get a record by id
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Get``1-``0-'></a>
-### Get\`\`1() `method` [#](#M-CodeFirstWebFramework-Database-Get``1-``0- 'Go To Here') [=](#contents 'Back To Contents')
+### Get\`\`1() `method`
 
 ##### Summary
 
-Get a record by unique key NB If called with T a base class of the class used to create the table, returns an object of the derived class
+Get a record by unique key
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-In-System-Object[]-'></a>
-### In() `method` [#](#M-CodeFirstWebFramework-Database-In-System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### In() `method`
 
 ##### Summary
 
@@ -2526,7 +2561,7 @@ Produce an "IN(...)" SQL statement from a list of values
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-In``1-System-Collections-Generic-IEnumerable{``0}-'></a>
-### In\`\`1() `method` [#](#M-CodeFirstWebFramework-Database-In``1-System-Collections-Generic-IEnumerable{``0}- 'Go To Here') [=](#contents 'Back To Contents')
+### In\`\`1() `method`
 
 ##### Summary
 
@@ -2537,7 +2572,7 @@ Produce an "IN(...)" SQL statement from a list of values
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Insert-System-String,System-Collections-Generic-List{Newtonsoft-Json-Linq-JObject}-'></a>
-### Insert() `method` [#](#M-CodeFirstWebFramework-Database-Insert-System-String,System-Collections-Generic-List{Newtonsoft-Json-Linq-JObject}- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert() `method`
 
 ##### Summary
 
@@ -2548,7 +2583,7 @@ Insert a series of records into the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Insert-System-String,Newtonsoft-Json-Linq-JObject-'></a>
-### Insert() `method` [#](#M-CodeFirstWebFramework-Database-Insert-System-String,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert() `method`
 
 ##### Summary
 
@@ -2559,7 +2594,7 @@ Insert a record into the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Insert-System-String,CodeFirstWebFramework-JsonObject-'></a>
-### Insert() `method` [#](#M-CodeFirstWebFramework-Database-Insert-System-String,CodeFirstWebFramework-JsonObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert() `method`
 
 ##### Summary
 
@@ -2570,7 +2605,7 @@ Insert a record into the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Insert-CodeFirstWebFramework-JsonObject-'></a>
-### Insert() `method` [#](#M-CodeFirstWebFramework-Database-Insert-CodeFirstWebFramework-JsonObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert() `method`
 
 ##### Summary
 
@@ -2581,7 +2616,7 @@ Insert a record into the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-IsValidFieldname-System-String-'></a>
-### IsValidFieldname() `method` [#](#M-CodeFirstWebFramework-Database-IsValidFieldname-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### IsValidFieldname() `method`
 
 ##### Summary
 
@@ -2592,7 +2627,7 @@ Determine if a name is a valid database field name
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-LookupKey-System-String,Newtonsoft-Json-Linq-JObject-'></a>
-### LookupKey() `method` [#](#M-CodeFirstWebFramework-Database-LookupKey-System-String,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### LookupKey() `method`
 
 ##### Summary
 
@@ -2603,7 +2638,7 @@ Find the record id of a record given data containing a unique key
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-LookupKey-System-String,System-Object[]-'></a>
-### LookupKey() `method` [#](#M-CodeFirstWebFramework-Database-LookupKey-System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### LookupKey() `method`
 
 ##### Summary
 
@@ -2614,7 +2649,7 @@ Find the record id of a record given name, value pairs containing a unique key
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-PostUpgradeFromVersion-System-Int32-'></a>
-### PostUpgradeFromVersion(version) `method` [#](#M-CodeFirstWebFramework-Database-PostUpgradeFromVersion-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### PostUpgradeFromVersion(version) `method`
 
 ##### Summary
 
@@ -2627,7 +2662,7 @@ Code that must be run after the database is reconfigured - e.g. populating new f
 | version | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Original version (-1 = new database) |
 
 <a name='M-CodeFirstWebFramework-Database-PreUpgradeFromVersion-System-Int32-'></a>
-### PreUpgradeFromVersion(version) `method` [#](#M-CodeFirstWebFramework-Database-PreUpgradeFromVersion-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### PreUpgradeFromVersion(version) `method`
 
 ##### Summary
 
@@ -2640,7 +2675,7 @@ Code that must be run before the database is reconfigured - e.g. renaming old fi
 | version | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Original version (-1 = new database) |
 
 <a name='M-CodeFirstWebFramework-Database-Query-System-String-'></a>
-### Query() `method` [#](#M-CodeFirstWebFramework-Database-Query-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Query() `method`
 
 ##### Summary
 
@@ -2651,7 +2686,7 @@ Query the database and return the records as JObjects
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Query-System-String,System-String,System-String[]-'></a>
-### Query(fields,conditions,tableNames) `method` [#](#M-CodeFirstWebFramework-Database-Query-System-String,System-String,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### Query(fields,conditions,tableNames) `method`
 
 ##### Summary
 
@@ -2663,25 +2698,28 @@ Query the database and return the records as JObjects
 | ---- | ---- | ----------- |
 | fields | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Fields to return - leave empty or use "+" to return all relevant fields |
 | conditions | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | To use in the WHERE clause (may also include SORT BY) |
-| tableNames | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | List of table names to join for the query. Joins are performed automatically on foreign keys. |
+| tableNames | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | List of table names to join for the query. 
+Joins are performed automatically on foreign keys. |
 
 <a name='M-CodeFirstWebFramework-Database-Query``1-System-String-'></a>
-### Query\`\`1() `method` [#](#M-CodeFirstWebFramework-Database-Query``1-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Query\`\`1() `method`
 
 ##### Summary
 
-Query the database and return the records as C# objects NB If called with T a base class of the class used to create the table, returns an object of the derived class
+Query the database and return the records as C# objects
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Query``1-System-String,System-String,System-String[]-'></a>
-### Query\`\`1(fields,conditions,tableNames) `method` [#](#M-CodeFirstWebFramework-Database-Query``1-System-String,System-String,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### Query\`\`1(fields,conditions,tableNames) `method`
 
 ##### Summary
 
-Query the database and return the records as C# objects NB If called with T a base class of the class used to create the table, returns an object of the derived class
+Query the database and return the records as C# objects
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
 
 ##### Parameters
 
@@ -2689,10 +2727,11 @@ Query the database and return the records as C# objects NB If called with T a ba
 | ---- | ---- | ----------- |
 | fields | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Fields to return - leave empty or use "+" to return all relevant fields |
 | conditions | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | To use in the WHERE clause (may also include SORT BY) |
-| tableNames | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | List of table names to join for the query. Joins are performed automatically on foreign keys. |
+| tableNames | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | List of table names to join for the query. 
+Joins are performed automatically on foreign keys. |
 
 <a name='M-CodeFirstWebFramework-Database-QueryOne-System-String-'></a>
-### QueryOne() `method` [#](#M-CodeFirstWebFramework-Database-QueryOne-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### QueryOne() `method`
 
 ##### Summary
 
@@ -2703,7 +2742,7 @@ Query the database and return the first matching record as a JObject (or null if
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-QueryOne-System-String,System-String,System-String[]-'></a>
-### QueryOne() `method` [#](#M-CodeFirstWebFramework-Database-QueryOne-System-String,System-String,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### QueryOne() `method`
 
 ##### Summary
 
@@ -2714,29 +2753,31 @@ Query the database and return the first matching record as a JObject (or null if
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-QueryOne``1-System-String-'></a>
-### QueryOne\`\`1() `method` [#](#M-CodeFirstWebFramework-Database-QueryOne``1-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### QueryOne\`\`1() `method`
 
 ##### Summary
 
-Query the database and return the first matching record as a C# object (or an empty record if none) NB If called with T a base class of the class used to create the table, returns an object of the derived class
+Query the database and return the first matching record as a C# object (or an empty record if none)
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-QueryOne``1-System-String,System-String,System-String[]-'></a>
-### QueryOne\`\`1() `method` [#](#M-CodeFirstWebFramework-Database-QueryOne``1-System-String,System-String,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### QueryOne\`\`1() `method`
 
 ##### Summary
 
-Query the database and return the first matching record as a C# object (or an empty record if none) NB If called with T a base class of the class used to create the table, returns an object of the derived class
+Query the database and return the first matching record as a C# object (or an empty record if none)
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Quote-System-Object-'></a>
-### Quote() `method` [#](#M-CodeFirstWebFramework-Database-Quote-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### Quote() `method`
 
 ##### Summary
 
@@ -2747,7 +2788,7 @@ Quote any kind of data for inclusion in a SQL query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-RecordExists-System-String,System-Int32-'></a>
-### RecordExists() `method` [#](#M-CodeFirstWebFramework-Database-RecordExists-System-String,System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### RecordExists() `method`
 
 ##### Summary
 
@@ -2758,7 +2799,7 @@ Determine if a record with the given id exists
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-RecordExists-CodeFirstWebFramework-Table,System-Int32-'></a>
-### RecordExists() `method` [#](#M-CodeFirstWebFramework-Database-RecordExists-CodeFirstWebFramework-Table,System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### RecordExists() `method`
 
 ##### Summary
 
@@ -2769,7 +2810,7 @@ Determine if a record with the given id exists
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Rollback'></a>
-### Rollback() `method` [#](#M-CodeFirstWebFramework-Database-Rollback 'Go To Here') [=](#contents 'Back To Contents')
+### Rollback() `method`
 
 ##### Summary
 
@@ -2780,7 +2821,7 @@ Rollback transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-TableFor-System-String-'></a>
-### TableFor() `method` [#](#M-CodeFirstWebFramework-Database-TableFor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### TableFor() `method`
 
 ##### Summary
 
@@ -2791,7 +2832,7 @@ Find the Table descriptor for a table name
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-TableFor-System-Type-'></a>
-### TableFor() `method` [#](#M-CodeFirstWebFramework-Database-TableFor-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### TableFor() `method`
 
 ##### Summary
 
@@ -2802,7 +2843,7 @@ Find the Table descriptor for a C# type
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-TableForOrDefault-System-Type-'></a>
-### TableForOrDefault() `method` [#](#M-CodeFirstWebFramework-Database-TableForOrDefault-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### TableForOrDefault() `method`
 
 ##### Summary
 
@@ -2813,62 +2854,67 @@ Try to find the Table descriptor for a C# type
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-update-CodeFirstWebFramework-Table,Newtonsoft-Json-Linq-JObject-'></a>
-### update() `method` [#](#M-CodeFirstWebFramework-Database-update-CodeFirstWebFramework-Table,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### update() `method`
 
 ##### Summary
 
-Update a record. If the record doesn't already exist, it will be created.
+Update a record.
+If the record doesn't already exist, it will be created.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Update-System-String,System-Collections-Generic-List{Newtonsoft-Json-Linq-JObject}-'></a>
-### Update() `method` [#](#M-CodeFirstWebFramework-Database-Update-System-String,System-Collections-Generic-List{Newtonsoft-Json-Linq-JObject}- 'Go To Here') [=](#contents 'Back To Contents')
+### Update() `method`
 
 ##### Summary
 
-Update a series of records If each record doesn't already exist, it will be created.
+Update a series of records
+If each record doesn't already exist, it will be created.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Update-System-String,Newtonsoft-Json-Linq-JObject-'></a>
-### Update() `method` [#](#M-CodeFirstWebFramework-Database-Update-System-String,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Update() `method`
 
 ##### Summary
 
-Update a record. If the record doesn't already exist, it will be created.
+Update a record.
+If the record doesn't already exist, it will be created.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-Update-CodeFirstWebFramework-JsonObject-'></a>
-### Update() `method` [#](#M-CodeFirstWebFramework-Database-Update-CodeFirstWebFramework-JsonObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Update() `method`
 
 ##### Summary
 
-Update a record. If the record doesn't already exist, it will be created.
+Update a record.
+If the record doesn't already exist, it will be created.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-updateIfChanged-CodeFirstWebFramework-Table,Newtonsoft-Json-Linq-JObject-'></a>
-### updateIfChanged() `method` [#](#M-CodeFirstWebFramework-Database-updateIfChanged-CodeFirstWebFramework-Table,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### updateIfChanged() `method`
 
 ##### Summary
 
-Update a record only if it has changed. If the record doesn't already exist, it will be created.
+Update a record only if it has changed.
+If the record doesn't already exist, it will be created.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Database-upgrade-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table-'></a>
-### upgrade(code,database) `method` [#](#M-CodeFirstWebFramework-Database-upgrade-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### upgrade(code,database) `method`
 
 ##### Summary
 
@@ -2882,18 +2928,20 @@ Make an individual table in the database correspond to the code Table class
 | database | [CodeFirstWebFramework.Table](#T-CodeFirstWebFramework-Table 'CodeFirstWebFramework.Table') |  |
 
 <a name='M-CodeFirstWebFramework-Database-Upgrade'></a>
-### Upgrade() `method` [#](#M-CodeFirstWebFramework-Database-Upgrade 'Go To Here') [=](#contents 'Back To Contents')
+### Upgrade() `method`
 
 ##### Summary
 
-Check the version in the Settings table. If not the same as CurrentDbVersion, call PreUpgradeFromVersion In any case, modify all the tables so they match the code If the version was upgraded, call PostUpgradeFromVersion afterwards,
+Check the version in the Settings table. If not the same as CurrentDbVersion, call PreUpgradeFromVersion
+In any case, modify all the tables so they match the code
+If the version was upgraded, call PostUpgradeFromVersion afterwards,
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-DatabaseException'></a>
-## DatabaseException [#](#T-CodeFirstWebFramework-DatabaseException 'Go To Here') [=](#contents 'Back To Contents')
+## DatabaseException `type`
 
 ##### Namespace
 
@@ -2904,7 +2952,7 @@ CodeFirstWebFramework
 Exception thrown by database code - contains the SQL and/or the table causing the exception
 
 <a name='M-CodeFirstWebFramework-DatabaseException-#ctor-CodeFirstWebFramework-DatabaseException,CodeFirstWebFramework-Table-'></a>
-### #ctor(ex,table) `constructor` [#](#M-CodeFirstWebFramework-DatabaseException-#ctor-CodeFirstWebFramework-DatabaseException,CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(ex,table) `constructor`
 
 ##### Summary
 
@@ -2918,7 +2966,7 @@ Constructor
 | table | [CodeFirstWebFramework.Table](#T-CodeFirstWebFramework-Table 'CodeFirstWebFramework.Table') | Table causing the exception |
 
 <a name='M-CodeFirstWebFramework-DatabaseException-#ctor-System-Exception,System-String-'></a>
-### #ctor(ex,sql) `constructor` [#](#M-CodeFirstWebFramework-DatabaseException-#ctor-System-Exception,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(ex,sql) `constructor`
 
 ##### Summary
 
@@ -2932,28 +2980,28 @@ Constructor
 | sql | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | SQL causing the exception |
 
 <a name='F-CodeFirstWebFramework-DatabaseException-Sql'></a>
-### Sql `constants` [#](#F-CodeFirstWebFramework-DatabaseException-Sql 'Go To Here') [=](#contents 'Back To Contents')
+### Sql `constants`
 
 ##### Summary
 
 SQL causing the exception
 
 <a name='F-CodeFirstWebFramework-DatabaseException-Table'></a>
-### Table `constants` [#](#F-CodeFirstWebFramework-DatabaseException-Table 'Go To Here') [=](#contents 'Back To Contents')
+### Table `constants`
 
 ##### Summary
 
 Table causing the exception
 
 <a name='P-CodeFirstWebFramework-DatabaseException-Message'></a>
-### Message `property` [#](#P-CodeFirstWebFramework-DatabaseException-Message 'Go To Here') [=](#contents 'Back To Contents')
+### Message `property`
 
 ##### Summary
 
 Message (also shows table causing the exception, if known)
 
 <a name='M-CodeFirstWebFramework-DatabaseException-ToString'></a>
-### ToString() `method` [#](#M-CodeFirstWebFramework-DatabaseException-ToString 'Go To Here') [=](#contents 'Back To Contents')
+### ToString() `method`
 
 ##### Summary
 
@@ -2964,7 +3012,7 @@ Returns exception string and SQL
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-DataTableForm'></a>
-## DataTableForm [#](#T-CodeFirstWebFramework-DataTableForm 'Go To Here') [=](#contents 'Back To Contents')
+## DataTableForm `type`
 
 ##### Namespace
 
@@ -2975,7 +3023,7 @@ CodeFirstWebFramework
 DataTable (jquery) form - always readonly.
 
 <a name='M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type-'></a>
-### #ctor(module,t) `constructor` [#](#M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,t) `constructor`
 
 ##### Summary
 
@@ -2989,7 +3037,7 @@ Constructor
 | t | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type to display in the form |
 
 <a name='M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DataTableForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3000,14 +3048,14 @@ DataTable for C# type t with specific fields in specific order
 This constructor has no parameters.
 
 <a name='P-CodeFirstWebFramework-DataTableForm-Select'></a>
-### Select `property` [#](#P-CodeFirstWebFramework-DataTableForm-Select 'Go To Here') [=](#contents 'Back To Contents')
+### Select `property`
 
 ##### Summary
 
 Url to call when the user selects a record.
 
 <a name='M-CodeFirstWebFramework-DataTableForm-RequireField-CodeFirstWebFramework-FieldAttribute-'></a>
-### RequireField() `method` [#](#M-CodeFirstWebFramework-DataTableForm-RequireField-CodeFirstWebFramework-FieldAttribute- 'Go To Here') [=](#contents 'Back To Contents')
+### RequireField() `method`
 
 ##### Summary
 
@@ -3018,7 +3066,7 @@ Non-visible fields are included (so you can search on them)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DataTableForm-Show'></a>
-### Show() `method` [#](#M-CodeFirstWebFramework-DataTableForm-Show 'Go To Here') [=](#contents 'Back To Contents')
+### Show() `method`
 
 ##### Summary
 
@@ -3029,7 +3077,7 @@ Render the form to a web page using the appropriate template
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-DbInterface'></a>
-## DbInterface [#](#T-CodeFirstWebFramework-DbInterface 'Go To Here') [=](#contents 'Back To Contents')
+## DbInterface `type`
 
 ##### Namespace
 
@@ -3040,7 +3088,7 @@ CodeFirstWebFramework
 Interface through which all interaction between Database and a database-specific implementation happens.
 
 <a name='M-CodeFirstWebFramework-DbInterface-Cast-System-String,System-String-'></a>
-### Cast() `method` [#](#M-CodeFirstWebFramework-DbInterface-Cast-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Cast() `method`
 
 ##### Summary
 
@@ -3051,7 +3099,7 @@ Return SQL to cast a value to a type
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-CleanDatabase'></a>
-### CleanDatabase() `method` [#](#M-CodeFirstWebFramework-DbInterface-CleanDatabase 'Go To Here') [=](#contents 'Back To Contents')
+### CleanDatabase() `method`
 
 ##### Summary
 
@@ -3062,7 +3110,7 @@ Clean up the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-Commit'></a>
-### Commit() `method` [#](#M-CodeFirstWebFramework-DbInterface-Commit 'Go To Here') [=](#contents 'Back To Contents')
+### Commit() `method`
 
 ##### Summary
 
@@ -3073,7 +3121,7 @@ Commit current transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-Execute-System-String-'></a>
-### Execute() `method` [#](#M-CodeFirstWebFramework-DbInterface-Execute-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Execute() `method`
 
 ##### Summary
 
@@ -3084,7 +3132,7 @@ Execute sql, returning id of any record inserted
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field-'></a>
-### FieldsMatch() `method` [#](#M-CodeFirstWebFramework-DbInterface-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldsMatch() `method`
 
 ##### Summary
 
@@ -3095,7 +3143,7 @@ Do the fields in code and database match (some implementations are case insensit
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
-### Insert() `method` [#](#M-CodeFirstWebFramework-DbInterface-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert() `method`
 
 ##### Summary
 
@@ -3106,7 +3154,7 @@ Insert data in table
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-Quote-System-Object-'></a>
-### Quote() `method` [#](#M-CodeFirstWebFramework-DbInterface-Quote-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### Quote() `method`
 
 ##### Summary
 
@@ -3117,7 +3165,7 @@ Quote any kind of data for inclusion in a SQL query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-Rollback'></a>
-### Rollback() `method` [#](#M-CodeFirstWebFramework-DbInterface-Rollback 'Go To Here') [=](#contents 'Back To Contents')
+### Rollback() `method`
 
 ##### Summary
 
@@ -3128,7 +3176,7 @@ Rollback transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-Tables'></a>
-### Tables() `method` [#](#M-CodeFirstWebFramework-DbInterface-Tables 'Go To Here') [=](#contents 'Back To Contents')
+### Tables() `method`
 
 ##### Summary
 
@@ -3139,7 +3187,7 @@ Dictionary of Tables by name
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DbInterface-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}-'></a>
-### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method` [#](#M-CodeFirstWebFramework-DbInterface-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'Go To Here') [=](#contents 'Back To Contents')
+### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method`
 
 ##### Summary
 
@@ -3160,7 +3208,7 @@ Upgrade the table definition
 | dropIndex | [System.Collections.Generic.List{CodeFirstWebFramework.Index}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Index}') | Indexes to remove |
 
 <a name='M-CodeFirstWebFramework-DbInterface-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View-'></a>
-### ViewsMatch() `method` [#](#M-CodeFirstWebFramework-DbInterface-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'Go To Here') [=](#contents 'Back To Contents')
+### ViewsMatch() `method`
 
 ##### Summary
 
@@ -3171,7 +3219,7 @@ Do the views in code and database match
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-DecimalFormatJsonConverter'></a>
-## DecimalFormatJsonConverter [#](#T-CodeFirstWebFramework-DecimalFormatJsonConverter 'Go To Here') [=](#contents 'Back To Contents')
+## DecimalFormatJsonConverter `type`
 
 ##### Namespace
 
@@ -3179,10 +3227,12 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Our own converter to/from decimal and float (and decimal? and float?). Everything is rounded to 4 decimal places to get over floating point inaccuracies. Converting to object, accepts strings, floats and ints.
+Our own converter to/from decimal and float (and decimal? and float?).
+Everything is rounded to 4 decimal places to get over floating point inaccuracies.
+Converting to object, accepts strings, floats and ints.
 
 <a name='M-CodeFirstWebFramework-DecimalFormatJsonConverter-#ctor'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DecimalFormatJsonConverter-#ctor 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3193,7 +3243,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-DecimalFormatJsonConverter-CanConvert-System-Type-'></a>
-### CanConvert() `method` [#](#M-CodeFirstWebFramework-DecimalFormatJsonConverter-CanConvert-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### CanConvert() `method`
 
 ##### Summary
 
@@ -3204,7 +3254,7 @@ Whether this converter can convert this type of object
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DecimalFormatJsonConverter-ReadJson-Newtonsoft-Json-JsonReader,System-Type,System-Object,Newtonsoft-Json-JsonSerializer-'></a>
-### ReadJson() `method` [#](#M-CodeFirstWebFramework-DecimalFormatJsonConverter-ReadJson-Newtonsoft-Json-JsonReader,System-Type,System-Object,Newtonsoft-Json-JsonSerializer- 'Go To Here') [=](#contents 'Back To Contents')
+### ReadJson() `method`
 
 ##### Summary
 
@@ -3215,7 +3265,7 @@ Reads the object from JSON.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-DecimalFormatJsonConverter-WriteJson-Newtonsoft-Json-JsonWriter,System-Object,Newtonsoft-Json-JsonSerializer-'></a>
-### WriteJson() `method` [#](#M-CodeFirstWebFramework-DecimalFormatJsonConverter-WriteJson-Newtonsoft-Json-JsonWriter,System-Object,Newtonsoft-Json-JsonSerializer- 'Go To Here') [=](#contents 'Back To Contents')
+### WriteJson() `method`
 
 ##### Summary
 
@@ -3226,7 +3276,7 @@ Writes the JSON representation of the object.
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-DefaultValueAttribute'></a>
-## DefaultValueAttribute [#](#T-CodeFirstWebFramework-DefaultValueAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## DefaultValueAttribute `type`
 
 ##### Namespace
 
@@ -3237,7 +3287,7 @@ CodeFirstWebFramework
 Set the default value for a field (on the database)
 
 <a name='M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3248,7 +3298,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-Int32-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3259,7 +3309,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-Boolean-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DefaultValueAttribute-#ctor-System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3270,14 +3320,14 @@ Constructor
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-DefaultValueAttribute-Value'></a>
-### Value `constants` [#](#F-CodeFirstWebFramework-DefaultValueAttribute-Value 'Go To Here') [=](#contents 'Back To Contents')
+### Value `constants`
 
 ##### Summary
 
 The default value
 
 <a name='T-CodeFirstWebFramework-Log-Destination'></a>
-## Destination [#](#T-CodeFirstWebFramework-Log-Destination 'Go To Here') [=](#contents 'Back To Contents')
+## Destination `type`
 
 ##### Namespace
 
@@ -3288,56 +3338,56 @@ CodeFirstWebFramework.Log
 Log destinations
 
 <a name='F-CodeFirstWebFramework-Log-Destination-Debug'></a>
-### Debug `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Debug 'Go To Here') [=](#contents 'Back To Contents')
+### Debug `constants`
 
 ##### Summary
 
 Log to debug output
 
 <a name='F-CodeFirstWebFramework-Log-Destination-File'></a>
-### File `constants` [#](#F-CodeFirstWebFramework-Log-Destination-File 'Go To Here') [=](#contents 'Back To Contents')
+### File `constants`
 
 ##### Summary
 
 Log to file (specify with "file:name"
 
 <a name='F-CodeFirstWebFramework-Log-Destination-Log'></a>
-### Log `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Log 'Go To Here') [=](#contents 'Back To Contents')
+### Log `constants`
 
 ##### Summary
 
 Log to dated log file in the LogFolder directory
 
 <a name='F-CodeFirstWebFramework-Log-Destination-Null'></a>
-### Null `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Null 'Go To Here') [=](#contents 'Back To Contents')
+### Null `constants`
 
 ##### Summary
 
 Do not log
 
 <a name='F-CodeFirstWebFramework-Log-Destination-StdErr'></a>
-### StdErr `constants` [#](#F-CodeFirstWebFramework-Log-Destination-StdErr 'Go To Here') [=](#contents 'Back To Contents')
+### StdErr `constants`
 
 ##### Summary
 
 Log to stderr
 
 <a name='F-CodeFirstWebFramework-Log-Destination-StdOut'></a>
-### StdOut `constants` [#](#F-CodeFirstWebFramework-Log-Destination-StdOut 'Go To Here') [=](#contents 'Back To Contents')
+### StdOut `constants`
 
 ##### Summary
 
 Log to stdout
 
 <a name='F-CodeFirstWebFramework-Log-Destination-Trace'></a>
-### Trace `constants` [#](#F-CodeFirstWebFramework-Log-Destination-Trace 'Go To Here') [=](#contents 'Back To Contents')
+### Trace `constants`
 
 ##### Summary
 
 Log to trace output
 
 <a name='T-CodeFirstWebFramework-DirectoryInfo'></a>
-## DirectoryInfo [#](#T-CodeFirstWebFramework-DirectoryInfo 'Go To Here') [=](#contents 'Back To Contents')
+## DirectoryInfo `type`
 
 ##### Namespace
 
@@ -3348,7 +3398,7 @@ CodeFirstWebFramework
 IDirectoryInfo that uses the filesystem
 
 <a name='M-CodeFirstWebFramework-DirectoryInfo-#ctor-System-String,System-IO-DirectoryInfo-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DirectoryInfo-#ctor-System-String,System-IO-DirectoryInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3359,28 +3409,28 @@ Construct from a System.IO.DirectoryInfo
 This constructor has no parameters.
 
 <a name='P-CodeFirstWebFramework-DirectoryInfo-Exists'></a>
-### Exists `property` [#](#P-CodeFirstWebFramework-DirectoryInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+### Exists `property`
 
 ##### Summary
 
 Whether the directory exists
 
 <a name='P-CodeFirstWebFramework-DirectoryInfo-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-DirectoryInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Directory name
 
 <a name='P-CodeFirstWebFramework-DirectoryInfo-Path'></a>
-### Path `property` [#](#P-CodeFirstWebFramework-DirectoryInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+### Path `property`
 
 ##### Summary
 
 Path
 
 <a name='M-CodeFirstWebFramework-DirectoryInfo-Content-System-String-'></a>
-### Content() `method` [#](#M-CodeFirstWebFramework-DirectoryInfo-Content-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Content() `method`
 
 ##### Summary
 
@@ -3391,7 +3441,7 @@ Search the directory for files matching the pattern
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-DoNotStoreAttribute'></a>
-## DoNotStoreAttribute [#](#T-CodeFirstWebFramework-DoNotStoreAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## DoNotStoreAttribute `type`
 
 ##### Namespace
 
@@ -3402,7 +3452,7 @@ CodeFirstWebFramework
 Mark a C# field which is not to be stored in the database
 
 <a name='T-CodeFirstWebFramework-DumbForm'></a>
-## DumbForm [#](#T-CodeFirstWebFramework-DumbForm 'Go To Here') [=](#contents 'Back To Contents')
+## DumbForm `type`
 
 ##### Namespace
 
@@ -3413,7 +3463,7 @@ CodeFirstWebFramework
 Old-style FORM/SUBMIT form
 
 <a name='M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Boolean-'></a>
-### #ctor(module,readwrite) `constructor` [#](#M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,readwrite) `constructor`
 
 ##### Summary
 
@@ -3427,7 +3477,7 @@ Empty form
 | readwrite | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | Whether the user can input to some of the fields |
 
 <a name='M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Type-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3438,7 +3488,7 @@ Readwrite form for C# type t
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3449,7 +3499,7 @@ Form for C# type t
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-DumbForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3460,18 +3510,19 @@ Form for C# type t with specific fields in specific order
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-DumbForm-Show'></a>
-### Show() `method` [#](#M-CodeFirstWebFramework-DumbForm-Show 'Go To Here') [=](#contents 'Back To Contents')
+### Show() `method`
 
 ##### Summary
 
-Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't exist, it uses the default template for the form (/dumbform.tmpl).
+Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't
+exist, it uses the default template for the form (/dumbform.tmpl).
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-ErrorModule'></a>
-## ErrorModule [#](#T-CodeFirstWebFramework-ErrorModule 'Go To Here') [=](#contents 'Back To Contents')
+## ErrorModule `type`
 
 ##### Namespace
 
@@ -3482,7 +3533,7 @@ CodeFirstWebFramework
 Class to show errors
 
 <a name='T-CodeFirstWebFramework-Field'></a>
-## Field [#](#T-CodeFirstWebFramework-Field 'Go To Here') [=](#contents 'Back To Contents')
+## Field `type`
 
 ##### Namespace
 
@@ -3493,7 +3544,7 @@ CodeFirstWebFramework
 Store details about a database field
 
 <a name='M-CodeFirstWebFramework-Field-#ctor-System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Field-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3504,7 +3555,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-Field-#ctor-System-String,System-Type,System-Decimal,System-Boolean,System-Boolean,System-String-'></a>
-### #ctor(name,type,length,nullable,autoIncrement,defaultValue) `constructor` [#](#M-CodeFirstWebFramework-Field-#ctor-System-String,System-Type,System-Decimal,System-Boolean,System-Boolean,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(name,type,length,nullable,autoIncrement,defaultValue) `constructor`
 
 ##### Summary
 
@@ -3522,63 +3573,64 @@ Full constructor
 | defaultValue | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Default value (or null) |
 
 <a name='F-CodeFirstWebFramework-Field-ForeignKey'></a>
-### ForeignKey `constants` [#](#F-CodeFirstWebFramework-Field-ForeignKey 'Go To Here') [=](#contents 'Back To Contents')
+### ForeignKey `constants`
 
 ##### Summary
 
 Foreign key details (or null)
 
 <a name='P-CodeFirstWebFramework-Field-AutoIncrement'></a>
-### AutoIncrement `property` [#](#P-CodeFirstWebFramework-Field-AutoIncrement 'Go To Here') [=](#contents 'Back To Contents')
+### AutoIncrement `property`
 
 ##### Summary
 
 Whether the field is auto increment
 
 <a name='P-CodeFirstWebFramework-Field-DefaultValue'></a>
-### DefaultValue `property` [#](#P-CodeFirstWebFramework-Field-DefaultValue 'Go To Here') [=](#contents 'Back To Contents')
+### DefaultValue `property`
 
 ##### Summary
 
 Default value
 
 <a name='P-CodeFirstWebFramework-Field-Length'></a>
-### Length `property` [#](#P-CodeFirstWebFramework-Field-Length 'Go To Here') [=](#contents 'Back To Contents')
+### Length `property`
 
 ##### Summary
 
 Length
 
 <a name='P-CodeFirstWebFramework-Field-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-Field-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Name
 
 <a name='P-CodeFirstWebFramework-Field-Nullable'></a>
-### Nullable `property` [#](#P-CodeFirstWebFramework-Field-Nullable 'Go To Here') [=](#contents 'Back To Contents')
+### Nullable `property`
 
 ##### Summary
 
 Whether the field may be null
 
 <a name='P-CodeFirstWebFramework-Field-Type'></a>
-### Type `property` [#](#P-CodeFirstWebFramework-Field-Type 'Go To Here') [=](#contents 'Back To Contents')
+### Type `property`
 
 ##### Summary
 
 C# type
 
 <a name='P-CodeFirstWebFramework-Field-TypeName'></a>
-### TypeName `property` [#](#P-CodeFirstWebFramework-Field-TypeName 'Go To Here') [=](#contents 'Back To Contents')
+### TypeName `property`
 
 ##### Summary
 
-String representation of C# type, allowing for Nullable. E.g. a Nullable Int32 will retuen "int?"
+String representation of C# type, allowing for Nullable.
+E.g. a Nullable Int32 will retuen "int?"
 
 <a name='M-CodeFirstWebFramework-Field-Data-System-Boolean-'></a>
-### Data(view) `method` [#](#M-CodeFirstWebFramework-Field-Data-System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### Data(view) `method`
 
 ##### Summary
 
@@ -3591,7 +3643,7 @@ String description of Field
 | view | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | Whether this field is in a view |
 
 <a name='M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-FieldInfo,CodeFirstWebFramework-PrimaryAttribute@-'></a>
-### FieldFor(field,pk) `method` [#](#M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-FieldInfo,CodeFirstWebFramework-PrimaryAttribute@- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldFor(field,pk) `method`
 
 ##### Summary
 
@@ -3605,7 +3657,7 @@ Create a Field object from the Attributes on a C# class field (unless it has a D
 | pk | [CodeFirstWebFramework.PrimaryAttribute@](#T-CodeFirstWebFramework-PrimaryAttribute@ 'CodeFirstWebFramework.PrimaryAttribute@') | Set to PrimaryAttribute if the field has one |
 
 <a name='M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-FieldInfo-'></a>
-### FieldFor(field) `method` [#](#M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-FieldInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldFor(field) `method`
 
 ##### Summary
 
@@ -3618,7 +3670,7 @@ Create a Field object from the Attributes on a C# class field
 | field | [System.Reflection.FieldInfo](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Reflection.FieldInfo 'System.Reflection.FieldInfo') | The C# FieldInfo for the field |
 
 <a name='M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-PropertyInfo-'></a>
-### FieldFor(field) `method` [#](#M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-PropertyInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldFor(field) `method`
 
 ##### Summary
 
@@ -3631,7 +3683,7 @@ Create a Field object from the Attributes on a C# class property
 | field | [System.Reflection.PropertyInfo](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Reflection.PropertyInfo 'System.Reflection.PropertyInfo') | The C# PropertyInfo for the field |
 
 <a name='M-CodeFirstWebFramework-Field-FieldFor-System-String,System-Type,System-Boolean,CodeFirstWebFramework-PrimaryAttribute,CodeFirstWebFramework-LengthAttribute,CodeFirstWebFramework-DefaultValueAttribute-'></a>
-### FieldFor() `method` [#](#M-CodeFirstWebFramework-Field-FieldFor-System-String,System-Type,System-Boolean,CodeFirstWebFramework-PrimaryAttribute,CodeFirstWebFramework-LengthAttribute,CodeFirstWebFramework-DefaultValueAttribute- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldFor() `method`
 
 ##### Summary
 
@@ -3642,7 +3694,7 @@ Create a Field object from the Attributes on a C# class field
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Field-Quote-System-Object-'></a>
-### Quote() `method` [#](#M-CodeFirstWebFramework-Field-Quote-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### Quote() `method`
 
 ##### Summary
 
@@ -3653,7 +3705,7 @@ Quote value of object o to use in a SQL statement, assuming value is to be place
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Field-ToString'></a>
-### ToString() `method` [#](#M-CodeFirstWebFramework-Field-ToString 'Go To Here') [=](#contents 'Back To Contents')
+### ToString() `method`
 
 ##### Summary
 
@@ -3664,7 +3716,7 @@ String representation (for debugging)
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-FieldAttribute'></a>
-## FieldAttribute [#](#T-CodeFirstWebFramework-FieldAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## FieldAttribute `type`
 
 ##### Namespace
 
@@ -3675,7 +3727,7 @@ CodeFirstWebFramework
 Attribute to define field display in forms
 
 <a name='M-CodeFirstWebFramework-FieldAttribute-#ctor'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-FieldAttribute-#ctor 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3686,7 +3738,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-FieldAttribute-#ctor-System-Object[]-'></a>
-### #ctor(args) `constructor` [#](#M-CodeFirstWebFramework-FieldAttribute-#ctor-System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(args) `constructor`
 
 ##### Summary
 
@@ -3699,98 +3751,98 @@ Constructor
 | args | [System.Object[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object[] 'System.Object[]') | Pairs of name, value, passed direct into Options (so must be javascript style starting with lower case letter) |
 
 <a name='F-CodeFirstWebFramework-FieldAttribute-Field'></a>
-### Field `constants` [#](#F-CodeFirstWebFramework-FieldAttribute-Field 'Go To Here') [=](#contents 'Back To Contents')
+### Field `constants`
 
 ##### Summary
 
 SQL Field definition
 
 <a name='F-CodeFirstWebFramework-FieldAttribute-Options'></a>
-### Options `constants` [#](#F-CodeFirstWebFramework-FieldAttribute-Options 'Go To Here') [=](#contents 'Back To Contents')
+### Options `constants`
 
 ##### Summary
 
 The javascript options for the field
 
 <a name='F-CodeFirstWebFramework-FieldAttribute-Types'></a>
-### Types `constants` [#](#F-CodeFirstWebFramework-FieldAttribute-Types 'Go To Here') [=](#contents 'Back To Contents')
+### Types `constants`
 
 ##### Summary
 
 Pair of types, separated by , - first is read only, second is read-write
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Attributes'></a>
-### Attributes `property` [#](#P-CodeFirstWebFramework-FieldAttribute-Attributes 'Go To Here') [=](#contents 'Back To Contents')
+### Attributes `property`
 
 ##### Summary
 
 Html attributes to add to field
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Colspan'></a>
-### Colspan `property` [#](#P-CodeFirstWebFramework-FieldAttribute-Colspan 'Go To Here') [=](#contents 'Back To Contents')
+### Colspan `property`
 
 ##### Summary
 
 How many columns for field
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Data'></a>
-### Data `property` [#](#P-CodeFirstWebFramework-FieldAttribute-Data 'Go To Here') [=](#contents 'Back To Contents')
+### Data `property`
 
 ##### Summary
 
 Name of variable containing field value
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-FieldName'></a>
-### FieldName `property` [#](#P-CodeFirstWebFramework-FieldAttribute-FieldName 'Go To Here') [=](#contents 'Back To Contents')
+### FieldName `property`
 
 ##### Summary
 
 Name of field (allowing for default to Data)
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Heading'></a>
-### Heading `property` [#](#P-CodeFirstWebFramework-FieldAttribute-Heading 'Go To Here') [=](#contents 'Back To Contents')
+### Heading `property`
 
 ##### Summary
 
 Heading/prompt for field (defaults to Data, un camel cased)
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-MaxLength'></a>
-### MaxLength `property` [#](#P-CodeFirstWebFramework-FieldAttribute-MaxLength 'Go To Here') [=](#contents 'Back To Contents')
+### MaxLength `property`
 
 ##### Summary
 
 Number of characters to allow in input
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-FieldAttribute-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Name of field - should be unique within a form. Defaults to same as Data.
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-SameRow'></a>
-### SameRow `property` [#](#P-CodeFirstWebFramework-FieldAttribute-SameRow 'Go To Here') [=](#contents 'Back To Contents')
+### SameRow `property`
 
 ##### Summary
 
 True if field is to be in the same row as the previous field
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Type'></a>
-### Type `property` [#](#P-CodeFirstWebFramework-FieldAttribute-Type 'Go To Here') [=](#contents 'Back To Contents')
+### Type `property`
 
 ##### Summary
 
 Type of field - see list in default.js
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Visible'></a>
-### Visible `property` [#](#P-CodeFirstWebFramework-FieldAttribute-Visible 'Go To Here') [=](#contents 'Back To Contents')
+### Visible `property`
 
 ##### Summary
 
 Set to false to hide the field (in DataTables) or omit it (in other forms)
 
 <a name='M-CodeFirstWebFramework-FieldAttribute-FieldFor-CodeFirstWebFramework-Database,System-Reflection-FieldInfo,System-Boolean-'></a>
-### FieldFor(db,field,readwrite) `method` [#](#M-CodeFirstWebFramework-FieldAttribute-FieldFor-CodeFirstWebFramework-Database,System-Reflection-FieldInfo,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldFor(db,field,readwrite) `method`
 
 ##### Summary
 
@@ -3805,7 +3857,7 @@ Create a FieldAttribute for the given field in a class.
 | readwrite | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if the user can edit the field |
 
 <a name='M-CodeFirstWebFramework-FieldAttribute-FieldFor-System-Reflection-PropertyInfo,System-Boolean-'></a>
-### FieldFor(field,readwrite) `method` [#](#M-CodeFirstWebFramework-FieldAttribute-FieldFor-System-Reflection-PropertyInfo,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldFor(field,readwrite) `method`
 
 ##### Summary
 
@@ -3819,7 +3871,7 @@ Create a FieldAttribute for the given property in a class.
 | readwrite | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if the user can edit the field |
 
 <a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-CodeFirstWebFramework-JObjectEnumerable-'></a>
-### MakeSelectable() `method` [#](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-CodeFirstWebFramework-JObjectEnumerable- 'Go To Here') [=](#contents 'Back To Contents')
+### MakeSelectable() `method`
 
 ##### Summary
 
@@ -3830,7 +3882,7 @@ Turn a field into a select or selectInput
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}-'></a>
-### MakeSelectable() `method` [#](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}- 'Go To Here') [=](#contents 'Back To Contents')
+### MakeSelectable() `method`
 
 ##### Summary
 
@@ -3841,7 +3893,7 @@ Turn a field into a select or selectInput
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-FileInfo'></a>
-## FileInfo [#](#T-CodeFirstWebFramework-FileInfo 'Go To Here') [=](#contents 'Back To Contents')
+## FileInfo `type`
 
 ##### Namespace
 
@@ -3852,7 +3904,7 @@ CodeFirstWebFramework
 IFileInfo that uses the filesystem
 
 <a name='M-CodeFirstWebFramework-FileInfo-#ctor-System-String,System-IO-FileInfo-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-FileInfo-#ctor-System-String,System-IO-FileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3863,42 +3915,42 @@ Construct from a System.IO.FileInfo
 This constructor has no parameters.
 
 <a name='P-CodeFirstWebFramework-FileInfo-Exists'></a>
-### Exists `property` [#](#P-CodeFirstWebFramework-FileInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+### Exists `property`
 
 ##### Summary
 
 Whether the file exists
 
 <a name='P-CodeFirstWebFramework-FileInfo-Extension'></a>
-### Extension `property` [#](#P-CodeFirstWebFramework-FileInfo-Extension 'Go To Here') [=](#contents 'Back To Contents')
+### Extension `property`
 
 ##### Summary
 
 File extension
 
 <a name='P-CodeFirstWebFramework-FileInfo-LastWriteTimeUtc'></a>
-### LastWriteTimeUtc `property` [#](#P-CodeFirstWebFramework-FileInfo-LastWriteTimeUtc 'Go To Here') [=](#contents 'Back To Contents')
+### LastWriteTimeUtc `property`
 
 ##### Summary
 
 The modification time
 
 <a name='P-CodeFirstWebFramework-FileInfo-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-FileInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 File name without extension
 
 <a name='P-CodeFirstWebFramework-FileInfo-Path'></a>
-### Path `property` [#](#P-CodeFirstWebFramework-FileInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+### Path `property`
 
 ##### Summary
 
 Path
 
 <a name='M-CodeFirstWebFramework-FileInfo-Content-CodeFirstWebFramework-AppModule-'></a>
-### Content() `method` [#](#M-CodeFirstWebFramework-FileInfo-Content-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+### Content() `method`
 
 ##### Summary
 
@@ -3909,7 +3961,7 @@ File content
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-FileInfo-Stream-CodeFirstWebFramework-AppModule-'></a>
-### Stream() `method` [#](#M-CodeFirstWebFramework-FileInfo-Stream-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+### Stream() `method`
 
 ##### Summary
 
@@ -3920,7 +3972,7 @@ Stream containing content
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-FileSender'></a>
-## FileSender [#](#T-CodeFirstWebFramework-FileSender 'Go To Here') [=](#contents 'Back To Contents')
+## FileSender `type`
 
 ##### Namespace
 
@@ -3928,10 +3980,12 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Class to serve files. This is used if there is no AppModule corresponding to the directory in the web request. If an html file is requested, it does not exist, but there is a corresponding tmpl file, the template is filled in and returned.
+Class to serve files.
+This is used if there is no AppModule corresponding to the directory in the web request.
+If an html file is requested, it does not exist, but there is a corresponding tmpl file, the template is filled in and returned.
 
 <a name='M-CodeFirstWebFramework-FileSender-#ctor-System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-FileSender-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -3942,21 +3996,22 @@ Create a FileSender for a file
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-FileSender-ContentTypes'></a>
-### ContentTypes `constants` [#](#F-CodeFirstWebFramework-FileSender-ContentTypes 'Go To Here') [=](#contents 'Back To Contents')
+### ContentTypes `constants`
 
 ##### Summary
 
-Dictionary to translate file extensions to content types in file responses. Add entries to this if you have your own mime types.
+Dictionary to translate file extensions to content types in file responses.
+Add entries to this if you have your own mime types.
 
 <a name='F-CodeFirstWebFramework-FileSender-Filename'></a>
-### Filename `constants` [#](#F-CodeFirstWebFramework-FileSender-Filename 'Go To Here') [=](#contents 'Back To Contents')
+### Filename `constants`
 
 ##### Summary
 
 The name of the file (as a url)
 
 <a name='M-CodeFirstWebFramework-FileSender-Default'></a>
-### Default() `method` [#](#M-CodeFirstWebFramework-FileSender-Default 'Go To Here') [=](#contents 'Back To Contents')
+### Default() `method`
 
 ##### Summary
 
@@ -3967,7 +4022,7 @@ Default behaviour is to return the file contents, processing .tmpl and .md files
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-FileSystem'></a>
-## FileSystem [#](#T-CodeFirstWebFramework-FileSystem 'Go To Here') [=](#contents 'Back To Contents')
+## FileSystem `type`
 
 ##### Namespace
 
@@ -3975,10 +4030,11 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Interface to the file system which converts file names into IFileInfo objects, and directory names into IDirectoryInfo objects
+Interface to the file system which converts file names into IFileInfo objects,
+and directory names into IDirectoryInfo objects
 
 <a name='M-CodeFirstWebFramework-FileSystem-DirectoryInfo-CodeFirstWebFramework-AppModule,System-String-'></a>
-### DirectoryInfo(module,foldername) `method` [#](#M-CodeFirstWebFramework-FileSystem-DirectoryInfo-CodeFirstWebFramework-AppModule,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### DirectoryInfo(module,foldername) `method`
 
 ##### Summary
 
@@ -3992,7 +4048,7 @@ Search the list of folders for a folder matching the foldername
 | foldername | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings.html" |
 
 <a name='M-CodeFirstWebFramework-FileSystem-FileInfo-CodeFirstWebFramework-AppModule,System-String-'></a>
-### FileInfo(module,filename) `method` [#](#M-CodeFirstWebFramework-FileSystem-FileInfo-CodeFirstWebFramework-AppModule,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### FileInfo(module,filename) `method`
 
 ##### Summary
 
@@ -4006,7 +4062,7 @@ Search the list of folders for a file matching the filename
 | filename | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Like a url - e.g. "admin/settings.html" |
 
 <a name='T-CodeFirstWebFramework-ForeignKey'></a>
-## ForeignKey [#](#T-CodeFirstWebFramework-ForeignKey 'Go To Here') [=](#contents 'Back To Contents')
+## ForeignKey `type`
 
 ##### Namespace
 
@@ -4017,7 +4073,7 @@ CodeFirstWebFramework
 Store details about a Foreign Key field
 
 <a name='M-CodeFirstWebFramework-ForeignKey-#ctor-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field-'></a>
-### #ctor(table,field) `constructor` [#](#M-CodeFirstWebFramework-ForeignKey-#ctor-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(table,field) `constructor`
 
 ##### Summary
 
@@ -4031,21 +4087,21 @@ Constructor
 | field | [CodeFirstWebFramework.Field](#T-CodeFirstWebFramework-Field 'CodeFirstWebFramework.Field') | Field in that table |
 
 <a name='P-CodeFirstWebFramework-ForeignKey-Field'></a>
-### Field `property` [#](#P-CodeFirstWebFramework-ForeignKey-Field 'Go To Here') [=](#contents 'Back To Contents')
+### Field `property`
 
 ##### Summary
 
 Field in that table
 
 <a name='P-CodeFirstWebFramework-ForeignKey-Table'></a>
-### Table `property` [#](#P-CodeFirstWebFramework-ForeignKey-Table 'Go To Here') [=](#contents 'Back To Contents')
+### Table `property`
 
 ##### Summary
 
 Table the key refers to
 
 <a name='T-CodeFirstWebFramework-ForeignKeyAttribute'></a>
-## ForeignKeyAttribute [#](#T-CodeFirstWebFramework-ForeignKeyAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## ForeignKeyAttribute `type`
 
 ##### Namespace
 
@@ -4056,7 +4112,7 @@ CodeFirstWebFramework
 Attribute marking a field as a foreign key
 
 <a name='M-CodeFirstWebFramework-ForeignKeyAttribute-#ctor-System-String-'></a>
-### #ctor(table) `constructor` [#](#M-CodeFirstWebFramework-ForeignKeyAttribute-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(table) `constructor`
 
 ##### Summary
 
@@ -4069,14 +4125,14 @@ Constructor
 | table | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The foreign table |
 
 <a name='P-CodeFirstWebFramework-ForeignKeyAttribute-Table'></a>
-### Table `property` [#](#P-CodeFirstWebFramework-ForeignKeyAttribute-Table 'Go To Here') [=](#contents 'Back To Contents')
+### Table `property`
 
 ##### Summary
 
 The foreign table
 
 <a name='T-CodeFirstWebFramework-Form'></a>
-## Form [#](#T-CodeFirstWebFramework-Form 'Go To Here') [=](#contents 'Back To Contents')
+## Form `type`
 
 ##### Namespace
 
@@ -4087,7 +4143,7 @@ CodeFirstWebFramework
 Normal input form.
 
 <a name='M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Boolean-'></a>
-### #ctor(module,readwrite) `constructor` [#](#M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,readwrite) `constructor`
 
 ##### Summary
 
@@ -4101,7 +4157,7 @@ Empty form
 | readwrite | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | Whether the user can input to some of the fields |
 
 <a name='M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Type-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4112,7 +4168,7 @@ Readwrite form for C# type t
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4123,7 +4179,7 @@ Form for C# type t
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4134,35 +4190,35 @@ Form for C# type t with specific fields in specific order
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-Form-columns'></a>
-### columns `constants` [#](#F-CodeFirstWebFramework-Form-columns 'Go To Here') [=](#contents 'Back To Contents')
+### columns `constants`
 
 ##### Summary
 
 The fields
 
 <a name='F-CodeFirstWebFramework-Form-ReadWrite'></a>
-### ReadWrite `constants` [#](#F-CodeFirstWebFramework-Form-ReadWrite 'Go To Here') [=](#contents 'Back To Contents')
+### ReadWrite `constants`
 
 ##### Summary
 
 Whether the user can input
 
 <a name='P-CodeFirstWebFramework-Form-CanDelete'></a>
-### CanDelete `property` [#](#P-CodeFirstWebFramework-Form-CanDelete 'Go To Here') [=](#contents 'Back To Contents')
+### CanDelete `property`
 
 ##### Summary
 
 Whether the user can delete record.
 
 <a name='P-CodeFirstWebFramework-Form-Fields'></a>
-### Fields `property` [#](#P-CodeFirstWebFramework-Form-Fields 'Go To Here') [=](#contents 'Back To Contents')
+### Fields `property`
 
 ##### Summary
 
 All the fields in this form
 
 <a name='P-CodeFirstWebFramework-Form-Item-System-String-'></a>
-### Item `property` [#](#P-CodeFirstWebFramework-Form-Item-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Item `property`
 
 ##### Summary
 
@@ -4179,7 +4235,7 @@ Find a field by name
 | name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
 <a name='M-CodeFirstWebFramework-Form-Add-System-Reflection-FieldInfo-'></a>
-### Add() `method` [#](#M-CodeFirstWebFramework-Form-Add-System-Reflection-FieldInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### Add() `method`
 
 ##### Summary
 
@@ -4190,7 +4246,7 @@ Add a field from a C# class to the form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Add-System-Reflection-FieldInfo,System-Boolean-'></a>
-### Add() `method` [#](#M-CodeFirstWebFramework-Form-Add-System-Reflection-FieldInfo,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### Add() `method`
 
 ##### Summary
 
@@ -4201,7 +4257,7 @@ Add a field from a C# class to the form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Add-CodeFirstWebFramework-FieldAttribute-'></a>
-### Add() `method` [#](#M-CodeFirstWebFramework-Form-Add-CodeFirstWebFramework-FieldAttribute- 'Go To Here') [=](#contents 'Back To Contents')
+### Add() `method`
 
 ##### Summary
 
@@ -4212,7 +4268,7 @@ Add a field to the form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Add-System-Type,System-String-'></a>
-### Add() `method` [#](#M-CodeFirstWebFramework-Form-Add-System-Type,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Add() `method`
 
 ##### Summary
 
@@ -4223,7 +4279,7 @@ Add a field to the form by name
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Build-System-Type-'></a>
-### Build() `method` [#](#M-CodeFirstWebFramework-Form-Build-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### Build() `method`
 
 ##### Summary
 
@@ -4234,7 +4290,7 @@ Add all the suitable fields from a C# type to the form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-IndexOf-System-String-'></a>
-### IndexOf() `method` [#](#M-CodeFirstWebFramework-Form-IndexOf-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### IndexOf() `method`
 
 ##### Summary
 
@@ -4245,7 +4301,7 @@ Return the index of the named field in the form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Insert-System-Int32,CodeFirstWebFramework-FieldAttribute-'></a>
-### Insert() `method` [#](#M-CodeFirstWebFramework-Form-Insert-System-Int32,CodeFirstWebFramework-FieldAttribute- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert() `method`
 
 ##### Summary
 
@@ -4256,7 +4312,7 @@ Insert a field from a C# class to the form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-processFields-System-Type,System-Boolean-'></a>
-### processFields(tbl,inTable) `method` [#](#M-CodeFirstWebFramework-Form-processFields-System-Type,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### processFields(tbl,inTable) `method`
 
 ##### Summary
 
@@ -4270,7 +4326,7 @@ Process all the fields from a type (do any base classes first)
 | inTable | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if this is a base class of a Table or Writeable object |
 
 <a name='M-CodeFirstWebFramework-Form-Remove-System-String-'></a>
-### Remove() `method` [#](#M-CodeFirstWebFramework-Form-Remove-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Remove() `method`
 
 ##### Summary
 
@@ -4281,7 +4337,7 @@ Remove the named field
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Remove-System-String[]-'></a>
-### Remove() `method` [#](#M-CodeFirstWebFramework-Form-Remove-System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### Remove() `method`
 
 ##### Summary
 
@@ -4292,7 +4348,7 @@ Remove the named fields
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Replace-System-Int32,CodeFirstWebFramework-FieldAttribute-'></a>
-### Replace() `method` [#](#M-CodeFirstWebFramework-Form-Replace-System-Int32,CodeFirstWebFramework-FieldAttribute- 'Go To Here') [=](#contents 'Back To Contents')
+### Replace() `method`
 
 ##### Summary
 
@@ -4303,7 +4359,7 @@ Replace a field from a C# class to the form
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-RequireField-CodeFirstWebFramework-FieldAttribute-'></a>
-### RequireField() `method` [#](#M-CodeFirstWebFramework-Form-RequireField-CodeFirstWebFramework-FieldAttribute- 'Go To Here') [=](#contents 'Back To Contents')
+### RequireField() `method`
 
 ##### Summary
 
@@ -4314,7 +4370,7 @@ Decide whether a field should be included - e.g. autoincrement and non-visible f
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Form-Show'></a>
-### Show() `method` [#](#M-CodeFirstWebFramework-Form-Show 'Go To Here') [=](#contents 'Back To Contents')
+### Show() `method`
 
 ##### Summary
 
@@ -4325,7 +4381,7 @@ Render the form to the web page, using the appropriate template
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-HandlesAttribute'></a>
-## HandlesAttribute [#](#T-CodeFirstWebFramework-HandlesAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## HandlesAttribute `type`
 
 ##### Namespace
 
@@ -4336,7 +4392,7 @@ CodeFirstWebFramework
 Attribute to indicate what file extensions a module can handle
 
 <a name='M-CodeFirstWebFramework-HandlesAttribute-#ctor-System-String[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-HandlesAttribute-#ctor-System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4347,14 +4403,14 @@ Attribute to indicate which extensions an AppModule can handle
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-HandlesAttribute-Extensions'></a>
-### Extensions `constants` [#](#F-CodeFirstWebFramework-HandlesAttribute-Extensions 'Go To Here') [=](#contents 'Back To Contents')
+### Extensions `constants`
 
 ##### Summary
 
 List of extensions this AppModule can handle
 
 <a name='T-CodeFirstWebFramework-HeaderDetailForm'></a>
-## HeaderDetailForm [#](#T-CodeFirstWebFramework-HeaderDetailForm 'Go To Here') [=](#contents 'Back To Contents')
+## HeaderDetailForm `type`
 
 ##### Namespace
 
@@ -4365,7 +4421,7 @@ CodeFirstWebFramework
 Header detailt form
 
 <a name='M-CodeFirstWebFramework-HeaderDetailForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Type-'></a>
-### #ctor(module,header,detail) `constructor` [#](#M-CodeFirstWebFramework-HeaderDetailForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,header,detail) `constructor`
 
 ##### Summary
 
@@ -4380,7 +4436,7 @@ Constructor
 | detail | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | C# type in the detail |
 
 <a name='M-CodeFirstWebFramework-HeaderDetailForm-#ctor-CodeFirstWebFramework-AppModule,CodeFirstWebFramework-Form,CodeFirstWebFramework-ListForm-'></a>
-### #ctor(module,header,detail) `constructor` [#](#M-CodeFirstWebFramework-HeaderDetailForm-#ctor-CodeFirstWebFramework-AppModule,CodeFirstWebFramework-Form,CodeFirstWebFramework-ListForm- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,header,detail) `constructor`
 
 ##### Summary
 
@@ -4395,28 +4451,28 @@ Constructor
 | detail | [CodeFirstWebFramework.ListForm](#T-CodeFirstWebFramework-ListForm 'CodeFirstWebFramework.ListForm') | Detail form |
 
 <a name='F-CodeFirstWebFramework-HeaderDetailForm-Detail'></a>
-### Detail `constants` [#](#F-CodeFirstWebFramework-HeaderDetailForm-Detail 'Go To Here') [=](#contents 'Back To Contents')
+### Detail `constants`
 
 ##### Summary
 
 The Detail ListForm
 
 <a name='F-CodeFirstWebFramework-HeaderDetailForm-Header'></a>
-### Header `constants` [#](#F-CodeFirstWebFramework-HeaderDetailForm-Header 'Go To Here') [=](#contents 'Back To Contents')
+### Header `constants`
 
 ##### Summary
 
 The header Form
 
 <a name='P-CodeFirstWebFramework-HeaderDetailForm-CanDelete'></a>
-### CanDelete `property` [#](#P-CodeFirstWebFramework-HeaderDetailForm-CanDelete 'Go To Here') [=](#contents 'Back To Contents')
+### CanDelete `property`
 
 ##### Summary
 
 Whether the user can delete record.
 
 <a name='M-CodeFirstWebFramework-HeaderDetailForm-Show'></a>
-### Show() `method` [#](#M-CodeFirstWebFramework-HeaderDetailForm-Show 'Go To Here') [=](#contents 'Back To Contents')
+### Show() `method`
 
 ##### Summary
 
@@ -4427,7 +4483,7 @@ Render the form to a web page using the appropriate template
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-Help'></a>
-## Help [#](#T-CodeFirstWebFramework-Help 'Go To Here') [=](#contents 'Back To Contents')
+## Help `type`
 
 ##### Namespace
 
@@ -4438,35 +4494,35 @@ CodeFirstWebFramework
 AppModule to handle help requests
 
 <a name='F-CodeFirstWebFramework-Help-Contents'></a>
-### Contents `constants` [#](#F-CodeFirstWebFramework-Help-Contents 'Go To Here') [=](#contents 'Back To Contents')
+### Contents `constants`
 
 ##### Summary
 
 Whether the help has a table of contents (used in templates)
 
 <a name='F-CodeFirstWebFramework-Help-Next'></a>
-### Next `constants` [#](#F-CodeFirstWebFramework-Help-Next 'Go To Here') [=](#contents 'Back To Contents')
+### Next `constants`
 
 ##### Summary
 
 Markdown-style link to next page (if any) in table of contents
 
 <a name='F-CodeFirstWebFramework-Help-Parent'></a>
-### Parent `constants` [#](#F-CodeFirstWebFramework-Help-Parent 'Go To Here') [=](#contents 'Back To Contents')
+### Parent `constants`
 
 ##### Summary
 
 Markdown-style link to parent (if any) in table of contents
 
 <a name='F-CodeFirstWebFramework-Help-Previous'></a>
-### Previous `constants` [#](#F-CodeFirstWebFramework-Help-Previous 'Go To Here') [=](#contents 'Back To Contents')
+### Previous `constants`
 
 ##### Summary
 
 Markdown-style link to previous page (if any) in table of contents
 
 <a name='M-CodeFirstWebFramework-Help-CallMethod-System-Reflection-MethodInfo@-'></a>
-### CallMethod() `method` [#](#M-CodeFirstWebFramework-Help-CallMethod-System-Reflection-MethodInfo@- 'Go To Here') [=](#contents 'Back To Contents')
+### CallMethod() `method`
 
 ##### Summary
 
@@ -4477,7 +4533,7 @@ Override CallMethod so it also accepts unknown Method names (presuming them to b
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Help-Default'></a>
-### Default() `method` [#](#M-CodeFirstWebFramework-Help-Default 'Go To Here') [=](#contents 'Back To Contents')
+### Default() `method`
 
 ##### Summary
 
@@ -4488,18 +4544,21 @@ Display a help file from the url
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Help-LoadHelpFrom-CodeFirstWebFramework-IFileInfo-'></a>
-### LoadHelpFrom() `method` [#](#M-CodeFirstWebFramework-Help-LoadHelpFrom-CodeFirstWebFramework-IFileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### LoadHelpFrom() `method`
 
 ##### Summary
 
-Return the Markdown help text from file in a web page ready to render. If Method is not "default.md", load the table of contents information If the file is itself a template, fill it in first (output will be Markdown). Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
+Return the Markdown help text from file in a web page ready to render.
+If Method is not "default.md", load the table of contents information
+If the file is itself a template, fill it in first (output will be Markdown).
+Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Help-parseContents-System-String-'></a>
-### parseContents(current) `method` [#](#M-CodeFirstWebFramework-Help-parseContents-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### parseContents(current) `method`
 
 ##### Summary
 
@@ -4512,18 +4571,22 @@ Set up Next, Previous and Parent by finding the current file in the default.md t
 | current | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Current file |
 
 <a name='M-CodeFirstWebFramework-Help-ReturnHelpFrom-CodeFirstWebFramework-IFileInfo-'></a>
-### ReturnHelpFrom() `method` [#](#M-CodeFirstWebFramework-Help-ReturnHelpFrom-CodeFirstWebFramework-IFileInfo- 'Go To Here') [=](#contents 'Back To Contents')
+### ReturnHelpFrom() `method`
 
 ##### Summary
 
-Render the Markdown help text from file in a web page. Allows caching and supports If-Modified-Since headers If Method is not "default.md", load the table of contents information If the file is itself a template, fill it in first (output will be Markdown). Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
+Render the Markdown help text from file in a web page.
+Allows caching and supports If-Modified-Since headers
+If Method is not "default.md", load the table of contents information
+If the file is itself a template, fill it in first (output will be Markdown).
+Renders the md file inside the "/help/default.tmpl" template (to add the contents links)
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-IDirectoryInfo'></a>
-## IDirectoryInfo [#](#T-CodeFirstWebFramework-IDirectoryInfo 'Go To Here') [=](#contents 'Back To Contents')
+## IDirectoryInfo `type`
 
 ##### Namespace
 
@@ -4531,31 +4594,32 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Interface to "directories" the web server can access. An interface is used so a Namespace can deliver content from the database instead of the file system
+Interface to "directories" the web server can access.
+An interface is used so a Namespace can deliver content from the database instead of the file system
 
 <a name='P-CodeFirstWebFramework-IDirectoryInfo-Exists'></a>
-### Exists `property` [#](#P-CodeFirstWebFramework-IDirectoryInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+### Exists `property`
 
 ##### Summary
 
 Whether the directory exists
 
 <a name='P-CodeFirstWebFramework-IDirectoryInfo-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-IDirectoryInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Directory name
 
 <a name='P-CodeFirstWebFramework-IDirectoryInfo-Path'></a>
-### Path `property` [#](#P-CodeFirstWebFramework-IDirectoryInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+### Path `property`
 
 ##### Summary
 
 Path
 
 <a name='M-CodeFirstWebFramework-IDirectoryInfo-Content-System-String-'></a>
-### Content() `method` [#](#M-CodeFirstWebFramework-IDirectoryInfo-Content-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Content() `method`
 
 ##### Summary
 
@@ -4566,7 +4630,7 @@ List of IFileInfo items in the directory
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-IFileInfo'></a>
-## IFileInfo [#](#T-CodeFirstWebFramework-IFileInfo 'Go To Here') [=](#contents 'Back To Contents')
+## IFileInfo `type`
 
 ##### Namespace
 
@@ -4574,45 +4638,46 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Interface to "files" the web server can access. An interface is used so a Namespace can deliver content from the database instead of the file system
+Interface to "files" the web server can access.
+An interface is used so a Namespace can deliver content from the database instead of the file system
 
 <a name='P-CodeFirstWebFramework-IFileInfo-Exists'></a>
-### Exists `property` [#](#P-CodeFirstWebFramework-IFileInfo-Exists 'Go To Here') [=](#contents 'Back To Contents')
+### Exists `property`
 
 ##### Summary
 
 Whether the file exists
 
 <a name='P-CodeFirstWebFramework-IFileInfo-Extension'></a>
-### Extension `property` [#](#P-CodeFirstWebFramework-IFileInfo-Extension 'Go To Here') [=](#contents 'Back To Contents')
+### Extension `property`
 
 ##### Summary
 
 File extension
 
 <a name='P-CodeFirstWebFramework-IFileInfo-LastWriteTimeUtc'></a>
-### LastWriteTimeUtc `property` [#](#P-CodeFirstWebFramework-IFileInfo-LastWriteTimeUtc 'Go To Here') [=](#contents 'Back To Contents')
+### LastWriteTimeUtc `property`
 
 ##### Summary
 
 The modification time
 
 <a name='P-CodeFirstWebFramework-IFileInfo-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-IFileInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 File name (without extension)
 
 <a name='P-CodeFirstWebFramework-IFileInfo-Path'></a>
-### Path `property` [#](#P-CodeFirstWebFramework-IFileInfo-Path 'Go To Here') [=](#contents 'Back To Contents')
+### Path `property`
 
 ##### Summary
 
 Path
 
 <a name='M-CodeFirstWebFramework-IFileInfo-Content-CodeFirstWebFramework-AppModule-'></a>
-### Content() `method` [#](#M-CodeFirstWebFramework-IFileInfo-Content-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+### Content() `method`
 
 ##### Summary
 
@@ -4623,7 +4688,7 @@ Text of the file
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-IFileInfo-Stream-CodeFirstWebFramework-AppModule-'></a>
-### Stream() `method` [#](#M-CodeFirstWebFramework-IFileInfo-Stream-CodeFirstWebFramework-AppModule- 'Go To Here') [=](#contents 'Back To Contents')
+### Stream() `method`
 
 ##### Summary
 
@@ -4634,7 +4699,7 @@ Stream containing content
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-ImplementationAttribute'></a>
-## ImplementationAttribute [#](#T-CodeFirstWebFramework-ImplementationAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## ImplementationAttribute `type`
 
 ##### Namespace
 
@@ -4642,10 +4707,12 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Attribute which indicates an AppModule class uses a helper class to implement some or all of its methods. The helper class must have a constructor which takes a single AppModule parameter.
+Attribute which indicates an AppModule class uses a helper class 
+to implement some or all of its methods.
+The helper class must have a constructor which takes a single AppModule parameter.
 
 <a name='M-CodeFirstWebFramework-ImplementationAttribute-#ctor-System-Type-'></a>
-### #ctor(helperClass) `constructor` [#](#M-CodeFirstWebFramework-ImplementationAttribute-#ctor-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(helperClass) `constructor`
 
 ##### Summary
 
@@ -4655,17 +4722,18 @@ Constructor.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| helperClass | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type of helper class. It must have a constructor which takes a single AppModule parameter. |
+| helperClass | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type of helper class. 
+It must have a constructor which takes a single AppModule parameter. |
 
 <a name='P-CodeFirstWebFramework-ImplementationAttribute-Helper'></a>
-### Helper `property` [#](#P-CodeFirstWebFramework-ImplementationAttribute-Helper 'Go To Here') [=](#contents 'Back To Contents')
+### Helper `property`
 
 ##### Summary
 
 The helper class type.
 
 <a name='T-CodeFirstWebFramework-Index'></a>
-## Index [#](#T-CodeFirstWebFramework-Index 'Go To Here') [=](#contents 'Back To Contents')
+## Index `type`
 
 ##### Namespace
 
@@ -4676,7 +4744,7 @@ CodeFirstWebFramework
 Index descriptor
 
 <a name='M-CodeFirstWebFramework-Index-#ctor-System-String,CodeFirstWebFramework-Field[]-'></a>
-### #ctor(name,fields) `constructor` [#](#M-CodeFirstWebFramework-Index-#ctor-System-String,CodeFirstWebFramework-Field[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(name,fields) `constructor`
 
 ##### Summary
 
@@ -4690,7 +4758,7 @@ Constructor
 | fields | [CodeFirstWebFramework.Field[]](#T-CodeFirstWebFramework-Field[] 'CodeFirstWebFramework.Field[]') | Fields making up the index |
 
 <a name='M-CodeFirstWebFramework-Index-#ctor-System-String,System-String[]-'></a>
-### #ctor(name,fields) `constructor` [#](#M-CodeFirstWebFramework-Index-#ctor-System-String,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(name,fields) `constructor`
 
 ##### Summary
 
@@ -4704,28 +4772,28 @@ Constructor
 | fields | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | Field names making up the index |
 
 <a name='P-CodeFirstWebFramework-Index-FieldList'></a>
-### FieldList `property` [#](#P-CodeFirstWebFramework-Index-FieldList 'Go To Here') [=](#contents 'Back To Contents')
+### FieldList `property`
 
 ##### Summary
 
 List of fields (with types) in the index, separate by commas - for matching two indexes to see if they are the same
 
 <a name='P-CodeFirstWebFramework-Index-Fields'></a>
-### Fields `property` [#](#P-CodeFirstWebFramework-Index-Fields 'Go To Here') [=](#contents 'Back To Contents')
+### Fields `property`
 
 ##### Summary
 
 The fields that go to make up the index
 
 <a name='P-CodeFirstWebFramework-Index-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-Index-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Index name
 
 <a name='M-CodeFirstWebFramework-Index-CoversData-Newtonsoft-Json-Linq-JObject-'></a>
-### CoversData() `method` [#](#M-CodeFirstWebFramework-Index-CoversData-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### CoversData() `method`
 
 ##### Summary
 
@@ -4736,7 +4804,7 @@ Whether this index has values in the data for all of its fields
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Index-ToString'></a>
-### ToString() `method` [#](#M-CodeFirstWebFramework-Index-ToString 'Go To Here') [=](#contents 'Back To Contents')
+### ToString() `method`
 
 ##### Summary
 
@@ -4747,7 +4815,7 @@ For debugging
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Index-Where-Newtonsoft-Json-Linq-JObject-'></a>
-### Where() `method` [#](#M-CodeFirstWebFramework-Index-Where-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### Where() `method`
 
 ##### Summary
 
@@ -4758,7 +4826,7 @@ Generate a WHERE clause (without the "WHERE") to select the record matching data
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-JObjectEnumerable'></a>
-## JObjectEnumerable [#](#T-CodeFirstWebFramework-JObjectEnumerable 'Go To Here') [=](#contents 'Back To Contents')
+## JObjectEnumerable `type`
 
 ##### Namespace
 
@@ -4769,7 +4837,7 @@ CodeFirstWebFramework
 An enumerable of JObjects with a JArray converter, to efficiently handle output of a query
 
 <a name='M-CodeFirstWebFramework-JObjectEnumerable-#ctor-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-JObjectEnumerable-#ctor-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4780,7 +4848,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-JObjectEnumerable-GetEnumerator'></a>
-### GetEnumerator() `method` [#](#M-CodeFirstWebFramework-JObjectEnumerable-GetEnumerator 'Go To Here') [=](#contents 'Back To Contents')
+### GetEnumerator() `method`
 
 ##### Summary
 
@@ -4791,7 +4859,7 @@ Standard GetEnumerator
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-JObjectEnumerable-op_Implicit-CodeFirstWebFramework-JObjectEnumerable-~Newtonsoft-Json-Linq-JArray'></a>
-### op_Implicit() `method` [#](#M-CodeFirstWebFramework-JObjectEnumerable-op_Implicit-CodeFirstWebFramework-JObjectEnumerable-~Newtonsoft-Json-Linq-JArray 'Go To Here') [=](#contents 'Back To Contents')
+### op_Implicit() `method`
 
 ##### Summary
 
@@ -4802,7 +4870,7 @@ Convert to a JArray
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-JObjectEnumerable-System#Collections#IEnumerable#GetEnumerator'></a>
-### System#Collections#IEnumerable#GetEnumerator() `method` [#](#M-CodeFirstWebFramework-JObjectEnumerable-System#Collections#IEnumerable#GetEnumerator 'Go To Here') [=](#contents 'Back To Contents')
+### System#Collections#IEnumerable#GetEnumerator() `method`
 
 ##### Summary
 
@@ -4813,7 +4881,7 @@ Standard GetEnumerator
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-JObjectEnumerable-ToList'></a>
-### ToList() `method` [#](#M-CodeFirstWebFramework-JObjectEnumerable-ToList 'Go To Here') [=](#contents 'Back To Contents')
+### ToList() `method`
 
 ##### Summary
 
@@ -4828,7 +4896,7 @@ ToList converter. If called, the enumerable itself is converted to a list, so th
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-JObjectEnumerable-ToString'></a>
-### ToString() `method` [#](#M-CodeFirstWebFramework-JObjectEnumerable-ToString 'Go To Here') [=](#contents 'Back To Contents')
+### ToString() `method`
 
 ##### Summary
 
@@ -4839,7 +4907,7 @@ For debugging
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-JsonObject'></a>
-## JsonObject [#](#T-CodeFirstWebFramework-JsonObject 'Go To Here') [=](#contents 'Back To Contents')
+## JsonObject `type`
 
 ##### Namespace
 
@@ -4850,14 +4918,14 @@ CodeFirstWebFramework
 Base class for all [Table] C# objects
 
 <a name='P-CodeFirstWebFramework-JsonObject-Id'></a>
-### Id `property` [#](#P-CodeFirstWebFramework-JsonObject-Id 'Go To Here') [=](#contents 'Back To Contents')
+### Id `property`
 
 ##### Summary
 
 Record id
 
 <a name='M-CodeFirstWebFramework-JsonObject-Clone``1'></a>
-### Clone\`\`1() `method` [#](#M-CodeFirstWebFramework-JsonObject-Clone``1 'Go To Here') [=](#contents 'Back To Contents')
+### Clone\`\`1() `method`
 
 ##### Summary
 
@@ -4868,7 +4936,7 @@ Make a copy
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-JsonObject-ToJObject'></a>
-### ToJObject() `method` [#](#M-CodeFirstWebFramework-JsonObject-ToJObject 'Go To Here') [=](#contents 'Back To Contents')
+### ToJObject() `method`
 
 ##### Summary
 
@@ -4879,7 +4947,7 @@ Convert to a JObject
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-JsonObject-ToString'></a>
-### ToString() `method` [#](#M-CodeFirstWebFramework-JsonObject-ToString 'Go To Here') [=](#contents 'Back To Contents')
+### ToString() `method`
 
 ##### Summary
 
@@ -4894,7 +4962,7 @@ For debugging
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-LengthAttribute'></a>
-## LengthAttribute [#](#T-CodeFirstWebFramework-LengthAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## LengthAttribute `type`
 
 ##### Namespace
 
@@ -4905,7 +4973,7 @@ CodeFirstWebFramework
 Set the length (and optionally precision) of a field in the database
 
 <a name='M-CodeFirstWebFramework-LengthAttribute-#ctor-System-Int32-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-LengthAttribute-#ctor-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4916,7 +4984,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-LengthAttribute-#ctor-System-Int32,System-Int32-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-LengthAttribute-#ctor-System-Int32,System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4927,21 +4995,21 @@ Constructor (with precision)
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-LengthAttribute-Length'></a>
-### Length `constants` [#](#F-CodeFirstWebFramework-LengthAttribute-Length 'Go To Here') [=](#contents 'Back To Contents')
+### Length `constants`
 
 ##### Summary
 
 Field length
 
 <a name='F-CodeFirstWebFramework-LengthAttribute-Precision'></a>
-### Precision `constants` [#](#F-CodeFirstWebFramework-LengthAttribute-Precision 'Go To Here') [=](#contents 'Back To Contents')
+### Precision `constants`
 
 ##### Summary
 
 Field precision (if required)
 
 <a name='T-CodeFirstWebFramework-ListForm'></a>
-## ListForm [#](#T-CodeFirstWebFramework-ListForm 'Go To Here') [=](#contents 'Back To Contents')
+## ListForm `type`
 
 ##### Namespace
 
@@ -4952,7 +5020,7 @@ CodeFirstWebFramework
 List form
 
 <a name='M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type-'></a>
-### #ctor(module,t) `constructor` [#](#M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,t) `constructor`
 
 ##### Summary
 
@@ -4966,7 +5034,7 @@ Constructor
 | t | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type to display in the list |
 
 <a name='M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean-'></a>
-### #ctor(module,t,readWrite) `constructor` [#](#M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(module,t,readWrite) `constructor`
 
 ##### Summary
 
@@ -4981,7 +5049,7 @@ Constructor
 | readWrite | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | Whether the user can update the data |
 
 <a name='M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -4992,14 +5060,14 @@ Constructor for C# type t with specific fields in specific order
 This constructor has no parameters.
 
 <a name='P-CodeFirstWebFramework-ListForm-Select'></a>
-### Select `property` [#](#P-CodeFirstWebFramework-ListForm-Select 'Go To Here') [=](#contents 'Back To Contents')
+### Select `property`
 
 ##### Summary
 
 Url to call when the user selects a record.
 
 <a name='M-CodeFirstWebFramework-ListForm-Show'></a>
-### Show() `method` [#](#M-CodeFirstWebFramework-ListForm-Show 'Go To Here') [=](#contents 'Back To Contents')
+### Show() `method`
 
 ##### Summary
 
@@ -5010,7 +5078,7 @@ Render the form to a web page using the appropriate template
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-Log'></a>
-## Log [#](#T-CodeFirstWebFramework-Log 'Go To Here') [=](#contents 'Back To Contents')
+## Log `type`
 
 ##### Namespace
 
@@ -5021,7 +5089,7 @@ CodeFirstWebFramework
 A class to manage logging to a variety of destinations
 
 <a name='M-CodeFirstWebFramework-Log-#ctor-CodeFirstWebFramework-Log-Destination-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Log-#ctor-CodeFirstWebFramework-Log-Destination- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -5032,7 +5100,7 @@ Create Log with specific destination
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-Log-#ctor-System-String-'></a>
-### #ctor(config) `constructor` [#](#M-CodeFirstWebFramework-Log-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(config) `constructor`
 
 ##### Summary
 
@@ -5045,91 +5113,91 @@ Parse config for log info and create Log accordingly
 | config | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
 <a name='F-CodeFirstWebFramework-Log-DatabaseRead'></a>
-### DatabaseRead `constants` [#](#F-CodeFirstWebFramework-Log-DatabaseRead 'Go To Here') [=](#contents 'Back To Contents')
+### DatabaseRead `constants`
 
 ##### Summary
 
 Database access logging
 
 <a name='F-CodeFirstWebFramework-Log-DatabaseWrite'></a>
-### DatabaseWrite `constants` [#](#F-CodeFirstWebFramework-Log-DatabaseWrite 'Go To Here') [=](#contents 'Back To Contents')
+### DatabaseWrite `constants`
 
 ##### Summary
 
 Database write logging
 
 <a name='F-CodeFirstWebFramework-Log-Debug'></a>
-### Debug `constants` [#](#F-CodeFirstWebFramework-Log-Debug 'Go To Here') [=](#contents 'Back To Contents')
+### Debug `constants`
 
 ##### Summary
 
 Debug logging
 
 <a name='F-CodeFirstWebFramework-Log-Error'></a>
-### Error `constants` [#](#F-CodeFirstWebFramework-Log-Error 'Go To Here') [=](#contents 'Back To Contents')
+### Error `constants`
 
 ##### Summary
 
 Exception and error logging
 
 <a name='F-CodeFirstWebFramework-Log-Info'></a>
-### Info `constants` [#](#F-CodeFirstWebFramework-Log-Info 'Go To Here') [=](#contents 'Back To Contents')
+### Info `constants`
 
 ##### Summary
 
 Ordinary web request logging (like access.log)
 
 <a name='F-CodeFirstWebFramework-Log-LogFolder'></a>
-### LogFolder `constants` [#](#F-CodeFirstWebFramework-Log-LogFolder 'Go To Here') [=](#contents 'Back To Contents')
+### LogFolder `constants`
 
 ##### Summary
 
 Folder in which to put dated log files
 
 <a name='F-CodeFirstWebFramework-Log-NotFound'></a>
-### NotFound `constants` [#](#F-CodeFirstWebFramework-Log-NotFound 'Go To Here') [=](#contents 'Back To Contents')
+### NotFound `constants`
 
 ##### Summary
 
 Web request which failed logging
 
 <a name='F-CodeFirstWebFramework-Log-PostData'></a>
-### PostData `constants` [#](#F-CodeFirstWebFramework-Log-PostData 'Go To Here') [=](#contents 'Back To Contents')
+### PostData `constants`
 
 ##### Summary
 
 Post data logging
 
 <a name='F-CodeFirstWebFramework-Log-Session'></a>
-### Session `constants` [#](#F-CodeFirstWebFramework-Log-Session 'Go To Here') [=](#contents 'Back To Contents')
+### Session `constants`
 
 ##### Summary
 
 Session logging
 
 <a name='F-CodeFirstWebFramework-Log-Startup'></a>
-### Startup `constants` [#](#F-CodeFirstWebFramework-Log-Startup 'Go To Here') [=](#contents 'Back To Contents')
+### Startup `constants`
 
 ##### Summary
 
 Program startup logging
 
 <a name='F-CodeFirstWebFramework-Log-Trace'></a>
-### Trace `constants` [#](#F-CodeFirstWebFramework-Log-Trace 'Go To Here') [=](#contents 'Back To Contents')
+### Trace `constants`
 
 ##### Summary
 
 Trace logging
 
 <a name='P-CodeFirstWebFramework-Log-On'></a>
-### On `property` [#](#P-CodeFirstWebFramework-Log-On 'Go To Here') [=](#contents 'Back To Contents')
+### On `property`
 
 ##### Summary
 
 Whether this type of logging is outputting anywhere
 
 <a name='M-CodeFirstWebFramework-Log-Close'></a>
-### Close() `method` [#](#M-CodeFirstWebFramework-Log-Close 'Go To Here') [=](#contents 'Back To Contents')
+### Close() `method`
 
 ##### Summary
 
@@ -5140,7 +5208,7 @@ Close the file
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Log-Flush'></a>
-### Flush() `method` [#](#M-CodeFirstWebFramework-Log-Flush 'Go To Here') [=](#contents 'Back To Contents')
+### Flush() `method`
 
 ##### Summary
 
@@ -5151,7 +5219,7 @@ Flush the file to disk
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Log-WriteLine-System-String-'></a>
-### WriteLine() `method` [#](#M-CodeFirstWebFramework-Log-WriteLine-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### WriteLine() `method`
 
 ##### Summary
 
@@ -5162,7 +5230,7 @@ Log message to console and trace
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Log-WriteLine-System-String,System-Object[]-'></a>
-### WriteLine() `method` [#](#M-CodeFirstWebFramework-Log-WriteLine-System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### WriteLine() `method`
 
 ##### Summary
 
@@ -5173,7 +5241,7 @@ Log message to console and trace
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-MenuOption'></a>
-## MenuOption [#](#T-CodeFirstWebFramework-MenuOption 'Go To Here') [=](#contents 'Back To Contents')
+## MenuOption `type`
 
 ##### Namespace
 
@@ -5184,7 +5252,7 @@ CodeFirstWebFramework
 Menu option for the second level menu
 
 <a name='M-CodeFirstWebFramework-MenuOption-#ctor-System-String,System-String-'></a>
-### #ctor(text,url) `constructor` [#](#M-CodeFirstWebFramework-MenuOption-#ctor-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(text,url) `constructor`
 
 ##### Summary
 
@@ -5198,7 +5266,7 @@ Constructor
 | url | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Url to go to |
 
 <a name='M-CodeFirstWebFramework-MenuOption-#ctor-System-String,System-String,System-Boolean-'></a>
-### #ctor(text,url,enabled) `constructor` [#](#M-CodeFirstWebFramework-MenuOption-#ctor-System-String,System-String,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(text,url,enabled) `constructor`
 
 ##### Summary
 
@@ -5213,42 +5281,42 @@ Constructor
 | enabled | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | False if disabled |
 
 <a name='F-CodeFirstWebFramework-MenuOption-Enabled'></a>
-### Enabled `constants` [#](#F-CodeFirstWebFramework-MenuOption-Enabled 'Go To Here') [=](#contents 'Back To Contents')
+### Enabled `constants`
 
 ##### Summary
 
 Is the option enabled
 
 <a name='F-CodeFirstWebFramework-MenuOption-Text'></a>
-### Text `constants` [#](#F-CodeFirstWebFramework-MenuOption-Text 'Go To Here') [=](#contents 'Back To Contents')
+### Text `constants`
 
 ##### Summary
 
 Menu text
 
 <a name='F-CodeFirstWebFramework-MenuOption-Url'></a>
-### Url `constants` [#](#F-CodeFirstWebFramework-MenuOption-Url 'Go To Here') [=](#contents 'Back To Contents')
+### Url `constants`
 
 ##### Summary
 
 Url to go to
 
 <a name='P-CodeFirstWebFramework-MenuOption-Disabled'></a>
-### Disabled `property` [#](#P-CodeFirstWebFramework-MenuOption-Disabled 'Go To Here') [=](#contents 'Back To Contents')
+### Disabled `property`
 
 ##### Summary
 
 Is the option disabled (used in Mustache templates)
 
 <a name='P-CodeFirstWebFramework-MenuOption-Id'></a>
-### Id `property` [#](#P-CodeFirstWebFramework-MenuOption-Id 'Go To Here') [=](#contents 'Back To Contents')
+### Id `property`
 
 ##### Summary
 
 Html element id - text with no spaces
 
 <a name='T-CodeFirstWebFramework-ModuleInfo'></a>
-## ModuleInfo [#](#T-CodeFirstWebFramework-ModuleInfo 'Go To Here') [=](#contents 'Back To Contents')
+## ModuleInfo `type`
 
 ##### Namespace
 
@@ -5259,7 +5327,7 @@ CodeFirstWebFramework
 Class to hold a module name, for use in templates
 
 <a name='M-CodeFirstWebFramework-ModuleInfo-#ctor-System-String,System-Type-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-ModuleInfo-#ctor-System-String,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -5270,56 +5338,58 @@ Constructor
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-ModuleInfo-Auth'></a>
-### Auth `constants` [#](#F-CodeFirstWebFramework-ModuleInfo-Auth 'Go To Here') [=](#contents 'Back To Contents')
+### Auth `constants`
 
 ##### Summary
 
 The AuthAttribute associated with this module (or one with Any access if there is none)
 
 <a name='F-CodeFirstWebFramework-ModuleInfo-AuthMethods'></a>
-### AuthMethods `constants` [#](#F-CodeFirstWebFramework-ModuleInfo-AuthMethods 'Go To Here') [=](#contents 'Back To Contents')
+### AuthMethods `constants`
 
 ##### Summary
 
 Dictionary of method names that have an Auth attribute
 
 <a name='F-CodeFirstWebFramework-ModuleInfo-ModuleAccessLevel'></a>
-### ModuleAccessLevel `constants` [#](#F-CodeFirstWebFramework-ModuleInfo-ModuleAccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### ModuleAccessLevel `constants`
 
 ##### Summary
 
 Auth access level (or AccessLevel.Any)
 
 <a name='F-CodeFirstWebFramework-ModuleInfo-Name'></a>
-### Name `constants` [#](#F-CodeFirstWebFramework-ModuleInfo-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `constants`
 
 ##### Summary
 
 Name of module
 
 <a name='F-CodeFirstWebFramework-ModuleInfo-Type'></a>
-### Type `constants` [#](#F-CodeFirstWebFramework-ModuleInfo-Type 'Go To Here') [=](#contents 'Back To Contents')
+### Type `constants`
 
 ##### Summary
 
 AppModule type
 
 <a name='P-CodeFirstWebFramework-ModuleInfo-LowestAccessLevel'></a>
-### LowestAccessLevel `property` [#](#P-CodeFirstWebFramework-ModuleInfo-LowestAccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### LowestAccessLevel `property`
 
 ##### Summary
 
-Lowest Access level for any method. Returns AccessLevel.Any if all methods have that level (or there are none), otherwise the lowest level > Any
+Lowest Access level for any method.
+Returns AccessLevel.Any if all methods have that level (or there are none),
+otherwise the lowest level > Any
 
 <a name='P-CodeFirstWebFramework-ModuleInfo-UnCamelName'></a>
-### UnCamelName `property` [#](#P-CodeFirstWebFramework-ModuleInfo-UnCamelName 'Go To Here') [=](#contents 'Back To Contents')
+### UnCamelName `property`
 
 ##### Summary
 
 Uncamelled name for display
 
 <a name='M-CodeFirstWebFramework-ModuleInfo-addMethods-System-Type-'></a>
-### addMethods(t) `method` [#](#M-CodeFirstWebFramework-ModuleInfo-addMethods-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### addMethods(t) `method`
 
 ##### Summary
 
@@ -5332,7 +5402,7 @@ Look for Auth attributes on all the methods of a type, and add them to the dicti
 | t | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') |  |
 
 <a name='T-CodeFirstWebFramework-MySqlDatabase'></a>
-## MySqlDatabase [#](#T-CodeFirstWebFramework-MySqlDatabase 'Go To Here') [=](#contents 'Back To Contents')
+## MySqlDatabase `type`
 
 ##### Namespace
 
@@ -5343,7 +5413,7 @@ CodeFirstWebFramework
 Interface to MySql
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-#ctor-CodeFirstWebFramework-Database,System-String-'></a>
-### #ctor(db,connectionString) `constructor` [#](#M-CodeFirstWebFramework-MySqlDatabase-#ctor-CodeFirstWebFramework-Database,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(db,connectionString) `constructor`
 
 ##### Summary
 
@@ -5357,7 +5427,7 @@ Constructor
 | connectionString | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-BeginTransaction'></a>
-### BeginTransaction() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-BeginTransaction 'Go To Here') [=](#contents 'Back To Contents')
+### BeginTransaction() `method`
 
 ##### Summary
 
@@ -5368,7 +5438,7 @@ Begin transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Cast-System-String,System-String-'></a>
-### Cast() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Cast-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Cast() `method`
 
 ##### Summary
 
@@ -5379,7 +5449,7 @@ Return SQL to cast a value to a type
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-CleanDatabase'></a>
-### CleanDatabase() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-CleanDatabase 'Go To Here') [=](#contents 'Back To Contents')
+### CleanDatabase() `method`
 
 ##### Summary
 
@@ -5390,7 +5460,7 @@ Clean up database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Commit'></a>
-### Commit() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Commit 'Go To Here') [=](#contents 'Back To Contents')
+### Commit() `method`
 
 ##### Summary
 
@@ -5401,7 +5471,7 @@ Commit transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
-### CreateIndex() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'Go To Here') [=](#contents 'Back To Contents')
+### CreateIndex() `method`
 
 ##### Summary
 
@@ -5412,7 +5482,7 @@ Create an index from a table and index definition
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-CreateTable-CodeFirstWebFramework-Table-'></a>
-### CreateTable() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-CreateTable-CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### CreateTable() `method`
 
 ##### Summary
 
@@ -5423,7 +5493,7 @@ Create a table from a Table definition
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Dispose'></a>
-### Dispose() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Dispose 'Go To Here') [=](#contents 'Back To Contents')
+### Dispose() `method`
 
 ##### Summary
 
@@ -5434,7 +5504,7 @@ Roll back any uncommitted transaction and close the connection
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
-### DropIndex() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'Go To Here') [=](#contents 'Back To Contents')
+### DropIndex() `method`
 
 ##### Summary
 
@@ -5445,7 +5515,7 @@ Drop an index
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-DropTable-CodeFirstWebFramework-Table-'></a>
-### DropTable() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-DropTable-CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### DropTable() `method`
 
 ##### Summary
 
@@ -5456,7 +5526,7 @@ Drop a table
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Execute-System-String-'></a>
-### Execute() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Execute-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Execute() `method`
 
 ##### Summary
 
@@ -5467,7 +5537,7 @@ Execute arbitrary sql
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field-'></a>
-### FieldsMatch() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldsMatch() `method`
 
 ##### Summary
 
@@ -5478,7 +5548,7 @@ Determine whether two fields are the same
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
-### Insert(table,sql,updatesAutoIncrement) `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert(table,sql,updatesAutoIncrement) `method`
 
 ##### Summary
 
@@ -5497,7 +5567,7 @@ The value of the auto-increment record id of the newly inserted record
 | updatesAutoIncrement | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if the insert may update an auto-increment field |
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Query-System-String-'></a>
-### Query() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Query-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Query() `method`
 
 ##### Summary
 
@@ -5508,7 +5578,7 @@ Query the database, and return JObjects for each record returned
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-QueryOne-System-String-'></a>
-### QueryOne() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-QueryOne-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### QueryOne() `method`
 
 ##### Summary
 
@@ -5519,7 +5589,7 @@ Query the database, and return the first record matching the query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Quote-System-Object-'></a>
-### Quote() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Quote-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### Quote() `method`
 
 ##### Summary
 
@@ -5530,7 +5600,7 @@ Quote any kind of data for inclusion in a SQL query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Rollback'></a>
-### Rollback() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Rollback 'Go To Here') [=](#contents 'Back To Contents')
+### Rollback() `method`
 
 ##### Summary
 
@@ -5541,7 +5611,7 @@ Rollback transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Tables'></a>
-### Tables() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-Tables 'Go To Here') [=](#contents 'Back To Contents')
+### Tables() `method`
 
 ##### Summary
 
@@ -5552,7 +5622,7 @@ Get a Dictionary of existing tables in the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}-'></a>
-### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'Go To Here') [=](#contents 'Back To Contents')
+### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method`
 
 ##### Summary
 
@@ -5573,7 +5643,7 @@ Upgrade the table definition
 | dropIndex | [System.Collections.Generic.List{CodeFirstWebFramework.Index}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Index}') | Indexes to remove |
 
 <a name='M-CodeFirstWebFramework-MySqlDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View-'></a>
-### ViewsMatch() `method` [#](#M-CodeFirstWebFramework-MySqlDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'Go To Here') [=](#contents 'Back To Contents')
+### ViewsMatch() `method`
 
 ##### Summary
 
@@ -5584,7 +5654,7 @@ Determine whether two views are the same
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-Namespace'></a>
-## Namespace [#](#T-CodeFirstWebFramework-Namespace 'Go To Here') [=](#contents 'Back To Contents')
+## Namespace `type`
 
 ##### Namespace
 
@@ -5595,7 +5665,7 @@ CodeFirstWebFramework
 Desribes a namespace with AppModules which makes up a WebApp
 
 <a name='M-CodeFirstWebFramework-Namespace-#ctor-CodeFirstWebFramework-ServerConfig-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Namespace-#ctor-CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -5606,53 +5676,56 @@ Constructor - uses reflection to get the information
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-Namespace-FileSystem'></a>
-### FileSystem `constants` [#](#F-CodeFirstWebFramework-Namespace-FileSystem 'Go To Here') [=](#contents 'Back To Contents')
+### FileSystem `constants`
 
 ##### Summary
 
 The FileSystem for this Namespace
 
 <a name='P-CodeFirstWebFramework-Namespace-Modules'></a>
-### Modules `property` [#](#P-CodeFirstWebFramework-Namespace-Modules 'Go To Here') [=](#contents 'Back To Contents')
+### Modules `property`
 
 ##### Summary
 
 List of module names for templates (e.g. to auto-generate a module menu)
 
 <a name='P-CodeFirstWebFramework-Namespace-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-Namespace-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Namespace name
 
 <a name='P-CodeFirstWebFramework-Namespace-TableNames'></a>
-### TableNames `property` [#](#P-CodeFirstWebFramework-Namespace-TableNames 'Go To Here') [=](#contents 'Back To Contents')
+### TableNames `property`
 
 ##### Summary
 
 List of the table names
 
 <a name='P-CodeFirstWebFramework-Namespace-Tables'></a>
-### Tables `property` [#](#P-CodeFirstWebFramework-Namespace-Tables 'Go To Here') [=](#contents 'Back To Contents')
+### Tables `property`
 
 ##### Summary
 
 Dictionary of tables defined in this namespace
 
 <a name='P-CodeFirstWebFramework-Namespace-ViewNames'></a>
-### ViewNames `property` [#](#P-CodeFirstWebFramework-Namespace-ViewNames 'Go To Here') [=](#contents 'Back To Contents')
+### ViewNames `property`
 
 ##### Summary
 
 List of the view names
 
 <a name='M-CodeFirstWebFramework-Namespace-Create-CodeFirstWebFramework-ServerConfig-'></a>
-### Create(server) `method` [#](#M-CodeFirstWebFramework-Namespace-Create-CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
+### Create(server) `method`
 
 ##### Summary
 
-Create a Namespace object for the server. Looks for a class called "Namespace" in the server's Namespace which is a subclass of Namespace, and has a constructor accepting a single ServerConfig argument. If not found, creates a base Namespace object
+Create a Namespace object for the server.
+Looks for a class called "Namespace" in the server's Namespace which is a subclass of Namespace, 
+and has a constructor accepting a single ServerConfig argument.
+If not found, creates a base Namespace object
 
 ##### Returns
 
@@ -5665,22 +5738,24 @@ Create a Namespace object for the server. Looks for a class called "Namespace" i
 | server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') |  |
 
 <a name='M-CodeFirstWebFramework-Namespace-GetAccessLevel'></a>
-### GetAccessLevel() `method` [#](#M-CodeFirstWebFramework-Namespace-GetAccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### GetAccessLevel() `method`
 
 ##### Summary
 
-Returns the AccessLevel object to use. If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.AccessLevel
+Returns the AccessLevel object to use.
+If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.AccessLevel
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Namespace-GetDatabase-CodeFirstWebFramework-ServerConfig-'></a>
-### GetDatabase(server) `method` [#](#M-CodeFirstWebFramework-Namespace-GetDatabase-CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
+### GetDatabase(server) `method`
 
 ##### Summary
 
-Returns the Database object to use. If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.Database
+Returns the Database object to use.
+If there is one in the namespace, returns an instance of that, otherwise an instance of CodeFirstWebFramework.Database
 
 ##### Parameters
 
@@ -5689,11 +5764,12 @@ Returns the Database object to use. If there is one in the namespace, returns an
 | server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') | ConfigServer to pass to the database constructor |
 
 <a name='M-CodeFirstWebFramework-Namespace-GetInstanceOf``1-System-Object[]-'></a>
-### GetInstanceOf\`\`1(args) `method` [#](#M-CodeFirstWebFramework-Namespace-GetInstanceOf``1-System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### GetInstanceOf\`\`1(args) `method`
 
 ##### Summary
 
-If there is a subclass of T in the namespace, create an instance of it. Otherwise create an instance of T
+If there is a subclass of T in the namespace, create an instance of it.
+Otherwise create an instance of T
 
 ##### Parameters
 
@@ -5708,7 +5784,7 @@ If there is a subclass of T in the namespace, create an instance of it. Otherwis
 | T | The class to create |
 
 <a name='M-CodeFirstWebFramework-Namespace-GetModuleInfo-System-String-'></a>
-### GetModuleInfo() `method` [#](#M-CodeFirstWebFramework-Namespace-GetModuleInfo-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### GetModuleInfo() `method`
 
 ##### Summary
 
@@ -5719,7 +5795,7 @@ Get the AppModule for a module name from the url
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Namespace-GetNamespaceType-System-Type-'></a>
-### GetNamespaceType() `method` [#](#M-CodeFirstWebFramework-Namespace-GetNamespaceType-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### GetNamespaceType() `method`
 
 ##### Summary
 
@@ -5730,29 +5806,32 @@ If there is a subclass of baseType in the namespace, returns that, otherwise bas
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Namespace-ParseUri-System-String,System-String@-'></a>
-### ParseUri() `method` [#](#M-CodeFirstWebFramework-Namespace-ParseUri-System-String,System-String@- 'Go To Here') [=](#contents 'Back To Contents')
+### ParseUri() `method`
 
 ##### Summary
 
-Parse a uri and return the ModuleInfo associated with it (or null if none). Sets filename to the proper relative filename (modulename/methodname.extension), stripping off VersionSuffix, and adding any defaults (home/default if uri is "/", for instance).
+Parse a uri and return the ModuleInfo associated with it (or null if none).
+Sets filename to the proper relative filename (modulename/methodname.extension), stripping off VersionSuffix, 
+and adding any defaults (home/default if uri is "/", for instance).
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Namespace-processFields-System-Type,System-Collections-Generic-List{CodeFirstWebFramework-Field}@,System-Collections-Generic-Dictionary{System-String,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}}@,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}@,System-String@-'></a>
-### processFields() `method` [#](#M-CodeFirstWebFramework-Namespace-processFields-System-Type,System-Collections-Generic-List{CodeFirstWebFramework-Field}@,System-Collections-Generic-Dictionary{System-String,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}}@,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}@,System-String@- 'Go To Here') [=](#contents 'Back To Contents')
+### processFields() `method`
 
 ##### Summary
 
-Update the field, index, etc. information for a C# type. Process base classes first.
+Update the field, index, etc. information for a C# type.
+Process base classes first.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Namespace-processTable-System-Type,CodeFirstWebFramework-ViewAttribute-'></a>
-### processTable() `method` [#](#M-CodeFirstWebFramework-Namespace-processTable-System-Type,CodeFirstWebFramework-ViewAttribute- 'Go To Here') [=](#contents 'Back To Contents')
+### processTable() `method`
 
 ##### Summary
 
@@ -5763,7 +5842,7 @@ Generate Table or View object for a C# class
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Namespace-TableFor-System-String-'></a>
-### TableFor() `method` [#](#M-CodeFirstWebFramework-Namespace-TableFor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### TableFor() `method`
 
 ##### Summary
 
@@ -5774,7 +5853,7 @@ Find a Table object by name - throw if not found
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-NullableAttribute'></a>
-## NullableAttribute [#](#T-CodeFirstWebFramework-NullableAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## NullableAttribute `type`
 
 ##### Namespace
 
@@ -5785,7 +5864,7 @@ CodeFirstWebFramework
 Mark a field as allowed to be null
 
 <a name='T-CodeFirstWebFramework-Permission'></a>
-## Permission [#](#T-CodeFirstWebFramework-Permission 'Go To Here') [=](#contents 'Back To Contents')
+## Permission `type`
 
 ##### Namespace
 
@@ -5796,49 +5875,55 @@ CodeFirstWebFramework
 Module level permissions for a user
 
 <a name='F-CodeFirstWebFramework-Permission-FunctionAccessLevel'></a>
-### FunctionAccessLevel `constants` [#](#F-CodeFirstWebFramework-Permission-FunctionAccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### FunctionAccessLevel `constants`
 
 ##### Summary
 
 The AccessLevel granted to this user for this module/method.
 
 <a name='F-CodeFirstWebFramework-Permission-Method'></a>
-### Method `constants` [#](#F-CodeFirstWebFramework-Permission-Method 'Go To Here') [=](#contents 'Back To Contents')
+### Method `constants`
 
 ##### Summary
 
-Method name, or Name from method level AuthAttribute if there is one specified. "-" for a module-level Permission. Multiple method-level AuthAttributes with the same name have the same Permission record.
+Method name, or Name from method level AuthAttribute if there is one specified.
+"-" for a module-level Permission.
+Multiple method-level AuthAttributes with the same name have the same Permission record.
 
 <a name='F-CodeFirstWebFramework-Permission-MinAccessLevel'></a>
-### MinAccessLevel `constants` [#](#F-CodeFirstWebFramework-Permission-MinAccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### MinAccessLevel `constants`
 
 ##### Summary
 
-Min access level needed for a user to be able to access this module/method. For example. for a module, the lowest access level of all the methods (not counting AccessLevel.Any), or the module access level, whichever is the less. Used in the UI to remove irrelevant access levels from the drop-down list.
+Min access level needed for a user to be able to access this module/method.
+For example. for a module, the lowest access level of all the methods (not counting
+AccessLevel.Any), or the module access level, whichever is the less.
+Used in the UI to remove irrelevant access levels from the drop-down list.
 
 <a name='F-CodeFirstWebFramework-Permission-Module'></a>
-### Module `constants` [#](#F-CodeFirstWebFramework-Permission-Module 'Go To Here') [=](#contents 'Back To Contents')
+### Module `constants`
 
 ##### Summary
 
-Module name, or Name from module level AuthAttribute if there is one specified. Multiple module-level AuthAttributes with the same name have the same Permission record.
+Module name, or Name from module level AuthAttribute if there is one specified.
+Multiple module-level AuthAttributes with the same name have the same Permission record.
 
 <a name='F-CodeFirstWebFramework-Permission-UserId'></a>
-### UserId `constants` [#](#F-CodeFirstWebFramework-Permission-UserId 'Go To Here') [=](#contents 'Back To Contents')
+### UserId `constants`
 
 ##### Summary
 
 User to whom this Permission applies.
 
 <a name='P-CodeFirstWebFramework-Permission-Function'></a>
-### Function `property` [#](#P-CodeFirstWebFramework-Permission-Function 'Go To Here') [=](#contents 'Back To Contents')
+### Function `property`
 
 ##### Summary
 
 Show method name in human-readable format.
 
 <a name='T-CodeFirstWebFramework-PrimaryAttribute'></a>
-## PrimaryAttribute [#](#T-CodeFirstWebFramework-PrimaryAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## PrimaryAttribute `type`
 
 ##### Namespace
 
@@ -5849,7 +5934,7 @@ CodeFirstWebFramework
 Mark a field as the primary key
 
 <a name='M-CodeFirstWebFramework-PrimaryAttribute-#ctor'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-PrimaryAttribute-#ctor 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -5860,7 +5945,7 @@ Constructor - sets AutoIncrement to true by default, and Name to "PRIMARY"
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-PrimaryAttribute-#ctor-System-Int32-'></a>
-### #ctor(sequence) `constructor` [#](#M-CodeFirstWebFramework-PrimaryAttribute-#ctor-System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(sequence) `constructor`
 
 ##### Summary
 
@@ -5873,28 +5958,28 @@ Constructor for when multiple fields make up the key
 | sequence | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Which order the fields are in |
 
 <a name='F-CodeFirstWebFramework-PrimaryAttribute-AutoIncrement'></a>
-### AutoIncrement `constants` [#](#F-CodeFirstWebFramework-PrimaryAttribute-AutoIncrement 'Go To Here') [=](#contents 'Back To Contents')
+### AutoIncrement `constants`
 
 ##### Summary
 
 Whether the key is AutoIncrement (should only be applied to integer keys, usually the record id)
 
 <a name='P-CodeFirstWebFramework-PrimaryAttribute-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-PrimaryAttribute-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Key Name ("PRIMARY" by default)
 
 <a name='P-CodeFirstWebFramework-PrimaryAttribute-Sequence'></a>
-### Sequence `property` [#](#P-CodeFirstWebFramework-PrimaryAttribute-Sequence 'Go To Here') [=](#contents 'Back To Contents')
+### Sequence `property`
 
 ##### Summary
 
 Sequence when multiple fields make up the index
 
 <a name='T-CodeFirstWebFramework-ReadOnlyAttribute'></a>
-## ReadOnlyAttribute [#](#T-CodeFirstWebFramework-ReadOnlyAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## ReadOnlyAttribute `type`
 
 ##### Namespace
 
@@ -5905,7 +5990,7 @@ CodeFirstWebFramework
 Indicate a field or class is readonly by default, even if it is part of a Table
 
 <a name='T-CodeFirstWebFramework-ServerConfig'></a>
-## ServerConfig [#](#T-CodeFirstWebFramework-ServerConfig 'Go To Here') [=](#contents 'Back To Contents')
+## ServerConfig `type`
 
 ##### Namespace
 
@@ -5916,84 +6001,84 @@ CodeFirstWebFramework
 Configuration for a web server
 
 <a name='F-CodeFirstWebFramework-ServerConfig-AdditionalAssemblies'></a>
-### AdditionalAssemblies `constants` [#](#F-CodeFirstWebFramework-ServerConfig-AdditionalAssemblies 'Go To Here') [=](#contents 'Back To Contents')
+### AdditionalAssemblies `constants`
 
 ##### Summary
 
 Additional Assemblies to load to provide the required functionality
 
 <a name='F-CodeFirstWebFramework-ServerConfig-ConnectionString'></a>
-### ConnectionString `constants` [#](#F-CodeFirstWebFramework-ServerConfig-ConnectionString 'Go To Here') [=](#contents 'Back To Contents')
+### ConnectionString `constants`
 
 ##### Summary
 
 Database connection string
 
 <a name='F-CodeFirstWebFramework-ServerConfig-CookieTimeoutMinutes'></a>
-### CookieTimeoutMinutes `constants` [#](#F-CodeFirstWebFramework-ServerConfig-CookieTimeoutMinutes 'Go To Here') [=](#contents 'Back To Contents')
+### CookieTimeoutMinutes `constants`
 
 ##### Summary
 
 Cookie timeout in minutes
 
 <a name='F-CodeFirstWebFramework-ServerConfig-Database'></a>
-### Database `constants` [#](#F-CodeFirstWebFramework-ServerConfig-Database 'Go To Here') [=](#contents 'Back To Contents')
+### Database `constants`
 
 ##### Summary
 
 Database type
 
 <a name='F-CodeFirstWebFramework-ServerConfig-Email'></a>
-### Email `constants` [#](#F-CodeFirstWebFramework-ServerConfig-Email 'Go To Here') [=](#contents 'Back To Contents')
+### Email `constants`
 
 ##### Summary
 
 Email address from which to send emails
 
 <a name='F-CodeFirstWebFramework-ServerConfig-Namespace'></a>
-### Namespace `constants` [#](#F-CodeFirstWebFramework-ServerConfig-Namespace 'Go To Here') [=](#contents 'Back To Contents')
+### Namespace `constants`
 
 ##### Summary
 
 Namespace in which to look for AppModules
 
 <a name='F-CodeFirstWebFramework-ServerConfig-NamespaceDef'></a>
-### NamespaceDef `constants` [#](#F-CodeFirstWebFramework-ServerConfig-NamespaceDef 'Go To Here') [=](#contents 'Back To Contents')
+### NamespaceDef `constants`
 
 ##### Summary
 
 Details of the namespace
 
 <a name='F-CodeFirstWebFramework-ServerConfig-Port'></a>
-### Port `constants` [#](#F-CodeFirstWebFramework-ServerConfig-Port 'Go To Here') [=](#contents 'Back To Contents')
+### Port `constants`
 
 ##### Summary
 
 The port the web server listens on
 
 <a name='F-CodeFirstWebFramework-ServerConfig-ServerAlias'></a>
-### ServerAlias `constants` [#](#F-CodeFirstWebFramework-ServerConfig-ServerAlias 'Go To Here') [=](#contents 'Back To Contents')
+### ServerAlias `constants`
 
 ##### Summary
 
 Other names allowed, separated by spaces
 
 <a name='F-CodeFirstWebFramework-ServerConfig-ServerName'></a>
-### ServerName `constants` [#](#F-CodeFirstWebFramework-ServerConfig-ServerName 'Go To Here') [=](#contents 'Back To Contents')
+### ServerName `constants`
 
 ##### Summary
 
 Name part of the url
 
 <a name='F-CodeFirstWebFramework-ServerConfig-Title'></a>
-### Title `constants` [#](#F-CodeFirstWebFramework-ServerConfig-Title 'Go To Here') [=](#contents 'Back To Contents')
+### Title `constants`
 
 ##### Summary
 
 Title for web pages
 
 <a name='M-CodeFirstWebFramework-ServerConfig-Matches-System-Uri-'></a>
-### Matches() `method` [#](#M-CodeFirstWebFramework-ServerConfig-Matches-System-Uri- 'Go To Here') [=](#contents 'Back To Contents')
+### Matches() `method`
 
 ##### Summary
 
@@ -6004,7 +6089,7 @@ Whether this server serves for the host name
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-WebServer-Session'></a>
-## Session [#](#T-CodeFirstWebFramework-WebServer-Session 'Go To Here') [=](#contents 'Back To Contents')
+## Session `type`
 
 ##### Namespace
 
@@ -6015,7 +6100,7 @@ CodeFirstWebFramework.WebServer
 Simple session
 
 <a name='M-CodeFirstWebFramework-WebServer-Session-#ctor-CodeFirstWebFramework-WebServer-'></a>
-### #ctor(server) `constructor` [#](#M-CodeFirstWebFramework-WebServer-Session-#ctor-CodeFirstWebFramework-WebServer- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(server) `constructor`
 
 ##### Summary
 
@@ -6028,42 +6113,42 @@ Constructor
 | server | [CodeFirstWebFramework.WebServer](#T-CodeFirstWebFramework-WebServer 'CodeFirstWebFramework.WebServer') |  |
 
 <a name='F-CodeFirstWebFramework-WebServer-Session-Expires'></a>
-### Expires `constants` [#](#F-CodeFirstWebFramework-WebServer-Session-Expires 'Go To Here') [=](#contents 'Back To Contents')
+### Expires `constants`
 
 ##### Summary
 
 When the session expires
 
 <a name='F-CodeFirstWebFramework-WebServer-Session-Server'></a>
-### Server `constants` [#](#F-CodeFirstWebFramework-WebServer-Session-Server 'Go To Here') [=](#contents 'Back To Contents')
+### Server `constants`
 
 ##### Summary
 
 The WebServer owning the session (or null)
 
 <a name='F-CodeFirstWebFramework-WebServer-Session-User'></a>
-### User `constants` [#](#F-CodeFirstWebFramework-WebServer-Session-User 'Go To Here') [=](#contents 'Back To Contents')
+### User `constants`
 
 ##### Summary
 
 Logged in user (or null if none)
 
 <a name='P-CodeFirstWebFramework-WebServer-Session-Cookie'></a>
-### Cookie `property` [#](#P-CodeFirstWebFramework-WebServer-Session-Cookie 'Go To Here') [=](#contents 'Back To Contents')
+### Cookie `property`
 
 ##### Summary
 
 The session cookie
 
 <a name='P-CodeFirstWebFramework-WebServer-Session-Object'></a>
-### Object `property` [#](#P-CodeFirstWebFramework-WebServer-Session-Object 'Go To Here') [=](#contents 'Back To Contents')
+### Object `property`
 
 ##### Summary
 
 Arbitrary JObject stored in session for later access
 
 <a name='T-CodeFirstWebFramework-Settings'></a>
-## Settings [#](#T-CodeFirstWebFramework-Settings 'Go To Here') [=](#contents 'Back To Contents')
+## Settings `type`
 
 ##### Namespace
 
@@ -6074,42 +6159,42 @@ CodeFirstWebFramework
 The Settings record from the Settings table
 
 <a name='F-CodeFirstWebFramework-Settings-DbVersion'></a>
-### DbVersion `constants` [#](#F-CodeFirstWebFramework-Settings-DbVersion 'Go To Here') [=](#contents 'Back To Contents')
+### DbVersion `constants`
 
 ##### Summary
 
 Database version
 
 <a name='F-CodeFirstWebFramework-Settings-idSettings'></a>
-### idSettings `constants` [#](#F-CodeFirstWebFramework-Settings-idSettings 'Go To Here') [=](#contents 'Back To Contents')
+### idSettings `constants`
 
 ##### Summary
 
 Record id
 
 <a name='F-CodeFirstWebFramework-Settings-Skin'></a>
-### Skin `constants` [#](#F-CodeFirstWebFramework-Settings-Skin 'Go To Here') [=](#contents 'Back To Contents')
+### Skin `constants`
 
 ##### Summary
 
 Display skin to use
 
 <a name='P-CodeFirstWebFramework-Settings-AppVersion'></a>
-### AppVersion `property` [#](#P-CodeFirstWebFramework-Settings-AppVersion 'Go To Here') [=](#contents 'Back To Contents')
+### AppVersion `property`
 
 ##### Summary
 
 The application version
 
 <a name='P-CodeFirstWebFramework-Settings-Id'></a>
-### Id `property` [#](#P-CodeFirstWebFramework-Settings-Id 'Go To Here') [=](#contents 'Back To Contents')
+### Id `property`
 
 ##### Summary
 
 Record id
 
 <a name='T-CodeFirstWebFramework-SqliteConcat'></a>
-## SqliteConcat [#](#T-CodeFirstWebFramework-SqliteConcat 'Go To Here') [=](#contents 'Back To Contents')
+## SqliteConcat `type`
 
 ##### Namespace
 
@@ -6120,7 +6205,7 @@ CodeFirstWebFramework
 CONCAT function - just like MySql
 
 <a name='T-CodeFirstWebFramework-SQLiteDatabase'></a>
-## SQLiteDatabase [#](#T-CodeFirstWebFramework-SQLiteDatabase 'Go To Here') [=](#contents 'Back To Contents')
+## SQLiteDatabase `type`
 
 ##### Namespace
 
@@ -6131,7 +6216,7 @@ CodeFirstWebFramework
 Interface to SQLite
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-#ctor-CodeFirstWebFramework-Database,System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-SQLiteDatabase-#ctor-CodeFirstWebFramework-Database,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -6142,7 +6227,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-#cctor'></a>
-### #cctor() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-#cctor 'Go To Here') [=](#contents 'Back To Contents')
+### #cctor() `method`
 
 ##### Summary
 
@@ -6153,7 +6238,7 @@ Static constructor registers the extension functions to make SQLite more like My
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-BeginTransaction'></a>
-### BeginTransaction() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-BeginTransaction 'Go To Here') [=](#contents 'Back To Contents')
+### BeginTransaction() `method`
 
 ##### Summary
 
@@ -6164,7 +6249,7 @@ Begin transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Cast-System-String,System-String-'></a>
-### Cast() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Cast-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Cast() `method`
 
 ##### Summary
 
@@ -6175,7 +6260,7 @@ Return SQL to cast a value to a type
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-CleanDatabase'></a>
-### CleanDatabase() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-CleanDatabase 'Go To Here') [=](#contents 'Back To Contents')
+### CleanDatabase() `method`
 
 ##### Summary
 
@@ -6186,7 +6271,7 @@ Clean up database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Commit'></a>
-### Commit() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Commit 'Go To Here') [=](#contents 'Back To Contents')
+### Commit() `method`
 
 ##### Summary
 
@@ -6197,7 +6282,7 @@ Commit transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
-### CreateIndex() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'Go To Here') [=](#contents 'Back To Contents')
+### CreateIndex() `method`
 
 ##### Summary
 
@@ -6208,7 +6293,7 @@ Create an index from a table and index definition
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-CreateTable-CodeFirstWebFramework-Table-'></a>
-### CreateTable() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-CreateTable-CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### CreateTable() `method`
 
 ##### Summary
 
@@ -6219,7 +6304,7 @@ Create a table from a Table definition
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Dispose'></a>
-### Dispose() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Dispose 'Go To Here') [=](#contents 'Back To Contents')
+### Dispose() `method`
 
 ##### Summary
 
@@ -6230,7 +6315,7 @@ Roll back any uncommitted transaction and close the connection
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
-### DropIndex() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'Go To Here') [=](#contents 'Back To Contents')
+### DropIndex() `method`
 
 ##### Summary
 
@@ -6241,7 +6326,7 @@ Drop an index
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-DropTable-CodeFirstWebFramework-Table-'></a>
-### DropTable() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-DropTable-CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### DropTable() `method`
 
 ##### Summary
 
@@ -6252,7 +6337,7 @@ Drop a table
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Execute-System-String-'></a>
-### Execute() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Execute-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Execute() `method`
 
 ##### Summary
 
@@ -6263,7 +6348,7 @@ Execute arbitrary sql
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field-'></a>
-### FieldsMatch() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldsMatch() `method`
 
 ##### Summary
 
@@ -6274,7 +6359,7 @@ Do the fields in code and database match (some implementations are case insensit
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
-### Insert(table,sql,updatesAutoIncrement) `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert(table,sql,updatesAutoIncrement) `method`
 
 ##### Summary
 
@@ -6293,7 +6378,7 @@ The value of the auto-increment record id of the newly inserted record
 | updatesAutoIncrement | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if the insert may update an auto-increment field |
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Query-System-String-'></a>
-### Query() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Query-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Query() `method`
 
 ##### Summary
 
@@ -6304,7 +6389,7 @@ Query the database, and return JObjects for each record returned
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-QueryOne-System-String-'></a>
-### QueryOne() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-QueryOne-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### QueryOne() `method`
 
 ##### Summary
 
@@ -6315,7 +6400,7 @@ Query the database, and return the first record matching the query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Quote-System-Object-'></a>
-### Quote() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Quote-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### Quote() `method`
 
 ##### Summary
 
@@ -6326,7 +6411,7 @@ Quote any kind of data for inclusion in a SQL query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Rollback'></a>
-### Rollback() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Rollback 'Go To Here') [=](#contents 'Back To Contents')
+### Rollback() `method`
 
 ##### Summary
 
@@ -6337,7 +6422,7 @@ Rollback transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Tables'></a>
-### Tables() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-Tables 'Go To Here') [=](#contents 'Back To Contents')
+### Tables() `method`
 
 ##### Summary
 
@@ -6348,7 +6433,7 @@ Get a Dictionary of existing tables in the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}-'></a>
-### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'Go To Here') [=](#contents 'Back To Contents')
+### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method`
 
 ##### Summary
 
@@ -6369,7 +6454,7 @@ Upgrade the table definition
 | dropIndex | [System.Collections.Generic.List{CodeFirstWebFramework.Index}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Index}') | Indexes to remove |
 
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View-'></a>
-### ViewsMatch() `method` [#](#M-CodeFirstWebFramework-SQLiteDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'Go To Here') [=](#contents 'Back To Contents')
+### ViewsMatch() `method`
 
 ##### Summary
 
@@ -6380,7 +6465,7 @@ Do the views in code and database match
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-SqliteDateDiff'></a>
-## SqliteDateDiff [#](#T-CodeFirstWebFramework-SqliteDateDiff 'Go To Here') [=](#contents 'Back To Contents')
+## SqliteDateDiff `type`
 
 ##### Namespace
 
@@ -6391,7 +6476,7 @@ CodeFirstWebFramework
 DATEDIFF function (like MySql's)
 
 <a name='T-CodeFirstWebFramework-SqliteSum'></a>
-## SqliteSum [#](#T-CodeFirstWebFramework-SqliteSum 'Go To Here') [=](#contents 'Back To Contents')
+## SqliteSum `type`
 
 ##### Namespace
 
@@ -6402,7 +6487,7 @@ CodeFirstWebFramework
 SUM function which rounds as it sums, so it works like MySql's
 
 <a name='T-CodeFirstWebFramework-SqlServerDatabase'></a>
-## SqlServerDatabase [#](#T-CodeFirstWebFramework-SqlServerDatabase 'Go To Here') [=](#contents 'Back To Contents')
+## SqlServerDatabase `type`
 
 ##### Namespace
 
@@ -6413,7 +6498,7 @@ CodeFirstWebFramework
 DbInterface for Sql Server
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-#ctor-CodeFirstWebFramework-Database,System-String-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-SqlServerDatabase-#ctor-CodeFirstWebFramework-Database,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -6424,7 +6509,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-BeginTransaction'></a>
-### BeginTransaction() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-BeginTransaction 'Go To Here') [=](#contents 'Back To Contents')
+### BeginTransaction() `method`
 
 ##### Summary
 
@@ -6435,7 +6520,7 @@ Begin transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Cast-System-String,System-String-'></a>
-### Cast() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Cast-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Cast() `method`
 
 ##### Summary
 
@@ -6446,7 +6531,7 @@ Return SQL to cast a value to a type
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-CleanDatabase'></a>
-### CleanDatabase() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-CleanDatabase 'Go To Here') [=](#contents 'Back To Contents')
+### CleanDatabase() `method`
 
 ##### Summary
 
@@ -6457,7 +6542,7 @@ Clean up database (does nothing here)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Commit'></a>
-### Commit() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Commit 'Go To Here') [=](#contents 'Back To Contents')
+### Commit() `method`
 
 ##### Summary
 
@@ -6468,7 +6553,7 @@ Commit transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
-### CreateIndex() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'Go To Here') [=](#contents 'Back To Contents')
+### CreateIndex() `method`
 
 ##### Summary
 
@@ -6479,7 +6564,7 @@ Create an index from a table and index definition
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-CreateTable-CodeFirstWebFramework-Table-'></a>
-### CreateTable() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-CreateTable-CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### CreateTable() `method`
 
 ##### Summary
 
@@ -6490,7 +6575,7 @@ Create a table from a Table definition
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Dispose'></a>
-### Dispose() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Dispose 'Go To Here') [=](#contents 'Back To Contents')
+### Dispose() `method`
 
 ##### Summary
 
@@ -6501,7 +6586,7 @@ Roll back any uncommitted transaction and close the connection
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
-### DropIndex() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'Go To Here') [=](#contents 'Back To Contents')
+### DropIndex() `method`
 
 ##### Summary
 
@@ -6512,7 +6597,7 @@ Drop an index
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-DropTable-CodeFirstWebFramework-Table-'></a>
-### DropTable() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-DropTable-CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### DropTable() `method`
 
 ##### Summary
 
@@ -6523,7 +6608,7 @@ Drop a table
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Execute-System-String-'></a>
-### Execute() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Execute-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Execute() `method`
 
 ##### Summary
 
@@ -6534,7 +6619,7 @@ Execute arbitrary sql
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field-'></a>
-### FieldsMatch() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldsMatch() `method`
 
 ##### Summary
 
@@ -6545,7 +6630,7 @@ Determine whether two fields are the same
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
-### Insert(table,sql,updatesAutoIncrement) `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'Go To Here') [=](#contents 'Back To Contents')
+### Insert(table,sql,updatesAutoIncrement) `method`
 
 ##### Summary
 
@@ -6564,7 +6649,7 @@ The value of the auto-increment record id of the newly inserted record
 | updatesAutoIncrement | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if the insert may update an auto-increment field |
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Query-System-String-'></a>
-### Query() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Query-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Query() `method`
 
 ##### Summary
 
@@ -6575,7 +6660,7 @@ Query the database, and return JObjects for each record returned
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-QueryOne-System-String-'></a>
-### QueryOne() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-QueryOne-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### QueryOne() `method`
 
 ##### Summary
 
@@ -6586,7 +6671,7 @@ Query the database, and return the first record matching the query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Quote-System-Object-'></a>
-### Quote() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Quote-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### Quote() `method`
 
 ##### Summary
 
@@ -6597,7 +6682,7 @@ Quote any kind of data for inclusion in a SQL query
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Rollback'></a>
-### Rollback() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Rollback 'Go To Here') [=](#contents 'Back To Contents')
+### Rollback() `method`
 
 ##### Summary
 
@@ -6608,7 +6693,7 @@ Rollback transaction
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Tables'></a>
-### Tables() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-Tables 'Go To Here') [=](#contents 'Back To Contents')
+### Tables() `method`
 
 ##### Summary
 
@@ -6619,7 +6704,7 @@ Get a Dictionary of existing tables in the database
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}-'></a>
-### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'Go To Here') [=](#contents 'Back To Contents')
+### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method`
 
 ##### Summary
 
@@ -6640,7 +6725,7 @@ Upgrade the table definition
 | dropIndex | [System.Collections.Generic.List{CodeFirstWebFramework.Index}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Index}') | Indexes to remove |
 
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View-'></a>
-### ViewsMatch() `method` [#](#M-CodeFirstWebFramework-SqlServerDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'Go To Here') [=](#contents 'Back To Contents')
+### ViewsMatch() `method`
 
 ##### Summary
 
@@ -6651,7 +6736,7 @@ Do the views in code and database match
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-Table'></a>
-## Table [#](#T-CodeFirstWebFramework-Table 'Go To Here') [=](#contents 'Back To Contents')
+## Table `type`
 
 ##### Namespace
 
@@ -6662,7 +6747,7 @@ CodeFirstWebFramework
 Table definition
 
 <a name='M-CodeFirstWebFramework-Table-#ctor-System-String,CodeFirstWebFramework-Field[],CodeFirstWebFramework-Index[]-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Table-#ctor-System-String,CodeFirstWebFramework-Field[],CodeFirstWebFramework-Index[]- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -6673,7 +6758,7 @@ Constructor
 This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-Table-#ctor-System-Type-'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-Table-#ctor-System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -6684,56 +6769,56 @@ For TableForOrDefault - just provides JObject type conversion
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-Table-Fields'></a>
-### Fields `constants` [#](#F-CodeFirstWebFramework-Table-Fields 'Go To Here') [=](#contents 'Back To Contents')
+### Fields `constants`
 
 ##### Summary
 
 The fields in the table
 
 <a name='F-CodeFirstWebFramework-Table-Type'></a>
-### Type `constants` [#](#F-CodeFirstWebFramework-Table-Type 'Go To Here') [=](#contents 'Back To Contents')
+### Type `constants`
 
 ##### Summary
 
 The C# type to which this table relates
 
 <a name='P-CodeFirstWebFramework-Table-Indexes'></a>
-### Indexes `property` [#](#P-CodeFirstWebFramework-Table-Indexes 'Go To Here') [=](#contents 'Back To Contents')
+### Indexes `property`
 
 ##### Summary
 
 The indexes
 
 <a name='P-CodeFirstWebFramework-Table-IsView'></a>
-### IsView `property` [#](#P-CodeFirstWebFramework-Table-IsView 'Go To Here') [=](#contents 'Back To Contents')
+### IsView `property`
 
 ##### Summary
 
 Whether this is a View rather than a native table
 
 <a name='P-CodeFirstWebFramework-Table-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-Table-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Table name
 
 <a name='P-CodeFirstWebFramework-Table-PrimaryKey'></a>
-### PrimaryKey `property` [#](#P-CodeFirstWebFramework-Table-PrimaryKey 'Go To Here') [=](#contents 'Back To Contents')
+### PrimaryKey `property`
 
 ##### Summary
 
 Primary key (first index)
 
 <a name='P-CodeFirstWebFramework-Table-UpdateTable'></a>
-### UpdateTable `property` [#](#P-CodeFirstWebFramework-Table-UpdateTable 'Go To Here') [=](#contents 'Back To Contents')
+### UpdateTable `property`
 
 ##### Summary
 
 Table to update if update is called on a View
 
 <a name='M-CodeFirstWebFramework-Table-FieldFor-System-String-'></a>
-### FieldFor() `method` [#](#M-CodeFirstWebFramework-Table-FieldFor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### FieldFor() `method`
 
 ##### Summary
 
@@ -6744,7 +6829,7 @@ Find a field by name (null if not found)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Table-ForeignKeyFieldFor-CodeFirstWebFramework-Table-'></a>
-### ForeignKeyFieldFor() `method` [#](#M-CodeFirstWebFramework-Table-ForeignKeyFieldFor-CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### ForeignKeyFieldFor() `method`
 
 ##### Summary
 
@@ -6755,18 +6840,19 @@ Find foreign key in this table that refers to target table (null if not found)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Table-FromJson``1-Newtonsoft-Json-Linq-JObject-'></a>
-### FromJson\`\`1() `method` [#](#M-CodeFirstWebFramework-Table-FromJson``1-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### FromJson\`\`1() `method`
 
 ##### Summary
 
-Convert JObject to type T If the table type is a subclass of T, return the table type cast to T
+Convert JObject to type T
+If the table type is a subclass of T, return the table type cast to T
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Table-IndexFor-Newtonsoft-Json-Linq-JObject-'></a>
-### IndexFor() `method` [#](#M-CodeFirstWebFramework-Table-IndexFor-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### IndexFor() `method`
 
 ##### Summary
 
@@ -6777,7 +6863,7 @@ Find the first index for which there are values for all fields in data (null if 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Table-ToString'></a>
-### ToString() `method` [#](#M-CodeFirstWebFramework-Table-ToString 'Go To Here') [=](#contents 'Back To Contents')
+### ToString() `method`
 
 ##### Summary
 
@@ -6792,7 +6878,7 @@ For debugging
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-TableAttribute'></a>
-## TableAttribute [#](#T-CodeFirstWebFramework-TableAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## TableAttribute `type`
 
 ##### Namespace
 
@@ -6803,7 +6889,7 @@ CodeFirstWebFramework
 Mark a C# class as a database table
 
 <a name='T-CodeFirstWebFramework-TableList'></a>
-## TableList [#](#T-CodeFirstWebFramework-TableList 'Go To Here') [=](#contents 'Back To Contents')
+## TableList `type`
 
 ##### Namespace
 
@@ -6811,10 +6897,11 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Sorted list of tables, such that tables referred to in a foreign key come before the referring table, and tables referred to in a view come before the view
+Sorted list of tables, such that tables referred to in a foreign key come before the referring table,
+and tables referred to in a view come before the view
 
 <a name='M-CodeFirstWebFramework-TableList-#ctor-System-Collections-Generic-IEnumerable{CodeFirstWebFramework-Table}-'></a>
-### #ctor(allTables) `constructor` [#](#M-CodeFirstWebFramework-TableList-#ctor-System-Collections-Generic-IEnumerable{CodeFirstWebFramework-Table}- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(allTables) `constructor`
 
 ##### Summary
 
@@ -6827,7 +6914,7 @@ Constructor
 | allTables | [System.Collections.Generic.IEnumerable{CodeFirstWebFramework.Table}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{CodeFirstWebFramework.Table}') | The tables to add to the list |
 
 <a name='T-CodeFirstWebFramework-TemplateSectionAttribute'></a>
-## TemplateSectionAttribute [#](#T-CodeFirstWebFramework-TemplateSectionAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## TemplateSectionAttribute `type`
 
 ##### Namespace
 
@@ -6835,10 +6922,12 @@ CodeFirstWebFramework
 
 ##### Summary
 
-Attribute to indicate a string field in an AppModule is to be filled from an XML element of the same name (but in lower case) in a template (if such an element exists) when the template is substituted in default.tmpl
+Attribute to indicate a string field in an AppModule is to be filled from an XML element
+of the same name (but in lower case) in a template (if such an element exists) when
+the template is substituted in default.tmpl
 
 <a name='T-CodeFirstWebFramework-Database-Timer'></a>
-## Timer [#](#T-CodeFirstWebFramework-Database-Timer 'Go To Here') [=](#contents 'Back To Contents')
+## Timer `type`
 
 ##### Namespace
 
@@ -6849,7 +6938,7 @@ CodeFirstWebFramework.Database
 Class to time queries, and log if they exceed MaxTime (default Config.Default.SlowQuery)
 
 <a name='M-CodeFirstWebFramework-Database-Timer-#ctor-System-String-'></a>
-### #ctor(message) `constructor` [#](#M-CodeFirstWebFramework-Database-Timer-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(message) `constructor`
 
 ##### Summary
 
@@ -6862,14 +6951,14 @@ Constructor
 | message | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
 <a name='F-CodeFirstWebFramework-Database-Timer-MaxTime'></a>
-### MaxTime `constants` [#](#F-CodeFirstWebFramework-Database-Timer-MaxTime 'Go To Here') [=](#contents 'Back To Contents')
+### MaxTime `constants`
 
 ##### Summary
 
 Max time (default Config.Default.SlowQuery)
 
 <a name='M-CodeFirstWebFramework-Database-Timer-Dispose'></a>
-### Dispose() `method` [#](#M-CodeFirstWebFramework-Database-Timer-Dispose 'Go To Here') [=](#contents 'Back To Contents')
+### Dispose() `method`
 
 ##### Summary
 
@@ -6880,7 +6969,7 @@ Check elapsed time and log if it exceeds MaxTime
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-UniqueAttribute'></a>
-## UniqueAttribute [#](#T-CodeFirstWebFramework-UniqueAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## UniqueAttribute `type`
 
 ##### Namespace
 
@@ -6891,7 +6980,7 @@ CodeFirstWebFramework
 Mark a field as part of a unique index
 
 <a name='M-CodeFirstWebFramework-UniqueAttribute-#ctor-System-String-'></a>
-### #ctor(name) `constructor` [#](#M-CodeFirstWebFramework-UniqueAttribute-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(name) `constructor`
 
 ##### Summary
 
@@ -6904,7 +6993,7 @@ Constructor
 | name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Index name |
 
 <a name='M-CodeFirstWebFramework-UniqueAttribute-#ctor-System-String,System-Int32-'></a>
-### #ctor(name,sequence) `constructor` [#](#M-CodeFirstWebFramework-UniqueAttribute-#ctor-System-String,System-Int32- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(name,sequence) `constructor`
 
 ##### Summary
 
@@ -6918,21 +7007,21 @@ Constructor
 | sequence | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Sequence when multiple fields make up the index |
 
 <a name='P-CodeFirstWebFramework-UniqueAttribute-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-UniqueAttribute-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Index name
 
 <a name='P-CodeFirstWebFramework-UniqueAttribute-Sequence'></a>
-### Sequence `property` [#](#P-CodeFirstWebFramework-UniqueAttribute-Sequence 'Go To Here') [=](#contents 'Back To Contents')
+### Sequence `property`
 
 ##### Summary
 
 Sequence when multiple fields make up the index
 
 <a name='T-CodeFirstWebFramework-UploadedFile'></a>
-## UploadedFile [#](#T-CodeFirstWebFramework-UploadedFile 'Go To Here') [=](#contents 'Back To Contents')
+## UploadedFile `type`
 
 ##### Namespace
 
@@ -6943,7 +7032,7 @@ CodeFirstWebFramework
 Class to hold details of an uploaded file (from an <input type="file" />)
 
 <a name='M-CodeFirstWebFramework-UploadedFile-#ctor-System-String,System-String-'></a>
-### #ctor(name,content) `constructor` [#](#M-CodeFirstWebFramework-UploadedFile-#ctor-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(name,content) `constructor`
 
 ##### Summary
 
@@ -6957,21 +7046,21 @@ Constructor
 | content | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | file data |
 
 <a name='P-CodeFirstWebFramework-UploadedFile-Content'></a>
-### Content `property` [#](#P-CodeFirstWebFramework-UploadedFile-Content 'Go To Here') [=](#contents 'Back To Contents')
+### Content `property`
 
 ##### Summary
 
 File contents - Windows1252 was used to read it in, so saving it as Windows1252 will be an exact binary copy
 
 <a name='P-CodeFirstWebFramework-UploadedFile-Name'></a>
-### Name `property` [#](#P-CodeFirstWebFramework-UploadedFile-Name 'Go To Here') [=](#contents 'Back To Contents')
+### Name `property`
 
 ##### Summary
 
 Field name
 
 <a name='M-CodeFirstWebFramework-UploadedFile-Stream'></a>
-### Stream() `method` [#](#M-CodeFirstWebFramework-UploadedFile-Stream 'Go To Here') [=](#contents 'Back To Contents')
+### Stream() `method`
 
 ##### Summary
 
@@ -6982,7 +7071,7 @@ The file contents as a stream
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-User'></a>
-## User [#](#T-CodeFirstWebFramework-User 'Go To Here') [=](#contents 'Back To Contents')
+## User `type`
 
 ##### Namespace
 
@@ -6993,49 +7082,49 @@ CodeFirstWebFramework
 Login user with permissions
 
 <a name='F-CodeFirstWebFramework-User-AccessLevel'></a>
-### AccessLevel `constants` [#](#F-CodeFirstWebFramework-User-AccessLevel 'Go To Here') [=](#contents 'Back To Contents')
+### AccessLevel `constants`
 
 ##### Summary
 
 See AccessLevel class for possible values
 
 <a name='F-CodeFirstWebFramework-User-Email'></a>
-### Email `constants` [#](#F-CodeFirstWebFramework-User-Email 'Go To Here') [=](#contents 'Back To Contents')
+### Email `constants`
 
 ##### Summary
 
 Email -c an be used instead of login name to login.
 
 <a name='F-CodeFirstWebFramework-User-idUser'></a>
-### idUser `constants` [#](#F-CodeFirstWebFramework-User-idUser 'Go To Here') [=](#contents 'Back To Contents')
+### idUser `constants`
 
 ##### Summary
 
 Unique id.
 
 <a name='F-CodeFirstWebFramework-User-Login'></a>
-### Login `constants` [#](#F-CodeFirstWebFramework-User-Login 'Go To Here') [=](#contents 'Back To Contents')
+### Login `constants`
 
 ##### Summary
 
 Login name.
 
 <a name='F-CodeFirstWebFramework-User-ModulePermissions'></a>
-### ModulePermissions `constants` [#](#F-CodeFirstWebFramework-User-ModulePermissions 'Go To Here') [=](#contents 'Back To Contents')
+### ModulePermissions `constants`
 
 ##### Summary
 
 True if user has different permissions for different modules/methods.
 
 <a name='F-CodeFirstWebFramework-User-Password'></a>
-### Password `constants` [#](#F-CodeFirstWebFramework-User-Password 'Go To Here') [=](#contents 'Back To Contents')
+### Password `constants`
 
 ##### Summary
 
 Password.
 
 <a name='M-CodeFirstWebFramework-User-HashPassword-System-String-'></a>
-### HashPassword() `method` [#](#M-CodeFirstWebFramework-User-HashPassword-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### HashPassword() `method`
 
 ##### Summary
 
@@ -7046,7 +7135,7 @@ Hash a password using SHA and Base64
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-User-PasswordValid-System-String-'></a>
-### PasswordValid() `method` [#](#M-CodeFirstWebFramework-User-PasswordValid-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### PasswordValid() `method`
 
 ##### Summary
 
@@ -7061,7 +7150,7 @@ null if valid, or error message explaining why if not
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-Utils'></a>
-## Utils [#](#T-CodeFirstWebFramework-Utils 'Go To Here') [=](#contents 'Back To Contents')
+## Utils `type`
 
 ##### Namespace
 
@@ -7072,63 +7161,67 @@ CodeFirstWebFramework
 Utility functions
 
 <a name='F-CodeFirstWebFramework-Utils-_converter'></a>
-### _converter `constants` [#](#F-CodeFirstWebFramework-Utils-_converter 'Go To Here') [=](#contents 'Back To Contents')
+### _converter `constants`
 
 ##### Summary
 
 For converting between json string and JObject
 
 <a name='F-CodeFirstWebFramework-Utils-_timeOffset'></a>
-### _timeOffset `constants` [#](#F-CodeFirstWebFramework-Utils-_timeOffset 'Go To Here') [=](#contents 'Back To Contents')
+### _timeOffset `constants`
 
 ##### Summary
 
-For testing - set this to an offset, and all dates & times will be offset by this amount. Enables a test to be run as if the computer time clock was offset by this amount - i.e. the date & time were set exactly the same as when the test was first run.
+For testing - set this to an offset, and all dates & times will be offset by this amount.
+Enables a test to be run as if the computer time clock was offset by this amount - 
+i.e. the date & time were set exactly the same as when the test was first run.
 
 <a name='F-CodeFirstWebFramework-Utils-_tz'></a>
-### _tz `constants` [#](#F-CodeFirstWebFramework-Utils-_tz 'Go To Here') [=](#contents 'Back To Contents')
+### _tz `constants`
 
 ##### Summary
 
 Time Zone to use throughout
 
 <a name='F-CodeFirstWebFramework-Utils-DecimalRegex'></a>
-### DecimalRegex `constants` [#](#F-CodeFirstWebFramework-Utils-DecimalRegex 'Go To Here') [=](#contents 'Back To Contents')
+### DecimalRegex `constants`
 
 ##### Summary
 
 Regex to match decimals
 
 <a name='F-CodeFirstWebFramework-Utils-IntegerRegex'></a>
-### IntegerRegex `constants` [#](#F-CodeFirstWebFramework-Utils-IntegerRegex 'Go To Here') [=](#contents 'Back To Contents')
+### IntegerRegex `constants`
 
 ##### Summary
 
 Regex matches integers
 
 <a name='F-CodeFirstWebFramework-Utils-InvoiceNumber'></a>
-### InvoiceNumber `constants` [#](#F-CodeFirstWebFramework-Utils-InvoiceNumber 'Go To Here') [=](#contents 'Back To Contents')
+### InvoiceNumber `constants`
 
 ##### Summary
 
 Regex matches positive integers
 
 <a name='P-CodeFirstWebFramework-Utils-Now'></a>
-### Now `property` [#](#P-CodeFirstWebFramework-Utils-Now 'Go To Here') [=](#contents 'Back To Contents')
+### Now `property`
 
 ##### Summary
 
-Time Now. Can be adjusted for test runs using _timeOffset
+Time Now.
+Can be adjusted for test runs using _timeOffset
 
 <a name='P-CodeFirstWebFramework-Utils-Today'></a>
-### Today `property` [#](#P-CodeFirstWebFramework-Utils-Today 'Go To Here') [=](#contents 'Back To Contents')
+### Today `property`
 
 ##### Summary
 
-Date Today. Can be adjusted for test runs using _timeOffset
+Date Today.
+Can be adjusted for test runs using _timeOffset
 
 <a name='M-CodeFirstWebFramework-Utils-AddRange-Newtonsoft-Json-Linq-JObject,System-Collections-Specialized-NameValueCollection-'></a>
-### AddRange() `method` [#](#M-CodeFirstWebFramework-Utils-AddRange-Newtonsoft-Json-Linq-JObject,System-Collections-Specialized-NameValueCollection- 'Go To Here') [=](#contents 'Back To Contents')
+### AddRange() `method`
 
 ##### Summary
 
@@ -7139,7 +7232,7 @@ Add a NameValue collection to a JObject. Chainable.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AddRange-Newtonsoft-Json-Linq-JObject,Newtonsoft-Json-Linq-JObject-'></a>
-### AddRange() `method` [#](#M-CodeFirstWebFramework-Utils-AddRange-Newtonsoft-Json-Linq-JObject,Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### AddRange() `method`
 
 ##### Summary
 
@@ -7150,7 +7243,7 @@ Add the properties of one JObject to another. Chainable.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AddRange-Newtonsoft-Json-Linq-JObject,System-Object[]-'></a>
-### AddRange(self,content) `method` [#](#M-CodeFirstWebFramework-Utils-AddRange-Newtonsoft-Json-Linq-JObject,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### AddRange(self,content) `method`
 
 ##### Summary
 
@@ -7161,10 +7254,12 @@ Helper to add a list of stuff to a JObject. Chainable.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | self | [Newtonsoft.Json.Linq.JObject](#T-Newtonsoft-Json-Linq-JObject 'Newtonsoft.Json.Linq.JObject') | The Jobject to add the stuff to |
-| content | [System.Object[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object[] 'System.Object[]') | Of the form: string, object - string = value or JObject - adds properties of JObject or NameValueCollection - adds collection members |
+| content | [System.Object[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object[] 'System.Object[]') | Of the form: string, object - string = value
+or JObject - adds properties of JObject
+or NameValueCollection - adds collection members |
 
 <a name='M-CodeFirstWebFramework-Utils-As``1-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### As\`\`1() `method` [#](#M-CodeFirstWebFramework-Utils-As``1-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### As\`\`1() `method`
 
 ##### Summary
 
@@ -7175,7 +7270,7 @@ this[name] as an arbitrary type T
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AsBool-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### AsBool() `method` [#](#M-CodeFirstWebFramework-Utils-AsBool-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### AsBool() `method`
 
 ##### Summary
 
@@ -7186,7 +7281,7 @@ this[name] as a bool
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AsDate-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### AsDate() `method` [#](#M-CodeFirstWebFramework-Utils-AsDate-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### AsDate() `method`
 
 ##### Summary
 
@@ -7197,7 +7292,7 @@ this[name] as a DateTime
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AsDecimal-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### AsDecimal() `method` [#](#M-CodeFirstWebFramework-Utils-AsDecimal-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### AsDecimal() `method`
 
 ##### Summary
 
@@ -7208,7 +7303,7 @@ this[name] as a decimal
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AsDouble-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### AsDouble() `method` [#](#M-CodeFirstWebFramework-Utils-AsDouble-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### AsDouble() `method`
 
 ##### Summary
 
@@ -7219,7 +7314,7 @@ this[name] as a double
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AsInt-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### AsInt() `method` [#](#M-CodeFirstWebFramework-Utils-AsInt-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### AsInt() `method`
 
 ##### Summary
 
@@ -7230,7 +7325,7 @@ this[name] as an int
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AsJObject-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### AsJObject() `method` [#](#M-CodeFirstWebFramework-Utils-AsJObject-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### AsJObject() `method`
 
 ##### Summary
 
@@ -7241,7 +7336,7 @@ this[name] as a JObject
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-AsString-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### AsString() `method` [#](#M-CodeFirstWebFramework-Utils-AsString-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### AsString() `method`
 
 ##### Summary
 
@@ -7252,7 +7347,7 @@ this[name] as a string
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-Capitalise-System-String-'></a>
-### Capitalise() `method` [#](#M-CodeFirstWebFramework-Utils-Capitalise-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Capitalise() `method`
 
 ##### Summary
 
@@ -7263,7 +7358,7 @@ Return this string, with first letter upper case
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String-'></a>
-### Check() `method` [#](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### Check() `method`
 
 ##### Summary
 
@@ -7274,7 +7369,7 @@ Assert condition is true, throw a CheckException if not.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Object[]-'></a>
-### Check() `method` [#](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Object[]- 'Go To Here') [=](#contents 'Back To Contents')
+### Check() `method`
 
 ##### Summary
 
@@ -7285,7 +7380,7 @@ Assert condition is true, throw a CheckException if not.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object-'></a>
-### CopyFrom\`\`1() `method` [#](#M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### CopyFrom\`\`1() `method`
 
 ##### Summary
 
@@ -7296,7 +7391,7 @@ Copy all the relevant properties of the source object into this object.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-ExtractNumber-System-String-'></a>
-### ExtractNumber() `method` [#](#M-CodeFirstWebFramework-Utils-ExtractNumber-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### ExtractNumber() `method`
 
 ##### Summary
 
@@ -7307,7 +7402,7 @@ If s is a positive integer, return it, otherwise 0
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-IsAllNull-Newtonsoft-Json-Linq-JObject-'></a>
-### IsAllNull() `method` [#](#M-CodeFirstWebFramework-Utils-IsAllNull-Newtonsoft-Json-Linq-JObject- 'Go To Here') [=](#contents 'Back To Contents')
+### IsAllNull() `method`
 
 ##### Summary
 
@@ -7318,7 +7413,7 @@ True if all properties of this are null (or if this itself is null)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-IsDecimal-System-String-'></a>
-### IsDecimal() `method` [#](#M-CodeFirstWebFramework-Utils-IsDecimal-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### IsDecimal() `method`
 
 ##### Summary
 
@@ -7329,7 +7424,7 @@ Determine if a string is a valid decimal number
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-IsInteger-System-String-'></a>
-### IsInteger() `method` [#](#M-CodeFirstWebFramework-Utils-IsInteger-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### IsInteger() `method`
 
 ##### Summary
 
@@ -7340,7 +7435,7 @@ Determine if a string is a valid integer number
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-IsMissingOrNull-Newtonsoft-Json-Linq-JObject,System-String-'></a>
-### IsMissingOrNull() `method` [#](#M-CodeFirstWebFramework-Utils-IsMissingOrNull-Newtonsoft-Json-Linq-JObject,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### IsMissingOrNull() `method`
 
 ##### Summary
 
@@ -7351,7 +7446,7 @@ True if the specified property is missing or null
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-JsonTo-System-String,System-Type-'></a>
-### JsonTo() `method` [#](#M-CodeFirstWebFramework-Utils-JsonTo-System-String,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### JsonTo() `method`
 
 ##### Summary
 
@@ -7362,7 +7457,7 @@ Convert this json string to a C# object of type t.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-JsonTo``1-System-String-'></a>
-### JsonTo\`\`1() `method` [#](#M-CodeFirstWebFramework-Utils-JsonTo``1-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### JsonTo\`\`1() `method`
 
 ##### Summary
 
@@ -7373,7 +7468,7 @@ Convert this json string to a C# object of type T.
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-Name-System-Reflection-Assembly-'></a>
-### Name() `method` [#](#M-CodeFirstWebFramework-Utils-Name-System-Reflection-Assembly- 'Go To Here') [=](#contents 'Back To Contents')
+### Name() `method`
 
 ##### Summary
 
@@ -7384,18 +7479,19 @@ Actual file name part of an Assembly name
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-NextToken-System-String@,System-String[]-'></a>
-### NextToken() `method` [#](#M-CodeFirstWebFramework-Utils-NextToken-System-String@,System-String[]- 'Go To Here') [=](#contents 'Back To Contents')
+### NextToken() `method`
 
 ##### Summary
 
-Split text at the first supplied delimiter. Return the text before the delimiter, and set text to the remainder.
+Split text at the first supplied delimiter.
+Return the text before the delimiter, and set text to the remainder.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-RemoveQuotes-System-String-'></a>
-### RemoveQuotes() `method` [#](#M-CodeFirstWebFramework-Utils-RemoveQuotes-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### RemoveQuotes() `method`
 
 ##### Summary
 
@@ -7406,7 +7502,7 @@ If s starts and ends with a double-quote ("), remove them
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-SimilarTo-System-String,System-String-'></a>
-### SimilarTo() `method` [#](#M-CodeFirstWebFramework-Utils-SimilarTo-System-String,System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### SimilarTo() `method`
 
 ##### Summary
 
@@ -7417,7 +7513,7 @@ Compare 2 strings, and return a number between 0 & 1 indicating what proportion 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-To-Newtonsoft-Json-Linq-JToken,System-Type-'></a>
-### To() `method` [#](#M-CodeFirstWebFramework-Utils-To-Newtonsoft-Json-Linq-JToken,System-Type- 'Go To Here') [=](#contents 'Back To Contents')
+### To() `method`
 
 ##### Summary
 
@@ -7428,7 +7524,7 @@ Convert this JObject to a C# object of type t
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-To``1-Newtonsoft-Json-Linq-JToken-'></a>
-### To\`\`1() `method` [#](#M-CodeFirstWebFramework-Utils-To``1-Newtonsoft-Json-Linq-JToken- 'Go To Here') [=](#contents 'Back To Contents')
+### To\`\`1() `method`
 
 ##### Summary
 
@@ -7439,7 +7535,7 @@ Convert this JObject to a C# object of type T
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-ToJson-System-Object-'></a>
-### ToJson() `method` [#](#M-CodeFirstWebFramework-Utils-ToJson-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### ToJson() `method`
 
 ##### Summary
 
@@ -7450,7 +7546,7 @@ Convert a C# object to json
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-ToJToken-System-Object-'></a>
-### ToJToken() `method` [#](#M-CodeFirstWebFramework-Utils-ToJToken-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### ToJToken() `method`
 
 ##### Summary
 
@@ -7461,29 +7557,30 @@ Convert C# object to JToken
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-UnCamel-System-Object-'></a>
-### UnCamel() `method` [#](#M-CodeFirstWebFramework-Utils-UnCamel-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### UnCamel() `method`
 
 ##### Summary
 
-Convert a CamelCase variable name to human-readable form - e.g. "Camel Case". Accepts an object, so you can use it directly on Enum values.
+Convert a CamelCase variable name to human-readable form - e.g. "Camel  Case".
+Accepts an object, so you can use it directly on Enum values.
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Utils-UnCamel-System-String-'></a>
-### UnCamel() `method` [#](#M-CodeFirstWebFramework-Utils-UnCamel-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### UnCamel() `method`
 
 ##### Summary
 
-Convert a CamelCase variable name to human-readable form - e.g. "Camel Case"
+Convert a CamelCase variable name to human-readable form - e.g. "Camel  Case"
 
 ##### Parameters
 
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-View'></a>
-## View [#](#T-CodeFirstWebFramework-View 'Go To Here') [=](#contents 'Back To Contents')
+## View `type`
 
 ##### Namespace
 
@@ -7494,7 +7591,7 @@ CodeFirstWebFramework
 View definition
 
 <a name='M-CodeFirstWebFramework-View-#ctor-System-String,CodeFirstWebFramework-Field[],CodeFirstWebFramework-Index[],System-String,CodeFirstWebFramework-Table-'></a>
-### #ctor(name,fields,indexes,sql,updateTable) `constructor` [#](#M-CodeFirstWebFramework-View-#ctor-System-String,CodeFirstWebFramework-Field[],CodeFirstWebFramework-Index[],System-String,CodeFirstWebFramework-Table- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(name,fields,indexes,sql,updateTable) `constructor`
 
 ##### Summary
 
@@ -7511,28 +7608,28 @@ Constructor
 | updateTable | [CodeFirstWebFramework.Table](#T-CodeFirstWebFramework-Table 'CodeFirstWebFramework.Table') | Table to update if update called on a view record |
 
 <a name='P-CodeFirstWebFramework-View-IsView'></a>
-### IsView `property` [#](#P-CodeFirstWebFramework-View-IsView 'Go To Here') [=](#contents 'Back To Contents')
+### IsView `property`
 
 ##### Summary
 
 Whether this is a view (always true)
 
 <a name='P-CodeFirstWebFramework-View-Sql'></a>
-### Sql `property` [#](#P-CodeFirstWebFramework-View-Sql 'Go To Here') [=](#contents 'Back To Contents')
+### Sql `property`
 
 ##### Summary
 
 SQL to generate data
 
 <a name='P-CodeFirstWebFramework-View-UpdateTable'></a>
-### UpdateTable `property` [#](#P-CodeFirstWebFramework-View-UpdateTable 'Go To Here') [=](#contents 'Back To Contents')
+### UpdateTable `property`
 
 ##### Summary
 
 Table to update if update called on a record from the view
 
 <a name='T-CodeFirstWebFramework-ViewAttribute'></a>
-## ViewAttribute [#](#T-CodeFirstWebFramework-ViewAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## ViewAttribute `type`
 
 ##### Namespace
 
@@ -7543,7 +7640,7 @@ CodeFirstWebFramework
 Mark a C# class as a database view
 
 <a name='M-CodeFirstWebFramework-ViewAttribute-#ctor-System-String-'></a>
-### #ctor(sql) `constructor` [#](#M-CodeFirstWebFramework-ViewAttribute-#ctor-System-String- 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor(sql) `constructor`
 
 ##### Summary
 
@@ -7556,14 +7653,14 @@ Constructor
 | sql | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | SQL to generate the view data |
 
 <a name='F-CodeFirstWebFramework-ViewAttribute-Sql'></a>
-### Sql `constants` [#](#F-CodeFirstWebFramework-ViewAttribute-Sql 'Go To Here') [=](#contents 'Back To Contents')
+### Sql `constants`
 
 ##### Summary
 
 SWL to generate the view data
 
 <a name='T-CodeFirstWebFramework-WebServer'></a>
-## WebServer [#](#T-CodeFirstWebFramework-WebServer 'Go To Here') [=](#contents 'Back To Contents')
+## WebServer `type`
 
 ##### Namespace
 
@@ -7574,39 +7671,42 @@ CodeFirstWebFramework
 Web Server - listens for connections, and services them
 
 <a name='M-CodeFirstWebFramework-WebServer-#ctor'></a>
-### #ctor() `constructor` [#](#M-CodeFirstWebFramework-WebServer-#ctor 'Go To Here') [=](#contents 'Back To Contents')
+### #ctor() `constructor`
 
 ##### Summary
 
-Constructor. You must call Config.Load before calling this. Sets up all servers specified in the config file, loading any additional assemblies required. Upgrades all databases to match the latest code.
+Constructor.
+You must call Config.Load before calling this.
+Sets up all servers specified in the config file, loading any additional assemblies required.
+Upgrades all databases to match the latest code.
 
 ##### Parameters
 
 This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-WebServer-AppVersion'></a>
-### AppVersion `constants` [#](#F-CodeFirstWebFramework-WebServer-AppVersion 'Go To Here') [=](#contents 'Back To Contents')
+### AppVersion `constants`
 
 ##### Summary
 
 The version number from the application.
 
 <a name='F-CodeFirstWebFramework-WebServer-VersionSuffix'></a>
-### VersionSuffix `constants` [#](#F-CodeFirstWebFramework-WebServer-VersionSuffix 'Go To Here') [=](#contents 'Back To Contents')
+### VersionSuffix `constants`
 
 ##### Summary
 
 Version suffix for including in url's to defeat long-term caching of (e.g.) javascript and css files
 
 <a name='P-CodeFirstWebFramework-WebServer-Sessions'></a>
-### Sessions `property` [#](#P-CodeFirstWebFramework-WebServer-Sessions 'Go To Here') [=](#contents 'Back To Contents')
+### Sessions `property`
 
 ##### Summary
 
 All Active Sessions
 
 <a name='M-CodeFirstWebFramework-WebServer-ProcessRequest-System-Object-'></a>
-### ProcessRequest(listenerContext) `method` [#](#M-CodeFirstWebFramework-WebServer-ProcessRequest-System-Object- 'Go To Here') [=](#contents 'Back To Contents')
+### ProcessRequest(listenerContext) `method`
 
 ##### Summary
 
@@ -7619,7 +7719,7 @@ Process a single request
 | listenerContext | [System.Object](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Object 'System.Object') |  |
 
 <a name='M-CodeFirstWebFramework-WebServer-registerServer-System-Collections-Generic-HashSet{System-String},CodeFirstWebFramework-ServerConfig-'></a>
-### registerServer(databases,server) `method` [#](#M-CodeFirstWebFramework-WebServer-registerServer-System-Collections-Generic-HashSet{System-String},CodeFirstWebFramework-ServerConfig- 'Go To Here') [=](#contents 'Back To Contents')
+### registerServer(databases,server) `method`
 
 ##### Summary
 
@@ -7633,7 +7733,7 @@ Add namespace to modules list, and upgrade database, if not done already.
 | server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') | ServerConfig to register |
 
 <a name='M-CodeFirstWebFramework-WebServer-Start'></a>
-### Start() `method` [#](#M-CodeFirstWebFramework-WebServer-Start 'Go To Here') [=](#contents 'Back To Contents')
+### Start() `method`
 
 ##### Summary
 
@@ -7644,7 +7744,7 @@ Start WebServer listening for connections
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-WebServer-Stop'></a>
-### Stop() `method` [#](#M-CodeFirstWebFramework-WebServer-Stop 'Go To Here') [=](#contents 'Back To Contents')
+### Stop() `method`
 
 ##### Summary
 
@@ -7655,7 +7755,7 @@ Stop the server
 This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-WriteableAttribute'></a>
-## WriteableAttribute [#](#T-CodeFirstWebFramework-WriteableAttribute 'Go To Here') [=](#contents 'Back To Contents')
+## WriteableAttribute `type`
 
 ##### Namespace
 

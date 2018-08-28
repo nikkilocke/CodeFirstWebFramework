@@ -390,7 +390,7 @@ namespace CodeFirstWebFramework {
 					break;
 				case "String":
 					if (f.Length == 0)
-						b.Append("TEXT");
+						b.Append("LONGTEXT");
 					else
 						b.AppendFormat("VARCHAR({0})", f.Length);
 					break;

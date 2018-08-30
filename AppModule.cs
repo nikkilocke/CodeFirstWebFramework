@@ -662,7 +662,7 @@ namespace CodeFirstWebFramework {
 					return null;
 			}
 			if (!HasAccess(Info, Method, out UserAccessLevel)) {
-				if (Session.User == null && method.ReturnType != typeof(AjaxReturn)) {
+				if (Session.User == null && !typeof(AjaxReturn).IsAssignableFrom(method.ReturnType)) {
 					SessionData.redirect = Request.Url.PathAndQuery;
 					Redirect("/admin/login");
 					return null;

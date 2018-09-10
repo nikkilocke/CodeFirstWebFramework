@@ -23,7 +23,9 @@
 Added CookieTimeoutMinutes to Config.
 
 Bug fixes:
-Attempting to access a page which needs a logged in user but returned a form did not redirect to the login page.</PackageReleaseNotes>
+Attempting to access a page which needs a logged in user but returned a form did not redirect to the login page.
+Logout option called login instead of logout.
+Text fields with unlimited length now use LARGETTEXT in MySql (instead of TEXT which has a 64k limit).</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 

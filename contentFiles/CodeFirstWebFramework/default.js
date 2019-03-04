@@ -1822,7 +1822,8 @@ function makeForm(selector, options) {
 	result.fields = columns;
 	result.settings = options;
 	result.dataReady = dataReady;
-	result.draw = draw;
+    result.draw = draw;
+    result.submit = submitUrl;
 	Forms.push(result);
 	if(options.data)
 		dataReady(options.data);
@@ -1922,7 +1923,8 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 		header: makeForm(headerSelector, options.header),
 		detail: makeListForm(detailSelector, options.detail),
 		data: options.data,
-		dataReady: dataReady
+        dataReady: dataReady,
+        submit: submitUrl
 	};
 	result.detail.header = result.header;
 	nextPreviousButtons(result.data);
@@ -2268,6 +2270,7 @@ function makeListForm(selector, options) {
 	table.dataReady = dataReady;
 	table.draw = draw;
 	table.refresh = refresh;
+    table.submit = submitUrl;
 	/**
 	 * Return the row index of item r
 	 * @param r
@@ -2492,6 +2495,7 @@ function makeDumbForm(selector, options) {
 	result.settings = options;
 	result.dataReady = dataReady;
 	result.draw = draw;
+    result.submit = submitUrl;
 	Forms.push(result);
 	if(options.data)
 		dataReady(options.data);

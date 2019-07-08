@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFirstWebFramework;
@@ -13,11 +15,18 @@ namespace Phone {
 				case PlatformID.Win32NT:
 				case PlatformID.Win32S:
 				case PlatformID.Win32Windows:
-					string startPage = "";
-					if (Config.CommandLineFlags["url"] != null)
-						startPage = Config.CommandLineFlags["url"];
-					if (Config.CommandLineFlags["nolaunch"] == null)
-						System.Diagnostics.Process.Start("http://" + Config.Default.DefaultServer.ServerName + ":" + Config.Default.Port + "/" + startPage);
+					if (Config.CommandLineFlags["nolaunch"] == null) {
+						string url = "http://" + Config.Default.DefaultServer.ServerName + ":" + Config.Default.Port + "/";
+						if (Config.CommandLineFlags["url"] != null)
+							url += Config.CommandLineFlags["url"];
+						if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+							Process.Start(new ProcessStartInfo("cmd", $"/c start {url.Replace("&", "^&")}"));
+						} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+							Process.Start("xdg-open", "'" + url + "'");
+						} else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+							Process.Start("open", "'" + url + "'");
+						}
+					}
 					break;
 			}
 			new WebServer().Start();

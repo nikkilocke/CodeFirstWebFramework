@@ -205,6 +205,8 @@ namespace CodeFirstWebFramework {
 				f = new System.IO.FileInfo(Path.Combine(Config.DataPath, CodeFirstWebFramework.Config.DefaultNamespace, filename));
 			if (!f.Exists)
 				f = new System.IO.FileInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, filename));
+			if (!f.Exists)
+				f = new System.IO.FileInfo(Path.Combine("contentFiles", CodeFirstWebFramework.Config.DefaultNamespace, filename));
 			return new FileInfo(filename, f);
 		}
 
@@ -234,6 +236,8 @@ namespace CodeFirstWebFramework {
 				f = new System.IO.DirectoryInfo(Path.Combine(Config.DataPath, CodeFirstWebFramework.Config.DefaultNamespace, foldername));
 			if (!f.Exists)
 				f = new System.IO.DirectoryInfo(Path.Combine(CodeFirstWebFramework.Config.DefaultNamespace, foldername));
+			if (!f.Exists)
+				f = new System.IO.DirectoryInfo(Path.Combine("contentFiles", CodeFirstWebFramework.Config.DefaultNamespace, foldername));
 			return new DirectoryInfo(foldername, f);
 		}
 

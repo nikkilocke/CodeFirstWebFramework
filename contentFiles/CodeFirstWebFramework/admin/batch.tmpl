@@ -2,8 +2,10 @@
 <html>
 <head>
 <script>
+var id = getParameter('id'){{#if Batch}} || {{Batch.Id}}{{/if}};
+
 function checkStatus() {
-	get('/admin/batchstatus.html', { id: '!{{Batch.Id}}' }, function(result) {
+	get('/admin/batchstatus.html', { id: id }, function(result) {
 		if(result.data) {
 			$('#progressbar').progressbar({value: result.data.PercentComplete});
 			$('#status').text(result.data.Status);

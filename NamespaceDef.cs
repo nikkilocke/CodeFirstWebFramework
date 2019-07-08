@@ -182,6 +182,21 @@ namespace CodeFirstWebFramework {
 			FileSystem = GetInstanceOf<FileSystem>();
 		}
 
+		WebServer.Session _empty;
+
+		/// <summary>
+		/// Create an empty Session object of the appropriate type for this Namespace
+		/// </summary>
+		public WebServer.Session EmptySession {
+			get {
+				lock (this) {
+					if (_empty == null)
+						_empty = GetInstanceOf<WebServer.Session>((WebServer)null);
+					return _empty;
+				}
+			}
+		}
+
 		/// <summary>
 		/// The FileSystem for this Namespace
 		/// </summary>

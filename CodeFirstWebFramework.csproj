@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Nikki Locke</Authors>
     <Company>Trumphurst Ltd</Company>
@@ -11,21 +11,15 @@
       Easy to use web server for building web apps that use sql databases generated and updated automatically from c# classes.
       Includes Mustache templating for whole site and individual pages, automatic calling of code from urls, with translation of parameters, Ajax, forms and data tables, context-sensitive help and many other features.
     </Summary>
-    <Copyright>2017-2018 Trumphurst Ltd.</Copyright>
+    <Copyright>2017-2019 Trumphurst Ltd.</Copyright>
     <PackageProjectUrl>https://github.com/nikkilocke/CodeFirstWebFramework</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.1.8</Version>
-    <AssemblyVersion>1.1.8.0</AssemblyVersion>
-    <FileVersion>1.1.8.0</FileVersion>
-    <PackageReleaseNotes>Enhancements:
-Added submit function to forms
-
-Bug fixes:
-Attempting to access a page which needs a logged in user but returned a form did not redirect to the login page.
-Logout option called login instead of logout.
-Text fields with unlimited length now use LARGETTEXT in MySql (instead of TEXT which has a 64k limit).</PackageReleaseNotes>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <PackageReleaseNotes>Converted to use .NET Standard, so will now work with Net Core.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
   </PropertyGroup>
 
@@ -35,10 +29,14 @@ Text fields with unlimited length now use LARGETTEXT in MySql (instead of TEXT w
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.17.0" />
-    <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="MimeMapping" Version="1.0.1.12" />
     <PackageReference Include="mustache-sharp" Version="1.0.0" />
     <PackageReference Include="MySql.Data" Version="8.0.16" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.1" />
     <PackageReference Include="Vsxmd" Version="1.4.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -47,8 +45,6 @@ Text fields with unlimited length now use LARGETTEXT in MySql (instead of TEXT w
 
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Web" />
   </ItemGroup>
 
   <ItemGroup>

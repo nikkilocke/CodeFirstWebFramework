@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Data;
 using System.Data.Common;
-using Mono.Data.Sqlite;
+using System.Data.SQLite;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -18,16 +18,16 @@ namespace CodeFirstWebFramework {
 	/// </summary>
 	public class SQLiteDatabase : DbInterface {
 		static object _lock = new object();
-		SqliteConnection _conn;
-		SqliteTransaction _tran;
+		SQLiteConnection _conn;
+		SQLiteTransaction _tran;
 		Database _db;
 
 		/// <summary>
 		/// Static constructor registers the extension functions to make SQLite more like MySql
 		/// </summary>
 		static SQLiteDatabase() {
-			SqliteDateDiff.RegisterFunction(typeof(SqliteDateDiff));
-			SqliteSum.RegisterFunction(typeof(SqliteSum));
+			SQLiteDateDiff.RegisterFunction(typeof(SQLiteDateDiff));
+			SQLiteSum.RegisterFunction(typeof(SQLiteSum));
 		}
 
 		/// <summary>
@@ -36,7 +36,7 @@ namespace CodeFirstWebFramework {
 		public SQLiteDatabase(Database db, string connectionString) {
 			_db = db;
 			createDatabase(connectionString);
-			_conn = new SqliteConnection();
+			_conn = new SQLiteConnection();
 			_conn.ConnectionString = connectionString;
 			_conn.Open();
 		}
@@ -136,7 +136,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public int Execute(string sql) {
 			lock (_lock) {
-				using (SqliteCommand cmd = command(sql)) {
+				using (SQLiteCommand cmd = command(sql)) {
 					return cmd.ExecuteNonQuery();
 				}
 			}
@@ -151,7 +151,7 @@ namespace CodeFirstWebFramework {
 		/// <returns>The value of the auto-increment record id of the newly inserted record</returns>
 		public int Insert(Table table, string sql, bool updatesAutoIncrement) {
 			lock (_lock) {
-				using (SqliteCommand cmd = command(sql)) {
+				using (SQLiteCommand cmd = command(sql)) {
 					cmd.ExecuteNonQuery();
 					if (!table.PrimaryKey.AutoIncrement)
 						return 0;
@@ -178,8 +178,8 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public IEnumerable<JObject> Query(string query) {
 			lock (_lock) {
-				using (SqliteCommand cmd = command(query)) {
-					using (SqliteDataReader r = executeReader(cmd, query)) {
+				using (SQLiteCommand cmd = command(query)) {
+					using (SQLiteDataReader r = executeReader(cmd, query)) {
 						JObject row;
 						while ((row = readRow(r, query)) != null) {
 							yield return row;
@@ -321,9 +321,9 @@ namespace CodeFirstWebFramework {
 			return c == d;
 		}
 
-		SqliteCommand command(string sql) {
+		SQLiteCommand command(string sql) {
 			try {
-				return new SqliteCommand(sql, _conn, _tran);
+				return new SQLiteCommand(sql, _conn, _tran);
 			} catch (Exception ex) {
 				throw new DatabaseException(ex, sql);
 			}
@@ -334,7 +334,7 @@ namespace CodeFirstWebFramework {
 			if (m.Success && !File.Exists(m.Groups[1].Value)) {
 				Log.Startup.WriteLine("Creating SQLite database {0}", m.Groups[1].Value);
 				Directory.CreateDirectory(Path.GetDirectoryName(m.Groups[1].Value));
-				SqliteConnection.CreateFile(m.Groups[1].Value);
+				SQLiteConnection.CreateFile(m.Groups[1].Value);
 			}
 		}
 
@@ -376,7 +376,7 @@ namespace CodeFirstWebFramework {
 		int executeLog(string sql) {
 			Log.Startup.WriteLine(sql);
 			lock (_lock) {
-				using (SqliteCommand cmd = command(sql)) {
+				using (SQLiteCommand cmd = command(sql)) {
 					return cmd.ExecuteNonQuery();
 				}
 			}
@@ -391,7 +391,7 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
-		SqliteDataReader executeReader(SqliteCommand cmd, string sql) {
+		SQLiteDataReader executeReader(SQLiteCommand cmd, string sql) {
 			try {
 				return cmd.ExecuteReader();
 			} catch (Exception ex) {
@@ -464,7 +464,7 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
-		JObject readRow(SqliteDataReader r, string sql) {
+		JObject readRow(SQLiteDataReader r, string sql) {
 			try {
 				lock (_lock) {
 					if (!r.Read()) return null;
@@ -530,8 +530,8 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// DATEDIFF function (like MySql's)
 	/// </summary>
-	[SqliteFunctionAttribute(Name = "DATEDIFF", Arguments = 2, FuncType = FunctionType.Scalar)]
-	class SqliteDateDiff : SqliteFunction {
+	[SQLiteFunctionAttribute(Name = "DATEDIFF", Arguments = 2, FuncType = FunctionType.Scalar)]
+	class SQLiteDateDiff : SQLiteFunction {
 		public override object Invoke(object[] args) {
 			if (args.Length < 2 || args[0] == null || args[0] == DBNull.Value || args[1] == null || args[1] == DBNull.Value)
 				return null;
@@ -546,8 +546,8 @@ namespace CodeFirstWebFramework {
 		}
 	}
 
-	[SqliteFunctionAttribute(Name = "NOW", Arguments = 0, FuncType = FunctionType.Scalar)]
-	class Now : SqliteFunction {
+	[SQLiteFunctionAttribute(Name = "NOW", Arguments = 0, FuncType = FunctionType.Scalar)]
+	class Now : SQLiteFunction {
 		public override object Invoke(object[] args) {
 			try {
 				return Utils.Now.ToString("yyyy-MM-ddThh:mm:ss");
@@ -561,8 +561,8 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// SUM function which rounds as it sums, so it works like MySql's
 	/// </summary>
-	[SqliteFunctionAttribute(Name = "SUM", Arguments = 1, FuncType = FunctionType.Aggregate)]
-	class SqliteSum : SqliteFunction {
+	[SQLiteFunctionAttribute(Name = "SUM", Arguments = 1, FuncType = FunctionType.Aggregate)]
+	class SQLiteSum : SQLiteFunction {
 		public override void Step(object[] args, int stepNumber, ref object contextData) {
 			if (args.Length < 1 || args[0] == null || args[0] == DBNull.Value)
 				return;
@@ -583,8 +583,8 @@ namespace CodeFirstWebFramework {
 	/// <summary>
 	/// CONCAT function - just like MySql
 	/// </summary>
-	[SqliteFunctionAttribute(Name = "CONCAT", FuncType = FunctionType.Scalar)]
-	class SqliteConcat : SqliteFunction {
+	[SQLiteFunctionAttribute(Name = "CONCAT", FuncType = FunctionType.Scalar)]
+	class SQLiteConcat : SQLiteFunction {
 		public override object Invoke(object[] args) {
 			if (args.Length < 1 || args.Any(a => a == null || a == DBNull.Value))
 				return null;

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeFirstWebFramework", "CodeFirstWebFramework.csproj", "{8B950284-F943-4BCE-AAF2-8E32331A51B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeFirstWebFramework", "CodeFirstWebFramework.csproj", "{8B950284-F943-4BCE-AAF2-8E32331A51B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone", "Phone\Phone.csproj", "{533889FB-E4DF-47BB-AE26-543EFF5721ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone", "Phone\Phone.csproj", "{196C7BE1-8534-476C-8983-86938B618AB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +17,15 @@ Global
 		{8B950284-F943-4BCE-AAF2-8E32331A51B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B950284-F943-4BCE-AAF2-8E32331A51B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B950284-F943-4BCE-AAF2-8E32331A51B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{533889FB-E4DF-47BB-AE26-543EFF5721ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{533889FB-E4DF-47BB-AE26-543EFF5721ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{533889FB-E4DF-47BB-AE26-543EFF5721ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{533889FB-E4DF-47BB-AE26-543EFF5721ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{196C7BE1-8534-476C-8983-86938B618AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{196C7BE1-8534-476C-8983-86938B618AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{196C7BE1-8534-476C-8983-86938B618AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{196C7BE1-8534-476C-8983-86938B618AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D4566C6-B167-45EE-BFBF-F31453EA8410}
 	EndGlobalSection
 EndGlobal

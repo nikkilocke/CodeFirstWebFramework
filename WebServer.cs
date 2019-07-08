@@ -20,7 +20,6 @@ namespace CodeFirstWebFramework {
 		bool _running;
 		Dictionary<string, Session> _sessions;
 		static object _lock = new object();
-		Session _empty;
 		Dictionary<string, Namespace> webmodules;      // All the different web modules we are running
 		HashSet<string> loadedAssemblies;
 
@@ -101,7 +100,6 @@ namespace CodeFirstWebFramework {
 					Log.Startup.WriteLine("Listening on port {0}", port);
 				}
 				_sessions = new Dictionary<string, Session>();
-				_empty = new Session(null);
 				// Start thread to expire sessions after 30 mins of inactivity
 				new Task(delegate () {
 					for (;;) {
@@ -110,8 +108,10 @@ namespace CodeFirstWebFramework {
 						lock (_sessions) {
 							foreach (string key in _sessions.Keys.ToList()) {
 								Session s = _sessions[key];
-								if (s.Expires < now)
+								if (s.Expires < now) {
+									s.Dispose();
 									_sessions.Remove(key);
+								}
 							}
 						}
 					}
@@ -176,8 +176,8 @@ namespace CodeFirstWebFramework {
 					r.Write(msg, 0, msg.Length);
 				}
 			} else {
+				Session session = null;
 				try {
-					Session session = null;
 					ModuleInfo info = webmodules[server.Namespace].ParseUri(context.Request.Url.AbsolutePath, out string filename);
 					string moduleName = null;
 					string methodName = null;
@@ -206,9 +206,9 @@ namespace CodeFirstWebFramework {
 					}
 					if (session == null) {
 						if (moduleName == "FileSender") {
-							session = new Session(null);
+							session = server.NamespaceDef.GetInstanceOf<Session>(null);
 						} else {
-							session = new Session(this);
+							session = server.NamespaceDef.GetInstanceOf<Session>(this);
 							cookie = new Cookie("session", session.Cookie, "/");
 							Log.Session.WriteLine("[{0} new session]", cookie.Value);
 						}
@@ -239,7 +239,7 @@ namespace CodeFirstWebFramework {
 							try {
 								ModuleInfo info = server.NamespaceDef.GetModuleInfo("error");
 								module = info == null ? new ErrorModule() : (AppModule)Activator.CreateInstance(info.Type);
-								module.Session = _empty;
+								module.Session = server.NamespaceDef.EmptySession;
 								module.Server = server;
 								module.ActiveModule = webmodules[server.Namespace];
 								module.LogString = log;
@@ -260,6 +260,9 @@ namespace CodeFirstWebFramework {
 							}
 						}
 					}
+				} finally {
+					if (session != null && session.Server == null && session != server.NamespaceDef.EmptySession)
+						session.Dispose();		// Dispose of temporary session
 				}
 			}
 			if (context != null) {
@@ -277,7 +280,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Simple session
 		/// </summary>
-		public class Session {
+		public class Session : IDisposable {
 			/// <summary>
 			/// Logged in user (or null if none)
 			/// </summary>
@@ -315,10 +318,16 @@ namespace CodeFirstWebFramework {
 								Cookie += (char)('A' + r.Next(26));
 						} while (server._sessions.TryGetValue(Cookie, out session));
 						Object = new JObject();
-						server._sessions[Cookie] = (Session)this;
+						server._sessions[Cookie] = this;
 					}
 					Server = server;
 				}
+			}
+
+			/// <summary>
+			/// Free any resources
+			/// </summary>
+			public virtual void Dispose() {
 			}
 		}
 	}

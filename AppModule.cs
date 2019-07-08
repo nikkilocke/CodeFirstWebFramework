@@ -43,6 +43,7 @@ namespace CodeFirstWebFramework {
 		public IEnumerable<string> Extensions;
 
 	}
+
 	/// <summary>
 	/// Base class for all app modules.
 	/// Derive a class from this to server a folder of that name (you can add "Module" on the end of the name to avoid name clashes)
@@ -52,7 +53,6 @@ namespace CodeFirstWebFramework {
 	/// If the method is void, a template in the corresponding folder will be filled in, with the AppModule as the argument,
 	/// and returned.
 	/// </summary>
-	
 	[Handles(".html")]
 	public abstract class AppModule : IDisposable {
 		static int lastJob;							// Last batch job
@@ -62,7 +62,12 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Character encoding for web output
 		/// </summary>
-		public static Encoding Encoding = Encoding.GetEncoding(1252);
+		public static Encoding Encoding;
+
+		static AppModule() {
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+			Encoding = Encoding.GetEncoding(1252);
+		}
 
 		/// <summary>
 		/// Charset for web output
@@ -358,6 +363,15 @@ namespace CodeFirstWebFramework {
 		public BaseForm Form;
 
 		/// <summary>
+		/// For displaying running batch jobs
+		/// </summary>
+		public IEnumerable<BatchJob.BatchJobItem> BatchJobItems {
+			get {
+				return jobs.Select(j => new BatchJob.BatchJobItem(j.Key, j.Value));
+			}
+		}
+
+		/// <summary>
 		/// Background batch job (e.g. import, restore)
 		/// </summary>
 		public class BatchJob {
@@ -477,6 +491,40 @@ namespace CodeFirstWebFramework {
 			/// For status/progress display
 			/// </summary>
 			public string Status;
+
+			/// <summary>
+			/// Class to list all running batch jobs
+			/// </summary>
+			public class BatchJobItem : JsonObject {
+				public BatchJobItem(int id, BatchJob job) {
+					idBatchJobItem = id;
+					Module = job._module.OriginalModule;
+					Method = job._module.OriginalMethod;
+					User = job._module.Session.User?.Login;
+					Status = job.Status;
+				}
+				/// <summary>
+				/// The id
+				/// </summary>
+				public int? idBatchJobItem;
+				/// <summary>
+				///  The module name
+				/// </summary>
+				public string Module;
+				/// <summary>
+				///  The method name
+				/// </summary>
+				public string Method;
+				/// <summary>
+				/// The user login
+				/// </summary>
+				public string User;
+				/// <summary>
+				///  The job status
+				/// </summary>
+				public string Status;
+			}
+
 		}
 
 		/// <summary>

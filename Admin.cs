@@ -49,6 +49,21 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Display current or select batch details
+		/// </summary>
+		public void Batch() {
+		}
+
+		/// <summary>
+		/// Display all running batch jobs
+		/// </summary>
+		public ListForm BatchJobs() {
+			ListForm form = new ListForm(module, typeof(AppModule.BatchJob.BatchJobItem));
+			form.Data = module.BatchJobItems.ToList();
+			return form;
+		}
+
+		/// <summary>
 		/// Return the status of the given batch job.
 		/// </summary>
 		[Auth(AccessLevel.Any)]
@@ -424,6 +439,7 @@ namespace CodeFirstWebFramework {
 			InsertMenuOptions(
 				new MenuOption("Settings", "/admin/editsettings"),
 				new MenuOption("Users", "/admin/users"),
+				new MenuOption("Batch Jobs", "/admin/batchjobs"),
 				new MenuOption("Backup", "/admin/backup"),
 				new MenuOption("Restore", "/admin/restore")
 				);

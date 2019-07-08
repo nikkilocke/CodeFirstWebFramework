@@ -965,7 +965,7 @@ namespace CodeFirstWebFramework {
 					// Try our own list first
 					if (!ContentTypes.TryGetValue(ext, out contentType)) {
 						// Try the o/s list
-						contentType = MimeMapping.GetMimeMapping(file.Name + file.Extension);
+						contentType = MimeMapping.MimeUtility.GetMimeMapping(file.Name + file.Extension);
 					}
 					break;
 			}

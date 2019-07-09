@@ -388,6 +388,24 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// See if a record exists by unique key
+		/// </summary>
+		public bool TryGet<T>(T criteria) where T : JsonObject {
+			Table table = TableFor(typeof(T));
+			JObject data = criteria.ToJObject();
+			Index index = table.IndexFor(data);
+			if (index != null) {
+				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
+			} else {
+				data = null;
+			}
+			if (data == null || data.IsAllNull())
+				return false;
+			criteria.CopyFrom(data);
+			return true;
+		}
+
+		/// <summary>
 		/// Get a record by id
 		/// </summary>
 		public JObject Get(string tableName, int id) {

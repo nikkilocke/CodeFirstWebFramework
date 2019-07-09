@@ -84,7 +84,7 @@ namespace CodeFirstWebFramework {
 		/// Convert C# object to JToken
 		/// </summary>
 		public static JToken ToJToken(this object o) {
-			return o == null ? null : JToken.FromObject(o);
+			return o == null ? null : o is JToken ? o as JToken : JToken.FromObject(o);
 		}
 
 		/// <summary>
@@ -228,7 +228,9 @@ namespace CodeFirstWebFramework {
 		/// Copy all the relevant properties of the source object into this object.
 		/// </summary>
 		public static void CopyFrom<T>(this T self, object source) {
-			_converter.Populate(source.ToJToken().CreateReader(), self);
+			using (var sr = source.ToJToken().CreateReader()) {
+				_converter.Populate(sr, self);
+			}
 		}
 
 		/// <summary>

@@ -236,6 +236,7 @@
   - [TableFor()](#M-CodeFirstWebFramework-Database-TableFor-System-String- 'CodeFirstWebFramework.Database.TableFor(System.String)')
   - [TableFor()](#M-CodeFirstWebFramework-Database-TableFor-System-Type- 'CodeFirstWebFramework.Database.TableFor(System.Type)')
   - [TableForOrDefault()](#M-CodeFirstWebFramework-Database-TableForOrDefault-System-Type- 'CodeFirstWebFramework.Database.TableForOrDefault(System.Type)')
+  - [TryGet\`\`1()](#M-CodeFirstWebFramework-Database-TryGet``1-``0- 'CodeFirstWebFramework.Database.TryGet``1(``0)')
   - [Update()](#M-CodeFirstWebFramework-Database-Update-System-String,System-Collections-Generic-List{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.Database.Update(System.String,System.Collections.Generic.List{Newtonsoft.Json.Linq.JObject})')
   - [Update()](#M-CodeFirstWebFramework-Database-Update-System-String,Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Database.Update(System.String,Newtonsoft.Json.Linq.JObject)')
   - [Update()](#M-CodeFirstWebFramework-Database-Update-CodeFirstWebFramework-JsonObject- 'CodeFirstWebFramework.Database.Update(CodeFirstWebFramework.JsonObject)')
@@ -2985,6 +2986,17 @@ This method has no parameters.
 ##### Summary
 
 Try to find the Table descriptor for a C# type
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Database-TryGet``1-``0-'></a>
+### TryGet\`\`1() `method`
+
+##### Summary
+
+See if a record exists by unique key
 
 ##### Parameters
 

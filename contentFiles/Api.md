@@ -334,6 +334,8 @@
   - [FieldFor(field,readwrite)](#M-CodeFirstWebFramework-FieldAttribute-FieldFor-System-Reflection-PropertyInfo,System-Boolean- 'CodeFirstWebFramework.FieldAttribute.FieldFor(System.Reflection.PropertyInfo,System.Boolean)')
   - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-CodeFirstWebFramework-JObjectEnumerable- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(CodeFirstWebFramework.JObjectEnumerable)')
   - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject})')
+  - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Type- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Type)')
+  - [SelectValues()](#M-CodeFirstWebFramework-FieldAttribute-SelectValues-System-Type- 'CodeFirstWebFramework.FieldAttribute.SelectValues(System.Type)')
 - [FileInfo](#T-CodeFirstWebFramework-FileInfo 'CodeFirstWebFramework.FileInfo')
   - [#ctor()](#M-CodeFirstWebFramework-FileInfo-#ctor-System-String,System-IO-FileInfo- 'CodeFirstWebFramework.FileInfo.#ctor(System.String,System.IO.FileInfo)')
   - [Exists](#P-CodeFirstWebFramework-FileInfo-Exists 'CodeFirstWebFramework.FileInfo.Exists')
@@ -3985,6 +3987,28 @@ This method has no parameters.
 ##### Summary
 
 Turn a field into a select or selectInput
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Type-'></a>
+### MakeSelectable() `method`
+
+##### Summary
+
+Turn a field into a select or selectInput
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-FieldAttribute-SelectValues-System-Type-'></a>
+### SelectValues() `method`
+
+##### Summary
+
+Turn an Enum field into a select or selectInput
 
 ##### Parameters
 

@@ -139,6 +139,25 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Turn an Enum field into a select or selectInput
+		/// </summary>
+		static public IEnumerable<JObject> SelectValues(Type enumType) {
+			foreach (var v in Enum.GetValues(enumType)) {
+				JObject j = new JObject();
+				j["id"] = (int)v;
+				j["value"] = Enum.GetName(enumType, v);
+				yield return j;
+			}
+		}
+
+		/// <summary>
+		/// Turn a field into a select or selectInput
+		/// </summary>
+		public FieldAttribute MakeSelectable(Type enumType) {
+			return MakeSelectable(SelectValues(enumType));
+		}
+
+		/// <summary>
 		/// SQL Field definition
 		/// </summary>
 		public Field Field;

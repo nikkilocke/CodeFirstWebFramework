@@ -21,6 +21,7 @@
     <FileVersion>1.2.0.0</FileVersion>
     <PackageReleaseNotes>Converted to use .NET Standard, so will now work with Net Core.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
+	<PackageLicenseUrl>https://creativecommons.org/licenses/by-sa/4.0/</PackageLicenseUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -388,7 +388,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// See if a record exists by unique key
+		/// See if a record exists by unique key. If it does, populate the supplied record from the one in the database.
 		/// </summary>
 		public bool TryGet<T>(T criteria) where T : JsonObject {
 			Table table = TableFor(typeof(T));

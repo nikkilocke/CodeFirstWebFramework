@@ -6,9 +6,7 @@
 
 Download the latest NuGet `CodeFirstWebFramework` package using the NuGet package manager.
 
-CodeFirstWebFramework provides a number of template, javascript, css, etc. files in the `contentFiles/CodeFirstWebFramework` folder. You need to copy this folder to your program exe folder - I use a post-build command:
-
-	xcopy /E /I /Y "$(ProjectDir)contentFiles\CodeFirstWebFramework" "$(TargetDir)CodeFirstWebFramework"
+CodeFirstWebFramework provides a number of template, javascript, css, etc. files in the `contentFiles/CodeFirstWebFramework` folder. You need to check that this folder gets copied to your binary output folder.
 
 ## Building CodeFirstWebFramework itself
 

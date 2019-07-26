@@ -114,16 +114,16 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Create a Namespace object for the server.
-		/// Looks for a class called "Namespace" in the server's Namespace which is a subclass of Namespace, 
+		/// Looks for a class called "Namespace" in the server's Namespace which is a subclass of CodeFirstWebFramework.Namespace, 
 		/// and has a constructor accepting a single ServerConfig argument.
 		/// If not found, creates a base Namespace object
 		/// </summary>
 		/// <param name="server"></param>
 		/// <returns></returns>
 		public static Namespace Create(ServerConfig server) {
-			Type t = Type.GetType(server.Namespace + ".Namespace");
-			if(t != null && !t.IsAbstract && t.IsSubclassOf(typeof(Namespace))) { 
-				ConstructorInfo ctor = t.GetConstructor(new[] { typeof(ServerConfig) });
+			Type ns = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Where(t => t.Namespace == server.Namespace && !t.IsAbstract && t.IsSubclassOf(typeof(Namespace)))).FirstOrDefault();
+			if(ns != null) { 
+				ConstructorInfo ctor = ns.GetConstructor(new[] { typeof(ServerConfig) });
 				if(ctor != null)
 					return (Namespace)ctor.Invoke(new object[] { server });
 			}

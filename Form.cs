@@ -145,7 +145,7 @@ namespace CodeFirstWebFramework {
 			foreach (var v in Enum.GetValues(enumType)) {
 				JObject j = new JObject();
 				j["id"] = (int)v;
-				j["value"] = Enum.GetName(enumType, v);
+				j["value"] = Enum.GetName(enumType, v).UnCamel();
 				yield return j;
 			}
 		}

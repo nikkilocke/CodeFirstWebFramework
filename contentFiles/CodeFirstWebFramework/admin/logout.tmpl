@@ -1,0 +1,20 @@
+<head>
+<script>
+$(function() {
+	$('#redirect').val(getParameter('redirect'));
+});
+</script>
+</head>
+<body>
+<form method="POST" enctype="multipart/form-data" action="/admin/login">
+	<table>
+		<tr><th>Login name or email</th><td><input type="text" name="login" /></td></tr>
+		<tr><th>Password</th><td><input type="password" name="password" /></td></tr>
+		<tr><th></th><td>
+			<button type="submit">Login</button>
+			<button type="button" href="/home">Cancel</button>
+		</td></tr>
+	</table>
+	<input type="hidden" name="redirect" />
+</form>
+</body>

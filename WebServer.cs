@@ -200,13 +200,18 @@ namespace CodeFirstWebFramework {
 					}
 					// AppModule found - retrieve or create a session for it
 					Cookie cookie = context.Request.Cookies["session"];
+					if(cookie == null) {
+						string hdr = context.Request.Headers.Get("Authorization");
+						if (!string.IsNullOrEmpty(hdr) && hdr.StartsWith("Bearer "))
+							cookie = new Cookie("session", hdr.Substring(7).Trim(), "/");
+					}
 					if (cookie != null) {
 						_sessions.TryGetValue(cookie.Value, out session);
 						Log.Session.WriteLine("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
 					}
 					if (session == null) {
 						if (moduleName == "FileSender") {
-							session = server.NamespaceDef.GetInstanceOf<Session>(null);
+							session = server.NamespaceDef.GetInstanceOf<Session>((WebServer)null);
 						} else {
 							session = server.NamespaceDef.GetInstanceOf<Session>(this);
 							cookie = new Cookie("session", session.Cookie, "/");

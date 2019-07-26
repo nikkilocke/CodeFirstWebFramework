@@ -141,6 +141,7 @@
   - [Record](#P-CodeFirstWebFramework-AppModule-BatchJob-Record 'CodeFirstWebFramework.AppModule.BatchJob.Record')
   - [Redirect](#P-CodeFirstWebFramework-AppModule-BatchJob-Redirect 'CodeFirstWebFramework.AppModule.BatchJob.Redirect')
 - [BatchJobItem](#T-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem')
+  - [#ctor()](#M-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-#ctor-System-Int32,CodeFirstWebFramework-AppModule-BatchJob- 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.#ctor(System.Int32,CodeFirstWebFramework.AppModule.BatchJob)')
   - [Method](#F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-Method 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.Method')
   - [Module](#F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-Module 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.Module')
   - [Status](#F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-Status 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.Status')
@@ -2022,6 +2023,17 @@ CodeFirstWebFramework.AppModule.BatchJob
 ##### Summary
 
 Class to list all running batch jobs
+
+<a name='M-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-#ctor-System-Int32,CodeFirstWebFramework-AppModule-BatchJob-'></a>
+### #ctor() `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+This constructor has no parameters.
 
 <a name='F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-Method'></a>
 ### Method `constants`
@@ -5852,7 +5864,7 @@ List of the view names
 ##### Summary
 
 Create a Namespace object for the server.
-Looks for a class called "Namespace" in the server's Namespace which is a subclass of Namespace, 
+Looks for a class called "Namespace" in the server's Namespace which is a subclass of CodeFirstWebFramework.Namespace, 
 and has a constructor accepting a single ServerConfig argument.
 If not found, creates a base Namespace object
 

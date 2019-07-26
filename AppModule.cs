@@ -164,6 +164,7 @@ namespace CodeFirstWebFramework {
 			get {
 				if (_settings == null) {
 					_settings = Database.Get<Settings>(1);
+					_settings.idSettings = 1;
 				}
 				return _settings;
 			}
@@ -496,6 +497,9 @@ namespace CodeFirstWebFramework {
 			/// Class to list all running batch jobs
 			/// </summary>
 			public class BatchJobItem : JsonObject {
+				/// <summary>
+				/// Constructor
+				/// </summary>
 				public BatchJobItem(int id, BatchJob job) {
 					idBatchJobItem = id;
 					Module = job._module.OriginalModule;

@@ -779,7 +779,8 @@ namespace CodeFirstWebFramework {
 			Table table = TableFor(data.GetType()).UpdateTable;
 			JObject d = data.ToJObject();
 			update(table, d);
-			data.Id = (int)d[table.PrimaryKey.Name];
+			if(table.PrimaryKey.Type == typeof(int) || table.PrimaryKey.Type == typeof(int?))
+				data.Id = (int)d[table.PrimaryKey.Name];
 		}
 
 		/// <summary>

@@ -372,6 +372,7 @@ namespace CodeFirstWebFramework {
 		string fieldDef(Field f) {
 			StringBuilder b = new StringBuilder();
 			b.AppendFormat("`{0}` ", f.Name);
+			string defaultValue = f.DefaultValue;
 			switch (f.Type.Name) {
 				case "Int32":
 					b.Append("INT");
@@ -389,9 +390,10 @@ namespace CodeFirstWebFramework {
 					b.Append("DATETIME");
 					break;
 				case "String":
-					if (f.Length == 0)
+					if (f.Length == 0) {
 						b.Append("LONGTEXT");
-					else
+						defaultValue = null;		// Default Value not allowed on LONGTEXT
+					} else
 						b.AppendFormat("VARCHAR({0})", f.Length);
 					break;
 				default:

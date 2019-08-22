@@ -376,8 +376,14 @@ namespace CodeFirstWebFramework {
 		/// Background batch job (e.g. import, restore)
 		/// </summary>
 		public class BatchJob {
-			AppModule _module;
-			string _redirect;
+			/// <summary>
+			/// The running module
+			/// </summary>
+			protected AppModule _module;
+			/// <summary>
+			/// Where to redirect to at the end
+			/// </summary>
+			protected string _redirect;
 			int _record;
 
 			/// <summary>
@@ -395,18 +401,7 @@ namespace CodeFirstWebFramework {
 			/// <param name="module">Module containing Database, Session, etc.</param>
 			/// <param name="redirect">Where to redirect to after batch (or null for default)</param>
 			/// <param name="action">Action to run the job</param>
-			public BatchJob(AppModule module, string redirect, Action action) {
-				_module = module;
-				_redirect = redirect ?? "/" + module.Module.ToLower() + "/" + module.Method.ToLower() + ".html";
-				Status = "";
-				Records = 100;
-				module.Batch = this;
-				// Get the next job number
-				lock (jobs) {
-					Id = ++lastJob;
-					jobs[Id] = this;
-				}
-				module.Log("Started batch job {0}", Id);
+			public BatchJob(AppModule module, string redirect, Action action) : this(module, redirect) {
 				new Task(delegate() {
 					Thread.Sleep(500);	// 1/2 second to allow module page to return
 					runBatch(action);
@@ -418,6 +413,25 @@ namespace CodeFirstWebFramework {
 				}).Start();
 				module.Module = "admin";
 				module.Method = "batch";
+			}
+
+			/// <summary>
+			/// Protected constructor for AsyncBatchJob to use
+			/// </summary>
+			/// <param name="module">Module containing Database, Session, etc.</param>
+			/// <param name="redirect">Where to redirect to after batch (or null for default)</param>
+			protected BatchJob(AppModule module, string redirect) {
+				_module = module;
+				_redirect = redirect ?? "/" + module.Module.ToLower() + "/" + module.Method.ToLower() + ".html";
+				Status = "";
+				Records = 100;
+				module.Batch = this;
+				// Get the next job number
+				lock (jobs) {
+					Id = ++lastJob;
+					jobs[Id] = this;
+				}
+				module.Log("Started batch job {0}", Id);
 			}
 
 			void runBatch(Action action) {
@@ -528,6 +542,59 @@ namespace CodeFirstWebFramework {
 				/// </summary>
 				public string Status;
 			}
+
+		}
+
+		/// <summary>
+		/// Async background batch job (e.g. import, restore)
+		/// </summary>
+		public class AsyncBatchJob : BatchJob {
+			/// <summary>
+			/// Create a batch job that redirects back to the module's original method on completion
+			/// </summary>
+			/// <param name="module">Module containing Database, Session, etc.</param>
+			/// <param name="action">Action to run the job</param>
+			public AsyncBatchJob(AppModule module, Func<Task> action)
+				: this(module, null, action) {
+			}
+
+			/// <summary>
+			/// Create a batch job that redirects somewhere specific
+			/// </summary>
+			/// <param name="module">Module containing Database, Session, etc.</param>
+			/// <param name="redirect">Where to redirect to after batch (or null for default)</param>
+			/// <param name="action">Async action to run the job</param>
+			public AsyncBatchJob(AppModule module, string redirect, Func<Task> action) : base(module, redirect) {
+				new Task(async delegate () {
+					await Task.Delay(500);  // 1/2 second to allow module page to return
+					await runBatch(action);
+					_module.CloseDatabase();
+					await Task.Delay(60000);    // 1 minute
+					lock (jobs) {
+						jobs.Remove(Id);
+					}
+				}).Start();
+				module.Module = "admin";
+				module.Method = "batch";
+			}
+
+			async Task runBatch(Func<Task> action) {
+				try {
+					_module.LogString = new StringBuilder();
+					_module.Log("Running batch job {0}", Id);
+					await action();
+				} catch (Exception ex) {
+					_module.Log("Batch job {0} Exception: {1}", Id, ex);
+					Status = "An error occurred";
+					Error = ex.Message;
+				}
+				_module.Log("Finished batch job {0}", Id);
+				CodeFirstWebFramework.Log.Info.WriteLine(_module.LogString.ToString());
+				_module.LogString = null;
+				_module.Batch = null;
+				Finished = true;
+			}
+
 
 		}
 

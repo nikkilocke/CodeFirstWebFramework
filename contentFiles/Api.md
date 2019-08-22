@@ -116,6 +116,9 @@
   - [Template()](#M-CodeFirstWebFramework-AppModule-Template-System-String,System-Object- 'CodeFirstWebFramework.AppModule.Template(System.String,System.Object)')
   - [TextTemplate(text,obj)](#M-CodeFirstWebFramework-AppModule-TextTemplate-System-String,System-Object- 'CodeFirstWebFramework.AppModule.TextTemplate(System.String,System.Object)')
   - [WriteResponse(o,contentType,status)](#M-CodeFirstWebFramework-AppModule-WriteResponse-System-Object,System-String,System-Net-HttpStatusCode- 'CodeFirstWebFramework.AppModule.WriteResponse(System.Object,System.String,System.Net.HttpStatusCode)')
+- [AsyncBatchJob](#T-CodeFirstWebFramework-AppModule-AsyncBatchJob 'CodeFirstWebFramework.AppModule.AsyncBatchJob')
+  - [#ctor(module,action)](#M-CodeFirstWebFramework-AppModule-AsyncBatchJob-#ctor-CodeFirstWebFramework-AppModule,System-Func{System-Threading-Tasks-Task}- 'CodeFirstWebFramework.AppModule.AsyncBatchJob.#ctor(CodeFirstWebFramework.AppModule,System.Func{System.Threading.Tasks.Task})')
+  - [#ctor(module,redirect,action)](#M-CodeFirstWebFramework-AppModule-AsyncBatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String,System-Func{System-Threading-Tasks-Task}- 'CodeFirstWebFramework.AppModule.AsyncBatchJob.#ctor(CodeFirstWebFramework.AppModule,System.String,System.Func{System.Threading.Tasks.Task})')
 - [AuthAttribute](#T-CodeFirstWebFramework-AuthAttribute 'CodeFirstWebFramework.AuthAttribute')
   - [#ctor()](#M-CodeFirstWebFramework-AuthAttribute-#ctor 'CodeFirstWebFramework.AuthAttribute.#ctor')
   - [#ctor(AccessLevel)](#M-CodeFirstWebFramework-AuthAttribute-#ctor-System-Int32- 'CodeFirstWebFramework.AuthAttribute.#ctor(System.Int32)')
@@ -132,10 +135,13 @@
 - [BatchJob](#T-CodeFirstWebFramework-AppModule-BatchJob 'CodeFirstWebFramework.AppModule.BatchJob')
   - [#ctor(module,action)](#M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-Action- 'CodeFirstWebFramework.AppModule.BatchJob.#ctor(CodeFirstWebFramework.AppModule,System.Action)')
   - [#ctor(module,redirect,action)](#M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String,System-Action- 'CodeFirstWebFramework.AppModule.BatchJob.#ctor(CodeFirstWebFramework.AppModule,System.String,System.Action)')
+  - [#ctor(module,redirect)](#M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String- 'CodeFirstWebFramework.AppModule.BatchJob.#ctor(CodeFirstWebFramework.AppModule,System.String)')
   - [Error](#F-CodeFirstWebFramework-AppModule-BatchJob-Error 'CodeFirstWebFramework.AppModule.BatchJob.Error')
   - [Finished](#F-CodeFirstWebFramework-AppModule-BatchJob-Finished 'CodeFirstWebFramework.AppModule.BatchJob.Finished')
   - [Records](#F-CodeFirstWebFramework-AppModule-BatchJob-Records 'CodeFirstWebFramework.AppModule.BatchJob.Records')
   - [Status](#F-CodeFirstWebFramework-AppModule-BatchJob-Status 'CodeFirstWebFramework.AppModule.BatchJob.Status')
+  - [_module](#F-CodeFirstWebFramework-AppModule-BatchJob-_module 'CodeFirstWebFramework.AppModule.BatchJob._module')
+  - [_redirect](#F-CodeFirstWebFramework-AppModule-BatchJob-_redirect 'CodeFirstWebFramework.AppModule.BatchJob._redirect')
   - [Id](#P-CodeFirstWebFramework-AppModule-BatchJob-Id 'CodeFirstWebFramework.AppModule.BatchJob.Id')
   - [PercentComplete](#P-CodeFirstWebFramework-AppModule-BatchJob-PercentComplete 'CodeFirstWebFramework.AppModule.BatchJob.PercentComplete')
   - [Record](#P-CodeFirstWebFramework-AppModule-BatchJob-Record 'CodeFirstWebFramework.AppModule.BatchJob.Record')
@@ -1794,6 +1800,46 @@ it is converted to json representation. |
 | contentType | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The content type (suitable default is used if null) |
 | status | [System.Net.HttpStatusCode](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Net.HttpStatusCode 'System.Net.HttpStatusCode') | The Http return code |
 
+<a name='T-CodeFirstWebFramework-AppModule-AsyncBatchJob'></a>
+## AsyncBatchJob `type`
+
+##### Namespace
+
+CodeFirstWebFramework.AppModule
+
+##### Summary
+
+Async background batch job (e.g. import, restore)
+
+<a name='M-CodeFirstWebFramework-AppModule-AsyncBatchJob-#ctor-CodeFirstWebFramework-AppModule,System-Func{System-Threading-Tasks-Task}-'></a>
+### #ctor(module,action) `constructor`
+
+##### Summary
+
+Create a batch job that redirects back to the module's original method on completion
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | Module containing Database, Session, etc. |
+| action | [System.Func{System.Threading.Tasks.Task}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{System.Threading.Tasks.Task}') | Action to run the job |
+
+<a name='M-CodeFirstWebFramework-AppModule-AsyncBatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String,System-Func{System-Threading-Tasks-Task}-'></a>
+### #ctor(module,redirect,action) `constructor`
+
+##### Summary
+
+Create a batch job that redirects somewhere specific
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | Module containing Database, Session, etc. |
+| redirect | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Where to redirect to after batch (or null for default) |
+| action | [System.Func{System.Threading.Tasks.Task}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{System.Threading.Tasks.Task}') | Async action to run the job |
+
 <a name='T-CodeFirstWebFramework-AuthAttribute'></a>
 ## AuthAttribute `type`
 
@@ -1957,6 +2003,20 @@ Create a batch job that redirects somewhere specific
 | redirect | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Where to redirect to after batch (or null for default) |
 | action | [System.Action](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Action 'System.Action') | Action to run the job |
 
+<a name='M-CodeFirstWebFramework-AppModule-BatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String-'></a>
+### #ctor(module,redirect) `constructor`
+
+##### Summary
+
+Protected constructor for AsyncBatchJob to use
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | Module containing Database, Session, etc. |
+| redirect | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Where to redirect to after batch (or null for default) |
+
 <a name='F-CodeFirstWebFramework-AppModule-BatchJob-Error'></a>
 ### Error `constants`
 
@@ -1984,6 +2044,20 @@ Total number of records (for progress bar)
 ##### Summary
 
 For status/progress display
+
+<a name='F-CodeFirstWebFramework-AppModule-BatchJob-_module'></a>
+### _module `constants`
+
+##### Summary
+
+The running module
+
+<a name='F-CodeFirstWebFramework-AppModule-BatchJob-_redirect'></a>
+### _redirect `constants`
+
+##### Summary
+
+Where to redirect to at the end
 
 <a name='P-CodeFirstWebFramework-AppModule-BatchJob-Id'></a>
 ### Id `property`

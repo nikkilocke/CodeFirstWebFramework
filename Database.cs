@@ -370,6 +370,18 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// See if a record exists by id
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
+		/// </summary>
+		/// <param name="id">The record to get</param>
+		/// <param name="record">Returned record (will be empty if record doesn't exist)</param>
+		public bool TryGet<T>(int id, out T record) where T : JsonObject {
+			Table table = TableFor(typeof(T));
+			record = QueryOne<T>("SELECT * FROM " + table.Name + " WHERE " + table.PrimaryKey.Name + " = " + id);
+			return record.Id == id;
+		}
+
+		/// <summary>
 		/// Get a record by unique key
 		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>

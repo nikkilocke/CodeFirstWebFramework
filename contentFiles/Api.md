@@ -243,6 +243,7 @@
   - [TableFor()](#M-CodeFirstWebFramework-Database-TableFor-System-String- 'CodeFirstWebFramework.Database.TableFor(System.String)')
   - [TableFor()](#M-CodeFirstWebFramework-Database-TableFor-System-Type- 'CodeFirstWebFramework.Database.TableFor(System.Type)')
   - [TableForOrDefault()](#M-CodeFirstWebFramework-Database-TableForOrDefault-System-Type- 'CodeFirstWebFramework.Database.TableForOrDefault(System.Type)')
+  - [TryGet\`\`1(id,record)](#M-CodeFirstWebFramework-Database-TryGet``1-System-Int32,``0@- 'CodeFirstWebFramework.Database.TryGet``1(System.Int32,``0@)')
   - [TryGet\`\`1()](#M-CodeFirstWebFramework-Database-TryGet``1-``0- 'CodeFirstWebFramework.Database.TryGet``1(``0)')
   - [Update()](#M-CodeFirstWebFramework-Database-Update-System-String,System-Collections-Generic-List{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.Database.Update(System.String,System.Collections.Generic.List{Newtonsoft.Json.Linq.JObject})')
   - [Update()](#M-CodeFirstWebFramework-Database-Update-System-String,Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Database.Update(System.String,Newtonsoft.Json.Linq.JObject)')
@@ -3078,6 +3079,21 @@ Try to find the Table descriptor for a C# type
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Database-TryGet``1-System-Int32,``0@-'></a>
+### TryGet\`\`1(id,record) `method`
+
+##### Summary
+
+See if a record exists by id
+NB If called with T a base class of the class used to create the table, returns an object of the derived class
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| id | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | The record to get |
+| record | [\`\`0@](#T-``0@ '``0@') | Returned record (will be empty if record doesn't exist) |
 
 <a name='M-CodeFirstWebFramework-Database-TryGet``1-``0-'></a>
 ### TryGet\`\`1() `method`

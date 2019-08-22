@@ -233,12 +233,18 @@ namespace CodeFirstWebFramework {
 			Close();
 		}
 
-		static string fileName() {
+		/// <summary>
+		/// Return the current log file name
+		/// </summary>
+		public static string FileName() {
 			_lastDate = Utils.Today;
-			return fileName(_lastDate);
+			return FileName(_lastDate);
 		}
 
-		static string fileName(DateTime date) {
+		/// <summary>
+		/// Return the log file name for the given date
+		/// </summary>
+		public static string FileName(DateTime date) {
 			return Path.Combine(LogFolder, date.ToString("yyyy-MM-dd") + ".log");
 		}
 
@@ -248,7 +254,7 @@ namespace CodeFirstWebFramework {
 					_sw.Close();
 				}
 				Directory.CreateDirectory(LogFolder);
-				_sw = new StreamWriter(new FileStream(fileName(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite), Encoding.UTF8);
+				_sw = new StreamWriter(new FileStream(FileName(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite), Encoding.UTF8);
 				_sw.AutoFlush = true;
 			}
 		}

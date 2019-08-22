@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -16,11 +16,12 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.2.4</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
+    <Version>1.2.5</Version>
+    <AssemblyVersion>1.2.5.0</AssemblyVersion>
+    <FileVersion>1.2.5.0</FileVersion>
     <PackageReleaseNotes>Introduced AsyncBatchJob
-Added Database.TryGet&lt;T&gt;(int id, out T result)</PackageReleaseNotes>
+Added Database.TryGet&lt;T&gt;(int id, out T result)
+Added Admin.GetLog method</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

@@ -24,6 +24,7 @@
   - [EditUser()](#M-CodeFirstWebFramework-AdminHelper-EditUser-System-Int32- 'CodeFirstWebFramework.AdminHelper.EditUser(System.Int32)')
   - [EditUserDelete()](#M-CodeFirstWebFramework-AdminHelper-EditUserDelete-System-Int32- 'CodeFirstWebFramework.AdminHelper.EditUserDelete(System.Int32)')
   - [EditUserSave()](#M-CodeFirstWebFramework-AdminHelper-EditUserSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminHelper.EditUserSave(Newtonsoft.Json.Linq.JObject)')
+  - [GetLog()](#M-CodeFirstWebFramework-AdminHelper-GetLog 'CodeFirstWebFramework.AdminHelper.GetLog')
   - [Login()](#M-CodeFirstWebFramework-AdminHelper-Login 'CodeFirstWebFramework.AdminHelper.Login')
   - [Logout()](#M-CodeFirstWebFramework-AdminHelper-Logout 'CodeFirstWebFramework.AdminHelper.Logout')
   - [Restore()](#M-CodeFirstWebFramework-AdminHelper-Restore 'CodeFirstWebFramework.AdminHelper.Restore')
@@ -475,6 +476,8 @@
   - [Trace](#F-CodeFirstWebFramework-Log-Trace 'CodeFirstWebFramework.Log.Trace')
   - [On](#P-CodeFirstWebFramework-Log-On 'CodeFirstWebFramework.Log.On')
   - [Close()](#M-CodeFirstWebFramework-Log-Close 'CodeFirstWebFramework.Log.Close')
+  - [FileName()](#M-CodeFirstWebFramework-Log-FileName 'CodeFirstWebFramework.Log.FileName')
+  - [FileName()](#M-CodeFirstWebFramework-Log-FileName-System-DateTime- 'CodeFirstWebFramework.Log.FileName(System.DateTime)')
   - [Flush()](#M-CodeFirstWebFramework-Log-Flush 'CodeFirstWebFramework.Log.Flush')
   - [WriteLine()](#M-CodeFirstWebFramework-Log-WriteLine-System-String- 'CodeFirstWebFramework.Log.WriteLine(System.String)')
   - [WriteLine()](#M-CodeFirstWebFramework-Log-WriteLine-System-String,System-Object[]- 'CodeFirstWebFramework.Log.WriteLine(System.String,System.Object[])')
@@ -930,6 +933,17 @@ This method has no parameters.
 ##### Summary
 
 Update user
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AdminHelper-GetLog'></a>
+### GetLog() `method`
+
+##### Summary
+
+Return the log file for a given date (today if date not supplied)
 
 ##### Parameters
 
@@ -5426,6 +5440,28 @@ Whether this type of logging is outputting anywhere
 ##### Summary
 
 Close the file
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Log-FileName'></a>
+### FileName() `method`
+
+##### Summary
+
+Return the current log file name
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Log-FileName-System-DateTime-'></a>
+### FileName() `method`
+
+##### Summary
+
+Return the log file name for the given date
 
 ##### Parameters
 

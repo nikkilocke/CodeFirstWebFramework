@@ -339,6 +339,17 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Return the log file for a given date (today if date not supplied)
+		/// </summary>
+		public void GetLog() {
+			string d = module.GetParameters["date"];
+			DateTime date = d == null ? Utils.Today : DateTime.Parse(d);
+			using (FileStream f = new FileStream(CodeFirstWebFramework.Log.FileName(date), FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+				module.WriteResponse(f, "text/plain", System.Net.HttpStatusCode.OK);
+			}
+		}
+
+		/// <summary>
 		/// Create form to change user's password
 		/// </summary>
 		[Auth(AccessLevel.Any)]

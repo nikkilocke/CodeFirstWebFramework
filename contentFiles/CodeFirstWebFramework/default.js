@@ -646,7 +646,7 @@ var Type = {
 				//noinspection JSUnusedLocalSymbols
 				col.change = function(newValue, rowData, col, input) {
 					var item = _.find(col.selectOptions, function (v) {
-						return v.value == newValue
+                        return v.value == newValue;
 					});
 					if (item === undefined) {
 						if (col.mustExist) {
@@ -673,7 +673,7 @@ var Type = {
         update: function (cell, data, rowno, row) {
             if (data == null)
                 data = this && this.emptyValue != null ? this.emptyValue : '';
-            var value = _.find(this.selectOptions, function (v) { return v.id == data });
+            var value = _.find(this.selectOptions, function (v) { return v.id == data; });
             if (value && value.value !== undefined)
                 data = value.value;
 			var i = cell.find('input');
@@ -1383,9 +1383,9 @@ function makeDataTable(selector, options) {
 	if (typeof(selectUrl) == 'string') {
 		// Turn into a function that goes to url, adding id of current row as parameter
 		var s = selectUrl;
-		selectUrl = function (row) {
+        selectUrl = function (row) {
             goto(urlParameter('id', row[idName], s));
-		}
+        };
 	}
 	// If no data or data url supplied, use an Ajax call to this method + "Listing"
 	if (options.data === undefined)
@@ -1395,7 +1395,7 @@ function makeDataTable(selector, options) {
 	var heading = $(selector).find('thead');
 	if (heading.length == 0) heading = $('<thead></thead>').appendTo($(selector));
 	heading = $('<tr></tr>').appendTo(heading);
-	var columns = {}
+    var columns = {};
 	_.each(options.columns, function (col, index) {
 		// Set up the column - add any missing functions, etc.
 		options.columns[index] = col = _setColObject(col, tableName, index);
@@ -1450,7 +1450,7 @@ function makeDataTable(selector, options) {
 	// Attach mouse handlers to each row
 	if (typeof(selectUrl) == 'function') {
 		selectClick(selector, function () {
-			return selectUrl.call(this, table.rowData($(this)))
+            return selectUrl.call(this, table.rowData($(this)));
 		});
 	} else {
 		selectClick(selector, null);
@@ -1604,36 +1604,36 @@ function makeForm(selector, options) {
 		 * Submit method attached to button
 		 * @param button The button pushed
 		 */
-		submitUrl = function(button) {
-			var hdg = null;
-			try {
-				// Check each input value is valid
-				_.each(options.columns, function (col) {
-					if(col.inputValue) {
-						hdg = col.heading;
-						col.inputValue(col.cell.find('#r0c' + col.name), result.data);
-					}
-				});
-			} catch(e) {
-				message(hdg + ':' + e);
-				return;
-			}
-			if(options.validate) {
-				var msg = options.validate();
-				message(msg);
-				if(msg) return;
-			}
-			postJson(submitHref, result.data, function(d) {
-				$('button#Back').text('Back');
-				if($(button).hasClass('goback')) {
-					goback();	// Save
-				} else if($(button).hasClass('new')) {
-					window.location = urlParameter('id', 0);	// Save and New
-				} else if(tableName && d.id) {
-					window.location = urlParameter('id', d.id);	// Apply - redisplay saved record
-				}
-			});
-		}
+        submitUrl = function (button) {
+            var hdg = null;
+            try {
+                // Check each input value is valid
+                _.each(options.columns, function (col) {
+                    if (col.inputValue) {
+                        hdg = col.heading;
+                        col.inputValue(col.cell.find('#r0c' + col.name), result.data);
+                    }
+                });
+            } catch (e) {
+                message(hdg + ':' + e);
+                return;
+            }
+            if (options.validate) {
+                var msg = options.validate();
+                message(msg);
+                if (msg) return;
+            }
+            postJson(submitHref, result.data, function (d) {
+                $('button#Back').text('Back');
+                if ($(button).hasClass('goback')) {
+                    goback();	// Save
+                } else if ($(button).hasClass('new')) {
+                    window.location = urlParameter('id', 0);	// Save and New
+                } else if (tableName && d.id) {
+                    window.location = urlParameter('id', d.id);	// Apply - redisplay saved record
+                }
+            });
+        };
 	}
 	var deleteUrl = canDelete ? myOption('delete', options) : null;
 	if(deleteUrl === undefined) {
@@ -1642,9 +1642,9 @@ function makeForm(selector, options) {
 	if(typeof(deleteUrl) == 'string') {
 		var deleteHref = deleteUrl;
 		//noinspection JSUnusedLocalSymbols
-		deleteUrl = function(button) {
-			postJson(deleteHref, result.data, goback);
-		}
+        deleteUrl = function (button) {
+            postJson(deleteHref, result.data, goback);
+        };
 	}
 	$(selector).addClass('form');
 	_setAjaxObject(options, 'Data', '');
@@ -1824,6 +1824,12 @@ function makeForm(selector, options) {
 	result.dataReady = dataReady;
     result.draw = draw;
     result.submit = submitUrl;
+    result.updateSelectOptions = function (col, selectOptions) {
+        col.selectOptions = selectOptions;
+        col.cell.html(col.draw(result.data[col.data], 0, result.data));
+    };
+
+
 	Forms.push(result);
 	if(options.data)
 		dataReady(options.data);
@@ -1847,50 +1853,50 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	}
 	if(typeof(submitUrl) == 'string') {
 		var submitHref = submitUrl;
-		submitUrl = function(button) {
-			var hdg = null;
-			try {
-				// Validate everything
-				_.each(options.header.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						col.inputValue(result.header.find('#r0c' + col.name), result.header.data);
-					}
-				});
-				_.each(options.detail.columns, function(col) {
-					if(col.inputValue) {
-						hdg = col.heading;
-						_.each(result.detail.data, function (row, index) {
-							col.inputValue(result.detail.find('#r' + index + 'c' + col.name), row);
-						});
-					}
-				});
-			} catch(e) {
-				message(hdg + ':' + e);
-				return;
-			}
-			if(options.header.validate) {
-				var msg = options.header.validate();
-				message(msg);
-				if(msg) return;
-			}
-			if(options.validate) {
-				msg = options.validate();
-				message(msg);
-				if(msg) return;
-			}
-			postJson(submitHref, {
-				header: result.header.data,
-				detail: result.detail.data
-				}, function(d) {
-					if($(button).hasClass('goback'))
-						goback();
-					else if($(button).hasClass('new'))
-						window.location = urlParameter('id', 0);
-					else if(tableName && d.id)
-						window.location = urlParameter('id', d.id);
-				});
-		}
+        submitUrl = function (button) {
+            var hdg = null;
+            try {
+                // Validate everything
+                _.each(options.header.columns, function (col) {
+                    if (col.inputValue) {
+                        hdg = col.heading;
+                        col.inputValue(result.header.find('#r0c' + col.name), result.header.data);
+                    }
+                });
+                _.each(options.detail.columns, function (col) {
+                    if (col.inputValue) {
+                        hdg = col.heading;
+                        _.each(result.detail.data, function (row, index) {
+                            col.inputValue(result.detail.find('#r' + index + 'c' + col.name), row);
+                        });
+                    }
+                });
+            } catch (e) {
+                message(hdg + ':' + e);
+                return;
+            }
+            if (options.header.validate) {
+                var msg = options.header.validate();
+                message(msg);
+                if (msg) return;
+            }
+            if (options.validate) {
+                msg = options.validate();
+                message(msg);
+                if (msg) return;
+            }
+            postJson(submitHref, {
+                header: result.header.data,
+                detail: result.detail.data
+            }, function (d) {
+                if ($(button).hasClass('goback'))
+                    goback();
+                else if ($(button).hasClass('new'))
+                    window.location = urlParameter('id', 0);
+                else if (tableName && d.id)
+                    window.location = urlParameter('id', d.id);
+            });
+        };
 	}
 	if(options.header.submit === undefined)
 		options.header.submit = submitUrl;
@@ -1958,38 +1964,38 @@ function makeListForm(selector, options) {
 	if(selectUrl === undefined && typeof(submitUrl) == 'string') {
 		var s = submitUrl;
 		//noinspection JSUnusedAssignment,JSUnusedLocalSymbols
-		submitUrl = function(button) {
-			try {
-				var hdg;
-				_.each(options.columns, function(col) {
-					if(col.inputValue) {
-						hdg = col.heading;
-						_.each(table.data, function (row, index) {
-							col.inputValue(table.find('#r' + index + 'c' + col.name), row);
-						});
-					}
-				});
-			} catch(e) {
-				message(e);
-				return;
-			}
-			if(options.validate) {
-				var msg = options.validate();
-				message(msg);
-				if(msg) return;
-			}
-			postJson(s, table.data);
-		}
+        submitUrl = function (button) {
+            try {
+                var hdg;
+                _.each(options.columns, function (col) {
+                    if (col.inputValue) {
+                        hdg = col.heading;
+                        _.each(table.data, function (row, index) {
+                            col.inputValue(table.find('#r' + index + 'c' + col.name), row);
+                        });
+                    }
+                });
+            } catch (e) {
+                message(e);
+                return;
+            }
+            if (options.validate) {
+                var msg = options.validate();
+                message(msg);
+                if (msg) return;
+            }
+            postJson(s, table.data);
+        };
 	}
 	if(typeof(selectUrl) == 'string') {
 		var sel = selectUrl;
-		selectUrl = function(row) {
+        selectUrl = function (row) {
             goto(urlParameter('id', row[idName], sel));
-		}
+        };
 	}
 	if(typeof(selectUrl) == 'function') {
 		selectClick(selector, function () {
-			return selectUrl.call(this, table.rowData($(this)))
+            return selectUrl.call(this, table.rowData($(this)));
 		});
 	} else {
 		selectClick(selector, null);
@@ -2327,6 +2333,13 @@ function makeListForm(selector, options) {
 			cell = cell.next();
 		}
 	};
+    table.updateSelectOptions = function (col, selectOptions) {
+        col.selectOptions = selectOptions;
+        _.each(table.data, function (rowData, index) {
+            var cell = cellFor(index, col);
+            cell.html(col.draw(rowData[col.data], index, rowData));
+        });
+    };
 	refresh();
 	Forms.push(table);
 	return table;
@@ -2374,7 +2387,7 @@ function makeDumbForm(selector, options) {
         //noinspection JSUnusedLocalSymbols
         deleteUrl = function (button) {
             postJson(deleteHref, result.data, goback);
-        }
+        };
     }
 	$(selector).addClass('form');
 	_setAjaxObject(options, 'Data', '');
@@ -2546,7 +2559,7 @@ function downloadData(columns, record) {
 		buildRow(0, record);
 	}
 	return data;
-};
+}
 
 /**
  * Extract a named option from opts, remove it, and return it (or defaultValue if not present)
@@ -2744,7 +2757,7 @@ function defaultUrl(defaultSuffix) {
 		url = '/home/default';
 	else if(url.substr(1).indexOf('/') < 0)
 		url += '/default';
-	return url + defaultSuffix + ".html" + window.location.search
+    return url + defaultSuffix + ".html" + window.location.search;
 }
 
 /**
@@ -2780,13 +2793,13 @@ function urlParameter(name, value, url) {
  */
 function _setAjaxObject(options, defaultSuffix, defaultDataSrc) {
 	if(typeof(options.ajax) == 'string') {
-		options.ajax = {
-			url: options.ajax
-		}
+        options.ajax = {
+            url: options.ajax
+        };
 	} else if(options.ajax === undefined && !options.data) {
-		options.ajax = {
-			url: defaultUrl(defaultSuffix)
-		}
+        options.ajax = {
+            url: defaultUrl(defaultSuffix)
+        };
 	}
 	if(options.ajax && typeof(options.ajax) == 'object' && options.ajax.dataSrc === undefined) {
 		options.ajax.dataSrc = defaultDataSrc;

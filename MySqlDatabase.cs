@@ -402,8 +402,8 @@ namespace CodeFirstWebFramework {
 			b.AppendFormat(" {0}NULL", f.Nullable ? "" : "NOT ");
 			if (f.AutoIncrement)
 				b.Append(" AUTO_INCREMENT");
-			else if(f.DefaultValue != null)
-				b.AppendFormat(" DEFAULT {0}", Quote(f.DefaultValue));
+			else if(defaultValue != null)
+				b.AppendFormat(" DEFAULT {0}", Quote(defaultValue));
 			return b.ToString();
 		}
 

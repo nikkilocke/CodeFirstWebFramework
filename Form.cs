@@ -143,9 +143,10 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		static public IEnumerable<JObject> SelectValues(Type enumType) {
 			foreach (var v in Enum.GetValues(enumType)) {
-				JObject j = new JObject();
-				j["id"] = (int)v;
-				j["value"] = Enum.GetName(enumType, v).UnCamel();
+				JObject j = new JObject {
+					["id"] = (int)v,
+					["value"] = Enum.GetName(enumType, v).UnCamel()
+				};
 				yield return j;
 			}
 		}
@@ -326,7 +327,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// The fields
 		/// </summary>
-		private JArray columns;
+		private readonly JArray columns = new JArray();
 
 		/// <summary>
 		/// Empty form
@@ -335,12 +336,11 @@ namespace CodeFirstWebFramework {
 		/// <param name="readwrite">Whether the user can input to some of the fields</param>
 		public Form(AppModule module, bool readwrite)
 			: base(module) {
-			if (!module.HasAccess(module.Info, module.Method + "save", out int accessLevel))
+			if (!module.HasAccess(module.Info, module.Method + "save", out _))
 				readwrite = false;
 			ReadWrite = readwrite;
 			if (!readwrite)
 				Options["readonly"] = true;
-			columns = new JArray();
 			Options["columns"] = columns;
 		}
 
@@ -407,10 +407,10 @@ namespace CodeFirstWebFramework {
 		/// Add a field to the form by name
 		/// </summary>
 		public FieldAttribute Add(Type t, string name) {
-			FieldAttribute f = null;
 			// Name may be "fieldname/heading"
 			string[] parts = name.Split('/');
 			FieldInfo fld = t.GetField(parts[0]);
+			FieldAttribute f;
 			if (fld == null) {
 				PropertyInfo p = t.GetProperty(parts[0]);
 				Utils.Check(p != null, "Field {0} not found in type {1}", parts[0], t.Name);
@@ -542,7 +542,7 @@ namespace CodeFirstWebFramework {
 		public bool CanDelete {
 			get { return Options.AsBool("canDelete"); }
 			set {
-				if (!Module.HasAccess(Module.Info, Module.Method + "delete", out int accessLevel))
+				if (!Module.HasAccess(Module.Info, Module.Method + "delete", out _))
 					value = false;
 				Options["canDelete"] = value;
 			}
@@ -755,7 +755,7 @@ namespace CodeFirstWebFramework {
 		/// Form for C# type t
 		/// </summary>
 		public DumbForm(AppModule module, Type t, bool readwrite)
-			: base(module, readwrite) {
+			: base(module, t, readwrite) {
 		}
 
 		/// <summary>

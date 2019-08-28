@@ -56,7 +56,7 @@ namespace CodeFirstWebFramework {
 	[Handles(".html")]
 	public abstract class AppModule : IDisposable {
 		static int lastJob;							// Last batch job
-		static Dictionary<int, BatchJob> jobs = new Dictionary<int, BatchJob>();
+		static readonly Dictionary<int, BatchJob> jobs = new Dictionary<int, BatchJob>();
 		private Settings _settings;
 
 		/// <summary>
@@ -607,8 +607,7 @@ namespace CodeFirstWebFramework {
 		/// Get batch job from id (for status/progress display)
 		/// </summary>
 		public static BatchJob GetBatchJob(int id) {
-			BatchJob job;
-			return jobs.TryGetValue(id, out job) ? job : null;
+			return jobs.TryGetValue(id, out BatchJob job) ? job : null;
 		}
 
 		/// <summary>
@@ -838,7 +837,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool HasAccess(string uri) {
 			ModuleInfo info = Server.NamespaceDef.ParseUri(uri, out string filename);
-			return info == null ? true : HasAccess(info, Path.GetFileNameWithoutExtension(filename) + (Array.IndexOf(uri.Split('?','&'), "id=0") > 0 ? "save" : ""), out int accesslevel);
+			return info == null ? true : HasAccess(info, Path.GetFileNameWithoutExtension(filename) + (Array.IndexOf(uri.Split('?','&'), "id=0") > 0 ? "save" : ""), out _);
 		}
 
 		/// <summary>
@@ -946,8 +945,9 @@ namespace CodeFirstWebFramework {
 		/// <param name="text">The template</param>
 		/// <param name="obj">The object to use</param>
 		public string TextTemplate(string text, object obj) {
-			FormatCompiler compiler = new FormatCompiler();
-			compiler.RemoveNewLines = false;
+			FormatCompiler compiler = new FormatCompiler {
+				RemoveNewLines = false
+			};
 			Generator generator = compiler.Compile(text);
 			string result = generator.Render(obj);
 			result = Regex.Replace(result, "\x1(.*?)\x2", delegate (Match m) {

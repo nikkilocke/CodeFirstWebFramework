@@ -951,14 +951,16 @@ var Type = {
 			return '<input type="radio" data-col="' + col.name + '" ' + col.attributes + ' value="0" />';
 		},
 		draw: function(data, rowno, row) {
-			var select = '<label><input type="radio" id="r' + rowno + 'c' + this.name + '" name="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + ' value="0" />Other</label>';
+			var select = '';
 			var self = this;
-			if(this.selectOptions) {
-				_.each(this.selectOptions, function(o) {
-					select += ' <label><input type="radio" name="r' + rowno + 'c' + self.name + '" data-col="' + self.name + '" ' + self.attributes + ' value="' + o.id
-						+ (o.id == data ? ' checked="checked"' : '') + '" />' + _.escape(o.value) + '</label>';
+			if (this.selectOptions) {
+				_.each(this.selectOptions, function (o) {
+					select += ' <label><input type="radio" name="r' + rowno + 'c' + self.name + '" data-col="' + self.name + '" '
+						+ self.attributes + ' value="' + o.id + '"'
+						+ (o.id == data ? ' checked="checked"' : '') + ' />' + _.escape(o.value) + '</label>';
 				});
-			}
+			} else
+				select = '<label><input type="radio" id="r' + rowno + 'c' + this.name + '" name="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + ' value="0" />Other</label>';
 			return select;
 		},
 		update: function(cell, data, rowno, row) {
@@ -1660,6 +1662,8 @@ function makeForm(selector, options) {
 			col.cell.attr('colspan', col.colspan);
         if (col.sClass)
             col.cell.attr('class', col.sClass);
+        if (col["@class"])
+            row.addClass(col["@class"]);
 		columns[col.name] = col;
 		col.index = index;
 	});

@@ -440,7 +440,7 @@ namespace CodeFirstWebFramework {
 					_module.Log("Running batch job {0}", Id);
 					action();
 				} catch (Exception ex) {
-					_module.Log("Batch job {0} Exception: {1}", Id, ex);
+					CodeFirstWebFramework.Log.Error.WriteLine("Batch job {0} Exception: {1}", Id, ex);
 					Status = "An error occurred";
 					Error = ex.Message;
 				}
@@ -584,7 +584,7 @@ namespace CodeFirstWebFramework {
 					_module.Log("Running batch job {0}", Id);
 					await action();
 				} catch (Exception ex) {
-					_module.Log("Batch job {0} Exception: {1}", Id, ex);
+					CodeFirstWebFramework.Log.Error.WriteLine("Batch job {0} Exception: {1}", Id, ex);
 					Status = "An error occurred";
 					Error = ex.Message;
 				}
@@ -744,7 +744,7 @@ namespace CodeFirstWebFramework {
 						WriteResponse(o, null, HttpStatusCode.OK);	// Builds response from return value
 				}
 			} catch (Exception ex) {
-				Log("Exception: {0}", ex);
+				CodeFirstWebFramework.Log.Error.WriteLine("Exception: {0}", ex);
 				while (ex is TargetInvocationException) {
 					// Strip off TargetInvokationExceptions so message is meaningful
 					ex = ex.InnerException;
@@ -1089,11 +1089,11 @@ namespace CodeFirstWebFramework {
 				string page = Template(filename, this);
 				WriteResponse(page, "text/html", HttpStatusCode.OK);
 			} catch (System.IO.FileNotFoundException ex) {
-				Log(ex.ToString());
+				CodeFirstWebFramework.Log.Error.WriteLine(ex.ToString());
 				Exception = ex;
 				WriteResponse(Template("exception", this), "text/html", HttpStatusCode.NotFound);
 			} catch (Exception ex) {
-				Log(ex.ToString());
+				CodeFirstWebFramework.Log.Error.WriteLine(ex.ToString());
 				Exception = ex;
 				WriteResponse(Template("exception", this), "text/html", HttpStatusCode.InternalServerError);
 			}

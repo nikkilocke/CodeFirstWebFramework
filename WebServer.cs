@@ -239,7 +239,7 @@ namespace CodeFirstWebFramework {
 					if (ex is System.Net.Sockets.SocketException) {
 						log.AppendFormat("Request error: {0}\r\n", ex.Message);
 					} else {
-						log.AppendFormat("Request error: {0}\r\n", ex);
+						Log.Error.WriteLine($"Request error: {ex}");
 						if (module == null || !module.ResponseSent) {
 							try {
 								ModuleInfo info = server.NamespaceDef.GetModuleInfo("error");

@@ -500,6 +500,9 @@ namespace CodeFirstWebFramework {
 					return _redirect == null ? null : _redirect + (_redirect.Contains('?') ? '&' : '?') + "message=" 
 						+ (string.IsNullOrEmpty(_module.Message) ? "Job completed" : HttpUtility.UrlEncode(_module.Message));
 				}
+				set {
+					_redirect = value;
+				}
 			}
 
 			/// <summary>

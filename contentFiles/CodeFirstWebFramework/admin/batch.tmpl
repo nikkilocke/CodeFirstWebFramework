@@ -12,6 +12,9 @@ function checkStatus() {
 		}
 		if(result.error) {
 			message(result.error);
+			if(result.redirect) {
+				jumpButton('Continue', result.redirect);
+			}
 		} else if(result.redirect) {
 			window.location = result.redirect;
 		} else {

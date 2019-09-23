@@ -57,6 +57,28 @@
     background-color: lightgreen;
     padding: 2px;
 }
+table.form span.hint {
+    border: 1px solid blue;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+table.form #tooltip {
+    background-color: white;
+    color: black;
+    text-decoration: none;
+    font-weight: normal;
+    border: 1px solid gray;
+    padding: 5px;
+    margin-top: 1.5em;
+    position: absolute;
+    max-width: 200px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    z-index: 1;
+}
 @media screen and (min-width:700px) and (min-height:400px) {
     #spacer {
         height: 120px;
@@ -262,5 +284,12 @@ ul.menu {
     tr, td {
         page-break-inside: avoid;
         page-break-before:auto;
+    }
+    table.form span.hint {
+        display: none;
+    }
+
+    table.form #tooltip {
+        display: none;
     }
 }

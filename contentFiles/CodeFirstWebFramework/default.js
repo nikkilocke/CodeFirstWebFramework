@@ -83,7 +83,19 @@ $(function() {
 	$('body').on('click', 'button.nextButton', function() {
 		// Button to set document number field to <next>, so C# will fill it in with the next one.
 		$(this).prev('input[type="text"]').val('<next>').trigger('change');
-	});
+    });
+    $('body').on('click', 'table.form span.hint', function () {
+        var showing = $(this).parent().find('#tooltip');
+        $('#tooltip').remove();
+        if (showing && showing.length)
+            return;
+        $(this).after("<span id=tooltip></div>");
+        var $title = $(this).parent().attr('title');
+        $(this).next().append($title);
+    });
+    $('body').on('click', 'table.form #tooltip', function () {
+        $('#tooltip').remove();
+    });
 
 	if(!touchScreen) {
 		// Moving focus to a field selects the contents (except on touch screens)
@@ -1656,7 +1668,9 @@ function makeForm(selector, options) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
 		if(!row || !col.sameRow)
 			row = $('<tr></tr>').appendTo($(selector));
-		$('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+        var hdg = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+        if (col.hint)
+            hdg.append(' <span class="hint">?</span>');
 		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
 		if(col.colspan)
 			col.cell.attr('colspan', col.colspan);

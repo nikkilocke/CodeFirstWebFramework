@@ -51,6 +51,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Display current or select batch details
 		/// </summary>
+		[Auth(AccessLevel.Any)]
 		public void Batch() {
 		}
 

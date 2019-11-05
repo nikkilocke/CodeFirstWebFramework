@@ -16,11 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.2.12</Version>
+    <Version>1.2.13</Version>
     <AssemblyVersion>1.2.12.0</AssemblyVersion>
     <FileVersion>1.2.12.0</FileVersion>
-    <PackageReleaseNotes>Allow full access to batch status (bug fix).
-Add ? button for field hints (so you can see them on touch screens).</PackageReleaseNotes>
+    <PackageReleaseNotes>Add user login to log</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

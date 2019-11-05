@@ -40,7 +40,7 @@ $(function() {
 	resize();
 	$('#menuicon').click(function() {
 		// Small screen user has clicked menu icon - show/hide menu
-		$('#header,#spacer').slideToggle(resize);
+		$('#header').slideToggle(resize);
 	});
 	$('body').on('click', 'button[href]', function() {
 		// Buttons with hrefs act like links

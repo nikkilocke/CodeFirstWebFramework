@@ -437,7 +437,8 @@ namespace CodeFirstWebFramework {
 			void runBatch(Action action) {
 				try {
 					_module.LogString = new StringBuilder();
-					_module.Log("Running batch job {0}", Id);
+					_module.Log("Running batch job {0}{1}", Id, (_module != null && _module.Session != null && _module.Session.User != null) ?
+						":" + _module.Session.User.Login : "");
 					action();
 				} catch (Exception ex) {
 					CodeFirstWebFramework.Log.Error.WriteLine("Batch job {0} Exception: {1}", Id, ex);
@@ -584,7 +585,8 @@ namespace CodeFirstWebFramework {
 			async Task runBatch(Func<Task> action) {
 				try {
 					_module.LogString = new StringBuilder();
-					_module.Log("Running batch job {0}", Id);
+					_module.Log("Running async batch job {0}{1}", Id, (_module != null && _module.Session != null && _module.Session.User != null) ?
+						":" + _module.Session.User.Login : "");
 					await action();
 				} catch (Exception ex) {
 					CodeFirstWebFramework.Log.Error.WriteLine("Batch job {0} Exception: {1}", Id, ex);
@@ -669,6 +671,8 @@ namespace CodeFirstWebFramework {
 			OriginalModule = Module = moduleName.ToLower();
 			OriginalMethod = Method = (methodName ?? "default").ToLower();
 			LogString.Append(GetType().Name + ":" + Title + ":");
+			if (Session != null && Session.User != null)
+				LogString.Append(Session.User.Login + ":");
 			// Collect get parameters
 			GetParameters = new NameValueCollection();
 			for (int i = 0; i < Request.QueryString.Count; i++) {

@@ -1699,8 +1699,8 @@ function makeForm(selector, options) {
 			if(col.change) {
 				var nval = col.change(val, result.data, col, this);
 				if(nval === false) {
-					$(this).val(result.data[col.data])
-						.focus();
+					col.update(col.cell, result.data[col.data], 0, result.data);
+					$(this).focus();
 					return;
 				} else if(nval !== undefined && nval !== null)
 					val = nval;
@@ -2083,8 +2083,8 @@ function makeListForm(selector, options) {
 			if(col.change) {
 				var nval = col.change(val, table.data[rowIndex], col, this);
 				if(nval === false) {
-					$(this).val(table.data[rowIndex][col.data])
-						.focus();
+					col.update(col.cell, table.data[rowIndex][col.data], rowIndex, table.data[rowIndex]);
+					$(this).focus();
 					return;
 				} else if(nval !== undefined && nval !== null)
 					val = nval;
@@ -2440,8 +2440,8 @@ function makeDumbForm(selector, options) {
 			if(col.change) {
 				var nval = col.change(val, result.data, col, this);
 				if(nval === false) {
-					$(this).val(result.data[col.data])
-						.focus();
+					col.update(col.cell, result.data[col.data], 0, result.data);
+					$(this).focus();
 					return;
 				} else if(nval !== undefined && nval !== null)
 					val = nval;

@@ -282,6 +282,8 @@ namespace CodeFirstWebFramework {
 			bool passwordChanged = false;
 			bool firstUser = !module.SecurityOn;
 			Utils.Check(header.AsString("Password") + "" == header.AsString("RepeatPassword") + "", "Passwords do not match");
+			user.Login = user.Login.Trim();
+			user.Email = user.Email.Trim();
 			if (user.idUser > 0) {
 				// Existing record
 				User u = module.Database.Get<User>((int)user.idUser);
@@ -400,7 +402,7 @@ namespace CodeFirstWebFramework {
 			if (module.Method == "logout")
 				module.Session.User = null;
 			if (module.Request.HttpMethod == "POST") {
-				string login = module.Parameters.AsString("login");
+				string login = module.Parameters.AsString("login").Trim();
 				string password = module.Parameters.AsString("password");
 				User user = module.Database.QueryOne<User>("SELECT * FROM User WHERE Login = "
 					+ module.Database.Quote(login) + " OR Email = " + module.Database.Quote(login));

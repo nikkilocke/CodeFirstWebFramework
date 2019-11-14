@@ -804,10 +804,9 @@ namespace CodeFirstWebFramework {
 			string idName = idField.Name;
 			JToken idValue = null;
 			Index index = table.Indexes[0];
-			JObject result = QueryOne(idName, "WHERE " + index.Where(data), table.Name);
-			if (result != null) {
+			JObject result = QueryOne("SELECT " + idName + " FROM " + table.Name + " WHERE " + index.Where(data));
+			if (result != null)
 				data[idName] = idValue = result[idName];
-			}
 			List<Field> fields = table.Fields.Where(f => data[f.Name] != null && (f.Nullable || data[f.Name].Type != JTokenType.Null)).ToList();
 			if (fields.Any(f => data[f.Name].Type == JTokenType.Null))
 				Log.Debug.WriteLine("Fields set to null " + string.Join(",", fields.Where(f => data[f.Name].Type == JTokenType.Null).Select(f => f.Name).ToArray()));

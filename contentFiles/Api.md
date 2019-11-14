@@ -26,7 +26,9 @@
   - [EditUserSave()](#M-CodeFirstWebFramework-AdminHelper-EditUserSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminHelper.EditUserSave(Newtonsoft.Json.Linq.JObject)')
   - [GetLog()](#M-CodeFirstWebFramework-AdminHelper-GetLog 'CodeFirstWebFramework.AdminHelper.GetLog')
   - [Login()](#M-CodeFirstWebFramework-AdminHelper-Login 'CodeFirstWebFramework.AdminHelper.Login')
+  - [LoginNoRedirect()](#M-CodeFirstWebFramework-AdminHelper-LoginNoRedirect 'CodeFirstWebFramework.AdminHelper.LoginNoRedirect')
   - [Logout()](#M-CodeFirstWebFramework-AdminHelper-Logout 'CodeFirstWebFramework.AdminHelper.Logout')
+  - [RedirectAfterLogin()](#M-CodeFirstWebFramework-AdminHelper-RedirectAfterLogin-System-String- 'CodeFirstWebFramework.AdminHelper.RedirectAfterLogin(System.String)')
   - [Restore()](#M-CodeFirstWebFramework-AdminHelper-Restore 'CodeFirstWebFramework.AdminHelper.Restore')
   - [Users()](#M-CodeFirstWebFramework-AdminHelper-Users 'CodeFirstWebFramework.AdminHelper.Users')
   - [UsersListing()](#M-CodeFirstWebFramework-AdminHelper-UsersListing 'CodeFirstWebFramework.AdminHelper.UsersListing')
@@ -960,12 +962,39 @@ Display login template, and log user in if form data is posted
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-AdminHelper-LoginNoRedirect'></a>
+### LoginNoRedirect() `method`
+
+##### Summary
+
+Helper function to implement login
+
+##### Returns
+
+User returned if login or email address is correct, even if password is wrong
+to use for (eg) password reset, otherwise null
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-AdminHelper-Logout'></a>
 ### Logout() `method`
 
 ##### Summary
 
 Logout then show login form
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AdminHelper-RedirectAfterLogin-System-String-'></a>
+### RedirectAfterLogin() `method`
+
+##### Summary
+
+Helper function to implement redirect after login
 
 ##### Parameters
 

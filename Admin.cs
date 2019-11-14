@@ -399,6 +399,26 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		[Auth(AccessLevel.Any)]
 		public void Login() {
+			LoginNoRedirect();
+			if(module.Session.User != null)
+				RedirectAfterLogin();
+		}
+
+		/// <summary>
+		/// Logout then show login form
+		/// </summary>
+		[Auth(AccessLevel.Any)]
+		public void Logout() {
+			Login();
+		}
+
+		/// <summary>
+		/// Helper function to implement login
+		/// </summary>
+		/// <returns>User returned if login or email address is correct, even if password is wrong
+		/// to use for (eg) password reset, otherwise null</returns>
+		[Auth(int.MaxValue)]	// Not available to web interface
+		public User LoginNoRedirect() {
 			if (module.Method == "logout")
 				module.Session.User = null;
 			if (module.Request.HttpMethod == "POST") {
@@ -410,34 +430,37 @@ namespace CodeFirstWebFramework {
 					if (user.HashPassword(password) == user.Password) {
 						module.Session.User = user;
 						module.Message = "Logged in successfully";
-						string redirect = module.SessionData.redirect;
-						module.Session.Object.Remove("redirect");
-						if (string.IsNullOrEmpty(redirect))
-							redirect = "/home";
-						if (!module.HasAccess(redirect)) {
-							foreach(ModuleInfo info in module.Server.NamespaceDef.Modules) {
-								if(module.HasAccess("/" + info.Name)) {
-									redirect = "/" + info.Name;
-									break;
-								}
-							}
-						}
-						module.Redirect(redirect);
-						return;
 					}
+					return user;
 				}
 				module.Message = "Login name or not found or password invalid";
 			}
+			return null;
 		}
 
 		/// <summary>
-		/// Logout then show login form
+		/// Helper function to implement redirect after login
 		/// </summary>
-		[Auth(AccessLevel.Any)]
-		public void Logout() {
-			Login();
+		[Auth(int.MaxValue)]    // Not available to web interface
+		public void RedirectAfterLogin(string redirect = null) {
+			if (string.IsNullOrEmpty(redirect)) {
+				redirect = module.SessionData.redirect;
+				if (string.IsNullOrEmpty(redirect))
+					redirect = "/home";
+			}
+			module.Session.Object.Remove("redirect");
+			if (!module.HasAccess(redirect)) {
+				foreach (ModuleInfo info in module.Server.NamespaceDef.Modules) {
+					if (module.HasAccess("/" + info.Name)) {
+						redirect = "/" + info.Name;
+						break;
+					}
+				}
+			}
+			module.Redirect(redirect);
 		}
 	}
+
 
 	/// <summary>
 	/// Admin module - provides BatchStatus, Backup and Restore. Uses AdminHelper for the implementation.

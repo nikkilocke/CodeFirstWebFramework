@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.2.15</Version>
-    <AssemblyVersion>1.2.15.0</AssemblyVersion>
-    <FileVersion>1.2.15.0</FileVersion>
-    <PackageReleaseNotes>Fix bug where update on a table with a Foreign Key to another table with a field with the same name as a field on this table threw a sql exception.</PackageReleaseNotes>
+    <Version>1.2.16</Version>
+    <AssemblyVersion>1.2.16.0</AssemblyVersion>
+    <FileVersion>1.2.16.0</FileVersion>
+    <PackageReleaseNotes>Split default Login process into 2 phases - login, and redirection, so programs can override it to redirect elsewhere, without having to know where first.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

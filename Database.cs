@@ -949,7 +949,7 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			if (defaultValue == null && !nullable) {
-				if (type == typeof(bool) || type == typeof(int) || type == typeof(decimal) || type == typeof(double)) {
+				if (type == typeof(bool) || type == typeof(int) || type == typeof(long) || type == typeof(decimal) || type == typeof(double)) {
 					defaultValue = "0";
 				} else if (type == typeof(string)) {
 					defaultValue = "";
@@ -994,7 +994,7 @@ namespace CodeFirstWebFramework {
 		public string Quote(object o) {
 			if (o == null || o == DBNull.Value) return "NULL";
 			string s = o.ToString();
-			if ((Type == typeof(int) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return "NULL";
+			if ((Type == typeof(int) || Type == typeof(long) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return "NULL";
 			if (Type == typeof(bool)) {
 				// Accept numeric value as bool (non-zero = true)
 				if (Regex.IsMatch(s, @"^\d+$"))
@@ -1025,10 +1025,11 @@ namespace CodeFirstWebFramework {
 		/// String representation of C# type, allowing for Nullable.
 		/// E.g. a Nullable Int32 will retuen "int?"
 		/// </summary>
-		public string TypeName {
+		public string DatabaseTypeName {
 			get {
 				string name = Type.Name;
 				switch (name) {
+					case "Int64":
 					case "Int32":
 						return Nullable ? "int?" : "int";
 					case "Decimal":
@@ -1052,7 +1053,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="view">Whether this field is in a view</param>
 		public string Data(bool view) {
-			string s = Name + "(" + TypeName;
+			string s = Name + "(" + DatabaseTypeName;
 			if (view)
 				s += ")";
 			else {
@@ -1112,6 +1113,9 @@ namespace CodeFirstWebFramework {
 			} else if (pt == typeof(int?)) {
 				pt = typeof(int);
 				nullable = true;
+			} else if (pt == typeof(long?)) {
+				pt = typeof(long);
+				nullable = true;
 			} else if (pt == typeof(decimal?)) {
 				pt = typeof(decimal);
 				nullable = true;
@@ -1129,6 +1133,9 @@ namespace CodeFirstWebFramework {
 				defaultValue = "0";
 			} else if (pt == typeof(int)) {
 				length = 11;
+				defaultValue = "0";
+			} else if (pt == typeof(long)) {
+				length = 20;
 				defaultValue = "0";
 			} else if (pt == typeof(decimal)) {
 				length = 10.2M;
@@ -1154,7 +1161,7 @@ namespace CodeFirstWebFramework {
 		/// String representation (for debugging)
 		/// </summary>
 		public override string ToString() {
-			return Name + "(" + TypeName + ")";
+			return Name + "(" + DatabaseTypeName + ")";
 		}
 	}
 

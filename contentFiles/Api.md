@@ -312,12 +312,12 @@
   - [#ctor(name,type,length,nullable,autoIncrement,defaultValue)](#M-CodeFirstWebFramework-Field-#ctor-System-String,System-Type,System-Decimal,System-Boolean,System-Boolean,System-String- 'CodeFirstWebFramework.Field.#ctor(System.String,System.Type,System.Decimal,System.Boolean,System.Boolean,System.String)')
   - [ForeignKey](#F-CodeFirstWebFramework-Field-ForeignKey 'CodeFirstWebFramework.Field.ForeignKey')
   - [AutoIncrement](#P-CodeFirstWebFramework-Field-AutoIncrement 'CodeFirstWebFramework.Field.AutoIncrement')
+  - [DatabaseTypeName](#P-CodeFirstWebFramework-Field-DatabaseTypeName 'CodeFirstWebFramework.Field.DatabaseTypeName')
   - [DefaultValue](#P-CodeFirstWebFramework-Field-DefaultValue 'CodeFirstWebFramework.Field.DefaultValue')
   - [Length](#P-CodeFirstWebFramework-Field-Length 'CodeFirstWebFramework.Field.Length')
   - [Name](#P-CodeFirstWebFramework-Field-Name 'CodeFirstWebFramework.Field.Name')
   - [Nullable](#P-CodeFirstWebFramework-Field-Nullable 'CodeFirstWebFramework.Field.Nullable')
   - [Type](#P-CodeFirstWebFramework-Field-Type 'CodeFirstWebFramework.Field.Type')
-  - [TypeName](#P-CodeFirstWebFramework-Field-TypeName 'CodeFirstWebFramework.Field.TypeName')
   - [Data(view)](#M-CodeFirstWebFramework-Field-Data-System-Boolean- 'CodeFirstWebFramework.Field.Data(System.Boolean)')
   - [FieldFor(field,pk)](#M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-FieldInfo,CodeFirstWebFramework-PrimaryAttribute@- 'CodeFirstWebFramework.Field.FieldFor(System.Reflection.FieldInfo,CodeFirstWebFramework.PrimaryAttribute@)')
   - [FieldFor(field)](#M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-FieldInfo- 'CodeFirstWebFramework.Field.FieldFor(System.Reflection.FieldInfo)')
@@ -3831,6 +3831,14 @@ Foreign key details (or null)
 
 Whether the field is auto increment
 
+<a name='P-CodeFirstWebFramework-Field-DatabaseTypeName'></a>
+### DatabaseTypeName `property`
+
+##### Summary
+
+String representation of C# type, allowing for Nullable.
+E.g. a Nullable Int32 will retuen "int?"
+
 <a name='P-CodeFirstWebFramework-Field-DefaultValue'></a>
 ### DefaultValue `property`
 
@@ -3865,14 +3873,6 @@ Whether the field may be null
 ##### Summary
 
 C# type
-
-<a name='P-CodeFirstWebFramework-Field-TypeName'></a>
-### TypeName `property`
-
-##### Summary
-
-String representation of C# type, allowing for Nullable.
-E.g. a Nullable Int32 will retuen "int?"
 
 <a name='M-CodeFirstWebFramework-Field-Data-System-Boolean-'></a>
 ### Data(view) `method`

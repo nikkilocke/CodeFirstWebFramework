@@ -164,10 +164,10 @@ namespace CodeFirstWebFramework {
 		/// Do the fields in code and database match (some implementations are case insensitive)
 		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {
-			if (code.TypeName != database.TypeName) return false;
+			if (code.DatabaseTypeName != database.DatabaseTypeName) return false;
 			if (t.IsView) return true;	// Database does not always give correct values for view columns
 			if (code.AutoIncrement != database.AutoIncrement) return false;
-			if (code.Length != database.Length) return false;
+			if (code.Length != database.Length && !database.DatabaseTypeName.StartsWith("int")) return false;
 			if (code.Nullable != database.Nullable) return false;
 			if (code.DefaultValue != database.DefaultValue) return false;
 			return true;
@@ -403,6 +403,7 @@ namespace CodeFirstWebFramework {
 			StringBuilder b = new StringBuilder();
 			b.AppendFormat("`{0}` ", f.Name);
 			switch (f.Type.Name) {
+				case "Int64":
 				case "Int32":
 					b.Append("INTEGER");
 					break;

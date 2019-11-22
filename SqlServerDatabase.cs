@@ -128,9 +128,9 @@ namespace CodeFirstWebFramework {
 		/// Determine whether two fields are the same
 		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {
-			if (code.TypeName != database.TypeName) return false;
+			if (code.DatabaseTypeName != database.DatabaseTypeName) return false;
 			if (code.AutoIncrement != database.AutoIncrement) return false;
-			if (code.Length != database.Length) return false;
+			if (code.Length != database.Length && !database.DatabaseTypeName.StartsWith("int")) return false;
 			if (code.Nullable != database.Nullable) return false;
 			if (code.DefaultValue != database.DefaultValue) return false;
 			return true;
@@ -393,6 +393,7 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			StringBuilder b = new StringBuilder();
 			b.AppendFormat("\"{0}\" ", f.Name);
 			switch (f.Type.Name) {
+				case "Int64":
 				case "Int32":
 					b.Append("INT");
 					break;

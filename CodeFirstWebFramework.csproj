@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.2.16</Version>
-    <AssemblyVersion>1.2.16.0</AssemblyVersion>
-    <FileVersion>1.2.16.0</FileVersion>
-    <PackageReleaseNotes>Split default Login process into 2 phases - login, and redirection, so programs can override it to redirect elsewhere, without having to know where first.</PackageReleaseNotes>
+    <Version>1.2.18</Version>
+    <AssemblyVersion>1.2.18.0</AssemblyVersion>
+    <FileVersion>1.2.18.0</FileVersion>
+    <PackageReleaseNotes>Handle long integer fields</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

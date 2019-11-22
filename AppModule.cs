@@ -806,6 +806,7 @@ namespace CodeFirstWebFramework {
 				Utils.Check(val != null, "Missing parameter {0}", p.Name);
 				try {
 					if (p.ParameterType == typeof(int)
+						|| p.ParameterType == typeof(long)
 						|| p.ParameterType == typeof(decimal)
 						|| p.ParameterType == typeof(string)
 						|| p.ParameterType == typeof(DateTime)) {

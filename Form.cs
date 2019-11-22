@@ -226,6 +226,7 @@ namespace CodeFirstWebFramework {
 				}
 				if (string.IsNullOrEmpty(Type)) { 
 					switch (fld.Type.Name) {
+						case "Int64":
 						case "Int32":
 							Type = readwrite ? "intInput" : "int";
 							break;

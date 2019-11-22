@@ -162,13 +162,15 @@ namespace CodeFirstWebFramework {
 		/// Determine whether two fields are the same
 		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {
-			if (code.TypeName != database.TypeName) return false;
+			if (code.DatabaseTypeName != database.DatabaseTypeName) return false;
 			if (t.IsView) return true;	// Database does not always give correct values for view columns
 			if (code.AutoIncrement != database.AutoIncrement) return false;
-			if (code.Length != database.Length) return false;
+			if (code.Length != database.Length) {
+				return false;
+			}
 			if (code.Nullable != database.Nullable) return false;
 			// NB: MySql cannot show the difference between null and empty string default values!
-			if(code.TypeName == "string" && string.IsNullOrEmpty(code.DefaultValue) && string.IsNullOrEmpty(database.DefaultValue)) return true;
+			if(code.DatabaseTypeName == "string" && string.IsNullOrEmpty(code.DefaultValue) && string.IsNullOrEmpty(database.DefaultValue)) return true;
 			if (code.DefaultValue != database.DefaultValue) return false;
 			return true;
 		}
@@ -374,8 +376,11 @@ namespace CodeFirstWebFramework {
 			b.AppendFormat("`{0}` ", f.Name);
 			string defaultValue = f.DefaultValue;
 			switch (f.Type.Name) {
+				case "Int64":
+					b.Append("INT(20)");
+					break;
 				case "Int32":
-					b.Append("INT");
+					b.Append("INT(11)");
 					break;
 				case "Decimal":
 					b.AppendFormat("DECIMAL({0})", f.Length.ToString("0.0").Replace(System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, ","));

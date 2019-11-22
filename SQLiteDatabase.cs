@@ -167,7 +167,7 @@ namespace CodeFirstWebFramework {
 			if (code.DatabaseTypeName != database.DatabaseTypeName) return false;
 			if (t.IsView) return true;	// Database does not always give correct values for view columns
 			if (code.AutoIncrement != database.AutoIncrement) return false;
-			if (code.Length != database.Length && !database.DatabaseTypeName.StartsWith("int")) return false;
+			if (code.Length != database.Length) return false;
 			if (code.Nullable != database.Nullable) return false;
 			if (code.DefaultValue != database.DefaultValue) return false;
 			return true;
@@ -404,6 +404,8 @@ namespace CodeFirstWebFramework {
 			b.AppendFormat("`{0}` ", f.Name);
 			switch (f.Type.Name) {
 				case "Int64":
+					b.Append("BIGINT");
+					break;
 				case "Int32":
 					b.Append("INTEGER");
 					break;
@@ -442,6 +444,8 @@ namespace CodeFirstWebFramework {
 		decimal lengthFromColumn(DataRow c) {
 			try {
 				switch (c["DATA_TYPE"].ToString().ToLower()) {
+					case "bigint":
+						return 20;
 					case "int":
 					case "integer":
 						return 11;
@@ -505,6 +509,8 @@ namespace CodeFirstWebFramework {
 
 		static Type typeFor(string s) {
 			switch (s.ToLower()) {
+				case "bigint":
+					return typeof(long);
 				case "int":
 				case "integer":
 					return typeof(int);

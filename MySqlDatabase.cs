@@ -377,10 +377,10 @@ namespace CodeFirstWebFramework {
 			string defaultValue = f.DefaultValue;
 			switch (f.Type.Name) {
 				case "Int64":
-					b.Append("INT(20)");
+					b.Append("BIGINT");
 					break;
 				case "Int32":
-					b.Append("INT(11)");
+					b.Append("INT");
 					break;
 				case "Decimal":
 					b.AppendFormat("DECIMAL({0})", f.Length.ToString("0.0").Replace(System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, ","));
@@ -415,6 +415,7 @@ namespace CodeFirstWebFramework {
 		decimal lengthFromColumn(DataRow c) {
 			string type = c["COLUMN_TYPE"].ToString();
 			if (type == "double") return 10.4M;
+			if (type == "bigint") return 20;
 			Match m = Regex.Match(type, @"[\d,]+");
 			return m.Success ? decimal.Parse(m.Value.Replace(",", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)) : 0;
 		}
@@ -434,6 +435,8 @@ namespace CodeFirstWebFramework {
 
 		static Type typeFor(string s) {
 			switch (s.ToLower()) {
+				case "bigint":
+					return typeof(long);
 				case "int":
 					return typeof(int);
 				case "tinyint":

@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.2.18</Version>
-    <AssemblyVersion>1.2.18.0</AssemblyVersion>
-    <FileVersion>1.2.18.0</FileVersion>
-    <PackageReleaseNotes>Handle long integer fields</PackageReleaseNotes>
+    <Version>1.2.20</Version>
+    <AssemblyVersion>1.2.20.0</AssemblyVersion>
+    <FileVersion>1.2.20.0</FileVersion>
+    <PackageReleaseNotes>Handle long integer fields using BIGINT</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

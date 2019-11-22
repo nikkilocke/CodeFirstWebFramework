@@ -130,7 +130,7 @@ namespace CodeFirstWebFramework {
 		public bool FieldsMatch(Table t, Field code, Field database) {
 			if (code.DatabaseTypeName != database.DatabaseTypeName) return false;
 			if (code.AutoIncrement != database.AutoIncrement) return false;
-			if (code.Length != database.Length && !database.DatabaseTypeName.StartsWith("int")) return false;
+			if (code.Length != database.Length) return false;
 			if (code.Nullable != database.Nullable) return false;
 			if (code.DefaultValue != database.DefaultValue) return false;
 			return true;
@@ -394,6 +394,8 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			b.AppendFormat("\"{0}\" ", f.Name);
 			switch (f.Type.Name) {
 				case "Int64":
+					b.Append("BIGINT");
+					break;
 				case "Int32":
 					b.Append("INT");
 					break;
@@ -430,6 +432,8 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			switch (c["DATA_TYPE"].ToString().ToLower()) {
 				case "double":
 					return 10.4M;
+				case "bigint":
+					return 20;
 				case "int":
 					return Convert.ToDecimal(c["NUMERIC_PRECISION"]) == 1 ? 1 : 11;
 				case "decimal":

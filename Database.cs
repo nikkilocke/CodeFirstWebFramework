@@ -1030,6 +1030,7 @@ namespace CodeFirstWebFramework {
 				string name = Type.Name;
 				switch (name) {
 					case "Int64":
+						return Nullable ? "long?" : "long";
 					case "Int32":
 						return Nullable ? "int?" : "int";
 					case "Decimal":

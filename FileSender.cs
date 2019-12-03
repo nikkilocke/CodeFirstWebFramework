@@ -957,7 +957,7 @@ namespace CodeFirstWebFramework {
 					return;
 				case ".md":
 					contentType = "text/html";
-					string s = file.Content(this);
+					string s = TextTemplate(LoadFile(file), this);
 					s = Markdown.ToHtml(s, new MarkdownPipelineBuilder().UseAdvancedExtensions().Build());
 					WriteResponse(s, contentType, HttpStatusCode.OK);
 					return;

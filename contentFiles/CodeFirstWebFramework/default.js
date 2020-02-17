@@ -1842,7 +1842,7 @@ function makeForm(selector, options) {
     if (deleteUrl && !options.readonly) {
         deleteButton = actionButton(options.deleteText || 'Delete')
             .click(function (e) {
-                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record'))
+                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
                     deleteUrl(this);
                 e.preventDefault();
             });
@@ -2527,7 +2527,7 @@ function makeDumbForm(selector, options) {
     if (deleteUrl && !options.readonly) {
         deleteButton = actionButton(options.deleteText || 'Delete')
             .click(function (e) {
-                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record'))
+                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
                     deleteUrl(this);
                 e.preventDefault();
             });

@@ -1392,8 +1392,18 @@ function makeDataTable(selector, options) {
 	var dtParam = getParameter('dt');
 	var nzList = dtParam === null || dtParam === '' ? [] : dtParam.split(',');
 	// Default number of items to display depends on screen size
-	if(options.iDisplayLength === undefined && $(window).height() >= 1200)
-		options.iDisplayLength = 25;
+    if (options.iDisplayLength === undefined) {
+        if ($(window).height() >= 1200)
+            options.iDisplayLength = 25;
+        if (localStorage) {
+            var l = localStorage.getItem('iDisplayLength');
+            if (l)
+                options.iDisplayLength = l;
+            $(body).on('change', 'div.dataTables_length select', function () {
+                localStorage.setItem('iDisplayLength', $(this).val());
+            });
+        }
+    }
 	if (typeof(selectUrl) == 'string') {
 		// Turn into a function that goes to url, adding id of current row as parameter
 		var s = selectUrl;
@@ -1830,9 +1840,9 @@ function makeForm(selector, options) {
 		}
 	}
     if (deleteUrl && !options.readonly) {
-        deleteButton = actionButton('Delete')
+        deleteButton = actionButton(options.deleteText || 'Delete')
             .click(function (e) {
-                if (confirm("Are you sure you want to delete this record"))
+                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record'))
                     deleteUrl(this);
                 e.preventDefault();
             });
@@ -2515,9 +2525,9 @@ function makeDumbForm(selector, options) {
 		}
 	}
     if (deleteUrl && !options.readonly) {
-        deleteButton = actionButton('Delete')
+        deleteButton = actionButton(options.deleteText || 'Delete')
             .click(function (e) {
-                if (confirm("Are you sure you want to delete this record"))
+                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record'))
                     deleteUrl(this);
                 e.preventDefault();
             });

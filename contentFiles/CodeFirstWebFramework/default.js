@@ -710,7 +710,27 @@ var Type = {
 				change: function(e) {
 					$(this).trigger('change');
 				}
-			};
+            };
+            if (this.autoFill) {
+                options.minLength = 2;
+                options.open = function (event, ui) {
+                    var firstElement = $(this).data("uiAutocomplete").menu.element[0].children[0],
+                        inpt = $(this),
+                        original = inpt.val(),
+                        firstElementText = $(firstElement).text();
+
+                    /*
+                       here we want to make sure that we're not matching something that doesn't start
+                       with what was typed in 
+                    */
+                    if (firstElementText.toLowerCase().indexOf(original.toLowerCase()) === 0) {
+                        inpt.val(firstElementText);//change the input to the first match
+
+                        inpt[0].selectionStart = original.length; //highlight from end of input
+                        inpt[0].selectionEnd = firstElementText.length;//highlight to the end
+                    }
+                };
+            };
 			if($.isArray(this.selectOptions) && this.selectOptions.length > 0 && this.selectOptions[0].category != null) {
 				i.catcomplete(options);
 			} else {

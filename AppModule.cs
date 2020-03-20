@@ -726,7 +726,7 @@ namespace CodeFirstWebFramework {
 					if (CodeFirstWebFramework.Log.PostData.On) {
 						foreach (KeyValuePair<string, JToken> p in PostParameters) {
 							CodeFirstWebFramework.Log.PostData.WriteLine("\t{0}={1}", p.Key,
-								p.Key == "json" ? JObject.Parse(p.Value.ToString()).ToString(Formatting.Indented).Replace("\n", "\n\t") :
+								p.Key == "json" ? JToken.Parse(p.Value.ToString()).ToString(Formatting.Indented).Replace("\n", "\n\t") :
 								p.Value.Type == JTokenType.Object ? "file " + ((JObject)p.Value)["Name"] :
 								p.Value.ToString());
 						}

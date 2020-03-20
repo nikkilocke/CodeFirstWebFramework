@@ -16,10 +16,11 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.2.25</Version>
-    <AssemblyVersion>1.2.24.0</AssemblyVersion>
-    <FileVersion>1.2.24.0</FileVersion>
-    <PackageReleaseNotes>Added autoFill to autoComplete input type</PackageReleaseNotes>
+    <Version>1.2.28</Version>
+    <AssemblyVersion>1.2.28.0</AssemblyVersion>
+    <FileVersion>1.2.28.0</FileVersion>
+    <PackageReleaseNotes>Fix bug where tracing post data crashed if json data wasn't an object.
+</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

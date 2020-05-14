@@ -194,13 +194,13 @@ namespace CodeFirstWebFramework {
 				Type = "passwordInput"
 			});
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
-			f.Header["AccessLevel"].MakeSelectable(levels.Select());
-			f.Detail["FunctionAccessLevel"].MakeSelectable(levels.Select());
+			f.Header["AccessLevel"].MakeSelectable(levels.Select(module.UserAccessLevel));
+			f.Detail["FunctionAccessLevel"].MakeSelectable(levels.Select(module.UserAccessLevel));
 			f.Detail.Remove("Method");
 			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {
 				// This has to be the admin user
-				user.AccessLevel = AccessLevel.Admin;
+				user.AccessLevel = levels.Select().Select(l => l.AsInt("id")).OrderByDescending(l => l).First();
 				user.ModulePermissions = false;
 				f.Header["AccessLevel"].Type = "select";
 				f.Header.Remove("ModulePermissions");
@@ -444,11 +444,10 @@ namespace CodeFirstWebFramework {
 		[Auth(int.MaxValue)]    // Not available to web interface
 		public void RedirectAfterLogin(string redirect = null) {
 			if (string.IsNullOrEmpty(redirect)) {
-				redirect = module.SessionData.redirect;
+				redirect = module.GetParameters["from"];
 				if (string.IsNullOrEmpty(redirect))
 					redirect = "/home";
 			}
-			module.Session.Object.Remove("redirect");
 			if (!module.HasAccess(redirect)) {
 				foreach (ModuleInfo info in module.Server.NamespaceDef.Modules) {
 					if (module.HasAccess("/" + info.Name)) {

@@ -89,6 +89,10 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public int CookieTimeoutMinutes = 60;
 		/// <summary>
+		/// Cookies are stored in a database, rather than in memory
+		/// </summary>
+		public bool PersistentSessions;
+		/// <summary>
 		/// Command line flags extracted from program command line
 		/// </summary>
 		static public NameValueCollection CommandLineFlags;
@@ -120,7 +124,8 @@ namespace CodeFirstWebFramework {
 							ServerName = ServerName,
 							Email = Email,
 							Namespace = Namespace,
-							CookieTimeoutMinutes = CookieTimeoutMinutes
+							CookieTimeoutMinutes = CookieTimeoutMinutes,
+							PersistentSessions = PersistentSessions
 						};
 				}
 				return _default;
@@ -260,6 +265,10 @@ namespace CodeFirstWebFramework {
 		/// Cookie timeout in minutes
 		/// </summary>
 		public int CookieTimeoutMinutes = 60;
+		/// <summary>
+		/// Cookies are stored in a database, rather than in memory
+		/// </summary>
+		public bool PersistentSessions;
 		/// <summary>
 		/// Details of the namespace
 		/// </summary>

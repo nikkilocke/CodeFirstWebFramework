@@ -10,6 +10,7 @@ using System.Web;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -205,8 +206,13 @@ namespace CodeFirstWebFramework {
 						if (!string.IsNullOrEmpty(hdr) && hdr.StartsWith("Bearer "))
 							cookie = new Cookie("session", hdr.Substring(7).Trim(), "/");
 					}
+					// Set up module
+					module.Server = server;
+					module.ActiveModule = webmodules[server.Namespace];
+					module.LogString = log;
 					if (cookie != null) {
-						_sessions.TryGetValue(cookie.Value, out session);
+						if (!_sessions.TryGetValue(cookie.Value, out session) && server.PersistentSessions)
+							session = Session.FromStore(this, module, cookie.Value);
 						Log.Session.WriteLine("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
 					}
 					if (session == null) {
@@ -222,16 +228,14 @@ namespace CodeFirstWebFramework {
 						context.Response.Cookies.Add(cookie);
 						cookie.Expires = session.Expires = Utils.Now.AddMinutes(server.CookieTimeoutMinutes);
 					}
-					// Set up module
-					module.Server = server;
-					module.ActiveModule = webmodules[server.Namespace];
 					module.Session = session;
-					module.LogString = log;
 					if (moduleName.EndsWith("Module"))
 						moduleName = moduleName.Substring(0, moduleName.Length - 6);
 					using (module) {
 						// Call method
 						module.Call(context, moduleName, methodName);
+						if (server.PersistentSessions && session.Server != null && session != server.NamespaceDef.EmptySession)
+							session.ToStore(module.Database);
 					}
 				} catch (Exception ex) {
 					while (ex is TargetInvocationException)
@@ -285,26 +289,45 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Simple session
 		/// </summary>
-		public class Session : IDisposable {
+		[Table]
+		public class Session : JsonObject, IDisposable {
+			/// <summary>
+			/// The session cookie
+			/// </summary>
+			[Primary(AutoIncrement = false)]
+			public string idSession;
 			/// <summary>
 			/// Logged in user (or null if none)
 			/// </summary>
-			public User User;
-			/// <summary>
-			/// Arbitrary JObject stored in session for later access
-			/// </summary>
-			public JObject Object { get; private set; }
+			public int UserId;
 			/// <summary>
 			/// When the session expires
 			/// </summary>
 			public DateTime Expires;
 			/// <summary>
+			/// Logged in user (or null if none)
+			/// </summary>
+			[DoNotStore]
+			[JsonIgnore]
+			public User User;
+			/// <summary>
+			/// Arbitrary JObject stored in session for later access
+			/// </summary>
+			[DoNotStore]
+			[JsonIgnore]
+			public JObject Object { get; private set; }
+			/// <summary>
 			/// The session cookie
 			/// </summary>
-			public string Cookie { get; private set; }
+			public string Cookie {
+				get { return idSession; }
+				private set { idSession = value; }
+			}
 			/// <summary>
 			/// The WebServer owning the session (or null)
 			/// </summary>
+			[DoNotStore]
+			[JsonIgnore]
 			public WebServer Server;
 
 			/// <summary>
@@ -330,11 +353,48 @@ namespace CodeFirstWebFramework {
 			}
 
 			/// <summary>
+			/// Empty constructor for when read from database
+			/// </summary>
+			public Session() {
+			}
+
+			/// <summary>
+			/// Create session from store
+			/// </summary>
+			public static Session FromStore(WebServer server, AppModule module, string cookie) {
+				Session session = new Session() { idSession = cookie };
+				if (!module.Database.TryGet(session))
+					return null;
+				if (session.Expires < Utils.Now) {
+					module.Database.Execute("DELETE FROM Session WHERE Expires < " + module.Database.Quote(Utils.Now));
+					return null;
+				}
+				session.Server = server;
+				if (session.UserId == 0 || !module.Database.TryGet(session.UserId, out session.User))
+					session.User = null;
+				server._sessions[session.Cookie] = session;
+				return session;
+			}
+
+			/// <summary>
+			/// Save session to store (or delete from store if expired)
+			/// </summary>
+			public void ToStore(Database db) {
+				UserId = User == null ? 0 : User.idUser.GetValueOrDefault();
+				if (Expires < Utils.Now) {
+					db.Delete(this);
+					return;
+				}
+				db.Update(this);
+			}
+
+			/// <summary>
 			/// Free any resources
 			/// </summary>
 			public virtual void Dispose() {
 			}
 		}
+
 	}
 
 }

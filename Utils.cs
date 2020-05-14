@@ -401,6 +401,26 @@ namespace CodeFirstWebFramework {
 		public static string UnCamel(this string s) {
 			return Regex.Replace(s, "([A-Z])(?=[a-z0-9])", " $1").Trim();
 		}
+
+		const string alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
+		/// <summary>
+		/// Static method to generate a unique 26-character id based on a GUID.
+		/// Based on what Mattermost does to create unique record ids.
+		/// </summary>
+		static public string UniqueId() {
+			Guid guid = Guid.NewGuid();
+			byte[] bytes = guid.ToByteArray();
+			StringBuilder output = new StringBuilder();
+			for (int bitIndex = 0; bitIndex < bytes.Length * 8; bitIndex += 5) {
+				int dualbyte = bytes[bitIndex / 8] << 8;
+				if (bitIndex / 8 + 1 < bytes.Length)
+					dualbyte |= bytes[bitIndex / 8 + 1];
+				dualbyte = 0x1f & (dualbyte >> (16 - bitIndex % 8 - 5));
+				output.Append(alphabet[dualbyte]);
+			}
+			return output.ToString().Substring(0, 26);
+		}
+
 	}
 
 	/// <summary>

@@ -382,6 +382,56 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// See if a record exists by primary key
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
+		/// </summary>
+		/// <param name="record">Returned record (will be empty if record doesn't exist)</param>
+		/// <param name="keys">Keys for that index</param>
+		public bool TryGet<T>(out T record, params object[] keys) where T : JsonObject {
+			Table table = TableFor(typeof(T));
+			Utils.Check(table != null, $"No table for {typeof(T).Name}");
+			Index index = table.Indexes[0];
+			return TryGet(index, out record, keys);
+		}
+
+		/// <summary>
+		/// See if a record exists by any key
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
+		/// </summary>
+		/// <param name="indexName">The index to use</param>
+		/// <param name="record">Returned record (will be empty if record doesn't exist)</param>
+		/// <param name="keys">Keys for that index</param>
+		public bool TryGet<T>(string indexName, out T record, params object [] keys) where T : JsonObject {
+			Table table = TableFor(typeof(T));
+			Utils.Check(table != null, $"No table for {typeof(T).Name}");
+			Index index = table.Indexes.FirstOrDefault(i => i.Name == indexName);
+			return TryGet(index, out record, keys);
+		}
+
+		/// <summary>
+		/// See if a record exists by any key
+		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
+		/// </summary>
+		/// <param name="index">The index to use</param>
+		/// <param name="record">Returned record (will be empty if record doesn't exist)</param>
+		/// <param name="keys">Keys for that index</param>
+		public bool TryGet<T>(Index index, out T record, params object[] keys) where T : JsonObject {
+			Utils.Check(keys.Length == index.Fields.Length, "Wrong number of paramaters in TryGet");
+			Table table = TableFor(typeof(T));
+			JObject criteria = new JObject();
+			for (int i = 0; i < index.Fields.Length; i++) {
+				Field f = index.Fields[i];
+				criteria[f.Name] = keys[i].ToJToken();
+			}
+			JObject data = getByIndex(table, index, criteria);
+			bool isNull = data == null || data.IsAllNull();
+			if (isNull)
+				data = criteria;
+			record = table.FromJson<T>(data);
+			return !isNull;
+		}
+
+		/// <summary>
 		/// Get a record by unique key
 		/// NB If called with T a base class of the class used to create the table, returns an object of the derived class
 		/// </summary>
@@ -406,15 +456,23 @@ namespace CodeFirstWebFramework {
 			Table table = TableFor(typeof(T));
 			JObject data = criteria.ToJObject();
 			Index index = table.IndexFor(data);
+			data = getByIndex(table, index, data);
+			if (data == null || data.IsAllNull())
+				return false;
+			criteria.CopyFrom(data);
+			return true;
+		}
+
+		/// <summary>
+		/// See if a record exists by unique key. If it does, populate the supplied record from the one in the database.
+		/// </summary>
+		JObject getByIndex(Table table, Index index, JObject data) {
 			if (index != null) {
 				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
 			} else {
 				data = null;
 			}
-			if (data == null || data.IsAllNull())
-				return false;
-			criteria.CopyFrom(data);
-			return true;
+			return data;
 		}
 
 		/// <summary>
@@ -636,6 +694,13 @@ namespace CodeFirstWebFramework {
 		public IEnumerable<T> Query<T>(string fields, string conditions, params string[] tableNames) {
 			Table t = TableForOrDefault(typeof(T));
 			return Query(fields, conditions, tableNames).Select(r => t.FromJson<T>(r));
+		}
+
+		/// <summary>
+		/// Retrieve a single value from a select
+		/// </summary>
+		public IEnumerable<T> QuerySingleValues<T>(string sql) {
+			return Query(sql).Select(r => r.First.First.To<T>());
 		}
 
 		/// <summary>

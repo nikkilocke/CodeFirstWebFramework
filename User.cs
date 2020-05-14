@@ -181,14 +181,14 @@ namespace CodeFirstWebFramework {
 		/// Return the options for a selectInput field to select AccessLevel.
 		/// NB Must always have 0, "None" as the first item.
 		/// </summary>
-		public virtual IEnumerable<JObject> Select() {
+		public virtual IEnumerable<JObject> Select(int maxLevel = int.MaxValue) {
 			List<JObject> values = new List<JObject>();
 			values.Add(new JObject().AddRange("id", 0, "value", "None"));
 			foreach (FieldInfo c in GetType()
 					.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
 					.Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(int))) {
 				int id = (int)c.GetRawConstantValue();
-				if(id > 0 && !values.Any(v => v.AsInt("id") == id))
+				if(id > 0 && id <= maxLevel && !values.Any(v => v.AsInt("id") == id))
 					values.Add(new JObject().AddRange("id", id, "value", c.Name.UnCamel()));
 			}
 			return values.OrderBy(v => v.AsInt("id"));

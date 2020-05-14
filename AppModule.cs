@@ -788,8 +788,7 @@ namespace CodeFirstWebFramework {
 			}
 			if (!HasAccess(Info, Method, out UserAccessLevel)) {
 				if (Session.User == null && !typeof(AjaxReturn).IsAssignableFrom(method.ReturnType)) {
-					SessionData.redirect = Request.Url.PathAndQuery;
-					Redirect("/admin/login");
+					Redirect("/admin/login?from=" + Uri.EscapeDataString(Request.Url.PathAndQuery));
 					return null;
 				}
 				throw new CheckException("Unauthorised access");
@@ -999,6 +998,29 @@ namespace CodeFirstWebFramework {
 		/// (e.g. login or supervisor checks)
 		/// </summary>
 		protected virtual void Init() {
+		}
+
+		/// <summary>
+		/// Helper Regex to remove message from query parameters
+		/// </summary>
+		static Regex removeMessage = new Regex(@"(?<=&|^)message=.*?(?=&|$)", RegexOptions.Compiled);
+
+		/// <summary>
+		/// A "from=" quoted parameter for the current uri
+		/// </summary>
+		public string FromHere {
+			get {
+				return $"from={Uri.EscapeDataString(removeMessage.Replace(Request.Url.PathAndQuery, ""))}";
+			}
+		}
+
+		/// <summary>
+		/// The current from= parameter, if present, otherwise defaultValue
+		/// </summary>
+		/// <param name="defaultValue">Optional, defaults to "/"</param>
+		/// <returns></returns>
+		public string FromParameter(string defaultValue = "/") {
+			return $"from={Uri.EscapeDataString(GetParameters["from"] ?? defaultValue)}";
 		}
 
 		/// <summary>

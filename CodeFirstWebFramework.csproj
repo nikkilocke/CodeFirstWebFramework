@@ -16,10 +16,16 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.2.29</Version>
-    <AssemblyVersion>1.2.29.0</AssemblyVersion>
-    <FileVersion>1.2.29.0</FileVersion>
-    <PackageReleaseNotes>Restore missing message if logon correct but password wrong.
+    <Version>1.3.2</Version>
+    <AssemblyVersion>1.3.2.0</AssemblyVersion>
+    <FileVersion>1.3.2.0</FileVersion>
+    <PackageReleaseNotes>Allow Access Levels &gt; Admin.
+Allow Persistent Sessions.
+UniqueId added to Utils - returns 26 character representation of a new GUID.
+More TryGet methods.
+New QuerySingleValue method.
+Code to force login now uses from get paraneter instead of session object for where to go to.
+AppModule has additional FromHere and FromParameter methods to help in making Uris.
 </PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>

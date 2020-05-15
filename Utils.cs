@@ -22,6 +22,7 @@ namespace CodeFirstWebFramework {
 		static Utils() {
 			_converter = new JsonSerializer();
 			_converter.Converters.Add(new DecimalFormatJsonConverter());
+			_converter.Converters.Add(new BooleanFormatJsonConverter());
 		}
 
 		/// <summary>
@@ -291,14 +292,14 @@ namespace CodeFirstWebFramework {
 		/// Convert this json string to a C# object of type t.
 		/// </summary>
 		public static object JsonTo(this string s, Type t) {
-			return JsonConvert.DeserializeObject(s, t, new DecimalFormatJsonConverter());
+			return JsonConvert.DeserializeObject(s, t, new DecimalFormatJsonConverter(), new BooleanFormatJsonConverter());
 		}
 
 		/// <summary>
 		/// Convert this json string to a C# object of type T.
 		/// </summary>
 		public static T JsonTo<T>(this string s) {
-			return JsonConvert.DeserializeObject<T>(s, new DecimalFormatJsonConverter());
+			return JsonConvert.DeserializeObject<T>(s, new DecimalFormatJsonConverter(), new BooleanFormatJsonConverter());
 		}
 
 		/// <summary>
@@ -384,7 +385,7 @@ namespace CodeFirstWebFramework {
 		/// Convert a C# object to json
 		/// </summary>
 		public static string ToJson(this object o) {
-			return JsonConvert.SerializeObject(o, new DecimalFormatJsonConverter());
+			return JsonConvert.SerializeObject(o, new DecimalFormatJsonConverter(), new BooleanFormatJsonConverter());
 		}
 
 		/// <summary>
@@ -523,6 +524,56 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public override bool CanConvert(Type objectType) {
 			return objectType == typeof(decimal) || objectType == typeof(double) || objectType == typeof(decimal?) || objectType == typeof(double?);
+		}
+	}
+
+	/// <summary>
+	/// Our own converter to/from boolean.
+	/// Converting to object, accepts strings, numbers, and boolean.
+	/// </summary>
+	public class BooleanFormatJsonConverter : JsonConverter {
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public BooleanFormatJsonConverter() {
+		}
+
+		/// <summary>
+		/// Writes the JSON representation of the object.
+		/// </summary>
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+			writer.WriteValue(value);
+		}
+
+		/// <summary>
+		/// Reads the object from JSON.
+		/// </summary>
+		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+			JToken token = JToken.Load(reader);
+			switch (token.Type) {
+				case JTokenType.Boolean:
+					return token.ToObject<bool>();
+				case JTokenType.Float:
+				case JTokenType.Integer:
+					return token.ToObject<int>() != 0;
+				case JTokenType.String:
+					string s = token.ToObject<string>();
+					return string.IsNullOrWhiteSpace(s) ? false : s.ToLower().StartsWith("f") ? false : s.ToLower().StartsWith("t") ? true : int.Parse(s) != 0;
+				case JTokenType.Null:
+					if (objectType == typeof(bool?)) {
+						return null;
+					}
+					throw new JsonSerializationException("Value may not be null");
+				default:
+					throw new JsonSerializationException("Unexpected token type: " + token.Type.ToString());
+			}
+		}
+
+		/// <summary>
+		/// Whether this converter can convert this type of object
+		/// </summary>
+		public override bool CanConvert(Type objectType) {
+			return objectType == typeof(bool) || objectType == typeof(bool?);
 		}
 	}
 }

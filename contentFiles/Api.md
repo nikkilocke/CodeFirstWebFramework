@@ -159,6 +159,11 @@
   - [Status](#F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-Status 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.Status')
   - [User](#F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-User 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.User')
   - [idBatchJobItem](#F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-idBatchJobItem 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.idBatchJobItem')
+- [BooleanFormatJsonConverter](#T-CodeFirstWebFramework-BooleanFormatJsonConverter 'CodeFirstWebFramework.BooleanFormatJsonConverter')
+  - [#ctor()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-#ctor 'CodeFirstWebFramework.BooleanFormatJsonConverter.#ctor')
+  - [CanConvert()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-CanConvert-System-Type- 'CodeFirstWebFramework.BooleanFormatJsonConverter.CanConvert(System.Type)')
+  - [ReadJson()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-ReadJson-Newtonsoft-Json-JsonReader,System-Type,System-Object,Newtonsoft-Json-JsonSerializer- 'CodeFirstWebFramework.BooleanFormatJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)')
+  - [WriteJson()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-WriteJson-Newtonsoft-Json-JsonWriter,System-Object,Newtonsoft-Json-JsonSerializer- 'CodeFirstWebFramework.BooleanFormatJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)')
 - [CheckException](#T-CodeFirstWebFramework-CheckException 'CodeFirstWebFramework.CheckException')
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.String)')
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Exception)')
@@ -2234,6 +2239,62 @@ The user login
 ##### Summary
 
 The id
+
+<a name='T-CodeFirstWebFramework-BooleanFormatJsonConverter'></a>
+## BooleanFormatJsonConverter `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Our own converter to/from boolean.
+Converting to object, accepts strings, numbers, and boolean.
+
+<a name='M-CodeFirstWebFramework-BooleanFormatJsonConverter-#ctor'></a>
+### #ctor() `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+This constructor has no parameters.
+
+<a name='M-CodeFirstWebFramework-BooleanFormatJsonConverter-CanConvert-System-Type-'></a>
+### CanConvert() `method`
+
+##### Summary
+
+Whether this converter can convert this type of object
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-BooleanFormatJsonConverter-ReadJson-Newtonsoft-Json-JsonReader,System-Type,System-Object,Newtonsoft-Json-JsonSerializer-'></a>
+### ReadJson() `method`
+
+##### Summary
+
+Reads the object from JSON.
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-BooleanFormatJsonConverter-WriteJson-Newtonsoft-Json-JsonWriter,System-Object,Newtonsoft-Json-JsonSerializer-'></a>
+### WriteJson() `method`
+
+##### Summary
+
+Writes the JSON representation of the object.
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-CheckException'></a>
 ## CheckException `type`

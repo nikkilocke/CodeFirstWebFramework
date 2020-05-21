@@ -45,7 +45,7 @@ $(function() {
 	$('body').on('click', 'button[href]', function() {
 		// Buttons with hrefs act like links
 		var href = $(this).attr('href');
-		var target = $(this).attr('target');
+        var target = e.ctrlKey ? "_blank" : $(this).attr('target');
 		if(target)
 			window.open(href, target);
 		else
@@ -650,6 +650,13 @@ var Type = {
 			return '<img src="' + data + '" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + '/>';
 		}
 	},
+    textArea: {
+        draw: function (data, rowno, row) {
+            if (data == null)
+                data = "";
+            return '<div class="prewrap" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + '>' + _.escape(data) + '</div>';
+        }
+    },
 	autoComplete: {
 		// Auto complete input field
 		defaultContent: function(index, col, row) {

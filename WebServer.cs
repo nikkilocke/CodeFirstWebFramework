@@ -334,7 +334,7 @@ namespace CodeFirstWebFramework {
 			/// Constructor
 			/// </summary>
 			/// <param name="server"></param>
-			public Session(WebServer server) {
+			public Session(WebServer server) : this() {
 				if (server != null) {
 					Session session;
 					Random r = new Random();
@@ -345,7 +345,6 @@ namespace CodeFirstWebFramework {
 							for (int i = 0; i < 20; i++)
 								Cookie += (char)('A' + r.Next(26));
 						} while (server._sessions.TryGetValue(Cookie, out session));
-						Object = new JObject();
 						server._sessions[Cookie] = this;
 					}
 					Server = server;
@@ -356,13 +355,15 @@ namespace CodeFirstWebFramework {
 			/// Empty constructor for when read from database
 			/// </summary>
 			public Session() {
+				Object = new JObject();
 			}
 
 			/// <summary>
 			/// Create session from store
 			/// </summary>
 			public static Session FromStore(WebServer server, AppModule module, string cookie) {
-				Session session = new Session() { idSession = cookie };
+				Session session = module.Server.NamespaceDef.GetInstanceOf<Session>();
+				session.idSession = cookie;
 				if (!module.Database.TryGet(session))
 					return null;
 				if (session.Expires < Utils.Now) {

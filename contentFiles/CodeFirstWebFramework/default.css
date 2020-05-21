@@ -57,6 +57,9 @@
     background-color: lightgreen;
     padding: 2px;
 }
+.prewrap {
+    white-space: pre-wrap;
+}
 table.form span.hint {
     border: 1px solid blue;
     -moz-border-radius: 10px;

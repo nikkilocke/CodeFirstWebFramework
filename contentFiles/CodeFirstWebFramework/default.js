@@ -42,7 +42,7 @@ $(function() {
 		// Small screen user has clicked menu icon - show/hide menu
 		$('#header').slideToggle(resize);
 	});
-	$('body').on('click', 'button[href]', function() {
+	$('body').on('click', 'button[href]', function(e) {
 		// Buttons with hrefs act like links
 		var href = $(this).attr('href');
         var target = e.ctrlKey ? "_blank" : $(this).attr('target');

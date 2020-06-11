@@ -210,7 +210,7 @@ namespace CodeFirstWebFramework {
 				DateTime dt = (DateTime)o;
 				return "'" + dt.ToString(dt.TimeOfDay == TimeSpan.Zero ? "yyyy-MM-dd" : "yyyy-MM-dd HH:mm:ss") + "'";
 			}
-			return "'" + o.ToString().Replace("'", "''") + "'";
+			return "'" + o.ToString().Replace("'", "''").Replace("\\", "\\\\").Replace("\0", "\\\0") + "'";
 		}
 
 		/// <summary>

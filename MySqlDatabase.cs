@@ -375,6 +375,7 @@ namespace CodeFirstWebFramework {
 			StringBuilder b = new StringBuilder();
 			b.AppendFormat("`{0}` ", f.Name);
 			string defaultValue = f.DefaultValue;
+			bool nullable = f.Nullable;
 			switch (f.Type.Name) {
 				case "Int64":
 					b.Append("BIGINT");
@@ -397,14 +398,15 @@ namespace CodeFirstWebFramework {
 				case "String":
 					if (f.Length == 0) {
 						b.Append("LONGTEXT");
-						defaultValue = null;		// Default Value not allowed on LONGTEXT
+						defaultValue = null;        // Default Value not allowed on LONGTEXT
+						nullable = true;			// So make it nullable
 					} else
 						b.AppendFormat("VARCHAR({0})", f.Length);
 					break;
 				default:
 					throw new CheckException("Unknown type {0}", f.Type.Name);
 			}
-			b.AppendFormat(" {0}NULL", f.Nullable ? "" : "NOT ");
+			b.AppendFormat(" {0}NULL", nullable ? "" : "NOT ");
 			if (f.AutoIncrement)
 				b.Append(" AUTO_INCREMENT");
 			else if(defaultValue != null)

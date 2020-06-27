@@ -83,8 +83,8 @@ namespace CodeFirstWebFramework {
 					// SQL Server will auto create primary key
 			for (int i = 1; i < t.Indexes.Length; i++) {
 				Index index = t.Indexes[i];
-				executeLog(string.Format("CREATE UNIQUE INDEX \"{0}\" ON \"{1}\" ({2})", index.Name, t.Name, 
-					string.Join(",", index.Fields.Select(f => "\"" + f.Name + "\" ASC").ToArray())));
+				executeLog(string.Format("CREATE {3}INDEX \"{0}\" ON \"{1}\" ({2})", index.Name, t.Name, 
+					string.Join(",", index.Fields.Select(f => "\"" + f.Name + "\" ASC")), index.Unique ? "UNIQUE " : ""));
 			}
 			foreach (Field f in t.Fields.Where(f => f.ForeignKey != null && t.Indexes.FirstOrDefault(i => i.Fields[0] == f) == null)) {
 				executeLog(string.Format(@"CREATE INDEX ""FK_{0}_{1}_{2}_idx"" ON ""{0}"" (""{2}"" ASC)",
@@ -96,8 +96,8 @@ namespace CodeFirstWebFramework {
 		/// Create an index from a table and index definition
 		/// </summary>
 		public void CreateIndex(Table t, Index index) {
-			executeLog(string.Format("ALTER TABLE \"{0}\" ADD UNIQUE INDEX \"{1}\" ({2})", t.Name, index.Name,
-				string.Join(",", index.Fields.Select(f => "\"" + f.Name + "\" ASC").ToArray())));
+			executeLog(string.Format("ALTER TABLE \"{0}\" ADD {3}INDEX \"{1}\" ({2})", t.Name, index.Name,
+				string.Join(",", index.Fields.Select(f => "\"" + f.Name + "\" ASC")), index.Unique ? "UNIQUE " : ""));
 		}
 
 		/// <summary>
@@ -162,10 +162,12 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		static Regex _keyword = new Regex("\buser\b", RegexOptions.IgnoreCase);
 		/// <summary>
 		/// Query the database, and return JObjects for each record returned
 		/// </summary>
 		public IEnumerable<Newtonsoft.Json.Linq.JObject> Query(string sql) {
+			sql = _keyword.Replace(sql, "[$1]");
 			using (SqlCommand cmd = command(sql)) {
 				using (SqlDataReader r = executeReader(cmd, sql)) {
 					JObject row;
@@ -210,7 +212,7 @@ namespace CodeFirstWebFramework {
 			foreach (DataRow table in tabs.Rows) {
 				string name = table["TABLE_NAME"].ToString();
 				string identityColumn = null;
-				using (SqlCommand cmd = command("SELECT * FROM " + name + " WHERE 1 = 0")) {
+				using (SqlCommand cmd = command("SELECT * FROM [" + name + "] WHERE 1 = 0")) {
 					using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly)) {
 						DataTable tblcols = reader.GetSchemaTable();
 						foreach (DataRow r in tblcols.Rows) {
@@ -231,7 +233,7 @@ namespace CodeFirstWebFramework {
 					if (indexName.StartsWith("PK_" + name + "_"))
 						indexName = "PRIMARY";
 					else if (!indexName.StartsWith("FK_" + name + "_")) {
-						tableIndexes.Add(new Index(indexName,
+						tableIndexes.Add(new Index(indexName, true, 
 							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
 							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 					}
@@ -267,7 +269,7 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
 				Table updateTable = null;
 				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
-				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) },
+				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", true, fields[0]) },
 					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;
@@ -306,13 +308,13 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 					code.Name, f.ForeignKey.Table.Name, f.Name)));
 				defs.AddRange(remove.Select(f => string.Format("DROP COLUMN \"{0}\"", f.Name)));
 				defs.AddRange(insert.Select(f => "ADD COLUMN " + fieldDef(f)));
-				defs.AddRange(update.Select(f => string.Format("ALTER COLUMN \"{0}\" {1}", f.Name, fieldDef(f))));
+				defs.AddRange(update.Select(f => string.Format("ALTER COLUMN {0}", fieldDef(f))));
 				defs.AddRange(insertFK.Select(f => string.Format(@"ADD CONSTRAINT ""FK_{0}_{1}_{2}""
 		FOREIGN KEY (""{2}"")
 		REFERENCES ""{1}"" (""{3}"")
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION", code.Name, f.ForeignKey.Table.Name, f.Name, f.ForeignKey.Table.PrimaryKey.Name)));
-				executeLog(string.Format("ALTER TABLE \"{0}\" {1}", code.Name, string.Join(",\r\n", defs.ToArray())));
+				executeLog(string.Format("ALTER TABLE \"{0}\" {1}", code.Name, string.Join(",\r\n", defs)));
 			}
 			foreach (Index i in insertIndex)
 				CreateIndex(code, i);
@@ -406,7 +408,7 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 					b.Append("DOUBLE");
 					break;
 				case "Boolean":
-					b.Append("TINYINT(1)");
+					b.Append("TINYINT");
 					break;
 				case "DateTime":
 					b.Append("DATETIME");

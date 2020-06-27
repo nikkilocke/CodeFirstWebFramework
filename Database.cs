@@ -84,13 +84,13 @@ namespace CodeFirstWebFramework {
 					}
 				}
 				foreach (Index i1 in code.Indexes) {
-					Index i2 = database.Indexes.Where(i => i.FieldList == i1.FieldList).FirstOrDefault();
+					Index i2 = database.Indexes.Where(i => i.Matches(i1)).FirstOrDefault();
 					if (i2 == null) {
 						insertIndex.Add(i1);
 					}
 				}
 				foreach (Index i2 in database.Indexes) {
-					if (code.Indexes.Where(i => i.FieldList == i2.FieldList).FirstOrDefault() == null)
+					if (code.Indexes.Where(i => i.Matches(i2)).FirstOrDefault() == null)
 						dropIndex.Add(i2);
 				}
 				if (view) {
@@ -102,8 +102,8 @@ namespace CodeFirstWebFramework {
 				}
 				if (insert.Count != 0 || update.Count != 0 || remove.Count != 0 || insertFK.Count != 0 || dropFK.Count != 0 || insertIndex.Count != 0 || dropIndex.Count != 0)
 					db.UpgradeTable(code, database, insert, update, remove, insertFK, dropFK, insertIndex, dropIndex);
-			} catch {
-				Log.Error.WriteLine("Error upgrading table {0} in database {1}", code.Name, this.UniqueIdentifier);
+			} catch(Exception ex) {
+				Log.Error.WriteLine("Error upgrading table {0} in database {1}\n", code.Name, this.UniqueIdentifier, ex);
 				throw;
 			}
 		}
@@ -180,7 +180,8 @@ namespace CodeFirstWebFramework {
 				case "mysql":
 					return new MySqlDatabase(this, connectionString);
 				case "sqlserver":
-					return new SqlServerDatabase(this, connectionString);
+					throw new CheckException("Support for SQL Server has temporarily been dropped");
+					// return new SqlServerDatabase(this, connectionString);
 				default:
 					throw new CheckException("Unknown database type {0}", Config.Default.Database);
 			}
@@ -325,6 +326,8 @@ namespace CodeFirstWebFramework {
 					Log.DatabaseWrite.WriteLine(sql);
 				try {
 					return db.Execute(sql);
+				} catch (DatabaseException) {
+					throw;
 				} catch (Exception ex) {
 					throw new DatabaseException(ex, sql);
 				}
@@ -539,10 +542,10 @@ namespace CodeFirstWebFramework {
 			string idName = idField.Name;
 			List<Field> fields = table.Fields.Where(f => !data.IsMissingOrNull(f.Name)).ToList();
 			checkForMissingFields(table, data, true);
+			string sql = "INSERT INTO " + table.Name + " ("
+				+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
+				+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
 			try {
-				string sql = "INSERT INTO " + table.Name + " ("
-					+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
-					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
 				using (new Timer(sql)) {
 					if (_startup)
 						Log.Startup.WriteLine(sql);
@@ -553,14 +556,16 @@ namespace CodeFirstWebFramework {
 						data[idName] = lastInsertId;
 					return lastInsertId;
 				}
-			} catch (DatabaseException ex) {
-				throw new DatabaseException(ex, table);
+			} catch (DatabaseException) {
+				throw;
+			} catch (Exception ex) {
+				throw new DatabaseException(ex, sql);
 			}
 		}
 
 		void checkForMissingFields(Table table, JObject data, bool insert) {
 			Field idField = table.PrimaryKey;
-			string[] errors = table.Indexes.SelectMany(i => i.Fields)
+			string[] errors = table.Indexes.Where(i => i.Unique).SelectMany(i => i.Fields)
 				.Distinct()
 				.Where(f => f != idField && !f.Nullable && string.IsNullOrWhiteSpace(data.AsString(f.Name)) && (insert || !data.IsMissingOrNull(f.Name)))
 				.Select(f => f.Name)
@@ -611,6 +616,8 @@ namespace CodeFirstWebFramework {
 				using (new Timer(sql)) {
 					return new JObjectEnumerable(db.Query(sql));
 				}
+			} catch(DatabaseException) {
+				throw;
 			} catch (Exception ex) {
 				throw new DatabaseException(ex, sql);
 			}
@@ -876,16 +883,12 @@ namespace CodeFirstWebFramework {
 			if (fields.Any(f => data[f.Name].Type == JTokenType.Null))
 				Log.Debug.WriteLine("Fields set to null " + string.Join(",", fields.Where(f => data[f.Name].Type == JTokenType.Null).Select(f => f.Name).ToArray()));
 			checkForMissingFields(table, data, idValue == null);
-			try {
-				if (idValue != null) {
-					Execute("UPDATE " + table.Name + " SET "
-						+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
-						+ " WHERE " + index.Where(data));
-				} else {
-					insert(table, data);
-				}
-			} catch (DatabaseException ex) {
-				throw new DatabaseException(ex, table);
+			if (idValue != null) {
+				Execute("UPDATE " + table.Name + " SET "
+					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
+					+ " WHERE " + index.Where(data));
+			} else {
+				insert(table, data);
 			}
 		}
 
@@ -900,24 +903,27 @@ namespace CodeFirstWebFramework {
 			List<Field> fields = table.Fields.Where(f => data[f.Name] != null).ToList();
 			Index index = table.IndexFor(data);
 			JObject result = null;
-			try {
-				result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
-				if (result != null)
-					data[idName] = idValue = result[idName];
-				if (idValue != null) {
-					fields = fields.Where(f => data.AsString(f.Name) != result.AsString(f.Name)).ToList();
-					if (fields.Count == 0)
-						return;
-					Execute("UPDATE " + table.Name + " SET "
-						+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
-						+ " WHERE " + index.Where(data));
-				} else {
-					data[idName] = db.Insert(table, "INSERT INTO " + table.Name + " ("
-						+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
-						+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")", false);
+			result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
+			if (result != null)
+				data[idName] = idValue = result[idName];
+			if (idValue != null) {
+				fields = fields.Where(f => data.AsString(f.Name) != result.AsString(f.Name)).ToList();
+				if (fields.Count == 0)
+					return;
+				Execute("UPDATE " + table.Name + " SET "
+					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
+					+ " WHERE " + index.Where(data));
+			} else {
+				string sql = "INSERT INTO " + table.Name + " ("
+					+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
+					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
+				try {
+					data[idName] = db.Insert(table, sql, false);
+				} catch (DatabaseException) {
+					throw;
+				} catch (Exception ex) {
+					throw new DatabaseException(ex, sql);
 				}
-			} catch (DatabaseException ex) {
-				throw new DatabaseException(ex, table);
 			}
 		}
 
@@ -1241,9 +1247,11 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="name">Index name</param>
 		/// <param name="fields">Fields making up the index</param>
-		public Index(string name, params Field[] fields) {
+		/// <param name="unique">If the index is unique</param>
+		public Index(string name, bool unique, params Field[] fields) {
 			Name = name;
 			Fields = fields;
+			Unique = unique;
 		}
 
 		/// <summary>
@@ -1251,16 +1259,18 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="name">Index name</param>
 		/// <param name="fields">Field names making up the index</param>
-		public Index(string name, params string[] fields) {
+		/// <param name="unique">If the index is unique</param>
+		public Index(string name, bool unique, params string[] fields) {
 			Name = name;
 			Fields = fields.Select(f => new Field(f)).ToArray();
+			Unique = unique;
 		}
 
 		/// <summary>
 		/// Whether this index has values in the data for all of its fields
 		/// </summary>
 		public bool CoversData(JObject data) {
-			return (Fields.Where(f => data.IsMissingOrNull(f.Name)).FirstOrDefault() == null);
+			return (Unique && Fields.Where(f => data.IsMissingOrNull(f.Name)).FirstOrDefault() == null);
 		}
 
 		/// <summary>
@@ -1276,9 +1286,30 @@ namespace CodeFirstWebFramework {
 		public Field[] Fields { get; private set; }
 
 		/// <summary>
+		/// Whether this index is the same as the other one
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public bool Matches(Index other) {
+			if (Unique != other.Unique || Fields.Length != other.Fields.Length)
+				return false;
+			for (int i = 0; i < Fields.Length; i++) {
+				Field mine = Fields[i], theirs = other.Fields[i];
+				if (mine.Name != theirs.Name || mine.Type != theirs.Type)
+					return false;
+			}
+			return true;
+		}
+
+		/// <summary>
 		/// Index name
 		/// </summary>
 		public string Name { get; private set; }
+
+		/// <summary>
+		/// Index is unique
+		/// </summary>
+		public bool Unique { get; private set; }
 
 		/// <summary>
 		/// Generate a WHERE clause (without the "WHERE") to select the record matching data for this index

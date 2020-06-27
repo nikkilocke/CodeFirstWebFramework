@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -212,9 +213,9 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Assert condition is true, throw a CheckException if not.
 		/// </summary>
-		public static void Check(bool condition, string error) {
+		public static void Check(bool condition, string error, HttpStatusCode code = HttpStatusCode.OK) {
 			if (!condition) 
-				throw new CheckException(error);
+				throw new CheckException(error, code);
 		}
 
 		/// <summary>
@@ -428,26 +429,36 @@ namespace CodeFirstWebFramework {
 	/// Exception thrown by Check assertion function
 	/// </summary>
 	public class CheckException : ApplicationException {
+		/// <summary>
+		/// Status Code returned when rendering exception page
+		/// </summary>
+		public HttpStatusCode Code = HttpStatusCode.OK;
+		/// <summary>
+		/// Template to use when rendering error (null for default "exception" in error module)
+		/// </summary>
+		public string Template;
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public CheckException(string message)
-			: this(null, message) {
+		public CheckException(string message, HttpStatusCode code = HttpStatusCode.OK, string template = null)
+			: this(null, message, code, template) {
 		}
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public CheckException(string message, Exception ex)
-			: this(ex, message + "\r\n") {
+		public CheckException(string message, Exception ex, HttpStatusCode code = HttpStatusCode.OK, string template = null)
+			: this(ex, message + "\r\n", code, template) {
 		}
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public CheckException(Exception ex, string message)
+		public CheckException(Exception ex, string message, HttpStatusCode code = HttpStatusCode.OK, string template = null)
 			: base(message, ex) {
+			Code = code;
+			Template = template;
 		}
 
 		/// <summary>

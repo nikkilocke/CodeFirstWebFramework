@@ -86,8 +86,8 @@ namespace CodeFirstWebFramework {
 				if (i == 0)
 					defs.Add(string.Format("PRIMARY KEY ({0})", string.Join(",", index.Fields.Select(f => "`" + f.Name + "`").ToArray())));
 				else
-					defs.Add(string.Format("UNIQUE INDEX `{0}` ({1})", index.Name,
-						string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC").ToArray())));
+					defs.Add(string.Format("{2}INDEX `{0}` ({1})", index.Name,
+						string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC")), index.Unique ? "UNIQUE " : ""));
 			}
 			defs.AddRange(t.Fields.Where(f => f.ForeignKey != null).Select(f => string.Format(@"CONSTRAINT `fk_{0}_{1}_{2}`
     FOREIGN KEY (`{2}`)
@@ -103,8 +103,8 @@ namespace CodeFirstWebFramework {
 		/// Create an index from a table and index definition
 		/// </summary>
 		public void CreateIndex(Table t, Index index) {
-			executeLog(string.Format("ALTER TABLE `{0}` ADD UNIQUE INDEX `{1}` ({2})", t.Name, index.Name,
-				string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC").ToArray())));
+			executeLog(string.Format("ALTER TABLE `{0}` ADD {3} INDEX `{1}` ({2})", t.Name, index.Name,
+				string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC")), index.Unique ? "UNIQUE " : ""));
 		}
 
 		/// <summary>
@@ -168,7 +168,7 @@ namespace CodeFirstWebFramework {
 			if (code.Length != database.Length) {
 				return false;
 			}
-			if (code.Nullable != database.Nullable) return false;
+			if (code.Nullable != database.Nullable && database.Length != 0) return false;
 			// NB: MySql cannot show the difference between null and empty string default values!
 			if(code.DatabaseTypeName == "string" && string.IsNullOrEmpty(code.DefaultValue) && string.IsNullOrEmpty(database.DefaultValue)) return true;
 			if (code.DefaultValue != database.DefaultValue) return false;
@@ -248,13 +248,14 @@ namespace CodeFirstWebFramework {
 				List<Index> tableIndexes = new List<Index>();
 				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'True'")) {
 					string indexName = ind["INDEX_NAME"].ToString();
-					tableIndexes.Add(new Index("PRIMARY", 
+					tableIndexes.Add(new Index("PRIMARY", true, 
 						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
 						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
-				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'False' AND UNIQUE = 'True'")) {
+				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'False'")) {
 					string indexName = ind["INDEX_NAME"].ToString();
-					tableIndexes.Add(new Index(indexName,
+					if (!indexName.StartsWith("fk_"))
+						tableIndexes.Add(new Index(indexName, ind["UNIQUE"].ToString() == "True",
 						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
 						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
@@ -276,7 +277,7 @@ namespace CodeFirstWebFramework {
 						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
 				Table updateTable = null;
 				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
-				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) }, 
+				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", true, fields[0]) }, 
 					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;

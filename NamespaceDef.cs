@@ -299,12 +299,23 @@ namespace CodeFirstWebFramework {
 			return table;
 		}
 
+		class IndexDef {
+			public IndexDef(string name, bool unique) {
+				Name = name;
+				Unique = unique;
+				Fields = new List<Tuple<int, Field>>();
+			}
+			public string Name;
+			public bool Unique;
+			public List<Tuple<int, Field>> Fields;
+		}
+
 		/// <summary>
 		/// Generate Table or View object for a C# class
 		/// </summary>
 		void processTable(Type tbl, ViewAttribute view) {
 			List<Field> fields = new List<Field>();
-			Dictionary<string, List<Tuple<int, Field>>> indexes = new Dictionary<string, List<Tuple<int, Field>>>();
+			Dictionary<string, IndexDef> indexes = new Dictionary<string, IndexDef>();
 			List<Tuple<int, Field>> primary = new List<Tuple<int, Field>>();
 			string primaryName = null;
 			processFields(tbl, ref fields, ref indexes, ref primary, ref primaryName);
@@ -314,11 +325,11 @@ namespace CodeFirstWebFramework {
 			}
 			List<Index> inds = new List<Index>(indexes.Keys
 				.OrderBy(k => k)
-				.Select(k => new Index(k, indexes[k]
+				.Select(k => new Index(k, indexes[k].Unique, indexes[k].Fields
 					.OrderBy(i => i.Item1)
 					.Select(i => i.Item2)
 					.ToArray())));
-			inds.Insert(0, new Index(primaryName, primary
+			inds.Insert(0, new Index(primaryName, true, primary
 					.OrderBy(i => i.Item1)
 					.Select(i => i.Item2)
 					.ToArray()));
@@ -343,7 +354,7 @@ namespace CodeFirstWebFramework {
 		/// Update the field, index, etc. information for a C# type.
 		/// Process base classes first.
 		/// </summary>
-		void processFields(Type tbl, ref List<Field> fields, ref Dictionary<string, List<Tuple<int, Field>>> indexes, ref List<Tuple<int, Field>> primary, ref string primaryName) {
+		void processFields(Type tbl, ref List<Field> fields, ref Dictionary<string, IndexDef> indexes, ref List<Tuple<int, Field>> primary, ref string primaryName) {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType, ref fields, ref indexes, ref primary, ref primaryName);
 			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
@@ -356,13 +367,13 @@ namespace CodeFirstWebFramework {
 					Utils.Check(primaryName == null || primaryName == pk.Name, "2 Primary keys defined on {0}", tbl.Name);
 					primaryName = pk.Name;
 				}
-				foreach (UniqueAttribute a in field.GetCustomAttributes<UniqueAttribute>()) {
-					List<Tuple<int, Field>> index;
+				foreach (IndexAttribute a in field.GetCustomAttributes<IndexAttribute>()) {
+					IndexDef index;
 					if (!indexes.TryGetValue(a.Name, out index)) {
-						index = new List<Tuple<int, Field>>();
+						index = new IndexDef(a.Name, a.Unique);
 						indexes[a.Name] = index;
 					}
-					index.Add(new Tuple<int, Field>(a.Sequence, fld));
+					index.Fields.Add(new Tuple<int, Field>(a.Sequence, fld));
 				}
 				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
 				if (fk != null)

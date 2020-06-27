@@ -35,13 +35,13 @@ namespace CodeFirstWebFramework {
 	/// Mark a field as part of a unique index
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-	public class UniqueAttribute : Attribute {
+	public class IndexAttribute : Attribute {
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="name">Index name</param>
-		public UniqueAttribute(string name)
+		public IndexAttribute(string name)
 			: this(name, 0) {
 		}
 
@@ -50,7 +50,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="name">Index name</param>
 		/// <param name="sequence">Sequence when multiple fields make up the index</param>
-		public UniqueAttribute(string name, int sequence) {
+		public IndexAttribute(string name, int sequence) {
 			Name = name;
 			Sequence = sequence;
 		}
@@ -64,6 +64,35 @@ namespace CodeFirstWebFramework {
 		/// Sequence when multiple fields make up the index
 		/// </summary>
 		public int Sequence { get; private set; }
+
+		/// <summary>
+		/// Whether this is a Unique index
+		/// </summary>
+		public bool Unique { get; protected set; }
+	}
+
+	/// <summary>
+	/// Mark a field as part of a unique index
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+	public class UniqueAttribute : IndexAttribute {
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name">Index name</param>
+		public UniqueAttribute(string name)
+			: this(name, 0) {
+		}
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name">Index name</param>
+		/// <param name="sequence">Sequence when multiple fields make up the index</param>
+		public UniqueAttribute(string name, int sequence) : base(name, sequence) {
+			Unique = true;
+		}
+
 	}
 
 	/// <summary>

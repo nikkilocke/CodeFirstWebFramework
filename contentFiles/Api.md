@@ -165,11 +165,13 @@
   - [ReadJson()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-ReadJson-Newtonsoft-Json-JsonReader,System-Type,System-Object,Newtonsoft-Json-JsonSerializer- 'CodeFirstWebFramework.BooleanFormatJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)')
   - [WriteJson()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-WriteJson-Newtonsoft-Json-JsonWriter,System-Object,Newtonsoft-Json-JsonSerializer- 'CodeFirstWebFramework.BooleanFormatJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)')
 - [CheckException](#T-CodeFirstWebFramework-CheckException 'CodeFirstWebFramework.CheckException')
-  - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.String)')
-  - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Exception)')
-  - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.Exception,System.String)')
+  - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Net-HttpStatusCode,System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Net.HttpStatusCode,System.String)')
+  - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception,System-Net-HttpStatusCode,System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Exception,System.Net.HttpStatusCode,System.String)')
+  - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String,System-Net-HttpStatusCode,System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.Exception,System.String,System.Net.HttpStatusCode,System.String)')
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Object[]- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Object[])')
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String,System-Object[]- 'CodeFirstWebFramework.CheckException.#ctor(System.Exception,System.String,System.Object[])')
+  - [Code](#F-CodeFirstWebFramework-CheckException-Code 'CodeFirstWebFramework.CheckException.Code')
+  - [Template](#F-CodeFirstWebFramework-CheckException-Template 'CodeFirstWebFramework.CheckException.Template')
 - [Config](#T-CodeFirstWebFramework-Config 'CodeFirstWebFramework.Config')
 - [Config](#T-CodeFirstWebFramework-Log-Config 'CodeFirstWebFramework.Log.Config')
   - [CommandLineFlags](#F-CodeFirstWebFramework-Config-CommandLineFlags 'CodeFirstWebFramework.Config.CommandLineFlags')
@@ -445,14 +447,22 @@
   - [#ctor(helperClass)](#M-CodeFirstWebFramework-ImplementationAttribute-#ctor-System-Type- 'CodeFirstWebFramework.ImplementationAttribute.#ctor(System.Type)')
   - [Helper](#P-CodeFirstWebFramework-ImplementationAttribute-Helper 'CodeFirstWebFramework.ImplementationAttribute.Helper')
 - [Index](#T-CodeFirstWebFramework-Index 'CodeFirstWebFramework.Index')
-  - [#ctor(name,fields)](#M-CodeFirstWebFramework-Index-#ctor-System-String,CodeFirstWebFramework-Field[]- 'CodeFirstWebFramework.Index.#ctor(System.String,CodeFirstWebFramework.Field[])')
-  - [#ctor(name,fields)](#M-CodeFirstWebFramework-Index-#ctor-System-String,System-String[]- 'CodeFirstWebFramework.Index.#ctor(System.String,System.String[])')
+  - [#ctor(name,fields,unique)](#M-CodeFirstWebFramework-Index-#ctor-System-String,System-Boolean,CodeFirstWebFramework-Field[]- 'CodeFirstWebFramework.Index.#ctor(System.String,System.Boolean,CodeFirstWebFramework.Field[])')
+  - [#ctor(name,fields,unique)](#M-CodeFirstWebFramework-Index-#ctor-System-String,System-Boolean,System-String[]- 'CodeFirstWebFramework.Index.#ctor(System.String,System.Boolean,System.String[])')
   - [FieldList](#P-CodeFirstWebFramework-Index-FieldList 'CodeFirstWebFramework.Index.FieldList')
   - [Fields](#P-CodeFirstWebFramework-Index-Fields 'CodeFirstWebFramework.Index.Fields')
   - [Name](#P-CodeFirstWebFramework-Index-Name 'CodeFirstWebFramework.Index.Name')
+  - [Unique](#P-CodeFirstWebFramework-Index-Unique 'CodeFirstWebFramework.Index.Unique')
   - [CoversData()](#M-CodeFirstWebFramework-Index-CoversData-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Index.CoversData(Newtonsoft.Json.Linq.JObject)')
+  - [Matches(other)](#M-CodeFirstWebFramework-Index-Matches-CodeFirstWebFramework-Index- 'CodeFirstWebFramework.Index.Matches(CodeFirstWebFramework.Index)')
   - [ToString()](#M-CodeFirstWebFramework-Index-ToString 'CodeFirstWebFramework.Index.ToString')
   - [Where()](#M-CodeFirstWebFramework-Index-Where-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Index.Where(Newtonsoft.Json.Linq.JObject)')
+- [IndexAttribute](#T-CodeFirstWebFramework-IndexAttribute 'CodeFirstWebFramework.IndexAttribute')
+  - [#ctor(name)](#M-CodeFirstWebFramework-IndexAttribute-#ctor-System-String- 'CodeFirstWebFramework.IndexAttribute.#ctor(System.String)')
+  - [#ctor(name,sequence)](#M-CodeFirstWebFramework-IndexAttribute-#ctor-System-String,System-Int32- 'CodeFirstWebFramework.IndexAttribute.#ctor(System.String,System.Int32)')
+  - [Name](#P-CodeFirstWebFramework-IndexAttribute-Name 'CodeFirstWebFramework.IndexAttribute.Name')
+  - [Sequence](#P-CodeFirstWebFramework-IndexAttribute-Sequence 'CodeFirstWebFramework.IndexAttribute.Sequence')
+  - [Unique](#P-CodeFirstWebFramework-IndexAttribute-Unique 'CodeFirstWebFramework.IndexAttribute.Unique')
 - [JObjectEnumerable](#T-CodeFirstWebFramework-JObjectEnumerable 'CodeFirstWebFramework.JObjectEnumerable')
   - [#ctor()](#M-CodeFirstWebFramework-JObjectEnumerable-#ctor-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.JObjectEnumerable.#ctor(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject})')
   - [GetEnumerator()](#M-CodeFirstWebFramework-JObjectEnumerable-GetEnumerator 'CodeFirstWebFramework.JObjectEnumerable.GetEnumerator')
@@ -553,7 +563,7 @@
   - [GetNamespaceType()](#M-CodeFirstWebFramework-Namespace-GetNamespaceType-System-Type- 'CodeFirstWebFramework.Namespace.GetNamespaceType(System.Type)')
   - [ParseUri()](#M-CodeFirstWebFramework-Namespace-ParseUri-System-String,System-String@- 'CodeFirstWebFramework.Namespace.ParseUri(System.String,System.String@)')
   - [TableFor()](#M-CodeFirstWebFramework-Namespace-TableFor-System-String- 'CodeFirstWebFramework.Namespace.TableFor(System.String)')
-  - [processFields()](#M-CodeFirstWebFramework-Namespace-processFields-System-Type,System-Collections-Generic-List{CodeFirstWebFramework-Field}@,System-Collections-Generic-Dictionary{System-String,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}}@,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}@,System-String@- 'CodeFirstWebFramework.Namespace.processFields(System.Type,System.Collections.Generic.List{CodeFirstWebFramework.Field}@,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Tuple{System.Int32,CodeFirstWebFramework.Field}}}@,System.Collections.Generic.List{System.Tuple{System.Int32,CodeFirstWebFramework.Field}}@,System.String@)')
+  - [processFields()](#M-CodeFirstWebFramework-Namespace-processFields-System-Type,System-Collections-Generic-List{CodeFirstWebFramework-Field}@,System-Collections-Generic-Dictionary{System-String,CodeFirstWebFramework-Namespace-IndexDef}@,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}@,System-String@- 'CodeFirstWebFramework.Namespace.processFields(System.Type,System.Collections.Generic.List{CodeFirstWebFramework.Field}@,System.Collections.Generic.Dictionary{System.String,CodeFirstWebFramework.Namespace.IndexDef}@,System.Collections.Generic.List{System.Tuple{System.Int32,CodeFirstWebFramework.Field}}@,System.String@)')
   - [processTable()](#M-CodeFirstWebFramework-Namespace-processTable-System-Type,CodeFirstWebFramework-ViewAttribute- 'CodeFirstWebFramework.Namespace.processTable(System.Type,CodeFirstWebFramework.ViewAttribute)')
 - [NullableAttribute](#T-CodeFirstWebFramework-NullableAttribute 'CodeFirstWebFramework.NullableAttribute')
 - [Permission](#T-CodeFirstWebFramework-Permission 'CodeFirstWebFramework.Permission')
@@ -675,8 +685,6 @@
 - [UniqueAttribute](#T-CodeFirstWebFramework-UniqueAttribute 'CodeFirstWebFramework.UniqueAttribute')
   - [#ctor(name)](#M-CodeFirstWebFramework-UniqueAttribute-#ctor-System-String- 'CodeFirstWebFramework.UniqueAttribute.#ctor(System.String)')
   - [#ctor(name,sequence)](#M-CodeFirstWebFramework-UniqueAttribute-#ctor-System-String,System-Int32- 'CodeFirstWebFramework.UniqueAttribute.#ctor(System.String,System.Int32)')
-  - [Name](#P-CodeFirstWebFramework-UniqueAttribute-Name 'CodeFirstWebFramework.UniqueAttribute.Name')
-  - [Sequence](#P-CodeFirstWebFramework-UniqueAttribute-Sequence 'CodeFirstWebFramework.UniqueAttribute.Sequence')
 - [UploadedFile](#T-CodeFirstWebFramework-UploadedFile 'CodeFirstWebFramework.UploadedFile')
   - [#ctor(name,content)](#M-CodeFirstWebFramework-UploadedFile-#ctor-System-String,System-String- 'CodeFirstWebFramework.UploadedFile.#ctor(System.String,System.String)')
   - [Content](#P-CodeFirstWebFramework-UploadedFile-Content 'CodeFirstWebFramework.UploadedFile.Content')
@@ -712,7 +720,7 @@
   - [AsString()](#M-CodeFirstWebFramework-Utils-AsString-Newtonsoft-Json-Linq-JObject,System-String- 'CodeFirstWebFramework.Utils.AsString(Newtonsoft.Json.Linq.JObject,System.String)')
   - [As\`\`1()](#M-CodeFirstWebFramework-Utils-As``1-Newtonsoft-Json-Linq-JObject,System-String- 'CodeFirstWebFramework.Utils.As``1(Newtonsoft.Json.Linq.JObject,System.String)')
   - [Capitalise()](#M-CodeFirstWebFramework-Utils-Capitalise-System-String- 'CodeFirstWebFramework.Utils.Capitalise(System.String)')
-  - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String- 'CodeFirstWebFramework.Utils.Check(System.Boolean,System.String)')
+  - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Net-HttpStatusCode- 'CodeFirstWebFramework.Utils.Check(System.Boolean,System.String,System.Net.HttpStatusCode)')
   - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Object[]- 'CodeFirstWebFramework.Utils.Check(System.Boolean,System.String,System.Object[])')
   - [CopyFrom\`\`1()](#M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object- 'CodeFirstWebFramework.Utils.CopyFrom``1(``0,System.Object)')
   - [ExtractNumber()](#M-CodeFirstWebFramework-Utils-ExtractNumber-System-String- 'CodeFirstWebFramework.Utils.ExtractNumber(System.String)')
@@ -2307,7 +2315,7 @@ CodeFirstWebFramework
 
 Exception thrown by Check assertion function
 
-<a name='M-CodeFirstWebFramework-CheckException-#ctor-System-String-'></a>
+<a name='M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Net-HttpStatusCode,System-String-'></a>
 ### #ctor() `constructor`
 
 ##### Summary
@@ -2318,7 +2326,7 @@ Constructor
 
 This constructor has no parameters.
 
-<a name='M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception-'></a>
+<a name='M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception,System-Net-HttpStatusCode,System-String-'></a>
 ### #ctor() `constructor`
 
 ##### Summary
@@ -2329,7 +2337,7 @@ Constructor
 
 This constructor has no parameters.
 
-<a name='M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String-'></a>
+<a name='M-CodeFirstWebFramework-CheckException-#ctor-System-Exception,System-String,System-Net-HttpStatusCode,System-String-'></a>
 ### #ctor() `constructor`
 
 ##### Summary
@@ -2361,6 +2369,20 @@ Constructor accepting string.Format arguments
 ##### Parameters
 
 This constructor has no parameters.
+
+<a name='F-CodeFirstWebFramework-CheckException-Code'></a>
+### Code `constants`
+
+##### Summary
+
+Status Code returned when rendering exception page
+
+<a name='F-CodeFirstWebFramework-CheckException-Template'></a>
+### Template `constants`
+
+##### Summary
+
+Template to use when rendering error (null for default "exception" in error module)
 
 <a name='T-CodeFirstWebFramework-Config'></a>
 ## Config `type`
@@ -5194,8 +5216,8 @@ CodeFirstWebFramework
 
 Index descriptor
 
-<a name='M-CodeFirstWebFramework-Index-#ctor-System-String,CodeFirstWebFramework-Field[]-'></a>
-### #ctor(name,fields) `constructor`
+<a name='M-CodeFirstWebFramework-Index-#ctor-System-String,System-Boolean,CodeFirstWebFramework-Field[]-'></a>
+### #ctor(name,fields,unique) `constructor`
 
 ##### Summary
 
@@ -5206,10 +5228,11 @@ Constructor
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Index name |
-| fields | [CodeFirstWebFramework.Field[]](#T-CodeFirstWebFramework-Field[] 'CodeFirstWebFramework.Field[]') | Fields making up the index |
+| fields | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | Fields making up the index |
+| unique | [CodeFirstWebFramework.Field[]](#T-CodeFirstWebFramework-Field[] 'CodeFirstWebFramework.Field[]') | If the index is unique |
 
-<a name='M-CodeFirstWebFramework-Index-#ctor-System-String,System-String[]-'></a>
-### #ctor(name,fields) `constructor`
+<a name='M-CodeFirstWebFramework-Index-#ctor-System-String,System-Boolean,System-String[]-'></a>
+### #ctor(name,fields,unique) `constructor`
 
 ##### Summary
 
@@ -5220,7 +5243,8 @@ Constructor
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Index name |
-| fields | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | Field names making up the index |
+| fields | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | Field names making up the index |
+| unique | [System.String[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[] 'System.String[]') | If the index is unique |
 
 <a name='P-CodeFirstWebFramework-Index-FieldList'></a>
 ### FieldList `property`
@@ -5243,6 +5267,13 @@ The fields that go to make up the index
 
 Index name
 
+<a name='P-CodeFirstWebFramework-Index-Unique'></a>
+### Unique `property`
+
+##### Summary
+
+Index is unique
+
 <a name='M-CodeFirstWebFramework-Index-CoversData-Newtonsoft-Json-Linq-JObject-'></a>
 ### CoversData() `method`
 
@@ -5253,6 +5284,23 @@ Whether this index has values in the data for all of its fields
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Index-Matches-CodeFirstWebFramework-Index-'></a>
+### Matches(other) `method`
+
+##### Summary
+
+Whether this index is the same as the other one
+
+##### Returns
+
+
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| other | [CodeFirstWebFramework.Index](#T-CodeFirstWebFramework-Index 'CodeFirstWebFramework.Index') |  |
 
 <a name='M-CodeFirstWebFramework-Index-ToString'></a>
 ### ToString() `method`
@@ -5275,6 +5323,65 @@ Generate a WHERE clause (without the "WHERE") to select the record matching data
 ##### Parameters
 
 This method has no parameters.
+
+<a name='T-CodeFirstWebFramework-IndexAttribute'></a>
+## IndexAttribute `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Mark a field as part of a unique index
+
+<a name='M-CodeFirstWebFramework-IndexAttribute-#ctor-System-String-'></a>
+### #ctor(name) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Index name |
+
+<a name='M-CodeFirstWebFramework-IndexAttribute-#ctor-System-String,System-Int32-'></a>
+### #ctor(name,sequence) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Index name |
+| sequence | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Sequence when multiple fields make up the index |
+
+<a name='P-CodeFirstWebFramework-IndexAttribute-Name'></a>
+### Name `property`
+
+##### Summary
+
+Index name
+
+<a name='P-CodeFirstWebFramework-IndexAttribute-Sequence'></a>
+### Sequence `property`
+
+##### Summary
+
+Sequence when multiple fields make up the index
+
+<a name='P-CodeFirstWebFramework-IndexAttribute-Unique'></a>
+### Unique `property`
+
+##### Summary
+
+Whether this is a Unique index
 
 <a name='T-CodeFirstWebFramework-JObjectEnumerable'></a>
 ## JObjectEnumerable `type`
@@ -6309,7 +6416,7 @@ Find a Table object by name - throw if not found
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Namespace-processFields-System-Type,System-Collections-Generic-List{CodeFirstWebFramework-Field}@,System-Collections-Generic-Dictionary{System-String,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}}@,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}@,System-String@-'></a>
+<a name='M-CodeFirstWebFramework-Namespace-processFields-System-Type,System-Collections-Generic-List{CodeFirstWebFramework-Field}@,System-Collections-Generic-Dictionary{System-String,CodeFirstWebFramework-Namespace-IndexDef}@,System-Collections-Generic-List{System-Tuple{System-Int32,CodeFirstWebFramework-Field}}@,System-String@-'></a>
 ### processFields() `method`
 
 ##### Summary
@@ -7551,20 +7658,6 @@ Constructor
 | name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Index name |
 | sequence | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Sequence when multiple fields make up the index |
 
-<a name='P-CodeFirstWebFramework-UniqueAttribute-Name'></a>
-### Name `property`
-
-##### Summary
-
-Index name
-
-<a name='P-CodeFirstWebFramework-UniqueAttribute-Sequence'></a>
-### Sequence `property`
-
-##### Summary
-
-Sequence when multiple fields make up the index
-
 <a name='T-CodeFirstWebFramework-UploadedFile'></a>
 ## UploadedFile `type`
 
@@ -7902,7 +7995,7 @@ Return this string, with first letter upper case
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String-'></a>
+<a name='M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Net-HttpStatusCode-'></a>
 ### Check() `method`
 
 ##### Summary

@@ -88,8 +88,10 @@ namespace CodeFirstWebFramework {
 		/// Create an index from a table and index definition
 		/// </summary>
 		public void CreateIndex(Table t, Index index) {
-			executeLog(string.Format("ALTER TABLE `{0}` ADD CONSTRAINT `{1}` UNIQUE ({2})", t.Name, index.Name,
-				string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC").ToArray())));
+			executeLog(index.Unique ? string.Format("ALTER TABLE `{0}` ADD CONSTRAINT `{1}` UNIQUE ({2})", t.Name, index.Name,
+				string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC").ToArray())) :
+				string.Format("ALTER TABLE `{0}` ADD INDEX `{1}` ({2})", t.Name, index.Name,
+				string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC"))));
 		}
 
 		/// <summary>
@@ -249,15 +251,16 @@ namespace CodeFirstWebFramework {
 				List<Index> tableIndexes = new List<Index>();
 				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'True'")) {
 					string indexName = ind["INDEX_NAME"].ToString();
-					tableIndexes.Add(new Index("PRIMARY", 
+					tableIndexes.Add(new Index("PRIMARY", true, 
 						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
 						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
-				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'False' AND UNIQUE = 'True'")) {
+				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'False'")) {
 					string indexName = ind["INDEX_NAME"].ToString();
-					tableIndexes.Add(new Index(indexName,
-						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
-						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
+					if (!indexName.StartsWith("fk_"))
+						tableIndexes.Add(new Index(indexName, ind["UNIQUE"].ToString() == "True",
+							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
+							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
 				}
 				tables[name] = new Table(name, fields, tableIndexes.ToArray());
 			}
@@ -276,7 +279,7 @@ namespace CodeFirstWebFramework {
 						defaultFromColumn(c))).ToArray();
 				Table updateTable = null;
 				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
-				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", fields[0]) },
+				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", true, fields[0]) },
 					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;

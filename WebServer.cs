@@ -257,7 +257,13 @@ namespace CodeFirstWebFramework {
 								module.Method = "default";
 								module.Title = "Exception";
 								module.Exception = ex;
-								module.WriteResponse(module.Template("exception", module), "text/html", HttpStatusCode.InternalServerError);
+								HttpStatusCode code = HttpStatusCode.InternalServerError;
+								string template = "exception";
+								if (ex is CheckException check) {
+									code = check.Code;
+									template = check.Template ?? template;
+								}
+								module.WriteResponse(module.Template(template, module), "text/html", code);
 							} catch (Exception ex1) {
 								log.AppendFormat("Error displaying exception: {0}\r\n", ex1);
 								if (module != null && !module.ResponseSent) {

@@ -856,7 +856,7 @@ namespace CodeFirstWebFramework {
 		public bool HasAccess(ModuleInfo info, string mtd, out int accessLevel) {
 			if (!SecurityOn) {
 				// No security
-				accessLevel = AccessLevel.Admin;
+				accessLevel = Server.NamespaceDef.GetAccessLevel().Select().Select(l => l.AsInt("id")).OrderByDescending(l => l).First();
 				return true;
 			} else if (info != null) {
 				int level = info.Auth.AccessLevel;

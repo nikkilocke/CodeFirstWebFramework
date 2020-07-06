@@ -16,14 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.16</Version>
-    <AssemblyVersion>1.3.16.0</AssemblyVersion>
-    <FileVersion>1.3.16.0</FileVersion>
-    <PackageReleaseNotes>Indexes which are not unique.
-Temporarily removed support for Ms SQL Server (too many code changes needed).
-Bug fixes on recognising when tables have changed.
-Inproved capturing of sql in database exceptions.
-CheckException now has optional HttpStatusCode and Template for rendering - default is OK, so exception page is rendered even inside Apache proxy.</PackageReleaseNotes>
+    <Version>1.3.17</Version>
+    <AssemblyVersion>1.3.17.0</AssemblyVersion>
+    <FileVersion>1.3.17.0</FileVersion>
+    <PackageReleaseNotes>Fix bugs in setting of AccessLevel if new access levels &gt; Admin are created.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

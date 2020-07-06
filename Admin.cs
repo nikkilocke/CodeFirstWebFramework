@@ -297,7 +297,7 @@ namespace CodeFirstWebFramework {
 				passwordChanged = true;
 				if (module.Database.QueryOne("SELECT idUser FROM User") == null) {
 					user.idUser = 1;        // Admin user
-					header["AccessLevel"] = user.AccessLevel = AccessLevel.Admin;
+					header["AccessLevel"] = user.AccessLevel = module.Server.NamespaceDef.GetAccessLevel().Select().Select(l => l.AsInt("id")).OrderByDescending(l => l).First();
 					header["ModulePermissions"] = user.ModulePermissions = false;
 				}
 			}

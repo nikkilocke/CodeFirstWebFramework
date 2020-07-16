@@ -284,9 +284,12 @@ namespace CodeFirstWebFramework {
 		/// Any uncommitted transaction will be rolled back, and the connection will be closed.
 		/// </summary>
 		public void Dispose() {
-			Rollback();
-			db.Dispose();
-			db = null;
+			try {
+				Rollback();
+				db.Dispose();
+				db = null;
+			} catch {
+			}
 		}
 
 		/// <summary>

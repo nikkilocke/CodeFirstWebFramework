@@ -168,7 +168,8 @@ namespace CodeFirstWebFramework {
 			if (code.Length != database.Length) {
 				return false;
 			}
-			if (code.Nullable != database.Nullable && database.Length != 0) return false;
+			// NB: LONGTEXT Fields (length 0) MUST be nullable in MySql, otherwise you get errors because they do not allow default values
+			if (code.Nullable != database.Nullable && (database.Length != 0 || !database.Nullable)) return false;
 			// NB: MySql cannot show the difference between null and empty string default values!
 			if(code.DatabaseTypeName == "string" && string.IsNullOrEmpty(code.DefaultValue) && string.IsNullOrEmpty(database.DefaultValue)) return true;
 			if (code.DefaultValue != database.DefaultValue) return false;

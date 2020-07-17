@@ -101,7 +101,8 @@ namespace CodeFirstWebFramework {
 				DateTime now = Utils.Now;
 				JObject result = new JObject().AddRange("BackupDate", now.ToString("yyyy-MM-dd HH:mm:ss"));
 				foreach (string name in module.Database.TableNames) {
-					result.Add(name, module.Database.Query("SELECT * FROM " + name));
+					if (name != "Session")
+						result.Add(name, module.Database.Query("SELECT * FROM " + name));
 				}
 				module.Response.AddHeader("Content-disposition", "attachment; filename=Backup-" + now.ToString("yyyy-MM-dd-HH-mm-ss") + ".json");
 				module.WriteResponse(Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented), "application/json", System.Net.HttpStatusCode.OK);
@@ -132,12 +133,14 @@ namespace CodeFirstWebFramework {
 						module.Batch.Status = "Deleting existing data";
 						TableList orderedTables = new TableList(tables);
 						foreach (Table t in orderedTables) {
-							module.Database.Execute("DELETE FROM " + t.Name);
-							module.Batch.Record += 4;
+							if (t.Name != "Session") {
+								module.Database.Execute("DELETE FROM " + t.Name);
+								module.Batch.Record += 4;
+							}
 						}
 						module.Database.Logging = false;
 						foreach (Table t in orderedTables.Reverse<Table>()) {
-							if (d[t.Name] != null) {
+							if (t.Name != "Session" && d[t.Name] != null) {
 								module.Batch.Status = "Restoring " + t.Name + " data";
 								foreach (JObject record in (JArray)d[t.Name]) {
 									module.Database.Insert(t.Name, record);

@@ -274,11 +274,15 @@ namespace CodeFirstWebFramework {
 						}
 					}
 				} finally {
-					if (server != null && session != null && session != server.NamespaceDef.EmptySession) {
-						if (session.Server == null)
-							session.Dispose();      // Dispose of temporary session
-						else if (server.PersistentSessions)
-							session.ToStore(server.NamespaceDef);
+					try {
+						if (server != null && session != null && session != server.NamespaceDef.EmptySession) {
+							if (session.Server == null)
+								session.Dispose();      // Dispose of temporary session
+							else if (server.PersistentSessions)
+								session.ToStore(server.NamespaceDef);
+						}
+					} catch(Exception ex) {
+						System.Diagnostics.Debug.WriteLine("Session save error:" + ex);
 					}
 				}
 			}

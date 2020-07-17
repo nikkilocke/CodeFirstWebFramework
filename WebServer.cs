@@ -212,7 +212,7 @@ namespace CodeFirstWebFramework {
 					module.LogString = log;
 					if (cookie != null) {
 						if (!_sessions.TryGetValue(cookie.Value, out session) && server.PersistentSessions)
-							session = Session.FromStore(this, module, cookie.Value);
+							session = Session.FromStore(this, module.Server.NamespaceDef, cookie.Value);
 						Log.Session.WriteLine("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
 					}
 					if (session == null) {
@@ -234,8 +234,6 @@ namespace CodeFirstWebFramework {
 					using (module) {
 						// Call method
 						module.Call(context, moduleName, methodName);
-						if (server.PersistentSessions && session.Server != null && session != server.NamespaceDef.EmptySession)
-							session.ToStore(module.Database);
 					}
 				} catch (Exception ex) {
 					while (ex is TargetInvocationException)
@@ -276,8 +274,12 @@ namespace CodeFirstWebFramework {
 						}
 					}
 				} finally {
-					if (session != null && session.Server == null && session != server.NamespaceDef.EmptySession)
-						session.Dispose();		// Dispose of temporary session
+					if (server != null && session != null && session != server.NamespaceDef.EmptySession) {
+						if (session.Server == null)
+							session.Dispose();      // Dispose of temporary session
+						else if (server.PersistentSessions)
+							session.ToStore(server.NamespaceDef);
+					}
 				}
 			}
 			if (context != null) {
@@ -367,32 +369,35 @@ namespace CodeFirstWebFramework {
 			/// <summary>
 			/// Create session from store
 			/// </summary>
-			public static Session FromStore(WebServer server, AppModule module, string cookie) {
-				Session session = module.Server.NamespaceDef.GetInstanceOf<Session>();
-				session.idSession = cookie;
-				if (!module.Database.TryGet(session))
-					return null;
-				if (session.Expires < Utils.Now) {
-					module.Database.Execute("DELETE FROM Session WHERE Expires < " + module.Database.Quote(Utils.Now));
-					return null;
+			public static Session FromStore(WebServer server, Namespace nameSpace, string cookie) {
+				lock (nameSpace) {
+					Session session = nameSpace.GetInstanceOf<Session>();
+					session.idSession = cookie;
+					if (!nameSpace.Database.TryGet(session))
+						return null;
+					if (session.Expires < Utils.Now) {
+						nameSpace.Database.Execute("DELETE FROM Session WHERE Expires < " + nameSpace.Database.Quote(Utils.Now));
+						return null;
+					}
+					session.Server = server;
+					if (session.UserId == 0 || !nameSpace.Database.TryGet(session.UserId, out session.User))
+						session.User = null;
+					server._sessions[session.Cookie] = session;
+					return session;
 				}
-				session.Server = server;
-				if (session.UserId == 0 || !module.Database.TryGet(session.UserId, out session.User))
-					session.User = null;
-				server._sessions[session.Cookie] = session;
-				return session;
 			}
 
 			/// <summary>
 			/// Save session to store (or delete from store if expired)
 			/// </summary>
-			public void ToStore(Database db) {
-				UserId = User == null ? 0 : User.idUser.GetValueOrDefault();
-				if (Expires < Utils.Now) {
-					db.Delete(this);
-					return;
+			public void ToStore(Namespace nameSpace) {
+				lock (nameSpace) {
+					UserId = User == null ? 0 : User.idUser.GetValueOrDefault();
+					if (Expires < Utils.Now)
+						nameSpace.Database.Delete(this);
+					else
+						nameSpace.Database.Update(this);
 				}
-				db.Update(this);
 			}
 
 			/// <summary>

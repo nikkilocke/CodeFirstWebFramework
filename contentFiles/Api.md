@@ -549,6 +549,8 @@
 - [Namespace](#T-CodeFirstWebFramework-Namespace 'CodeFirstWebFramework.Namespace')
   - [#ctor()](#M-CodeFirstWebFramework-Namespace-#ctor-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.#ctor(CodeFirstWebFramework.ServerConfig)')
   - [FileSystem](#F-CodeFirstWebFramework-Namespace-FileSystem 'CodeFirstWebFramework.Namespace.FileSystem')
+  - [Server](#F-CodeFirstWebFramework-Namespace-Server 'CodeFirstWebFramework.Namespace.Server')
+  - [Database](#P-CodeFirstWebFramework-Namespace-Database 'CodeFirstWebFramework.Namespace.Database')
   - [EmptySession](#P-CodeFirstWebFramework-Namespace-EmptySession 'CodeFirstWebFramework.Namespace.EmptySession')
   - [Modules](#P-CodeFirstWebFramework-Namespace-Modules 'CodeFirstWebFramework.Namespace.Modules')
   - [Name](#P-CodeFirstWebFramework-Namespace-Name 'CodeFirstWebFramework.Namespace.Name')
@@ -630,8 +632,8 @@
   - [Cookie](#P-CodeFirstWebFramework-WebServer-Session-Cookie 'CodeFirstWebFramework.WebServer.Session.Cookie')
   - [Object](#P-CodeFirstWebFramework-WebServer-Session-Object 'CodeFirstWebFramework.WebServer.Session.Object')
   - [Dispose()](#M-CodeFirstWebFramework-WebServer-Session-Dispose 'CodeFirstWebFramework.WebServer.Session.Dispose')
-  - [FromStore()](#M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-AppModule,System-String- 'CodeFirstWebFramework.WebServer.Session.FromStore(CodeFirstWebFramework.WebServer,CodeFirstWebFramework.AppModule,System.String)')
-  - [ToStore()](#M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-Database- 'CodeFirstWebFramework.WebServer.Session.ToStore(CodeFirstWebFramework.Database)')
+  - [FromStore()](#M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-Namespace,System-String- 'CodeFirstWebFramework.WebServer.Session.FromStore(CodeFirstWebFramework.WebServer,CodeFirstWebFramework.Namespace,System.String)')
+  - [ToStore()](#M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-Namespace- 'CodeFirstWebFramework.WebServer.Session.ToStore(CodeFirstWebFramework.Namespace)')
 - [Settings](#T-CodeFirstWebFramework-Settings 'CodeFirstWebFramework.Settings')
   - [DbVersion](#F-CodeFirstWebFramework-Settings-DbVersion 'CodeFirstWebFramework.Settings.DbVersion')
   - [Skin](#F-CodeFirstWebFramework-Settings-Skin 'CodeFirstWebFramework.Settings.Skin')
@@ -6262,6 +6264,20 @@ This constructor has no parameters.
 
 The FileSystem for this Namespace
 
+<a name='F-CodeFirstWebFramework-Namespace-Server'></a>
+### Server `constants`
+
+##### Summary
+
+The Server using this Namespace
+
+<a name='P-CodeFirstWebFramework-Namespace-Database'></a>
+### Database `property`
+
+##### Summary
+
+The Database for this Namespace
+
 <a name='P-CodeFirstWebFramework-Namespace-EmptySession'></a>
 ### EmptySession `property`
 
@@ -7070,7 +7086,7 @@ Free any resources
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-AppModule,System-String-'></a>
+<a name='M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-Namespace,System-String-'></a>
 ### FromStore() `method`
 
 ##### Summary
@@ -7081,7 +7097,7 @@ Create session from store
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-Database-'></a>
+<a name='M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-Namespace-'></a>
 ### ToStore() `method`
 
 ##### Summary

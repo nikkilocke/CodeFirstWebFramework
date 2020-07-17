@@ -99,6 +99,25 @@ namespace CodeFirstWebFramework {
 		Dictionary<string, Table> tables;
 		Dictionary<Field, ForeignKeyAttribute> foreignKeys;
 		List<Assembly> assemblies;
+		Database _db;
+		/// <summary>
+		/// The Server using this Namespace
+		/// </summary>
+		public ServerConfig Server;
+
+		/// <summary>
+		/// The Database for this Namespace
+		/// </summary>
+		public virtual Database Database {
+			get {
+				lock (this) {
+					if (_db == null) {
+						_db = GetDatabase(Server);
+					}
+				}
+				return _db;
+			}
+		}
 
 		/// <summary>
 		/// List of module names for templates (e.g. to auto-generate a module menu)
@@ -134,6 +153,7 @@ namespace CodeFirstWebFramework {
 		/// Constructor - uses reflection to get the information
 		/// </summary>
 		public Namespace(ServerConfig server) {
+			Server = server;
 			Name = server.Namespace;
 			appModules = new Dictionary<string, ModuleInfo>();
 			assemblies = new List<Assembly>();

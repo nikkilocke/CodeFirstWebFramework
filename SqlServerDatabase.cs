@@ -182,7 +182,7 @@ namespace CodeFirstWebFramework {
 		/// Query the database, and return the first record matching the query
 		/// </summary>
 		public Newtonsoft.Json.Linq.JObject QueryOne(string query) {
-			return Query(Regex.Replace(query, @"^\s*SELECT\b", "SELECT TOP 1", RegexOptions.IgnoreCase)).FirstOrDefault();
+			return _db.Query(Regex.Replace(query, @"^\s*SELECT\b", "SELECT TOP 1", RegexOptions.IgnoreCase)).FirstOrDefault();
 		}
 
 		/// <summary>

@@ -194,7 +194,7 @@ namespace CodeFirstWebFramework {
 		/// Query the database, and return the first record matching the query
 		/// </summary>
 		public JObject QueryOne(string query) {
-			return Query(query + " LIMIT 1").FirstOrDefault();
+			return _db.Query(query + " LIMIT 1").FirstOrDefault();
 		}
 
 		/// <summary>

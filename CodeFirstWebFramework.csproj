@@ -16,11 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.22</Version>
-    <AssemblyVersion>1.3.22.0</AssemblyVersion>
-    <FileVersion>1.3.22.0</FileVersion>
-    <PackageReleaseNotes>Fix race condition when using PersistentSessions which caused database errors.
-Prevent Session data being backed up or restored</PackageReleaseNotes>
+    <Version>1.3.23</Version>
+    <AssemblyVersion>1.3.23.0</AssemblyVersion>
+    <FileVersion>1.3.23.0</FileVersion>
+    <PackageReleaseNotes>Make sure all queries are logged if logging is on (Get and QueryOne calls could avoid being logged before)</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

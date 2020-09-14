@@ -212,7 +212,7 @@ namespace CodeFirstWebFramework {
 					module.LogString = log;
 					if (cookie != null) {
 						if (!_sessions.TryGetValue(cookie.Value, out session) && server.PersistentSessions)
-							session = Session.FromStore(this, module.Server.NamespaceDef, cookie.Value);
+							session = Session.FromStore(this, module, cookie.Value);
 						Log.Session.WriteLine("[{0}{1}]", cookie.Value, session == null ? " not found" : "");
 					}
 					if (session == null) {
@@ -279,7 +279,7 @@ namespace CodeFirstWebFramework {
 							if (session.Server == null)
 								session.Dispose();      // Dispose of temporary session
 							else if (server.PersistentSessions)
-								session.ToStore(server.NamespaceDef);
+								session.ToStore(server);
 						}
 					} catch(Exception ex) {
 						System.Diagnostics.Debug.WriteLine("Session save error:" + ex);
@@ -373,18 +373,19 @@ namespace CodeFirstWebFramework {
 			/// <summary>
 			/// Create session from store
 			/// </summary>
-			public static Session FromStore(WebServer server, Namespace nameSpace, string cookie) {
+			public static Session FromStore(WebServer server, AppModule module, string cookie) {
+				Namespace nameSpace = module.Server.NamespaceDef;
 				lock (nameSpace) {
 					Session session = nameSpace.GetInstanceOf<Session>();
 					session.idSession = cookie;
-					if (!nameSpace.Database.TryGet(session))
+					if (!module.Database.TryGet(session))
 						return null;
 					if (session.Expires < Utils.Now) {
-						nameSpace.Database.Execute("DELETE FROM Session WHERE Expires < " + nameSpace.Database.Quote(Utils.Now));
+						module.Database.Execute("DELETE FROM Session WHERE Expires < " + module.Database.Quote(Utils.Now));
 						return null;
 					}
 					session.Server = server;
-					if (session.UserId == 0 || !nameSpace.Database.TryGet(session.UserId, out session.User))
+					if (session.UserId == 0 || !module.Database.TryGet(session.UserId, out session.User))
 						session.User = null;
 					server._sessions[session.Cookie] = session;
 					return session;
@@ -394,13 +395,16 @@ namespace CodeFirstWebFramework {
 			/// <summary>
 			/// Save session to store (or delete from store if expired)
 			/// </summary>
-			public void ToStore(Namespace nameSpace) {
+			public void ToStore(ServerConfig server) {
+				Namespace nameSpace = server.NamespaceDef;
 				lock (nameSpace) {
 					UserId = User == null ? 0 : User.idUser.GetValueOrDefault();
-					if (Expires < Utils.Now)
-						nameSpace.Database.Delete(this);
-					else
-						nameSpace.Database.Update(this);
+					using (Database Database = nameSpace.GetDatabase(server)) {
+						if (Expires < Utils.Now)
+							Database.Delete(this);
+						else
+							Database.Update(this);
+					}
 				}
 			}
 

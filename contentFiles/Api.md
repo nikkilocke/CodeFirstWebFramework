@@ -632,8 +632,8 @@
   - [Cookie](#P-CodeFirstWebFramework-WebServer-Session-Cookie 'CodeFirstWebFramework.WebServer.Session.Cookie')
   - [Object](#P-CodeFirstWebFramework-WebServer-Session-Object 'CodeFirstWebFramework.WebServer.Session.Object')
   - [Dispose()](#M-CodeFirstWebFramework-WebServer-Session-Dispose 'CodeFirstWebFramework.WebServer.Session.Dispose')
-  - [FromStore()](#M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-Namespace,System-String- 'CodeFirstWebFramework.WebServer.Session.FromStore(CodeFirstWebFramework.WebServer,CodeFirstWebFramework.Namespace,System.String)')
-  - [ToStore()](#M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-Namespace- 'CodeFirstWebFramework.WebServer.Session.ToStore(CodeFirstWebFramework.Namespace)')
+  - [FromStore()](#M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-AppModule,System-String- 'CodeFirstWebFramework.WebServer.Session.FromStore(CodeFirstWebFramework.WebServer,CodeFirstWebFramework.AppModule,System.String)')
+  - [ToStore()](#M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.WebServer.Session.ToStore(CodeFirstWebFramework.ServerConfig)')
 - [Settings](#T-CodeFirstWebFramework-Settings 'CodeFirstWebFramework.Settings')
   - [DbVersion](#F-CodeFirstWebFramework-Settings-DbVersion 'CodeFirstWebFramework.Settings.DbVersion')
   - [Skin](#F-CodeFirstWebFramework-Settings-Skin 'CodeFirstWebFramework.Settings.Skin')
@@ -7086,7 +7086,7 @@ Free any resources
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-Namespace,System-String-'></a>
+<a name='M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-AppModule,System-String-'></a>
 ### FromStore() `method`
 
 ##### Summary
@@ -7097,7 +7097,7 @@ Create session from store
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-Namespace-'></a>
+<a name='M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-ServerConfig-'></a>
 ### ToStore() `method`
 
 ##### Summary

@@ -343,9 +343,8 @@ namespace CodeFirstWebFramework {
 				primary.Add(new Tuple<int, Field>(0, fields[0]));
 				primaryName = "PRIMARY";
 			}
-			List<Index> inds = new List<Index>(indexes.Keys
-				.OrderBy(k => k)
-				.Select(k => new Index(k, indexes[k].Unique, indexes[k].Fields
+			List<Index> inds = new List<Index>(indexes.Values
+				.Select(v => new Index(v.Name, v.Unique, v.Fields
 					.OrderBy(i => i.Item1)
 					.Select(i => i.Item2)
 					.ToArray())));

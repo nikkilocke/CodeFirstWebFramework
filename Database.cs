@@ -1066,7 +1066,7 @@ namespace CodeFirstWebFramework {
 		/// Quote value of object o to use in a SQL statement, assuming value is to be placed in this field.
 		/// </summary>
 		public string Quote(object o) {
-			if (o == null || o == DBNull.Value) return "NULL";
+			if (o == null || o == DBNull.Value || (o is JToken && ((JToken)o).Type == JTokenType.Null)) return "NULL";
 			string s = o.ToString();
 			if ((Type == typeof(int) || Type == typeof(long) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return "NULL";
 			if (Type == typeof(bool)) {

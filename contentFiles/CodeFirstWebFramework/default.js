@@ -51,9 +51,9 @@ $(function() {
 		else
 			window.location = href;
 	});
-	$('body').on('click', 'button[data-goto]', function() {
+	$('body').on('click', 'button[data-goto]', function(e) {
 		// Buttons with data-goto act like links, but also store state to come back to
-		goto($(this).attr('data-goto'));
+		goto($(this).attr('data-goto'), e);
 	});
 	$(window).bind('beforeunload', function () {
 		// Warn user if there is unsaved data on leaving the page
@@ -1434,8 +1434,8 @@ function makeDataTable(selector, options) {
 	if (typeof(selectUrl) == 'string') {
 		// Turn into a function that goes to url, adding id of current row as parameter
 		var s = selectUrl;
-        selectUrl = function (row) {
-            goto(urlParameter('id', row[idName], s));
+        selectUrl = function (row, e) {
+            goto(urlParameter('id', row[idName], s), e);
         };
 	}
 	// If no data or data url supplied, use an Ajax call to this method + "Listing"
@@ -1500,8 +1500,8 @@ function makeDataTable(selector, options) {
 
 	// Attach mouse handlers to each row
 	if (typeof(selectUrl) == 'function') {
-		selectClick(selector, function () {
-            return selectUrl.call(this, table.rowData($(this)));
+		selectClick(selector, function (e) {
+            return selectUrl.call(this, table.rowData($(this)), e);
 		});
 	} else {
 		selectClick(selector, null);
@@ -2044,13 +2044,13 @@ function makeListForm(selector, options) {
 	}
 	if(typeof(selectUrl) == 'string') {
 		var sel = selectUrl;
-        selectUrl = function (row) {
-            goto(urlParameter('id', row[idName], sel));
+        selectUrl = function (row, e) {
+            goto(urlParameter('id', row[idName], sel), e);
         };
 	}
 	if(typeof(selectUrl) == 'function') {
-		selectClick(selector, function () {
-            return selectUrl.call(this, table.rowData($(this)));
+		selectClick(selector, function (e) {
+            return selectUrl.call(this, table.rowData($(this)), e);
 		});
 	} else {
 		selectClick(selector, null);
@@ -3134,8 +3134,12 @@ function getGoto(url) {
  * Go to url, storing the current url and datatable "Show All" parameters as "from"
  * @param url
  */
-function goto(url) {
-	window.location = getGoto(url);
+function goto(url, e) {
+	var href = getGoto(url);
+	if (e && e.ctrlKey)
+		window.open(href, "_blank");
+	else
+		window.location = href;
 }
 
 /**

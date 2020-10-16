@@ -198,7 +198,7 @@ namespace CodeFirstWebFramework {
 			});
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
 			f.Header["AccessLevel"].MakeSelectable(levels.Select(module.UserAccessLevel));
-			f.Detail["FunctionAccessLevel"].MakeSelectable(levels.Select(module.UserAccessLevel));
+			f.Detail["FunctionAccessLevel"].MakeSelectable(new JObject[] { new JObject().AddRange("id", AccessLevel.Any, "value", "Default") }.Concat(levels.Select(module.UserAccessLevel)));
 			f.Detail.Remove("Method");
 			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {
@@ -232,7 +232,7 @@ namespace CodeFirstWebFramework {
 							UserId = user,
 							Module = m.Auth.Name,
 							Method = "-",
-							FunctionAccessLevel = AccessLevel.Unspecified
+							FunctionAccessLevel = AccessLevel.Any
 						};
 						if (user > 1) {
 							Permission r = module.Database.Get(p);
@@ -257,7 +257,7 @@ namespace CodeFirstWebFramework {
 								UserId = user,
 								Module = m.Auth.Name,
 								Method = a.Name,
-								FunctionAccessLevel = AccessLevel.Unspecified
+								FunctionAccessLevel = AccessLevel.Any
 							};
 							if (user > 1) {
 								Permission r = module.Database.Get(p);
@@ -420,7 +420,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <returns>User returned if login or email address is correct, even if password is wrong
 		/// to use for (eg) password reset, otherwise null</returns>
-		[Auth(int.MaxValue)]	// Not available to web interface
+		[Auth(int.MaxValue, Hide = true)]	// Not available to web interface
 		public User LoginNoRedirect() {
 			if (module.Method == "logout")
 				module.Session.User = null;
@@ -444,7 +444,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Helper function to implement redirect after login
 		/// </summary>
-		[Auth(int.MaxValue)]    // Not available to web interface
+		[Auth(int.MaxValue, Hide = true)]    // Not available to web interface
 		public void RedirectAfterLogin(string redirect = null) {
 			if (string.IsNullOrEmpty(redirect)) {
 				redirect = module.GetParameters["from"];

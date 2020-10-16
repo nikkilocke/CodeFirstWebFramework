@@ -889,8 +889,11 @@ namespace CodeFirstWebFramework {
 					if (Session.User.ModulePermissions) {
 						JObject p = Database.QueryOne("SELECT FunctionAccessLevel FROM Permission WHERE UserId = " + Session.User.idUser
 							+ " AND Module = " + Database.Quote(info.Auth.Name) + " AND Method = " + Database.Quote(mtd));
-						if (p != null)
-							accessLevel = p.AsInt("FunctionAccessLevel");
+						if (p != null) {
+							int a = p.AsInt("FunctionAccessLevel");
+							if (a > AccessLevel.Any)
+								accessLevel = a;
+						}
 					}
 				} else
 					accessLevel = AccessLevel.None;

@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.27</Version>
-    <AssemblyVersion>1.3.27.0</AssemblyVersion>
-    <FileVersion>1.3.27.0</FileVersion>
-    <PackageReleaseNotes>Module Permissions now has extra setting on each module "Default" which defaults to the user's main setting.</PackageReleaseNotes>
+    <Version>1.3.28</Version>
+    <AssemblyVersion>1.3.28.0</AssemblyVersion>
+    <FileVersion>1.3.28.0</FileVersion>
+    <PackageReleaseNotes>Module Permissions now has extra setting on each module "User Setting" which defaults to the user's main setting.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

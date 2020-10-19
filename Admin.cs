@@ -198,7 +198,7 @@ namespace CodeFirstWebFramework {
 			});
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
 			f.Header["AccessLevel"].MakeSelectable(levels.Select(module.UserAccessLevel));
-			f.Detail["FunctionAccessLevel"].MakeSelectable(new JObject[] { new JObject().AddRange("id", AccessLevel.Any, "value", "Default") }.Concat(levels.Select(module.UserAccessLevel)));
+			f.Detail["FunctionAccessLevel"].MakeSelectable(new JObject[] { new JObject().AddRange("id", AccessLevel.Any, "value", "User Setting") }.Concat(levels.Select(module.UserAccessLevel)));
 			f.Detail.Remove("Method");
 			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {

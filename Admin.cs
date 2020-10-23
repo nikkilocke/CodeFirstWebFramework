@@ -201,6 +201,8 @@ namespace CodeFirstWebFramework {
 			f.Header["AccessLevel"].MakeSelectable(levels.Select(module.UserAccessLevel));
 			f.Detail["FunctionAccessLevel"].MakeSelectable(new JObject[] { new JObject().AddRange("id", AccessLevel.Any, "value", "User Setting") }.Concat(levels.Select(module.UserAccessLevel)));
 			f.Detail.Remove("Method");
+			if (!module.Server.NamespaceDef.OldAuth)
+				f.Detail.Remove("Module");
 			f.CanDelete = id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null);
 			if (id == 1 || module.Database.QueryOne("SELECT idUser FROM User") == null) {
 				// This has to be the admin user
@@ -225,8 +227,8 @@ namespace CodeFirstWebFramework {
 				foreach (string g in space.AuthGroups.Keys) {
 					Permission p = new Permission() {
 						UserId = user,
-						Module = g,
-						Method = "-",
+						Module = "-",
+						Method = g,
 						FunctionAccessLevel = AccessLevel.Any
 					};
 					if (space.OldAuth && g.Contains(':')) {
@@ -338,7 +340,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Create form to change user's password
 		/// </summary>
-		[Auth(AccessLevel.Any)]
+		[Auth(AccessLevel.ReadOnly)]
 		public Form ChangePassword() {
 			Utils.Check(module.Session.User != null, "You must log in first");
 			Form f = new Form(module, true);
@@ -361,7 +363,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Update user's password
 		/// </summary>
-		[Auth(AccessLevel.Any)]
+		[Auth(AccessLevel.ReadOnly, Hide = true)]
 		public AjaxReturn ChangePasswordSave(JObject json) {
 			User user = module.Session.User;
 			Utils.Check(user != null, "You must log in first");

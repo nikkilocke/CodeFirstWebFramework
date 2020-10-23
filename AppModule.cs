@@ -868,21 +868,35 @@ namespace CodeFirstWebFramework {
 					level = l.AccessLevel;
 					mtd = l.Name;
 				} else {
-					bool writeAccess = false;
+					bool subFunction = false;
 					if (mtd.EndsWith("save")) {
 						mtd = mtd.Substring(0, mtd.Length - 4);
-						writeAccess = true;
+						subFunction = true;
 					} else if (mtd.EndsWith("delete")) {
 						mtd = mtd.Substring(0, mtd.Length - 6);
-						writeAccess = true;
+						subFunction = true;
 					}
-					if (writeAccess) {
+					if (subFunction) {
 						if (info.AuthMethods.TryGetValue(mtd, out l)) {
 							auth = l;
 							level = l.AccessLevel;
 						}
 						if (level == AccessLevel.ReadOnly)
 							level = AccessLevel.ReadWrite;
+					} else {
+						if (mtd.EndsWith("data")) {
+							mtd = mtd.Substring(0, mtd.Length - 4);
+							subFunction = true;
+						} else if (mtd.EndsWith("listing")) {
+							mtd = mtd.Substring(0, mtd.Length - 7);
+							subFunction = true;
+						}
+						if (subFunction) {
+							if (info.AuthMethods.TryGetValue(mtd, out l)) {
+								auth = l;
+								level = l.AccessLevel;
+							}
+						}
 					}
 				}
 				if (Session.User != null) {

@@ -53,7 +53,8 @@ namespace Phone {
 		}
 
 		public override void Default() {
-			InsertMenuOption(new MenuOption("New number", "/home/PhoneNumber?id=0"));
+			if (UserAccessLevel > AccessLevel.ReadWrite)
+				InsertMenuOption(new MenuOption("New number", "/home/PhoneNumber?id=0"));
 			DataTableForm form = new DataTableForm(this, typeof(PhoneNumber)) {
 				Select = "/home/PhoneNumber"
 			};
@@ -74,19 +75,22 @@ namespace Phone {
 			form.Show();
 		}
 
-		[Auth(AccessLevel.ReadWrite)]
 		public AjaxReturn PhoneNumberSave(PhoneNumber json) {
 			json.PhoneKey = Regex.Replace(json.Number, "^[0-9]", "");
 			return SaveRecord(json);
 		}
 
-		[Auth(AccessLevel.ReadWrite)]
 		public AjaxReturn PhoneNumberDelete(int id) {
 			return DeleteRecord("PhoneNumber", id);
 		}
 
+#if AUTHGROUPS
+		[AuthGroup("AnalysisCodes")]
+		[AuthGroup("Editor")]
+#endif
 		public void AnalysisList() {
-			InsertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0&from=/home/analysislist"));
+			if (UserAccessLevel > AccessLevel.ReadWrite)
+				InsertMenuOption(new MenuOption("New analysis", "/home/Analysis?id=0&from=/home/analysislist"));
 			DataTableForm form = new DataTableForm(this, typeof(Analysis)) {
 				Select = "/home/Analysis"
 			};
@@ -98,6 +102,10 @@ namespace Phone {
 		}
 
 		[Auth(AccessLevel.ReadWrite, Name = "Update Analysis Codes")]
+#if AUTHGROUPS
+		[AuthGroup("AnalysisCodes")]
+		[AuthGroup("Editor")]
+#endif
 		public void Analysis(int id) {
 			Analysis a = Database.Get<Analysis>(id);
 			Form form = new Form(this, typeof(Analysis)) {
@@ -117,8 +125,13 @@ namespace Phone {
 			return DeleteRecord("Analysis", id);
 		}
 
+#if AUTHGROUPS
+		[AuthGroup("CostCentres")]
+		[AuthGroup("Editor")]
+#endif
 		public void CostCentreList() {
-			InsertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0&from=/home/costcentrelist"));
+			if (UserAccessLevel > AccessLevel.ReadWrite)
+				InsertMenuOption(new MenuOption("New Cost Centre", "/home/CostCentre?id=0&from=/home/costcentrelist"));
 			DataTableForm form = new DataTableForm(this, typeof(CostCentre)) {
 				Select = "/home/CostCentre"
 			};
@@ -130,6 +143,10 @@ namespace Phone {
 		}
 
 		[Auth(AccessLevel.ReadWrite, Name = "Update Cost Centres")]
+#if AUTHGROUPS
+		[AuthGroup("CostCentres")]
+		[AuthGroup("Editor")]
+#endif
 		public void CostCentre(int id) {
 			CostCentre a = Database.Get<CostCentre>(id);
 			Form form = new Form(this, typeof(CostCentre)) {
@@ -151,6 +168,11 @@ namespace Phone {
 		/// <summary>
 		/// Import vcard file. Submit button calls ImportFile.
 		/// </summary>
+		[Auth(AccessLevel.ReadWrite)]
+#if AUTHGROUPS
+		[AuthGroup("Import")]
+		[AuthGroup("Editor")]
+#endif
 		public void Import() {
 			DumbForm f = new DumbForm(this, true) {
 				Data = new JObject().AddRange("analysis", 1, "prefix", "+44")

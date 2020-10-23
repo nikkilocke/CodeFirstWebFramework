@@ -11,7 +11,7 @@
 			});
 			_.each(table.detail.data, function(d, index) {
 				$('#detail select#r' + index + 'cFunctionAccessLevel').find('option').each(function() {
-					if(this.value > 0 && this.value < d.MinAccessLevel)
+					if(this.value >= 0 && this.value < d.MinAccessLevel)
 						$(this).hide();
 				});
 			});

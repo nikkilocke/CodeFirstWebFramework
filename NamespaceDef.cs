@@ -113,7 +113,7 @@ namespace CodeFirstWebFramework {
 		/// Compute the lowest access levels for each group
 		/// </summary>
 		public void GetLowestAccessLevels() {
-			_lowestAccessLevels = Enumerable.Repeat(ModuleAccessLevel, _namespace.AuthGroups.Count).ToArray();
+			_lowestAccessLevels = Enumerable.Repeat(int.MaxValue, _namespace.AuthGroups.Count).ToArray();
 			foreach (AuthAttribute lvl in AuthMethods.Values) {
 				foreach (int i in lvl.Groups) {
 					if (lvl.AccessLevel < _lowestAccessLevels[i])
@@ -279,6 +279,8 @@ namespace CodeFirstWebFramework {
 					continue;
 				m.Auth.Groups = AddAuthGroup(m.Auth.Name + ":-");
 				foreach(AuthAttribute a in m.AuthMethods.Values) {
+					if (a.Hide)
+						continue;
 					a.Groups = AddAuthGroup(m.Auth.Name + ":" + a.Name);
 				}
 			}

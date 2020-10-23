@@ -67,10 +67,10 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Get max access level for groups list
 		/// </summary>
-		public int GetAccessLevel(AppModule module, IEnumerable<int> groups) {
+		public int GetAccessLevel(AppModule module, int[] groups) {
 			if (idUser > 0 && ModulePermissions && _accessLevels == null)
 				ReloadAccessLevels(module);
-			if (_accessLevels == null)
+			if (_accessLevels == null || groups.Length == 0)
 				return AccessLevel;
 			int level = groups.Max(g => _accessLevels[g]);
 			// Level AccessLevel.Any means use user access level
@@ -94,7 +94,7 @@ namespace CodeFirstWebFramework {
 				Namespace space = module.Server.NamespaceDef;
 				_accessLevels = new int[space.AuthGroups.Count];
 				foreach(Permission p in module.Database.Query<Permission>("SELECT * FROM Permission WHERE UserId = " + idUser)) {
-					string key = space.OldAuth ? (p.Module + ":" + p.Method) : p.Module;
+					string key = space.OldAuth ? (p.Module + ":" + p.Method) : p.Method;
 					if (space.AuthGroups.TryGetValue(key, out int index))
 						_accessLevels[index] = p.FunctionAccessLevel;
 				}
@@ -136,7 +136,7 @@ namespace CodeFirstWebFramework {
 		[DoNotStore]
 		public string Function {
 			get {
-				return Method == "-" ? "All" : Method.UnCamel();
+				return Method == "-" ? "Other Methods" : Method.UnCamel();
 			}
 		}
 		/// <summary>

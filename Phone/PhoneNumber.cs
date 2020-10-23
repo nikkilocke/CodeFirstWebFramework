@@ -13,14 +13,14 @@ namespace Phone {
 	[Table]
 	public class CostCentre : JsonObject {
 		[Primary]
-		public int? CostCentreId;
+		public int? idCostCentre;
 		public string CostCentreName;
 	}
 
 	[Table]
 	public class Analysis : JsonObject {
 		[Primary]
-		public int? AnalysisId;
+		public int? idAnalysis;
 		public string AnalysisName;
 		[ForeignKey("CostCentre")]
 		public int CostCentre;
@@ -29,7 +29,7 @@ namespace Phone {
 	[Table]
 	public class PhoneNumber : JsonObject {
 		[Primary]
-		public int? PhoneNumberId;
+		public int? idPhoneNumber;
 		[Unique("PhoneKey")]
 		[Field(Visible = false)]
 		public string PhoneKey;
@@ -68,7 +68,7 @@ namespace Phone {
 		public void PhoneNumber(int id) {
 			PhoneNumber n = Database.Get<PhoneNumber>(id);
 			Form form = new Form(this, typeof(PhoneNumber)) {
-				CanDelete = n.PhoneNumberId != null,
+				CanDelete = n.idPhoneNumber != null,
 				Data = n.ToJToken()
 			};
 			form.Show();
@@ -101,7 +101,7 @@ namespace Phone {
 		public void Analysis(int id) {
 			Analysis a = Database.Get<Analysis>(id);
 			Form form = new Form(this, typeof(Analysis)) {
-				CanDelete = a.AnalysisId != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null,
+				CanDelete = a.idAnalysis != null && Database.QueryOne("SELECT Analysis FROM PhoneNumber WHERE Analysis = " + id) == null,
 				Data = a.ToJToken()
 			};
 			form.Show();
@@ -133,7 +133,7 @@ namespace Phone {
 		public void CostCentre(int id) {
 			CostCentre a = Database.Get<CostCentre>(id);
 			Form form = new Form(this, typeof(CostCentre)) {
-				CanDelete = a.CostCentreId != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null,
+				CanDelete = a.idCostCentre != null && Database.QueryOne("SELECT CostCentre FROM Analysis WHERE CostCentre = " + id) == null,
 				Data = a.ToJToken()
 			};
 			form.Show();
@@ -164,7 +164,7 @@ namespace Phone {
 				Data = "analysis",
 				Heading = "Analysis"
 			};
-			fld.MakeSelectable(Database.Query("SELECT AnalysisId as id, AnalysisName AS value FROM Analysis ORDER BY AnalysisName"));
+			fld.MakeSelectable(Database.Query("SELECT idAnalysis as id, AnalysisName AS value FROM Analysis ORDER BY AnalysisName"));
 			f.Add(fld);
 			f.Add(new FieldAttribute() {
 				Data = "prefix",
@@ -211,7 +211,7 @@ namespace Phone {
 									PhoneNumber p = Database.Get(new PhoneNumber() {
 										PhoneKey = key
 									});
-									if (p.PhoneNumberId > 0) {
+									if (p.idPhoneNumber > 0) {
 										Batch.Status = string.Format("Existing number:{0} {1}", name, line);
 									} else {
 										Batch.Status = string.Format("New number:{0} {1}", name, line);

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Security.Principal;
+using MySqlX.XDevAPI;
 
 namespace CodeFirstWebFramework {
 
@@ -10,17 +12,21 @@ namespace CodeFirstWebFramework {
 	/// Class to hold a module name, for use in templates
 	/// </summary>
 	public class ModuleInfo {
+		Namespace _namespace;
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public ModuleInfo(string name, Type t) {
+		public ModuleInfo(string name, Type t, Namespace space) {
 			Name = name;
 			Type = t;
+			_namespace = space;
 			Auth = t.GetCustomAttribute<AuthAttribute>(true);
 			if (Auth == null)
 				Auth = new AuthAttribute(AccessLevel.Any);
 			if (Auth.Name == null)
 				Auth.Name = name;
+			Auth.Groups = _namespace.AddAuthGroups(t.GetCustomAttributes<AuthGroupAttribute>());
 			AuthMethods = new Dictionary<string, AuthAttribute>(StringComparer.OrdinalIgnoreCase);
 			addMethods(t);
 			foreach (ImplementationAttribute implementation in t.GetCustomAttributes<ImplementationAttribute>()) {
@@ -34,12 +40,17 @@ namespace CodeFirstWebFramework {
 		/// <param name="t"></param>
 		void addMethods(Type t) {
 			foreach (MethodInfo m in t.GetMethods()) {
-				AuthAttribute a = m.GetCustomAttribute<AuthAttribute>(true);
-				if (a != null) {
-					if (a.Name == null)
-						a.Name = m.Name;
-					if(!AuthMethods.ContainsKey(m.Name))
+				if (!AuthMethods.ContainsKey(m.Name)) {
+					int[] groups = _namespace.AddAuthGroups(m.GetCustomAttributes<AuthGroupAttribute>());
+					AuthAttribute a = m.GetCustomAttribute<AuthAttribute>(true);
+					if (groups.Length > 0 && a == null)
+						a = new AuthAttribute(Auth.AccessLevel);
+					if (a != null) {
+						a.Groups = groups;
+						if (a.Name == null)
+							a.Name = m.Name;
 						AuthMethods[m.Name] = a;
+					}
 				}
 			}
 		}
@@ -70,24 +81,71 @@ namespace CodeFirstWebFramework {
 		/// Auth access level (or AccessLevel.Any)
 		/// </summary>
 		public int ModuleAccessLevel;
+
 		/// <summary>
 		/// Dictionary of method names that have an Auth attribute
 		/// </summary>
 		public Dictionary<string, AuthAttribute> AuthMethods;
+
 		/// <summary>
-		/// Lowest Access level for any method.
-		/// Returns AccessLevel.Any if all methods have that level (or there are none),
-		/// otherwise the lowest level > Any
+		/// Lowest Access level for any method (for determining whether module should be displayed in the menu for a user).
 		/// </summary>
-		public int LowestAccessLevel {
-			get {
-				int l = AccessLevel.Any;
-				foreach (AuthAttribute lvl in AuthMethods.Values) {
-					if (lvl.AccessLevel > AccessLevel.Any && lvl.AccessLevel < l)
-						l = lvl.AccessLevel;
-				}
-				return l;
+		int _lowestAccessLevel;
+
+		/// <summary>
+		/// Lowest access levels for each group (for determining whether module should be displayed in the menu for a user)
+		/// </summary>
+		int[] _lowestAccessLevels;
+
+		/// <summary>
+		/// Compute the LowestAccessLevel for users without groups
+		/// </summary>
+		public int GetLowestAccessLevel() {
+			_lowestAccessLevel = ModuleAccessLevel;
+			foreach (AuthAttribute lvl in AuthMethods.Values) {
+				if (lvl.AccessLevel < _lowestAccessLevel)
+					_lowestAccessLevel = lvl.AccessLevel;
 			}
+			return _lowestAccessLevel;
+		}
+
+		/// <summary>
+		/// Compute the lowest access levels for each group
+		/// </summary>
+		public void GetLowestAccessLevels() {
+			_lowestAccessLevels = Enumerable.Repeat(ModuleAccessLevel, _namespace.AuthGroups.Count).ToArray();
+			foreach (AuthAttribute lvl in AuthMethods.Values) {
+				foreach (int i in lvl.Groups) {
+					if (lvl.AccessLevel < _lowestAccessLevels[i])
+						_lowestAccessLevels[i] = lvl.AccessLevel;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Whether user can access at least one method in this module
+		/// </summary>
+		public bool UserHasAccess(AppModule m) {
+			if (_lowestAccessLevel == AccessLevel.Any)
+				return true;				// Anyone can access module
+			if (m.Session.User == null)
+				return false;				// User not logged in
+			if (m.Session.User.AccessLevel >= _lowestAccessLevel)
+				return true;				// User has access level >= module's lowest
+			int[] userLevels = m.Session.User.AccessLevels(m);
+			if (userLevels == null)			// User does not have separate group permissions
+				return false;
+			for (int i = 0; i < _lowestAccessLevels.Length; i++)
+				if (userLevels[i] >= _lowestAccessLevels[i])
+					return true;			// One of the user's group access levels is >= the lowest access level in this module for that group
+			return false;
+		}
+
+		/// <summary>
+		/// Lowest access level for group g
+		/// </summary>
+		public int LowestAccessLevelForGroup(int g) {
+			return _lowestAccessLevels[g];
 		}
 	}
 
@@ -100,6 +158,14 @@ namespace CodeFirstWebFramework {
 		Dictionary<Field, ForeignKeyAttribute> foreignKeys;
 		List<Assembly> assemblies;
 		Database _db;
+		/// <summary>
+		/// The dictionary of group names
+		/// </summary>
+		public Dictionary<string, int> AuthGroups;
+		/// <summary>
+		/// Backward compatible authorisation grouups by module and method
+		/// </summary>
+		public bool OldAuth { get; private set; }
 		/// <summary>
 		/// The Server using this Namespace
 		/// </summary>
@@ -159,6 +225,7 @@ namespace CodeFirstWebFramework {
 			assemblies = new List<Assembly>();
 			tables = new Dictionary<string, Table>();
 			foreignKeys = new Dictionary<Field, ForeignKeyAttribute>();
+			AuthGroups = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 			List<Type> views = new List<Type>();
 			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
 				bool relevant = false;
@@ -168,7 +235,7 @@ namespace CodeFirstWebFramework {
 						string n = t.Name;
 						if (n.EndsWith("Module"))
 							n = n.Substring(0, n.Length - 6);
-						appModules[n.ToLower()] = new ModuleInfo(n, t);
+						appModules[n.ToLower()] = new ModuleInfo(n, t, this);
 					}
 					// Process all subclasses of JsonObject with Table attribute in module assembly
 					if (t.IsSubclassOf(typeof(JsonObject))) {
@@ -200,6 +267,55 @@ namespace CodeFirstWebFramework {
 			}
 			foreignKeys = null;
 			FileSystem = GetInstanceOf<FileSystem>();
+			// Backwards compatibility - if no AuthGroups, then create groups equivalent to the modules and methods with Auth attributes
+			if (AuthGroups.Count == 0)
+				OldAuth = true;
+			foreach(string key in appModules.Keys) {
+				ModuleInfo m = appModules[key];
+				int lowest = m.GetLowestAccessLevel();
+				if (!OldAuth || m.Auth.Hide)
+					continue;
+				if (m.Auth.AccessLevel == AccessLevel.Any && lowest == AccessLevel.Any)
+					continue;
+				m.Auth.Groups = AddAuthGroup(m.Auth.Name + ":-");
+				foreach(AuthAttribute a in m.AuthMethods.Values) {
+					a.Groups = AddAuthGroup(m.Auth.Name + ":" + a.Name);
+				}
+			}
+			// Now compute the minimum required access level for each group in each module
+			foreach(ModuleInfo m in appModules.Values) {
+				m.GetLowestAccessLevels();
+			}
+		}
+
+		/// <summary>
+		/// Add the AuthGroups from the list
+		/// </summary>
+		/// <returns>HashSet of added group numbers</returns>
+		public int[] AddAuthGroups(IEnumerable<AuthGroupAttribute> groups) {
+			return AddAuthGroups(groups.Select(a => a.Name));
+		}
+
+		/// <summary>
+		/// Add the given AuthGroup
+		/// </summary>
+		/// <returns>HashSet containing the added group number</returns>
+		public int[] AddAuthGroup(string group) {
+			return AddAuthGroups(Enumerable.Repeat(group, 1));
+		}
+
+		/// <summary>
+		/// Add the AuthGroups from the list
+		/// </summary>
+		/// <returns>HashSet of added group numbers</returns>
+		public int[] AddAuthGroups(IEnumerable<string> groups) {
+			HashSet<int> result = new HashSet<int>();
+			foreach (string grp in groups) {
+				if (!AuthGroups.TryGetValue(grp, out int r))
+					AuthGroups[grp] = r = AuthGroups.Count;
+				result.Add(r);
+			}
+			return result.ToArray();
 		}
 
 		WebServer.Session _empty;

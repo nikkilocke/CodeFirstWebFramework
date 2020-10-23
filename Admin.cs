@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Asn1.Cmp;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -219,59 +220,36 @@ namespace CodeFirstWebFramework {
 		/// List permissions for individual modules
 		/// </summary>
 		public IEnumerable<Permission> permissions(int user) {
-			Dictionary<string, Permission> modules = new Dictionary<string, Permission>();
 			if (user != 1) {
-				foreach (ModuleInfo m in module.Server.NamespaceDef.Modules) {
-					if (m.Auth.Hide)
-						continue;
-					int lowest = m.LowestAccessLevel;
-					if (m.Auth.AccessLevel == AccessLevel.Any && lowest == AccessLevel.Any)
-						continue;
-					if (!modules.TryGetValue(m.Auth.Name, out Permission p)) {
-						p = new Permission() {
-							UserId = user,
-							Module = m.Auth.Name,
-							Method = "-",
-							FunctionAccessLevel = AccessLevel.Any
-						};
-						if (user > 1) {
-							Permission r = module.Database.Get(p);
-							if (r.UserId == user)
-								p = r;
-						}
-						p.MinAccessLevel = m.Auth.AccessLevel;
-						modules[m.Auth.Name] = p;
+				Namespace space = module.Server.NamespaceDef;
+				foreach (string g in space.AuthGroups.Keys) {
+					Permission p = new Permission() {
+						UserId = user,
+						Module = g,
+						Method = "-",
+						FunctionAccessLevel = AccessLevel.Any
+					};
+					if (space.OldAuth && g.Contains(':')) {
+						string[] parts = g.Split(':');
+						p.Module = parts[0];
+						p.Method = parts[1];
 					}
-					if (m.Auth.AccessLevel > AccessLevel.Any)
-						p.MinAccessLevel = Math.Min(p.MinAccessLevel, m.Auth.AccessLevel);
-					if (lowest > AccessLevel.Any)
-						p.MinAccessLevel = Math.Min(p.MinAccessLevel, lowest);
-					p.Method = "-";
-					foreach (string method in m.AuthMethods.Keys) {
-						AuthAttribute a = m.AuthMethods[method];
-						if (a.Hide || a.AccessLevel == AccessLevel.Any)
-							continue;
-						string key = m.Auth.Name + ":" + a.Name;
-						if (!modules.TryGetValue(key, out p)) {
-							p = new Permission() {
-								UserId = user,
-								Module = m.Auth.Name,
-								Method = a.Name,
-								FunctionAccessLevel = AccessLevel.Any
-							};
-							if (user > 1) {
-								Permission r = module.Database.Get(p);
-								if (r.UserId == user)
-									p = r;
-							}
-							p.MinAccessLevel = a.AccessLevel;
-							modules[key] = p;
-						}
-						p.MinAccessLevel = Math.Min(p.MinAccessLevel, a.AccessLevel);
+					if (user > 1) {
+						Permission r = module.Database.Get(p);
+						if (r.UserId == user)
+							p = r;
 					}
+					if (space.AuthGroups.TryGetValue(g, out int gid)) {
+						p.MinAccessLevel = int.MaxValue;
+						foreach (ModuleInfo m in space.Modules) {
+							int l = m.LowestAccessLevelForGroup(gid);
+							if (l < p.MinAccessLevel)
+								p.MinAccessLevel = l;
+						}
+					}
+					yield return p;
 				}
 			}
-			return modules.Keys.OrderBy(k => k).Select(k => modules[k]);
 		}
 
 		/// <summary>
@@ -325,8 +303,10 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			module.Database.Commit();
-			if (firstUser)
+			if (firstUser) {
+				user.ReloadAccessLevels(module);
 				module.Session.User = user;
+			}
 			return r;
 		}
 
@@ -432,6 +412,7 @@ namespace CodeFirstWebFramework {
 					+ module.Database.Quote(login) + " OR Email = " + module.Database.Quote(login));
 				if (user.idUser > 0) {
 					if (user.HashPassword(password) == user.Password) {
+						user.ReloadAccessLevels(module);
 						module.Session.User = user;
 						module.Message = "Logged in successfully";
 					}

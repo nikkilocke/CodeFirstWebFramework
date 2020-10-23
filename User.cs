@@ -60,6 +60,47 @@ namespace CodeFirstWebFramework {
 				return "Password must be at least 6 characters";
 			return null;
 		}
+
+		[DoNotStore]
+		int [] _accessLevels;
+
+		/// <summary>
+		/// Get max access level for groups list
+		/// </summary>
+		public int GetAccessLevel(AppModule module, IEnumerable<int> groups) {
+			if (idUser > 0 && ModulePermissions && _accessLevels == null)
+				ReloadAccessLevels(module);
+			if (_accessLevels == null)
+				return AccessLevel;
+			int level = groups.Max(g => _accessLevels[g]);
+			// Level AccessLevel.Any means use user access level
+			return level == CodeFirstWebFramework.AccessLevel.Any ? AccessLevel : level;
+		}
+
+		/// <summary>
+		/// List of AccessLevels, 1 per AuthGroup, or null if ModulePermissions is not on
+		/// </summary>
+		public int[] AccessLevels(AppModule module) {
+			if (idUser > 0 && ModulePermissions && _accessLevels == null)
+				ReloadAccessLevels(module);
+			return _accessLevels;
+		}
+
+		/// <summary>
+		/// Reload AccessLevels from ModulePermissions
+		/// </summary>
+		public virtual void ReloadAccessLevels(AppModule module) {
+			if (idUser > 0 && ModulePermissions) {
+				Namespace space = module.Server.NamespaceDef;
+				_accessLevels = new int[space.AuthGroups.Count];
+				foreach(Permission p in module.Database.Query<Permission>("SELECT * FROM Permission WHERE UserId = " + idUser)) {
+					string key = space.OldAuth ? (p.Module + ":" + p.Method) : p.Module;
+					if (space.AuthGroups.TryGetValue(key, out int index))
+						_accessLevels[index] = p.FunctionAccessLevel;
+				}
+			} else
+				_accessLevels = null;
+		}
 	}
 
 	/// <summary>
@@ -143,6 +184,30 @@ namespace CodeFirstWebFramework {
 
 		/// <summary>
 		/// Name to use (instead of module/method). AuthAttributes with the same name are grouped in the UI.
+		/// </summary>
+		public string Name;
+
+		/// <summary>
+		/// Auth Groups 
+		/// </summary>
+		public int [] Groups;
+	}
+
+	/// <summary>
+	/// Attribute to use on AppModule or method to allow special access to methods in the group for a user
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+	public class AuthGroupAttribute : Attribute {
+		/// <summary>
+		/// Constructor with name.
+		/// </summary>
+		/// <param name="name">Name of group</param>
+		public AuthGroupAttribute(string name) {
+			Name = name;
+		}
+
+		/// <summary>
+		/// Name to use. AuthAttributes with the same name are grouped in the UI.
 		/// </summary>
 		public string Name;
 	}

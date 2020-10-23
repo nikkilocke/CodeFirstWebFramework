@@ -354,7 +354,9 @@ namespace CodeFirstWebFramework {
 		/// List of modules for templates (e.g. to auto-generate a module menu)
 		/// </summary>
 		public virtual IEnumerable<ModuleInfo> Modules {
-			get { return Server.NamespaceDef.Modules; }
+			get {
+				return Server.NamespaceDef.Modules.Where(m => m.UserHasAccess(this));
+			}
 		}
 
 
@@ -859,8 +861,10 @@ namespace CodeFirstWebFramework {
 				accessLevel = Server.NamespaceDef.GetAccessLevel().Select().Select(l => l.AsInt("id")).OrderByDescending(l => l).First();
 				return true;
 			} else if (info != null) {
-				int level = info.Auth.AccessLevel;
+				AuthAttribute auth = info.Auth;
+				int level = auth.AccessLevel;
 				if (info.AuthMethods.TryGetValue(mtd, out AuthAttribute l)) {
+					auth = l;
 					level = l.AccessLevel;
 					mtd = l.Name;
 				} else {
@@ -874,27 +878,15 @@ namespace CodeFirstWebFramework {
 					}
 					if (writeAccess) {
 						if (info.AuthMethods.TryGetValue(mtd, out l)) {
+							auth = l;
 							level = l.AccessLevel;
-							mtd = l.Name;
-						} else
-							mtd = "-";
+						}
 						if (level == AccessLevel.ReadOnly)
 							level = AccessLevel.ReadWrite;
-					} else {
-						mtd = "-";
 					}
 				}
 				if (Session.User != null) {
-					accessLevel = Session.User.AccessLevel;
-					if (Session.User.ModulePermissions) {
-						JObject p = Database.QueryOne("SELECT FunctionAccessLevel FROM Permission WHERE UserId = " + Session.User.idUser
-							+ " AND Module = " + Database.Quote(info.Auth.Name) + " AND Method = " + Database.Quote(mtd));
-						if (p != null) {
-							int a = p.AsInt("FunctionAccessLevel");
-							if (a > AccessLevel.Any)
-								accessLevel = a;
-						}
-					}
+					accessLevel = Session.User.GetAccessLevel(this, auth.Groups);
 				} else
 					accessLevel = AccessLevel.None;
 				return accessLevel >= level;

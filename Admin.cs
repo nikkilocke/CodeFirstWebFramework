@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Asn1.Cmp;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -305,9 +304,14 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			module.Database.Commit();
-			if (firstUser) {
-				user.ReloadAccessLevels(module);
+			user.ReloadAccessLevels(module);
+			if (firstUser)		// First user just created - log them on
 				module.Session.User = user;
+			// Check all current sessions using the same database, and update user with new data
+			int db = module.Server.DatabaseId;
+			foreach(var session in module.Session.Server.Sessions) {
+				if (session.Config.DatabaseId == db && session.User != null && session.User.idUser == user.idUser)
+					session.User = user;
 			}
 			return r;
 		}

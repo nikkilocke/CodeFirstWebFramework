@@ -329,7 +329,7 @@ namespace CodeFirstWebFramework {
 			get {
 				lock (this) {
 					if (_empty == null)
-						_empty = GetInstanceOf<WebServer.Session>((WebServer)null);
+						_empty = GetInstanceOf<WebServer.Session>();
 					return _empty;
 				}
 			}

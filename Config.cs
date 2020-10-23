@@ -274,6 +274,11 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		[JsonIgnore]
 		public Namespace NamespaceDef;
+		/// <summary>
+		/// Unique database id
+		/// </summary>
+		[JsonIgnore]
+		public int DatabaseId;
 
 		/// <summary>
 		/// Whether this server serves for the host name

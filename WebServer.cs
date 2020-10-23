@@ -23,6 +23,7 @@ namespace CodeFirstWebFramework {
 		static object _lock = new object();
 		Dictionary<string, Namespace> webmodules;      // All the different web modules we are running
 		HashSet<string> loadedAssemblies;
+		Dictionary<string, int> databases;
 
 		/// <summary>
 		/// Constructor.
@@ -37,11 +38,11 @@ namespace CodeFirstWebFramework {
 				webmodules = new Dictionary<string, Namespace>();
 				loadedAssemblies = new HashSet<string>();
 				var baseType = typeof(AppModule);
-				HashSet<string> databases = new HashSet<string>();
+				databases = new Dictionary<string, int>();
 				foreach (ServerConfig server in Config.Default.Servers) {
-					registerServer(databases, server);
+					registerServer(server);
 				}
-				registerServer(databases, Config.Default.DefaultServer);
+				registerServer(Config.Default.DefaultServer);
 			} catch (Exception ex) {
 				Log.Error.WriteLine(ex.ToString());
 				throw;
@@ -53,7 +54,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="databases">HashSet of databases already upgraded</param>
 		/// <param name="server">ServerConfig to register</param>
-		void registerServer(HashSet<string> databases, ServerConfig server) {
+		void registerServer(ServerConfig server) {
 			if (webmodules.ContainsKey(server.Namespace)) {
 				server.NamespaceDef = webmodules[server.Namespace];
 			} else {
@@ -67,10 +68,11 @@ namespace CodeFirstWebFramework {
 				webmodules[server.Namespace] = server.NamespaceDef;
 			}
 			using (Database db = server.NamespaceDef.GetDatabase(server)) {
-				if (!databases.Contains(db.UniqueIdentifier)) {
-					databases.Add(db.UniqueIdentifier);
+				if (!databases.TryGetValue(db.UniqueIdentifier, out int index)) {
+					databases[db.UniqueIdentifier] = index = databases.Count;
 					db.Upgrade();
 				}
+				server.DatabaseId = index;
 			}
 		}
 
@@ -217,9 +219,9 @@ namespace CodeFirstWebFramework {
 					}
 					if (session == null) {
 						if (moduleName == "FileSender") {
-							session = server.NamespaceDef.GetInstanceOf<Session>((WebServer)null);
+							session = server.NamespaceDef.GetInstanceOf<Session>();
 						} else {
-							session = server.NamespaceDef.GetInstanceOf<Session>(this);
+							session = server.NamespaceDef.GetInstanceOf<Session>(this, server);
 							cookie = new Cookie("session", session.Cookie, "/");
 							Log.Session.WriteLine("[{0} new session]", cookie.Value);
 						}
@@ -341,26 +343,30 @@ namespace CodeFirstWebFramework {
 			[DoNotStore]
 			[JsonIgnore]
 			public WebServer Server;
+			/// <summary>
+			/// The Database id
+			/// </summary>
+			[DoNotStore]
+			[JsonIgnore]
+			public ServerConfig Config { get; private set; }
 
 			/// <summary>
 			/// Constructor
 			/// </summary>
-			/// <param name="server"></param>
-			public Session(WebServer server) : this() {
-				if (server != null) {
-					Session session;
-					Random r = new Random();
+			public Session(WebServer server, ServerConfig config) : this() {
+				Session session;
+				Random r = new Random();
 
-					lock (server._sessions) {
-						do {
-							Cookie = "";
-							for (int i = 0; i < 20; i++)
-								Cookie += (char)('A' + r.Next(26));
-						} while (server._sessions.TryGetValue(Cookie, out session));
-						server._sessions[Cookie] = this;
-					}
-					Server = server;
+				lock (server._sessions) {
+					do {
+						Cookie = "";
+						for (int i = 0; i < 20; i++)
+							Cookie += (char)('A' + r.Next(26));
+					} while (server._sessions.TryGetValue(Cookie, out session));
+					server._sessions[Cookie] = this;
 				}
+				Server = server;
+				Config = config;
 			}
 
 			/// <summary>
@@ -376,15 +382,14 @@ namespace CodeFirstWebFramework {
 			public static Session FromStore(WebServer server, AppModule module, string cookie) {
 				Namespace nameSpace = module.Server.NamespaceDef;
 				lock (nameSpace) {
-					Session session = nameSpace.GetInstanceOf<Session>();
-					session.idSession = cookie;
-					if (!module.Database.TryGet(session))
+					if (!module.Database.TryGet(out Session session, cookie))
 						return null;
 					if (session.Expires < Utils.Now) {
 						module.Database.Execute("DELETE FROM Session WHERE Expires < " + module.Database.Quote(Utils.Now));
 						return null;
 					}
 					session.Server = server;
+					session.Config = module.Server;
 					if (session.UserId == 0 || !module.Database.TryGet(session.UserId, out session.User))
 						session.User = null;
 					server._sessions[session.Cookie] = session;

@@ -303,16 +303,14 @@ namespace CodeFirstWebFramework {
 					module.Database.Insert("Permission", p);
 				}
 			}
-			module.Database.Commit();
 			user.ReloadAccessLevels(module);
 			if (firstUser)		// First user just created - log them on
 				module.Session.User = user;
-			// Check all current sessions using the same database, and update user with new data
-			int db = module.Server.DatabaseId;
-			foreach(var session in module.Session.Server.Sessions) {
-				if (session.Config.DatabaseId == db && session.User != null && session.User.idUser == user.idUser)
-					session.User = user;
+			// Update user with new data in all sessions they are logged into
+			foreach(var session in module.AllSessionsForUser((int)user.idUser)) {
+				session.User = user;
 			}
+			module.Database.Commit();
 			return r;
 		}
 

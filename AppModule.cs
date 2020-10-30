@@ -1170,6 +1170,22 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// All sessions using this database
+		/// </summary>
+		/// <param name="selector">To select which ones to return (null for all)</param>
+		public IEnumerable<WebServer.Session> AllSessions(Func<WebServer.Session, bool> selector = null) {
+			int db = Server.DatabaseId;
+			return Session.Server.Sessions.Where(s => s.Config.DatabaseId == db && (selector == null || selector(s)));
+		}
+
+		/// <summary>
+		/// All sessions with the given user logged on
+		/// </summary>
+		public IEnumerable<WebServer.Session> AllSessionsForUser(int userId) {
+			return AllSessions(s => s.User != null && s.User.idUser == userId);
+		}
+
+		/// <summary>
 		/// Write the response to an Http request.
 		/// </summary>
 		/// <param name="o">The object to write ("Operation complete" if null). 

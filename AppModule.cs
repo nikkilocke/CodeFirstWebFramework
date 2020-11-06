@@ -13,6 +13,7 @@ using System.Threading;
 using Mustache;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Security.Policy;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -845,8 +846,16 @@ namespace CodeFirstWebFramework {
 		/// Check the security for access to a url
 		/// </summary>
 		public bool HasAccess(string uri) {
+			return HasAccess(uri, out int _);
+		}
+
+		/// <summary>
+		/// Check the security for access to a url
+		/// </summary>
+		public bool HasAccess(string uri, out int accessLevel) {
+			accessLevel = AccessLevel.None;
 			ModuleInfo info = Server.NamespaceDef.ParseUri(uri, out string filename);
-			return info == null ? true : HasAccess(info, Path.GetFileNameWithoutExtension(filename) + (Array.IndexOf(uri.Split('?','&'), "id=0") > 0 ? "save" : ""), out _);
+			return info == null ? true : HasAccess(info, Path.GetFileNameWithoutExtension(filename) + (Array.IndexOf(uri.Split('?', '&'), "id=0") > 0 ? "save" : ""), out accessLevel);
 		}
 
 		/// <summary>

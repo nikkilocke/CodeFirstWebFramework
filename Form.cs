@@ -182,9 +182,10 @@ namespace CodeFirstWebFramework {
 				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
 				if (fk != null) {
 					Table t = db.TableFor(fk.Table);
-					string valueName = t.Indexes.Length < 2 ? t.Fields[1].Name :
+					string valueName = fk.FieldName == null ? t.Indexes.Length < 2 ? t.Fields[1].Name :
 						t.Indexes[1].Fields.Length < 2 ? t.Indexes[1].Fields[0].Name :
-						"CONCAT(" + String.Join(",' ',", t.Indexes[1].Fields.Select(fi => fi.Name).ToArray()) + ")";
+						"CONCAT(" + String.Join(",' ',", t.Indexes[1].Fields.Select(fi => fi.Name).ToArray()) + ")" :
+						fk.FieldName;
 					f.MakeSelectable(db.Query("SELECT " + t.PrimaryKey.Name + " AS id, "
 						+ valueName + " AS value FROM " + t.Name
 						+ " ORDER BY " + valueName));

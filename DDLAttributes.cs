@@ -142,14 +142,20 @@ namespace CodeFirstWebFramework {
 		/// Constructor
 		/// </summary>
 		/// <param name="table">The foreign table</param>
-		public ForeignKeyAttribute(string table) {
+		/// <param name="fieldName">The name of the field to use as the text value in select options</param>
+		public ForeignKeyAttribute(string table, string fieldName = null) {
 			Table = table;
+			FieldName = fieldName;
 		}
 
 		/// <summary>
 		/// The foreign table
 		/// </summary>
 		public string Table { get; private set; }
+		/// <summary>
+		/// The name of the field to use as the text value in select options
+		/// </summary>
+		public string FieldName { get; private set; }
 	}
 
 	/// <summary>

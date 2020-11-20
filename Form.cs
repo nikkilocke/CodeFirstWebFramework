@@ -180,7 +180,7 @@ namespace CodeFirstWebFramework {
 				f = new FieldAttribute();
 				f.SetField(fld, readwrite);
 				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
-				if (fk != null) {
+				if (fk != null && fk.FieldName != ForeignKeyAttribute.NoAutoSelect) {
 					Table t = db.TableFor(fk.Table);
 					string valueName = fk.FieldName == null ? t.Indexes.Length < 2 ? t.Fields[1].Name :
 						t.Indexes[1].Fields.Length < 2 ? t.Indexes[1].Fields[0].Name :

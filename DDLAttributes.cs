@@ -142,7 +142,7 @@ namespace CodeFirstWebFramework {
 		/// Constructor
 		/// </summary>
 		/// <param name="table">The foreign table</param>
-		/// <param name="fieldName">The name of the field to use as the text value in select options</param>
+		/// <param name="fieldName">The name of the field to use as the text value in select options, or NoAutoSelect</param>
 		public ForeignKeyAttribute(string table, string fieldName = null) {
 			Table = table;
 			FieldName = fieldName;
@@ -156,6 +156,12 @@ namespace CodeFirstWebFramework {
 		/// The name of the field to use as the text value in select options
 		/// </summary>
 		public string FieldName { get; private set; }
+
+		/// <summary>
+		/// Set Fieldname to this to turn off AutoSelect
+		/// </summary>
+		public const string NoAutoSelect = "-";
+
 	}
 
 	/// <summary>

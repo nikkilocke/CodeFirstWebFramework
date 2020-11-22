@@ -162,6 +162,11 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public const string NoAutoSelect = "-";
 
+		/// <summary>
+		/// Whether ForeignKey fields automatically create an AutoSelect on the first key if no FieldName field is specified
+		/// </summary>
+		public static bool AutoSelect = true;
+
 	}
 
 	/// <summary>

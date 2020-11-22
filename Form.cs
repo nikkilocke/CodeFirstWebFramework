@@ -180,11 +180,11 @@ namespace CodeFirstWebFramework {
 				f = new FieldAttribute();
 				f.SetField(fld, readwrite);
 				ForeignKeyAttribute fk = field.GetCustomAttribute<ForeignKeyAttribute>();
-				if (fk != null && fk.FieldName != ForeignKeyAttribute.NoAutoSelect) {
+				if (fk != null && fk.FieldName != ForeignKeyAttribute.NoAutoSelect && (ForeignKeyAttribute.AutoSelect || fk.FieldName != null)) {
 					Table t = db.TableFor(fk.Table);
 					string valueName = fk.FieldName == null ? t.Indexes.Length < 2 ? t.Fields[1].Name :
 						t.Indexes[1].Fields.Length < 2 ? t.Indexes[1].Fields[0].Name :
-						"CONCAT(" + String.Join(",' ',", t.Indexes[1].Fields.Select(fi => fi.Name).ToArray()) + ")" :
+						"CONCAT(" + String.Join(",' ',", t.Indexes[1].Fields.Select(fi => fi.Name)) + ")" :
 						fk.FieldName;
 					f.MakeSelectable(db.Query("SELECT " + t.PrimaryKey.Name + " AS id, "
 						+ valueName + " AS value FROM " + t.Name

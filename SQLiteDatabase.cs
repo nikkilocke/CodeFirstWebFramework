@@ -349,9 +349,9 @@ namespace CodeFirstWebFramework {
 					if (index.Fields.Length != 1 || !index.Fields[0].AutoIncrement)
 						defs.Add(string.Format("CONSTRAINT `PRIMARY` PRIMARY KEY ({0})", string.Join(",", index.Fields
 							.Select(f => "`" + f.Name + "`").ToArray())));
-				} else
+				} else if(index.Unique)
 					defs.Add(string.Format("CONSTRAINT `{0}` UNIQUE ({1})", index.Name,
-						string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC").ToArray())));
+						string.Join(",", index.Fields.Select(f => "`" + f.Name + "` ASC"))));
 			}
 			defs.AddRange(t.Fields.Where(f => f.ForeignKey != null).Select(f => string.Format(@"CONSTRAINT `fk_{0}_{1}_{2}`
     FOREIGN KEY (`{2}`)
@@ -365,6 +365,10 @@ namespace CodeFirstWebFramework {
 			foreach (string sql in t.Fields.Where(f => f.ForeignKey != null && t.Indexes.FirstOrDefault(i => i.Fields[0] == f) == null)
 				.Select(f => string.Format(@"CREATE INDEX `fk_{0}_{1}_{2}_idx` ON {0} (`{2}` ASC)",
 				t.Name, f.ForeignKey.Table.Name, f.Name)))
+				executeLog(sql);
+			foreach (string sql in t.Indexes.Where(i => !i.Unique)
+				.Select(i => string.Format(@"CREATE INDEX `{1}` ON {0} ({2})",
+				t.Name, i.Name, string.Join(",", i.Fields.Select(f => "`" + f.Name + "` ASC")))))
 				executeLog(sql);
 		}
 

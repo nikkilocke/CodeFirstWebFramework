@@ -34,6 +34,7 @@ namespace Phone {
 		[Field(Visible = false)]
 		public string PhoneKey;
 		public string Number;
+		[Index("Name")]
 		[Length(0)]
 		public string Name;
 		[ForeignKey("Analysis")]

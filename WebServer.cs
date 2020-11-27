@@ -52,7 +52,6 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Add namespace to modules list, and upgrade database, if not done already.
 		/// </summary>
-		/// <param name="databases">HashSet of databases already upgraded</param>
 		/// <param name="server">ServerConfig to register</param>
 		void registerServer(ServerConfig server) {
 			if (webmodules.ContainsKey(server.Namespace)) {

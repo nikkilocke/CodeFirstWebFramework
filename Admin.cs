@@ -319,11 +319,15 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public AjaxReturn EditUserDelete(int id) {
 			module.Database.BeginTransaction();
-			User user = module.Database.Get<User>(id);
-			Utils.Check(user.idUser > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null), 
+			Utils.Check(module.Database.TryGet(id, out User user), "User not found");
+			Utils.Check(id > 1 || (id == 1 && module.Database.QueryOne("SELECT idUser FROM User where idUser > 1") == null), 
 				"Cannot delete this user");
 			module.Database.Execute("DELETE FROM Permission WHERE UserId = " + id);
 			module.Database.Execute("DELETE FROM User WHERE iduser = " + id);
+			// Log them off from all sessions they are logged into
+			foreach (var session in module.AllSessionsForUser(id)) {
+				session.User = null;
+			}
 			module.Database.Commit();
 			return new AjaxReturn() { message = "User deleted" };
 		}

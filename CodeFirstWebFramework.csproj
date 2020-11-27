@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.36</Version>
-    <AssemblyVersion>1.3.36.0</AssemblyVersion>
-    <FileVersion>1.3.36.0</FileVersion>
-    <PackageReleaseNotes>Fix bug in SQLite database - non unique indexes were created unique.</PackageReleaseNotes>
+    <Version>1.3.37</Version>
+    <AssemblyVersion>1.3.37.0</AssemblyVersion>
+    <FileVersion>1.3.37.0</FileVersion>
+    <PackageReleaseNotes>Remove user from all sessions if the user is deleted</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

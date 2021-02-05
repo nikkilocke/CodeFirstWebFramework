@@ -162,6 +162,14 @@ namespace CodeFirstWebFramework {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Do the table names in code and database match (some implementations are case insensitive)
+		/// </summary>
+		public bool TableNamesMatch(Table code, Table database) {
+			return string.Compare(code.Name, database.Name, false) == 0;
+		}
+
 		/// <summary>
 		/// Do the fields in code and database match (some implementations are case insensitive)
 		/// </summary>
@@ -257,10 +265,13 @@ namespace CodeFirstWebFramework {
 				}
 				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY_KEY = 'False'")) {
 					string indexName = ind["INDEX_NAME"].ToString();
-					if (!indexName.StartsWith("fk_"))
-						tableIndexes.Add(new Index(indexName, ind["UNIQUE"].ToString() == "True",
+					if (!indexName.StartsWith("fk_")) {
+						string prefix = "i_" + name + "_";
+						string indName = indexName = indexName.StartsWith(prefix) ? indexName.Substring(prefix.Length) : indexName;
+						tableIndexes.Add(new Index(indName, ind["UNIQUE"].ToString() == "True",
 							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
 							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
+					}
 				}
 				tables[name] = new Table(name, fields, tableIndexes.ToArray());
 			}
@@ -367,7 +378,7 @@ namespace CodeFirstWebFramework {
 				t.Name, f.ForeignKey.Table.Name, f.Name)))
 				executeLog(sql);
 			foreach (string sql in t.Indexes.Where(i => !i.Unique)
-				.Select(i => string.Format(@"CREATE INDEX `{1}` ON {0} ({2})",
+				.Select(i => string.Format(@"CREATE INDEX `i_{0}_{1}` ON {0} ({2})",
 				t.Name, i.Name, string.Join(",", i.Fields.Select(f => "`" + f.Name + "` ASC")))))
 				executeLog(sql);
 		}

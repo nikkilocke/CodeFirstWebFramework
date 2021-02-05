@@ -69,7 +69,7 @@ namespace CodeFirstWebFramework {
 						} else {
 							if (f2.ForeignKey == null)
 								insertFK.Add(f1);
-							else if (f1.ForeignKey.Table.Name != f2.ForeignKey.Table.Name) {
+							else if (!db.TableNamesMatch(f1.ForeignKey.Table, f2.ForeignKey.Table)) {
 								dropFK.Add(f2);
 								insertFK.Add(f1);
 							}

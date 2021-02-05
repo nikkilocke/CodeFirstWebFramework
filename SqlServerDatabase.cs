@@ -125,6 +125,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Do the table names in code and database match (some implementations are case insensitive)
+		/// </summary>
+		public bool TableNamesMatch(Table code, Table database) {
+			return string.Compare(code.Name, database.Name, false) == 0;
+		}
+
+		/// <summary>
 		/// Determine whether two fields are the same
 		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {

@@ -47,6 +47,11 @@ namespace CodeFirstWebFramework {
 		int Execute(string sql);
 
 		/// <summary>
+		/// Do the table names in code and database match (some implementations are case insensitive)
+		/// </summary>
+		bool TableNamesMatch(Table code, Table database);
+
+		/// <summary>
 		/// Do the fields in code and database match (some implementations are case insensitive)
 		/// </summary>
 		bool FieldsMatch(Table t, Field code, Field database);

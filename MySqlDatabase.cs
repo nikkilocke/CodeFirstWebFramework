@@ -159,6 +159,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Do the table names in code and database match (some implementations are case insensitive)
+		/// </summary>
+		public bool TableNamesMatch(Table code, Table database) {
+			return string.Compare(code.Name, database.Name, true) == 0;
+		}
+
+		/// <summary>
 		/// Determine whether two fields are the same
 		/// </summary>
 		public bool FieldsMatch(Table t, Field code, Field database) {
@@ -243,9 +250,19 @@ namespace CodeFirstWebFramework {
 				string name = table["TABLE_NAME"].ToString();
 				string filter = "TABLE_NAME = " + Quote(name);
 				Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
-					.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
-						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", c["EXTRA"].ToString().Contains("auto_increment"), 
-						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
+					.Select(delegate(DataRow c) {
+						Type t = typeFor(c["DATA_TYPE"].ToString());
+						string def = c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString();
+						if (t == typeof(string)) {
+							if (def == "NULL")
+								def = null;       // Mariadb puts "NULL" in default value for nullable strings
+							else if (def.StartsWith("'") && def.EndsWith("'"))
+								def = def.Substring(1, def.Length - 2);
+						}
+						return new Field(c["COLUMN_NAME"].ToString(), t,
+							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", c["EXTRA"].ToString().Contains("auto_increment"),
+							def);
+						}).ToArray();
 				List<Index> tableIndexes = new List<Index>();
 				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'True'")) {
 					string indexName = ind["INDEX_NAME"].ToString();

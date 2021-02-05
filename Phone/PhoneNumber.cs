@@ -14,6 +14,7 @@ namespace Phone {
 	public class CostCentre : JsonObject {
 		[Primary]
 		public int? idCostCentre;
+		[Index("Name")]
 		public string CostCentreName;
 	}
 

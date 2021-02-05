@@ -67,7 +67,6 @@ Example config file for 2 web apps running on different ports on localhost:
 	  "ServerName": "localhost",
 	  "Email": "root@localhost",
 	  "SessionExpiryMinutes": 30,
-	  "Servers": [],
 	  "SessionLogging": false,
 	  "DatabaseLogging": 0,
 	  "PostLogging": false,
@@ -102,7 +101,6 @@ Example config file for 1 web app running on 2 different hostnames with the same
 	  "ServerName": "localhost",
 	  "Email": "root@localhost",
 	  "SessionExpiryMinutes": 30,
-	  "Servers": [],
 	  "SessionLogging": false,
 	  "DatabaseLogging": 0,
 	  "PostLogging": false,
@@ -413,7 +411,7 @@ The help becomes context sensitive, because every AppModule has a Help property,
 
 By default, there is no user login or security. However, if you provide an interface to edit users, and to login (normally in the `Admin` module - see the Admin module provided) and at least one user is added, logging in will be enabled.
 
-You can limit access to a particular module, or to a particular method in a module by adding an `[Auth]` property. Doing so automatically adds that module or method to the list of modules and methods which require a particular access level. You can specify the access level in the `Auth` constructor (any integer, but pre-defined values are provided as constants in the `AccessLevel` class), or you can write code to check the user's access level (in `AppModule.UserAccessLevel` - this is automatically set to `Admin` if security is disabled because there are no users).
+You can limit access to a particular module, or to a particular method in a module by adding an `[Auth]` attribute. Doing so automatically adds that module or method to the list of modules and methods which require a particular access level. You can specify the access level in the `Auth` constructor (any integer, but pre-defined values are provided as constants in the `AccessLevel` class), or you can write code to check the user's access level (in `AppModule.UserAccessLevel` - this is automatically set to `Admin` if security is disabled because there are no users).
 
 If no access level is specified for a method, it inherits the access level of the module. By default, if the access level of a method is `ReadOnly`, then the corresponding `Save` and `Delete` methods will be `ReadWrite` - there is no need to specify those separately. If most of your methods require the same access level, but one can be accessed by anyone (e.g. `Admin.Login`), you can set the access level on the module, and add an `Auth` parameter to the `Login` method with level set to `AccessLevel.Any`.
 

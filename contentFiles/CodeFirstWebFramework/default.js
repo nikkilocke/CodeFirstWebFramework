@@ -29,8 +29,6 @@ var True = true;
 var False = false;
 
 function addJQueryUiControls() {
-	if (bowser.firefox)
-		$('input.date').datepicker(dateStyle);
 }
 
 $(function() {
@@ -274,7 +272,7 @@ function formatDate(date, format) {
  * @returns {string} Formatted date, or '' if invalid
  */
 function formatDateForInput(date) {
-	return bowser.firefox ? formatDate(date) : date ? date.substr(0, 10) : '';
+	return date ? date.substr(0, 10) : '';
 }
 
 /**

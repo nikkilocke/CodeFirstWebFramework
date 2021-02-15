@@ -1449,7 +1449,9 @@ function makeDataTable(selector, options) {
 		// Set up the column - add any missing functions, etc.
 		options.columns[index] = col = _setColObject(col, tableName, index);
 		var title = col.heading;
-		$('<th></th>').appendTo(heading).text(title).addClass(col.sClass).attr('title', col.hint);
+		var hdg = $('<th></th>').appendTo(heading).text(title).addClass(col.sClass).attr('title', col.hint);
+		if (col.hint)
+			hdg.append(' <span class="hint">?</span>');
 		// Add to columns hash by name
 		columns[col.name] = col;
 		// "Show All" option?
@@ -2084,6 +2086,8 @@ function makeListForm(selector, options) {
 			skip--;
 		} else {
 			var cell = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+			if (col.hint)
+				cell.append(' <span class="hint">?</span>');
 			if (col.colspan) {
 				cell.attr('colspan', col.colspan);
 				skip = col.colspan - 1;
@@ -2450,7 +2454,9 @@ function makeDumbForm(selector, options) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
 		if(!row || !col.sameRow)
 			row = $('<tr></tr>').appendTo($(selector));
-		$('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+		var hdg = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+		if (col.hint)
+			hdg.append(' <span class="hint">?</span>');
 		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
 		if(col.colspan)
 			col.cell.attr('colspan', col.colspan);

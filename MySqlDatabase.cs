@@ -252,16 +252,9 @@ namespace CodeFirstWebFramework {
 				Field[] fields = cols.Select(filter, "ORDINAL_POSITION")
 					.Select(delegate(DataRow c) {
 						Type t = typeFor(c["DATA_TYPE"].ToString());
-						string def = c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString();
-						if (t == typeof(string)) {
-							if (def == "NULL")
-								def = null;       // Mariadb puts "NULL" in default value for nullable strings
-							else if (def.StartsWith("'") && def.EndsWith("'"))
-								def = def.Substring(1, def.Length - 2);
-						}
 						return new Field(c["COLUMN_NAME"].ToString(), t,
 							lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", c["EXTRA"].ToString().Contains("auto_increment"),
-							def);
+							colDefault(c));
 						}).ToArray();
 				List<Index> tableIndexes = new List<Index>();
 				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'True'")) {
@@ -292,13 +285,22 @@ namespace CodeFirstWebFramework {
 				Field[] fields = viewCols.Select(filter, "ORDINAL_POSITION")
 					.Select(c => new Field(c["COLUMN_NAME"].ToString(), typeFor(c["DATA_TYPE"].ToString()), 
 						lengthFromColumn(c), c["IS_NULLABLE"].ToString() == "YES", false,
-						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
+						colDefault(c))).ToArray();
 				Table updateTable = null;
 				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
 				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", true, fields[0]) }, 
 					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;
+		}
+
+		string colDefault(DataRow c) {
+			string def = c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString();
+			if (def == "NULL")
+				def = null;       // Mariadb puts "NULL" in default value for nullable strings
+			else if (def != null && def.StartsWith("'") && def.EndsWith("'"))
+				def = def.Substring(1, def.Length - 2);
+			return def;
 		}
 
 		Field fieldFor(Table table, string name) {

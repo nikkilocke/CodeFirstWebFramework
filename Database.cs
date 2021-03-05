@@ -63,15 +63,17 @@ namespace CodeFirstWebFramework {
 						if (!db.FieldsMatch(code, f1, f2)) {
 							update.Add(f1);
 						}
-						if (f1.ForeignKey == null) {
-							if (f2.ForeignKey != null)
-								dropFK.Add(f2);
-						} else {
-							if (f2.ForeignKey == null)
-								insertFK.Add(f1);
-							else if (!db.TableNamesMatch(f1.ForeignKey.Table, f2.ForeignKey.Table)) {
-								dropFK.Add(f2);
-								insertFK.Add(f1);
+						if (!view) {
+							if (f1.ForeignKey == null) {
+								if (f2.ForeignKey != null)
+									dropFK.Add(f2);
+							} else {
+								if (f2.ForeignKey == null)
+									insertFK.Add(f1);
+								else if (!db.TableNamesMatch(f1.ForeignKey.Table, f2.ForeignKey.Table)) {
+									dropFK.Add(f2);
+									insertFK.Add(f1);
+								}
 							}
 						}
 					}
@@ -79,9 +81,16 @@ namespace CodeFirstWebFramework {
 				foreach (Field f2 in database.Fields) {
 					if (code.FieldFor(f2.Name) == null) {
 						remove.Add(f2);
-						if (f2.ForeignKey != null)
+						if (!view && f2.ForeignKey != null)
 							dropFK.Add(f2);
 					}
+				}
+				if (view) {
+					if (insert.Count == 0 && update.Count == 0 && remove.Count == 0)
+						return;
+					db.DropTable(database);
+					db.CreateTable(code);
+					return;
 				}
 				foreach (Index i1 in code.Indexes) {
 					Index i2 = database.Indexes.Where(i => i.Matches(i1)).FirstOrDefault();
@@ -92,13 +101,6 @@ namespace CodeFirstWebFramework {
 				foreach (Index i2 in database.Indexes) {
 					if (code.Indexes.Where(i => i.Matches(i2)).FirstOrDefault() == null)
 						dropIndex.Add(i2);
-				}
-				if (view) {
-					if (insert.Count == 0 && update.Count == 0 && remove.Count == 0)
-						return;
-					db.DropTable(database);
-					db.CreateTable(code);
-					return;
 				}
 				if (insert.Count != 0 || update.Count != 0 || remove.Count != 0 || insertFK.Count != 0 || dropFK.Count != 0 || insertIndex.Count != 0 || dropIndex.Count != 0)
 					db.UpgradeTable(code, database, insert, update, remove, insertFK, dropFK, insertIndex, dropIndex);

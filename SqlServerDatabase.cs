@@ -276,7 +276,7 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 						c["COLUMN_DEFAULT"] == System.DBNull.Value ? null : c["COLUMN_DEFAULT"].ToString())).ToArray();
 				Table updateTable = null;
 				tables.TryGetValue(Regex.Replace(name, "^.*_", ""), out updateTable);
-				tables[name] = new View(name, fields, new Index[] { new Index("PRIMARY", true, fields[0]) },
+				tables[name] = new View(name, fields, fields.Length > 0 ? new Index[] { new Index("PRIMARY", true, fields[0]) } : new Index[0],
 					table["VIEW_DEFINITION"].ToString(), updateTable);
 			}
 			return tables;

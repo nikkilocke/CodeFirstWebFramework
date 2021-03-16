@@ -439,6 +439,7 @@ namespace CodeFirstWebFramework {
 			string type = c["COLUMN_TYPE"].ToString();
 			if (type == "double") return 10.4M;
 			if (type == "bigint") return 20;
+			if (type == "int") return 11;
 			Match m = Regex.Match(type, @"[\d,]+");
 			return m.Success ? decimal.Parse(m.Value.Replace(",", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)) : 0;
 		}

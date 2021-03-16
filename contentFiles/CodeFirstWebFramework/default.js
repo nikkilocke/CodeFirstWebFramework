@@ -87,7 +87,7 @@ $(function() {
         $('#tooltip').remove();
         if (showing && showing.length)
             return;
-        $(this).after("<span id=tooltip></div>");
+        $(this).after('<span id="tooltip"></span>');
         var $title = $(this).parent().attr('title');
         $(this).next().append($title);
     });

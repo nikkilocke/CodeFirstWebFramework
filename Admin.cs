@@ -294,13 +294,13 @@ namespace CodeFirstWebFramework {
 			if (!string.IsNullOrEmpty(r.error))
 				return r;
 			module.Database.Execute("DELETE FROM Permission WHERE UserId = " + user.idUser);
-			if (user.ModulePermissions) {
+			if (user.idUser > 1 && user.ModulePermissions) {
 				t = module.Database.TableFor("Permission");
 				foreach (JObject p in ((JArray)json["detail"])) {
-					p["UserId"] = user.idUser;
-					if (user.idUser == 1)
-						p["FunctionAccessLevel"] = AccessLevel.Admin;
-					module.Database.Insert("Permission", p);
+					if (p.AsInt("FunctionAccessLevel") >= 0) {
+						p["UserId"] = user.idUser;
+						module.Database.Insert("Permission", p);
+					}
 				}
 			}
 			user.ReloadAccessLevels(module);

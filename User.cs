@@ -11,7 +11,7 @@ namespace CodeFirstWebFramework {
 	/// Login user with permissions
 	/// </summary>
 	[Table]
-    public class User : JsonObject {
+	public class User : JsonObject {
 		/// <summary>
 		/// Unique id.
 		/// </summary>
@@ -62,7 +62,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		[DoNotStore]
-		int [] _accessLevels;
+		int[] _accessLevels;
 
 		/// <summary>
 		/// Get max access level for groups list
@@ -93,13 +93,26 @@ namespace CodeFirstWebFramework {
 			if (idUser > 0 && ModulePermissions) {
 				Namespace space = module.Server.NamespaceDef;
 				_accessLevels = new int[space.AuthGroups.Count];
-				foreach(Permission p in module.Database.Query<Permission>("SELECT * FROM Permission WHERE UserId = " + idUser)) {
+				foreach (Permission p in module.Database.Query<Permission>("SELECT * FROM Permission WHERE UserId = " + idUser)) {
 					string key = space.OldAuth ? (p.Module + ":" + p.Method) : p.Method;
 					if (space.AuthGroups.TryGetValue(key, out int index))
 						_accessLevels[index] = p.FunctionAccessLevel;
 				}
 			} else
 				_accessLevels = null;
+		}
+
+		/// <summary>
+		/// Return the maximum access level for this user in any of the AuthGroups provided
+		/// </summary>
+		public int GroupAccessLevel(Database db, params string[] groups) {
+			if (idUser > 0 && ModulePermissions) {
+				JObject level = db.Query($"SELECT Max(FunctionAccessLevel) AS Level FROM Permission WHERE UserId = {idUser} AND Method {db.In((IEnumerable<string>)groups)}")
+						.FirstOrDefault();
+				if(level != null)
+					return Math.Max(level.AsInt("Level"), AccessLevel);
+			}
+			return AccessLevel;
 		}
 	}
 

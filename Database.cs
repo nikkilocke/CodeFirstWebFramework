@@ -539,7 +539,8 @@ namespace CodeFirstWebFramework {
 			Table table = TableFor(data.GetType()).UpdateTable;
 			JObject d = data.ToJObject();
 			insert(table, d);
-			data.Id = (int)d[table.PrimaryKey.Name];
+			if (table.PrimaryKey.AutoIncrement && table.Indexes[0].Fields.Length == 1)
+				data.Id = (int)d[table.PrimaryKey.Name];
 		}
 
 		int insert(Table table, JObject data) {

@@ -92,7 +92,7 @@ namespace CodeFirstWebFramework {
 		public virtual void ReloadAccessLevels(AppModule module) {
 			if (idUser > 0 && ModulePermissions) {
 				Namespace space = module.Server.NamespaceDef;
-				_accessLevels = new int[space.AuthGroups.Count];
+				_accessLevels = Enumerable.Repeat(CodeFirstWebFramework.AccessLevel.Any, space.AuthGroups.Count).ToArray();
 				foreach (Permission p in module.Database.Query<Permission>("SELECT * FROM Permission WHERE UserId = " + idUser)) {
 					string key = space.OldAuth ? (p.Module + ":" + p.Method) : p.Method;
 					if (space.AuthGroups.TryGetValue(key, out int index))

@@ -1642,6 +1642,7 @@ function makeDataTable(selector, options) {
  */
 function makeForm(selector, options) {
 	var tableName = myOption('table', options);
+	var idName = myOption('id', options, 'id' + tableName);
 	var canDelete = myOption('canDelete', options);
 	var submitUrl = myOption('submit', options);
 	var deleteButton;
@@ -1788,7 +1789,7 @@ function makeForm(selector, options) {
 	 */
 	function dataReady(d) {
 		result.data = d;
-		if(deleteButton && !d['id' + tableName])
+		if(deleteButton && !d[idName])
 			deleteButton.remove();
 		draw();
 		// Only do this bit once

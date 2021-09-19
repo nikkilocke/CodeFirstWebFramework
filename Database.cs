@@ -278,7 +278,7 @@ namespace CodeFirstWebFramework {
 		public void delete(Table table, JObject data) {
 			Index index = table.IndexFor(data);
 			Utils.Check(index != null, "Deleting from {0}:data does not specify unique record", table.Name);
-			Execute("DELETE FROM " + table.Name + " WHERE " + index.Where(data));
+			Execute("DELETE FROM " + table.Name + " WHERE " + index.Where(data, Quote));
 		}
 
 		/// <summary>
@@ -448,7 +448,7 @@ namespace CodeFirstWebFramework {
 			JObject data = criteria.ToJObject();
 			Index index = table.IndexFor(data);
 			if (index != null) {
-				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
+				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data, Quote));
 			} else {
 				data = null;
 			}
@@ -476,7 +476,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		JObject getByIndex(Table table, Index index, JObject data) {
 			if (index != null) {
-				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
+				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data, Quote));
 			} else {
 				data = null;
 			}
@@ -550,7 +550,7 @@ namespace CodeFirstWebFramework {
 			checkForMissingFields(table, data, true);
 			string sql = "INSERT INTO " + table.Name + " ("
 				+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
-				+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
+				+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name], Quote)).ToArray()) + ")";
 			try {
 				using (new Timer(sql)) {
 					if (_startup)
@@ -601,7 +601,7 @@ namespace CodeFirstWebFramework {
 			Index index = table.IndexFor(data);
 			if (index == null || index.Fields.FirstOrDefault(f => data[f.Name].ToString() != "") == null) return null;
 			JObject result = QueryOne("SELECT " + idName + " FROM " + tableName + " WHERE "
-				+ index.Where(data));
+				+ index.Where(data, Quote));
 			return result?[idName].To<int?>();
 		}
 
@@ -882,7 +882,7 @@ namespace CodeFirstWebFramework {
 			string idName = idField.Name;
 			JToken idValue = null;
 			Index index = table.Indexes[0];
-			JObject result = QueryOne("SELECT " + idName + " FROM " + table.Name + " WHERE " + index.Where(data));
+			JObject result = QueryOne("SELECT " + idName + " FROM " + table.Name + " WHERE " + index.Where(data, Quote));
 			if (result != null)
 				data[idName] = idValue = result[idName];
 			List<Field> fields = table.Fields.Where(f => data[f.Name] != null && (f.Nullable || data[f.Name].Type != JTokenType.Null)).ToList();
@@ -891,8 +891,8 @@ namespace CodeFirstWebFramework {
 			checkForMissingFields(table, data, idValue == null);
 			if (idValue != null) {
 				Execute("UPDATE " + table.Name + " SET "
-					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
-					+ " WHERE " + index.Where(data));
+					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name], Quote)).ToArray())
+					+ " WHERE " + index.Where(data, Quote));
 			} else {
 				insert(table, data);
 			}
@@ -909,7 +909,7 @@ namespace CodeFirstWebFramework {
 			List<Field> fields = table.Fields.Where(f => data[f.Name] != null).ToList();
 			Index index = table.IndexFor(data);
 			JObject result = null;
-			result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data));
+			result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data, Quote));
 			if (result != null)
 				data[idName] = idValue = result[idName];
 			if (idValue != null) {
@@ -917,12 +917,12 @@ namespace CodeFirstWebFramework {
 				if (fields.Count == 0)
 					return;
 				Execute("UPDATE " + table.Name + " SET "
-					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name])).ToArray())
-					+ " WHERE " + index.Where(data));
+					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name], Quote)).ToArray())
+					+ " WHERE " + index.Where(data, Quote));
 			} else {
 				string sql = "INSERT INTO " + table.Name + " ("
 					+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
-					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name])).ToArray()) + ")";
+					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name], Quote)).ToArray()) + ")";
 				try {
 					data[idName] = db.Insert(table, sql, false);
 				} catch (DatabaseException) {
@@ -1068,29 +1068,21 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Quote value of object o to use in a SQL statement, assuming value is to be placed in this field.
 		/// </summary>
-		public string Quote(object o) {
-			if (o == null || o == DBNull.Value || (o is JToken && ((JToken)o).Type == JTokenType.Null)) return "NULL";
+		public string Quote(object o, Func<object, string> quote) {
+			if (o == null || o == DBNull.Value || (o is JToken && ((JToken)o).Type == JTokenType.Null)) return quote(null);
 			string s = o.ToString();
-			if ((Type == typeof(int) || Type == typeof(long) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return "NULL";
+			if ((Type == typeof(int) || Type == typeof(long) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return quote(null);
 			if (Type == typeof(bool)) {
 				// Accept numeric value as bool (non-zero = true)
 				if (Regex.IsMatch(s, @"^\d+$"))
-					return int.Parse(s) > 0 ? "1" : "0";
+					return quote(int.Parse(s) > 0 ? "1" : "0");
 			}
 			try {
 				o = Convert.ChangeType(o.ToString(), Type);
 			} catch (Exception ex) {
 				throw new CheckException(ex, "Invalid value for {0} field {1} '{2}'", Type.Name, Name, o);
 			}
-			if (o is int || o is long || o is double) return o.ToString();
-			if (o is decimal) return ((decimal)o).ToString("0.00");
-			if (o is double) return (Math.Round((decimal)o, 4)).ToString();
-			if (o is bool) return (bool)o ? "1" : "0";
-			if (o is DateTime) {
-				DateTime dt = (DateTime)o;
-				return "'" + dt.ToString(dt.TimeOfDay == TimeSpan.Zero ? "yyyy-MM-dd" : "yyyy-MM-dd HH:mm:ss") + "'";
-			}
-			return "'" + o.ToString().Replace("'", "''") + "'";
+			return quote(o);
 		}
 
 		/// <summary>
@@ -1320,8 +1312,8 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Generate a WHERE clause (without the "WHERE") to select the record matching data for this index
 		/// </summary>
-		public string Where(JObject data) {
-			return string.Join(" AND ", Fields.Select(f => f.Name + "=" + f.Quote(data[f.Name])).ToArray());
+		public string Where(JObject data, Func<object, string> quote) {
+			return string.Join(" AND ", Fields.Select(f => f.Name + "=" + f.Quote(data[f.Name], quote)).ToArray());
 		}
 
 		/// <summary>

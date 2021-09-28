@@ -206,7 +206,16 @@ namespace CodeFirstWebFramework {
 		/// <param name="server"></param>
 		/// <returns></returns>
 		public static Namespace Create(ServerConfig server) {
-			Type ns = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Where(t => t.Namespace == server.Namespace && !t.IsAbstract && t.IsSubclassOf(typeof(Namespace)))).FirstOrDefault();
+			Type ns = null;
+			foreach(Assembly a in AppDomain.CurrentDomain.GetAssemblies()) {
+				// Try and catch is here because LinqPad throws in GetTypes sometimes
+				try {
+					ns = a.GetTypes().Where(t => t.Namespace == server.Namespace && !t.IsAbstract && t.IsSubclassOf(typeof(Namespace))).FirstOrDefault();
+					if (ns != null)
+						break;
+				} catch {
+				}
+			}
 			if(ns != null) { 
 				ConstructorInfo ctor = ns.GetConstructor(new[] { typeof(ServerConfig) });
 				if(ctor != null)
@@ -229,31 +238,39 @@ namespace CodeFirstWebFramework {
 			List<Type> views = new List<Type>();
 			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
 				bool relevant = false;
-				foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract)) {
-					relevant = true;
-					if (t.IsSubclassOf(typeof(AppModule))) {
-						string n = t.Name;
-						if (n.EndsWith("Module"))
-							n = n.Substring(0, n.Length - 6);
-						appModules[n.ToLower()] = new ModuleInfo(n, t, this);
-					}
-					// Process all subclasses of JsonObject with Table attribute in module assembly
-					if (t.IsSubclassOf(typeof(JsonObject))) {
-						if (t.IsDefined(typeof(TableAttribute), false)) {
-							processTable(t, null);
-						} else if (t.IsDefined(typeof(ViewAttribute), false)) {
-							views.Add(t);
+				// Try and catch is here because LinqPad throws in GetTypes sometimes
+				try {
+					foreach (Type t in assembly.GetTypes().Where(t => t.Namespace == Name && !t.IsAbstract)) {
+						relevant = true;
+						if (t.IsSubclassOf(typeof(AppModule))) {
+							string n = t.Name;
+							if (n.EndsWith("Module"))
+								n = n.Substring(0, n.Length - 6);
+							appModules[n.ToLower()] = new ModuleInfo(n, t, this);
+						}
+						// Process all subclasses of JsonObject with Table attribute in module assembly
+						if (t.IsSubclassOf(typeof(JsonObject))) {
+							if (t.IsDefined(typeof(TableAttribute), false)) {
+								processTable(t, null);
+							} else if (t.IsDefined(typeof(ViewAttribute), false)) {
+								views.Add(t);
+							}
 						}
 					}
+					if (relevant)
+						assemblies.Add(assembly);
+				} catch {
 				}
-				if (relevant)
-					assemblies.Add(assembly);
 			}
 			// Add any tables defined in the framework module, but not in the given module
-			foreach (Type tbl in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(JsonObject)))) {
-				if (!tbl.IsDefined(typeof(TableAttribute), false) || tables.ContainsKey(tbl.Name))
-					continue;
-				processTable(tbl, null);
+			// Try and catch is here because LinqPad throws in GetTypes sometimes
+			try {
+				foreach (Type tbl in Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(JsonObject)))) {
+					if (!tbl.IsDefined(typeof(TableAttribute), false) || tables.ContainsKey(tbl.Name))
+						continue;
+					processTable(tbl, null);
+				}
+			} catch {
 			}
 			// Populate the foreign key attributes
 			foreach (Field fld in foreignKeys.Keys) {

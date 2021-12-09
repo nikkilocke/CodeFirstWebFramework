@@ -697,7 +697,7 @@ var Type = {
 			if(i.length && i.attr('id')) {
 				i.val(data);
 			} else {
-				cell.html('<input type="text" id="r' + rowno + 'c' + this.name + '" class="autoComplete" data-col="' + this.name + '" value="' + data + '" ' + this.attributes + '/>');
+				cell.html(this.draw(data, rowno, row));
 				i = cell.find('input');
 			}
 			if(i.hasClass('ui-autocomplete-input'))
@@ -2991,10 +2991,7 @@ function _setColObject(col, tableName, index) {
 	if (type) _.defaults(col, Type[type]);
 	if(col.attributes == null)
 		col.attributes = '';
-	if(typeof(col.defaultContent) == "function") {
-		col.defaultContent = col.defaultContent(index, col);
-	}
-	if(!col.name) col.name = col.data.toString();
+	if (!col.name) col.name = col.data.toString();
 	if(col.heading === undefined) {
 		var title = col.name;
 		// Remove table name from front
@@ -3003,6 +3000,9 @@ function _setColObject(col, tableName, index) {
 		// Split "CamelCase" name into "Camel Case", and remove Id from end
 		title = title.replace(/Id$/, '').replace(/([A-Z])(?=[a-z0-9])/g, " $1").trim();
 		col.heading = title;
+	}
+	if (typeof (col.defaultContent) == "function") {
+		col.defaultContent = col.defaultContent(index, col);
 	}
 	if(col.inputValue === undefined)
 		col.inputValue = getValueFromField;

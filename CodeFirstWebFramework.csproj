@@ -16,10 +16,11 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.57</Version>
-    <AssemblyVersion>1.3.57.0</AssemblyVersion>
-    <FileVersion>1.3.57.0</FileVersion>
-    <PackageReleaseNotes>Fix Sql injection bug when using MySql databases.</PackageReleaseNotes>
+    <Version>1.3.59</Version>
+    <AssemblyVersion>1.3.59.0</AssemblyVersion>
+    <FileVersion>1.3.59.0</FileVersion>
+    <PackageReleaseNotes>Fix bug which meant data-col might not be set correctly
+And bug where autoComplete might not be drawn correctly</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

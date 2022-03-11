@@ -121,14 +121,22 @@ $(function() {
 		// Once initial form creation is done:
 		//  add a Back button if there isn't one
 		if (/[^\/]\//.test(window.location.pathname) && $('button#Back').length == 0)
-			actionButton('Back').click(goback);
-		//  Focus to the first input field
-		var focusField = $(':input[autofocus]:enabled:visible:first');
-		if (focusField.length == 0)
-			focusField = $(':input:enabled:visible:not(button):first');
-		focusField.focus().select();
+			addBackButton();
+		setFocusToFirstInputField();
 	}, 100);
 });
+
+function addBackButton() {
+	insertActionButton('Back').click(goback);
+}
+
+function setFocusToFirstInputField() {
+	//  Focus to the first input field
+	var focusField = $(':input[autofocus]:enabled:visible:first');
+	if (focusField.length == 0)
+		focusField = $(':input:enabled:visible:not(button):first');
+	focusField.focus().select();
+}
 
 $(window).on("load", resize);
 
@@ -171,6 +179,19 @@ function actionButton(text) {
 		.appendTo($('#menu3').show());
     resize();
     return btn;
+}
+
+/**
+ * Add a button to front of menu 3
+ * @param text Button text
+ * @returns {*|jQuery} Button
+ */
+function insertActionButton(text) {
+	var btn = $('<button id="' + text.replace(/ /g, '') + '"></button>')
+		.text(text)
+		.prependTo($('#menu3').show());
+	resize();
+	return btn;
 }
 
 /**
@@ -1866,15 +1887,15 @@ function makeForm(selector, options) {
 				}
 			}
 		}
+		if (deleteUrl && !options.readonly) {
+			deleteButton = actionButton(options.deleteText || 'Delete')
+				.click(function (e) {
+					if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
+						deleteUrl(this);
+					e.preventDefault();
+				});
+		}
 	}
-    if (deleteUrl && !options.readonly) {
-        deleteButton = actionButton(options.deleteText || 'Delete')
-            .click(function (e) {
-                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
-                    deleteUrl(this);
-                e.preventDefault();
-            });
-    }
 	result.fields = columns;
 	result.settings = options;
 	result.dataReady = dataReady;

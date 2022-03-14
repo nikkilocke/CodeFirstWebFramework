@@ -3,106 +3,205 @@ var unsavedInput;	// True if an edit field has been changed, and not saved
 var touchScreen;	// True if running on a tablet or phone
 var decPoint;		// The decimal point character of this locale
 // Extend auto-complete widget to cope with multiple categories
-$.widget( "custom.catcomplete", $.ui.autocomplete, {
-	_create: function() {
+$.widget("custom.catcomplete", $.ui.autocomplete, {
+	_create: function () {
 		this._super();
-		this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+		this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
 	},
-	_renderMenu: function( ul, items ) {
+	_renderMenu: function (ul, items) {
 		var that = this,
 			currentCategory = "";
-		$.each( items, function( index, item ) {
+		$.each(items, function (index, item) {
 			var li;
-			if ( item.category != currentCategory ) {
-				ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+			if (item.category != currentCategory) {
+				ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
 				currentCategory = item.category;
 			}
-			li = that._renderItemData( ul, item );
-			if ( item.category ) {
-				li.attr( "aria-label", item.category + " : " + item.label );
+			li = that._renderItemData(ul, item);
+			if (item.category) {
+				li.attr("aria-label", item.category + " : " + item.label);
 			}
 		});
 	}
 });
-var dateStyle = { dateFormat: 'dd MM yy'};
+var dateStyle = { dateFormat: 'dd MM yy' };
 var True = true;
 var False = false;
 
 function addJQueryUiControls() {
 }
 
-$(function() {
-//	testHarness = bowser.firefox && hasParameter('test');
+class SafeHtml {
+
+	constructor(htmlItem, col, rowno, suffix, attributes) {
+		this.item = $('<div></div>');
+		if (htmlItem)
+			this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
+	}
+
+	static properties = ['checked', 'selected', 'disabled', 'multiple'];
+
+	/**
+	 * Add an item to the div, and return it
+	 * @param {string} htmlItem item name (e.g. 'input')
+	 * @param {any} col Optional column def (sets data-col to name)
+	 * @param {int} rowno Optional row number (sets id as well)
+	 * @param {string} suffix Optional suffix (added to id)
+	 * @param {any} attributes Optional attributes to set on the item
+	 */
+	add(htmlItem, col, rowno, suffix, attributes) {
+		return this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
+	}
+
+	/**
+	 * Add an item to the provided item, and return it
+	 * @param {jquery object} item the item to add to
+	 * @param {string} htmlItem item name (e.g. 'input')
+	 * @param {any} col Optional column def (sets data-col to name)
+	 * @param {int} rowno Optional row number (sets id as well)
+	 * @param {string} suffix Optional suffix (added to id)
+	 * @param {any} attributes Optional attributes to set on the item
+	 */
+	addTo(item, htmlItem, col, rowno, suffix, attributes) {
+		if (attributes === undefined) {
+			var a = suffix;
+			if (a === undefined)
+				a = rowno;
+			if (a === undefined)
+				a = col;
+			if (a && typeof (a) == 'object' && a.draw === undefined) {
+				attributes = a;
+				if (a === suffix)
+					suffix = undefined;
+				else if (a === rowno)
+					rowno = undefined;
+				else if (a === col)
+					col = undefined;
+			} else
+				attributes = {};
+		}
+		if (col) {
+			if (col.attributes) {
+				var re = /([^ "=]+) *= *"([^"]*)"/g;
+				for (; ;) {
+					var m = re.exec(col.attributes);
+					if (m)
+						attributes[m[1]] = m[2];
+					else
+						break;
+				}
+			}
+
+			if (rowno !== undefined)
+				attributes.id = 'r' + rowno + 'c' + col.name + (suffix || '');
+			attributes['data-col'] = col.name;
+		}
+		if (attributes) {
+			_.each(SafeHtml.properties, function (p) {
+				if (attributes[p] !== undefined) {
+					if (attributes[p])
+						attributes[p] = p;
+					else
+						delete attributes[p];
+				}
+			});
+		}
+		var result = $('<' + htmlItem + '>', attributes);
+		item.append(result);
+		return result;
+	}
+
+	/**
+	 * Set the text of the div itself
+	 * @param {string} s the text
+	 */
+	text(s) {
+		this.item.text(s === null || s === undefined ? '' : s);
+		return this;
+	}
+
+	/**
+	 * Return the html of the div
+	 */
+	html() {
+		return this.item.html();
+	}
+
+}
+
+
+$(function () {
+	//	testHarness = bowser.firefox && hasParameter('test');
 	touchScreen = bowser.mobile || bowser.tablet;
 	decPoint = (1.23).toLocaleString(window.navigator.userLanguage || window.navigator.language)[1];
 	resize();
-	$('#menuicon').click(function() {
+	$('#menuicon').click(function () {
 		// Small screen user has clicked menu icon - show/hide menu
 		$('#header').slideToggle(resize);
 	});
-	$('body').on('click', 'button[href]', function(e) {
+	$('body').on('click', 'button[href]', function (e) {
 		// Buttons with hrefs act like links
 		var href = $(this).attr('href');
-        var target = e.ctrlKey ? "_blank" : $(this).attr('target');
-		if(target)
+		var target = e.ctrlKey ? "_blank" : $(this).attr('target');
+		if (target)
 			window.open(href, target);
 		else
 			window.location = href;
 	});
-	$('body').on('click', 'button[data-goto]', function(e) {
+	$('body').on('click', 'button[data-goto]', function (e) {
 		// Buttons with data-goto act like links, but also store state to come back to
 		goto($(this).attr('data-goto'), e);
 	});
 	$(window).bind('beforeunload', function () {
 		// Warn user if there is unsaved data on leaving the page
-		if(unsavedInput) return "There is unsaved data";
+		if (unsavedInput) return "There is unsaved data";
 	});
 	$(window).on('resize', resize);
-	$(window).on('unload', function() {
+	$(window).on('unload', function () {
 		// Disable input fields & buttons on page unload
 		message("Please wait...");
 		$(':input').prop('disabled', true);
 	});
-	$('body').on('change', ':input:not(.nosave)', function() {
+	$('body').on('change', ':input:not(.nosave)', function () {
 		// User has changed an input field - set unsavedInput (except for dataTable search field)
-		if(!$(this).attr('aria-controls'))
+		if (!$(this).attr('aria-controls'))
 			unsavedInput = true;
 	});
-	$('button[type="submit"]').click(function() {
+	$('button[type="submit"]').click(function () {
 		// Submit button will presumably save the input
 		message("Please wait...");
 		unsavedInput = false;
 	});
-	$('body').on('click', 'button.reset', function() {
+	$('body').on('click', 'button.reset', function () {
 		// For when an ordinary reset button won't do any calculated data
 		window.location.reload();
 	});
 	$('body').on('click', 'button.cancel', goback);
-	$('body').on('click', 'button.nextButton', function() {
+	$('body').on('click', 'button.nextButton', function () {
 		// Button to set document number field to <next>, so C# will fill it in with the next one.
 		$(this).prev('input[type="text"]').val('<next>').trigger('change');
-    });
-    $('body').on('click', 'table.form span.hint', function () {
-        var showing = $(this).parent().find('#tooltip');
-        $('#tooltip').remove();
-        if (showing && showing.length)
-            return;
-        $(this).after('<span id="tooltip"></span>');
-        var $title = $(this).parent().attr('title');
-        $(this).next().append($title);
-    });
-    $('body').on('click', 'table.form #tooltip', function () {
-        $('#tooltip').remove();
-    });
+	});
+	$('body').on('click', 'table.form span.hint', function () {
+		var showing = $(this).parent().find('#tooltip');
+		$('#tooltip').remove();
+		if (showing && showing.length)
+			return;
+		$(this).after('<span id="tooltip"></span>');
+		var $title = $(this).parent().attr('title');
+		$(this).next().append($title);
+	});
+	$('body').on('click', 'table.form #tooltip', function () {
+		$('#tooltip').remove();
+	});
 
-	if(!touchScreen) {
+	if (!touchScreen) {
 		// Moving focus to a field selects the contents (except on touch screens)
 		var focusInput;
 		$('body').on('focus', ':input', function () {
 			focusInput = this;
 			$(this).select();
 		}).on('mouseup', ':input', function (e) {
-			if(focusInput == this) {
+			if (focusInput == this) {
 				focusInput = null;
 				e.preventDefault();
 			}
@@ -112,12 +211,12 @@ $(function() {
 	// Highlight top level menu item corresponding to current module
 	$('#menu1 button[href="/' + components[1] + '/default.html"]').addClass('highlight');
 	// Highlight second level menu item corresponding to current url
-	$('#menu2 button').each(function() {
+	$('#menu2 button').each(function () {
 		var href = $(this).attr('href');
-		if(href == window.location.pathname + window.location.search)
+		if (href == window.location.pathname + window.location.search)
 			$(this).addClass('highlight');
 	});
-	setTimeout(function() {
+	setTimeout(function () {
 		// Once initial form creation is done:
 		//  add a Back button if there isn't one
 		if (/[^\/]\//.test(window.location.pathname) && $('button#Back').length == 0)
@@ -147,11 +246,14 @@ $(window).on("load", resize);
  * @returns {*|jQuery} Button
  */
 function addButton(text, url) {
-	var btn = $('<button id="' + text.replace(/ /g, '') + (url ? '" data-goto="' + url : '') + '"></button>')
+	var btn = $('<button></button>')
+		.attr('id', text.replace(/ /g, ''))
 		.text(text)
-        .appendTo($('#menu2').show());
-    resize();
-    return btn;
+		.appendTo($('#menu2').show());
+	if (url)
+		btn.attr('data-goto', url);
+	resize();
+	return btn;
 }
 
 /**
@@ -161,11 +263,13 @@ function addButton(text, url) {
  * @returns {*|jQuery} Button
  */
 function jumpButton(text, url) {
-	var btn = $('<button id="' + text.replace(/ /g, '') + '" href="' + url + window.location.search + '"></button>')
+	var btn = $('<button></button>')
+		.attr('id', text.replace(/ /g, ''))
+		.attr('href', url + window.location.search)
 		.text(text)
-        .appendTo($('#menu2').show());
-    resize();
-    return btn;
+		.appendTo($('#menu2').show());
+	resize();
+	return btn;
 }
 
 /**
@@ -174,11 +278,12 @@ function jumpButton(text, url) {
  * @returns {*|jQuery} Button
  */
 function actionButton(text) {
-	var btn = $('<button id="' + text.replace(/ /g, '') + '"></button>')
+	var btn = $('<button></button>')
+		.attr('id', text.replace(/ /g, ''))
 		.text(text)
 		.appendTo($('#menu3').show());
-    resize();
-    return btn;
+	resize();
+	return btn;
 }
 
 /**
@@ -187,7 +292,8 @@ function actionButton(text) {
  * @returns {*|jQuery} Button
  */
 function insertActionButton(text) {
-	var btn = $('<button id="' + text.replace(/ /g, '') + '"></button>')
+	var btn = $('<button></button>')
+		.attr('id', text.replace(/ /g, ''))
 		.text(text)
 		.prependTo($('#menu3').show());
 	resize();
@@ -199,7 +305,7 @@ function insertActionButton(text) {
  * @param m message
  */
 function message(m) {
-	if(m) $('#message').text(m);
+	if (m) $('#message').text(m);
 	else $('#message').html('&nbsp;');
 }
 
@@ -209,7 +315,7 @@ function message(m) {
 function resize() {
 	var top = $('#outerheader').height();
 	// A small screen - should match "@media screen and (min-width:700px)" in default.css
-    var auto = !$('#outerheader').is(':visible');
+	var auto = !$('#outerheader').is(':visible');
 	$('#spacer').css('height', auto ? '' : top + 'px');
 	$('#body').css('height', auto ? '' : ($(window).height() - top - 16) + 'px');
 }
@@ -220,9 +326,9 @@ function resize() {
  * @returns {*} Formatted number, or n if n is null, empty or 0
  */
 function parseNumber(n) {
-	if(!n)
+	if (!n)
 		return n;
-	if(!/^[+-]?\d+(\.\d{1,2})?$/.test(n))
+	if (!/^[+-]?\d+(\.\d{1,2})?$/.test(n))
 		throw n + ' is not a number';
 	return parseFloat(n);
 }
@@ -233,9 +339,9 @@ function parseNumber(n) {
  * @returns {*} Formatted number, or n if n is null, empty or 0
  */
 function parseDouble(n) {
-	if(!n)
+	if (!n)
 		return n;
-	if(!/^[+-]?\d+(\.\d{1,4})?$/.test(n))
+	if (!/^[+-]?\d+(\.\d{1,4})?$/.test(n))
 		throw n + ' is not a number';
 	return parseFloat(n);
 }
@@ -246,9 +352,9 @@ function parseDouble(n) {
  * @returns {*} Formatted number, or n if n is null, empty or 0
  */
 function parseInteger(n) {
-	if(!n)
+	if (!n)
 		return n;
-	if(!/^[+-]?\d+$/.test(n))
+	if (!/^[+-]?\d+$/.test(n))
 		throw n + ' is not a whole number';
 	return parseInt(n);
 }
@@ -259,11 +365,11 @@ function parseInteger(n) {
  * @returns {Date|string} Date, or argument if it is null or empty
  */
 function parseDate(date) {
-	if(!date)
+	if (!date)
 		return date;
 	try {
 		return new Date(Date.parse(date));
-	} catch(e) {
+	} catch (e) {
 		return date;
 	}
 }
@@ -274,15 +380,15 @@ function parseDate(date) {
  * @returns {string} Formatted date, or '' if invalid
  */
 function formatDate(date, format) {
-	if(!date)
+	if (!date)
 		return date || '';
 	try {
 		var d = Date.parse(date);
-		if(isNaN(d))
+		if (isNaN(d))
 			return date || '';
 		return $.datepicker.formatDate(format || dateStyle.dateFormat, new Date(d));
 		// return new Date(d).toLocaleDateString(window.navigator.userLanguage || window.navigator.language);
-	} catch(e) {
+	} catch (e) {
 		return date || '';
 	}
 }
@@ -302,11 +408,11 @@ function formatDateForInput(date) {
  * @returns {string} Formatted date, or '' if invalid
  */
 function formatDateTime(date) {
-	if(!date)
+	if (!date)
 		return date;
 	try {
 		return new Date(Date.parse(date)).toLocaleString(window.navigator.userLanguage || window.navigator.language);
-	} catch(e) {
+	} catch (e) {
 		return date;
 	}
 }
@@ -326,11 +432,11 @@ function formatNumber(number) {
  * @returns {string}
  */
 function formatNumberWithCommas(number) {
-	if( number == null || number === '')
+	if (number == null || number === '')
 		return '';
 	number = parseFloat(number).toLocaleString(window.navigator.userLanguage || window.navigator.language);
 	var p = number.indexOf(decPoint);
-	if(p == -1)
+	if (p == -1)
 		return number + '.00';
 	return (number + '00').substr(0, p + 3);
 }
@@ -343,7 +449,7 @@ function formatNumberWithCommas(number) {
 function formatWholeNumberWithCommas(number) {
 	number = formatNumberWithCommas(number);
 	var p = number.indexOf(decPoint);
-	if(p >= 0)
+	if (p >= 0)
 		number = number.substr(0, p);
 	return number;
 }
@@ -354,10 +460,10 @@ function formatWholeNumberWithCommas(number) {
  * @returns {string}
  */
 function formatNumberWithBrackets(number) {
-	if( number == null || number === '')
+	if (number == null || number === '')
 		return '';
 	number = formatNumberWithCommas(number);
-	if(number[0] == '-')
+	if (number[0] == '-')
 		number = '(' + number.substr(1) + ')';
 	else
 		number += "\u00a0";
@@ -370,11 +476,11 @@ function formatNumberWithBrackets(number) {
  * @returns {string}
  */
 function formatDouble(number) {
-	if( number != null && number !== '') {
+	if (number != null && number !== '') {
 		number = parseFloat(number).toFixed(4);
 		if (number.indexOf('.') >= 0) {
 			var zeroes = /\.?0+$/.exec(number);
-			if(zeroes) {
+			if (zeroes) {
 				number = number.substr(0, number.length - zeroes[0].length)
 					+ '<span class="t">' + zeroes[0] + '</span>';
 			}
@@ -422,7 +528,7 @@ function fillNumber(n) {
  * @returns {string}
  */
 function toUnit(data, unit) {
-	if(data) {
+	if (data) {
 		switch (unit) {
 			case 1:	// D:H:M
 				var d = splitNumber(data, 8);
@@ -463,14 +569,14 @@ function toUnit(data, unit) {
  * @returns {number}
  */
 function fromUnit(data, unit) {
-	if(data) {
+	if (data) {
 		switch (unit) {
 			case 0:
 				data = parseDouble(data);
 				break;
 			case 1:	// D:H:M
 				var parts = data.split(':');
-				switch(parts.length) {
+				switch (parts.length) {
 					case 1:
 						data = parseDouble(parts[0]);
 						break;
@@ -486,18 +592,18 @@ function fromUnit(data, unit) {
 				break;
 			case 2:	// H:M
 				parts = data.split(':');
-				switch(parts.length) {
-				case 1:
-					data = parseDouble(parts[0]);
-					break;
-				case 2:
-					data = parseDouble(parts[0]) + parseDouble(parts[1]) / 60;
-					break;
-				case 3:
-					data = parseFloat(parts[0]) * 8 + parseDouble(parts[1]) + parseDouble(parts[2]) / 60;
-					break;
-				default:
-					throw data + ' is not in the format (D:)H:M';
+				switch (parts.length) {
+					case 1:
+						data = parseDouble(parts[0]);
+						break;
+					case 2:
+						data = parseDouble(parts[0]) + parseDouble(parts[1]) / 60;
+						break;
+					case 3:
+						data = parseFloat(parts[0]) * 8 + parseDouble(parts[1]) + parseDouble(parts[2]) / 60;
+						break;
+					default:
+						throw data + ' is not in the format (D:)H:M';
 				}
 				break;
 			case 3:
@@ -542,8 +648,8 @@ var Type = {
 	string: {
 	},
 	date: {
-		render: function(data, type, row, meta) {
-			switch(type) {
+		render: function (data, type, row, meta) {
+			switch (type) {
 				case 'display':
 				case 'filter':
 					return formatDate(data);
@@ -551,12 +657,12 @@ var Type = {
 					return data ? data.substr(0, 10) : data;
 			}
 		},
-		download: function(data, rowno, row) {
+		download: function (data, rowno, row) {
 			return formatDate(data);
 		}
 	},
 	dateTime: {
-		download: function(data, rowno, row) {
+		download: function (data, rowno, row) {
 			return formatDateTime(data);
 		}
 	},
@@ -593,7 +699,7 @@ var Type = {
 	},
 	amount: {
 		render: numberRender,
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			return formatNumberWithCommas(Math.abs(data));
 		},
 		download: formatNumber,
@@ -604,13 +710,13 @@ var Type = {
 		name: 'Credit',
 		heading: 'Credit',
 		render: numberRender,
-		draw: function(data, rowno, row) {
-			if(row["Credit"] !== undefined)
+		draw: function (data, rowno, row) {
+			if (row["Credit"] !== undefined)
 				data = -row["Credit"];
 			return data < 0 ? formatNumberWithCommas(-data) : '';
 		},
-		download: function(data, rowno, row) {
-			if(row["Credit"] !== undefined)
+		download: function (data, rowno, row) {
+			if (row["Credit"] !== undefined)
 				data = -row["Credit"];
 			return data < 0 ? formatNumber(-data) : '';
 		},
@@ -621,13 +727,13 @@ var Type = {
 		name: 'Debit',
 		heading: 'Debit',
 		render: numberRender,
-		draw: function(data, rowno, row) {
-			if(row["Debit"] !== undefined)
+		draw: function (data, rowno, row) {
+			if (row["Debit"] !== undefined)
 				data = row["Debit"];
 			return data >= 0 ? formatNumberWithCommas(data) : '';
 		},
-		download: function(data, rowno, row) {
-			if(row["Debit"] !== undefined)
+		download: function (data, rowno, row) {
+			if (row["Debit"] !== undefined)
 				data = row["Debit"];
 			return data >= 0 ? formatNumber(data) : '';
 		},
@@ -638,53 +744,64 @@ var Type = {
 		sClass: 'n'
 	},
 	email: {
-		draw: function(data, rowno, row) {
-			return data ? '<a href="mailto:' + data + '">' + data + '</a>' : '';
+		draw: function (data, rowno, row) {
+			if (!data)
+				return '';
+			return new SafeHtml('a', { href: 'mailto:' + data, text: data }).html();
 		}
 	},
 	checkbox: {
-		defaultContent: function(index, col) {
-			return '<img src="/images/untick.png" data-col="' + col.name + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('img', col, {
+				src: '/images/untick.png'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<img src="/images/' + (data ? 'tick' : 'untick') + '.png" data-col="' + this.name + '" />';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('img', this, rowno, {
+				src: data ? '/images/tick.png' : '/images/untick.png'
+			}).html();
 		}
 	},
 	select: {
 		// Displays appropriate text from selectOptions according to value
-		download: function(data, rowno, row) {
-			if(this.selectOptions) {
-				var opt = _.find(this.selectOptions, function(o) { return o.id == data; });
-				if(opt)
+		download: function (data, rowno, row) {
+			if (this.selectOptions) {
+				var opt = _.find(this.selectOptions, function (o) { return o.id == data; });
+				if (opt)
 					data = opt.value;
 			}
-			return data;
+			return new SafeHtml().text(data).html();
 		}
 	},
 	image: {
-		defaultContent: function(index, col) {
-			return '<img data-col="' + col.name + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('img', col).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<img src="' + data + '" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('img', this, rowno, {
+				src: data
+			}).html();
 		}
 	},
-    textArea: {
-        draw: function (data, rowno, row) {
-            if (data == null)
-                data = "";
-            return '<div class="prewrap" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + '>' + _.escape(data) + '</div>';
-        }
-    },
+	textArea: {
+		draw: function (data, rowno, row) {
+			if (data == null)
+				data = "";
+			return new SafeHtml('div', this, rowno, {
+				"class": 'prewrap',
+				text: data
+			}).html();
+		}
+	},
 	autoComplete: {
 		// Auto complete input field
-		defaultContent: function(index, col, row) {
-			if(col.confirmAdd || col.mustExist) {
+		defaultContent: function (index, col, row) {
+			if (col.confirmAdd || col.mustExist) {
 				// Prompt user if value doesn't already exist in selectOptions
 				//noinspection JSUnusedLocalSymbols
-				col.change = function(newValue, rowData, col, input) {
+				col.change = function (newValue, rowData, col, input) {
 					var item = _.find(col.selectOptions, function (v) {
-                        return v.value == newValue;
+						return v.value == newValue;
 					});
 					if (item === undefined) {
 						if (col.mustExist) {
@@ -703,61 +820,68 @@ var Type = {
 					}
 				};
 			}
-			return '<input type="text" class="autoComplete" data-col="' + col.name + '" ' + col.attributes + '/>';
+			return new SafeHtml('input', col, {
+				type: 'text',
+				"class": 'autoComplete'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<input type="text" id="r' + rowno + 'c' + this.name + '" class="autoComplete" data-col="' + this.name + '" value="' + data + '" ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'text',
+				"class": 'autoComplete',
+				value: data
+			}).html();
 		},
-        update: function (cell, data, rowno, row) {
-            if (data == null)
-                data = this && this.emptyValue != null ? this.emptyValue : '';
-            var value = _.find(this.selectOptions, function (v) { return v.id == data; });
-            if (value && value.value !== undefined)
-                data = value.value;
+		update: function (cell, data, rowno, row) {
+			if (data == null)
+				data = this && this.emptyValue != null ? this.emptyValue : '';
+			var value = _.find(this.selectOptions, function (v) { return v.id == data; });
+			if (value && value.value !== undefined)
+				data = value.value;
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(data);
 			} else {
 				cell.html(this.draw(data, rowno, row));
 				i = cell.find('input');
 			}
-			if(i.hasClass('ui-autocomplete-input'))
+			if (i.hasClass('ui-autocomplete-input'))
 				return;
 			var self = this;
 			//noinspection JSUnusedLocalSymbols
 			var options = {
-				source: function(req, resp) {
+				source: function (req, resp) {
 					var re = $.ui.autocomplete.escapeRegex(req.term);
-					var matcher = new RegExp((self.matchBeginning ? '^' : '') + re, "i" );
-					resp(_.filter(self.selectOptions, function(o) {
+					var matcher = new RegExp((self.matchBeginning ? '^' : '') + re, "i");
+					resp(_.filter(self.selectOptions, function (o) {
 						return !o.hide && matcher.test(o.value);
 					}));
 				},
-				change: function(e) {
+				change: function (e) {
 					$(this).trigger('change');
 				}
-            };
-            if (this.autoFill) {
-                options.minLength = 2;
-                options.open = function (event, ui) {
-                    var firstElement = $(this).data("uiAutocomplete").menu.element[0].children[0],
-                        inpt = $(this),
-                        original = inpt.val(),
-                        firstElementText = $(firstElement).text();
+			};
+			if (this.autoFill) {
+				options.minLength = 2;
+				options.open = function (event, ui) {
+					var firstElement = $(this).data("uiAutocomplete").menu.element[0].children[0],
+						inpt = $(this),
+						original = inpt.val(),
+						firstElementText = $(firstElement).text();
 
-                    /*
-                       here we want to make sure that we're not matching something that doesn't start
-                       with what was typed in 
-                    */
-                    if (firstElementText.toLowerCase().indexOf(original.toLowerCase()) === 0) {
-                        inpt.val(firstElementText);//change the input to the first match
+					/*
+					   here we want to make sure that we're not matching something that doesn't start
+					   with what was typed in
+					*/
+					if (firstElementText.toLowerCase().indexOf(original.toLowerCase()) === 0) {
+						inpt.val(firstElementText);//change the input to the first match
 
-                        inpt[0].selectionStart = original.length; //highlight from end of input
-                        inpt[0].selectionEnd = firstElementText.length;//highlight to the end
-                    }
-                };
-            };
-			if($.isArray(this.selectOptions) && this.selectOptions.length > 0 && this.selectOptions[0].category != null) {
+						inpt[0].selectionStart = original.length; //highlight from end of input
+						inpt[0].selectionEnd = firstElementText.length;//highlight to the end
+					}
+				};
+			};
+			if ($.isArray(this.selectOptions) && this.selectOptions.length > 0 && this.selectOptions[0].category != null) {
 				i.catcomplete(options);
 			} else {
 				i.autocomplete(options);
@@ -765,119 +889,175 @@ var Type = {
 		}
 	},
 	textInput: {
-		defaultContent: function(index, col) {
-            return '<input type="text" data-col="' + col.name + '" size="' + (col.size ? col.size : col.maxlength) + '" maxlength="' + col.maxlength + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'text',
+				size: col.size ? col.size : col.maxlength,
+				maxlength: col.maxlength
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			if(data == null)
+		draw: function (data, rowno, row) {
+			if (data == null)
 				data = "";
-			return '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + (this.size ? this.size : this.maxlength) + '" maxlength="' + this.maxlength + '" ' + this.attributes + '/>';
+			return new SafeHtml('input', this, rowno, {
+				type: 'text',
+				size: this.size ? this.size : this.maxlength,
+				maxlength: this.maxlength,
+				value: data
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('input', cell, data, rowno, this, row);
 		},
 		maxlength: 45
 	},
 	docIdInput: {
 		// Document number - also add a "Next" button to set value to <Next>
-		defaultContent: function(index, col) {
-            return '<input type="text" data-col="' + col.name + '" size="' + (col.size ? col.size : col.maxlength) + '" maxlength="' + col.maxlength + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'text',
+				size: col.size ? col.size : col.maxlength,
+				maxlength: col.maxlength
+			}).html();
 		},
-		draw: function(data, rowno,  row) {
-			if(data == null)
+		draw: function (data, rowno, row) {
+			if (data == null)
 				data = "";
-            var result = '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + (this.size ? this.size : this.maxlength) + '" maxlength="' + this.maxlength + '" ' + this.attributes + '/>';
-			if(row.idDocument !== undefined && !row.idDocument)
-				result += '<button class="nextButton">Next</button>';
-			return result;
+			var result = new SafeHtml('input', this, rowno, {
+				type: 'text',
+				size: this.size ? this.size : this.maxlength,
+				maxlength: this.maxlength,
+				value: data
+			});
+			if (row.idDocument !== undefined && !row.idDocument)
+				result.add('button', {
+					"class": 'nextButton',
+					text: 'Next'
+				});
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('input', cell, data, rowno, this, row);
 		},
-        maxlength: 45
+		maxlength: 45
 	},
 	passwordInput: {
-		defaultContent: function(index, col) {
-            return '<input type="password" data-col="' + col.name + '" size="' + (col.size ? col.size : col.maxlength) + '" maxlength="' + col.maxlength + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'password',
+				size: col.size ? col.size : col.maxlength,
+				maxlength: col.maxlength
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			if(data == null)
+		draw: function (data, rowno, row) {
+			if (data == null)
 				data = "";
-            return '<input type="password" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" size="' + (this.size ? this.size : this.maxlength) + '" maxlength="' + this.maxlength + '" ' + this.attributes + '/>';
+			return new SafeHtml('input', this, rowno, {
+				type: 'password',
+				size: this.size ? this.size : this.maxlength,
+				maxlength: this.maxlength,
+				value: data
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('input', cell, data, rowno, this, row);
 		},
-        maxlength: 45
+		maxlength: 45
 	},
 	textAreaInput: {
-		defaultContent: function(index, col) {
+		defaultContent: function (index, col) {
 			var rows = col.rows || 6;
 			var cols = col.cols || 50;
-            return '<textarea rows="' + rows + '" cols="' + cols + '" data-col="' + col.name + '" ' + (col.maxlength ? 'maxlength="' + col.maxlength + '" ' : '') + col.attributes + '"></textarea>';
+			return new SafeHtml('textarea', col, {
+				rows: rows,
+				cols: cols,
+				maxlength: col.maxlength
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			if(data == null)
+		draw: function (data, rowno, row) {
+			if (data == null)
 				data = "";
 			var rows = this.rows || 5;
 			var cols = this.cols || 50;
-            return '<textarea id="r' + rowno + 'c' + this.name + '" rows="' + rows + '" cols="' + cols + '" data-col="' + this.name + '" ' + (this.maxlength ? 'maxlength="' + this.maxlength + '" ' : '') + this.attributes + '>' + _.escape(data) + '</textarea>';
+			return new SafeHtml('textarea', this, rowno, {
+				rows: rows,
+				cols: cols,
+				maxlength: this.maxlength,
+				text: data
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('textarea', cell, data, rowno, this, row);
 		}
 	},
 	dateInput: {
-		defaultContent: function(index, col) {
-			return '<input class="date" type="date" data-col="' + col.name + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'date',
+				"class": 'date'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			data = formatDateForInput(data);
-			return '<input class="date" type="date" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" ' + this.attributes + '/>';
+			return new SafeHtml('input', this, rowno, {
+				type: 'date',
+				"class": 'date',
+				value: data
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			data = formatDateForInput(data);
 			colUpdate('input', cell, data, rowno, this, row);
 		}
 	},
 	decimalInput: {
 		// 2 dec places
-		defaultContent: function(index, col) {
-			return '<input type="number" step="0.01" data-col="' + col.name + '"value="0.00" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'number',
+				step: '0.01'
+			}).html();
 		},
-		draw: function(data, rowno,  row) {
-			return '<input type="number" step="0.01" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + formatNumber(data) + '" ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'number',
+				step: '0.01',
+				value: formatNumber(data)
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(formatNumber(data));
 			} else {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			return parseNumber($(field).val());
 		},
 		sClass: 'ni'
 	},
 	doubleInput: {
 		// Up to 4 dec places
-		defaultContent: function(index, col) {
-			return '<input type="text" data-col="' + col.name + '"value="0" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, { type: 'text', value: 0 }).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + toUnit(data, row.Unit) + '" ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'text',
+				value: toUnit(data, row.Unit)
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(toUnit(data, row.Unit));
 			} else {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			return fromUnit($(field).val(), row.Unit);
 		},
 		maxlength: 7,
@@ -886,22 +1066,30 @@ var Type = {
 	creditInput: {
 		name: 'Credit',
 		heading: 'Credit',
-		defaultContent: function(index, col) {
-			return '<input type="number" step="0.01" data-col="' + col.name + '"value="0.00" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'number',
+				step: '0.01',
+				value: '0.00'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			data = data < 0 ? formatNumber(-data) : '';
-			return '<input type="number" step="0.01" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + formatNumber(data) + '" ' + this.attributes + '/>';
+			return new SafeHtml('input', this, rowno, {
+				type: 'number',
+				step: '0.01',
+				value: data
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(data < 0 ? formatNumber(-data) : '');
 			} else {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			return parseNumber($(field).val()) * -1;
 		},
 		sClass: 'ni'
@@ -909,80 +1097,116 @@ var Type = {
 	debitInput: {
 		name: 'Debit',
 		heading: 'Debit',
-		defaultContent: function(index, col) {
-			return '<input type="number" step="0.01" data-col="' + col.name + '"value="0.00" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'number',
+				step: '0.01',
+				value: '0.00'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			data = data >= 0 ? formatNumber(data) : '';
-			return '<input type="number" step="0.01" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + formatNumber(data) + '" ' + this.attributes + '/>';
+			return new SafeHtml('input', this, rowno, {
+				type: 'number',
+				step: '0.01',
+				value: data
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(data >= 0 ? formatNumber(data) : '');
 			} else {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			return parseNumber($(field).val());
 		},
 		sClass: 'ni'
 	},
 	intInput: {
-		defaultContent: function(index, col) {
-			return '<input type="number" step="1" data-col="' + col.name + '"value="0" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'number',
+				step: '1',
+				value: '0'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<input type="number" step="1" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + formatInteger(data) + '" ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'number',
+				step: '1',
+				value: formatInteger(data)
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(formatInteger(data));
 			} else {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			return parseInteger($(field).val());
 		},
 		sClass: 'ni'
 	},
 	checkboxInput: {
-		defaultContent: function(index, col) {
-			return '<input type="checkbox" data-col="' + col.name + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'checkbox'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<input type="checkbox" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '"' + (data ? ' checked' : '') + ' ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'checkbox',
+				checked: data ? true : false
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.prop('checked', data ? true : false);
 			} else {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			return $(field).prop('checked') ? 1 : 0;
 		}
 	},
 	imageInput: {
 		// Image file, with auto upload
-		defaultContent: function(index, col) {
-			return '<img data-col="' + col.name + '" ' + col.attributes + '/><br/><input type="file" class="autoUpload" data-col="' + col.name + '"/>';
+		defaultContent: function (index, col) {
+			var result = new SafeHtml();
+			result.add('img');
+			result.add('br');
+			result.add('input', col, {
+				type: 'file',
+				"class": 'autoUpload'
+			});
+			return result.html();
 		},
-		draw: function(data, rowno, row) {
-			if(data == null)
+		draw: function (data, rowno, row) {
+			if (data == null)
 				data = '';
-			return '<img src="' + data + '" data-col="' + this.name + '" ' + this.attributes + '/><br/><input type="file" class="autoUpload" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '"' + (this.multiple ? ' multiple="multiple"' : '') + ' />';
+			var result = new SafeHtml();
+			result.add('img');
+			result.add('br');
+			result.add('input', this, rowno, {
+				type: 'file',
+				"class": 'autoUpload',
+				multiple: this.multiple
+			});
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
-			if(data == null)
+		update: function (cell, data, rowno, row) {
+			if (data == null)
 				data = '';
 			var i = cell.find('img');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.prop('src', data);
 			} else {
 				cell.html(this.draw(data, rowno, row));
@@ -991,38 +1215,55 @@ var Type = {
 	},
 	file: {
 		// File input, no auto upload
-		defaultContent: function(index, col) {
-			return '<input type="file" data-col="' + col.name + '"/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'file'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<input type="file" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '"' + (this.multiple ? ' multiple="multiple"' : '') + ' />';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'file',
+				multiple: this.multiple
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input#r' + rowno + 'c' + this.name);
-			if(!i.length)
+			if (!i.length)
 				cell.html(this.draw(data, rowno, row));
 		}
 	},
 	radioInput: {
 		// Radio buttons from select options
-		defaultContent: function(index, col) {
-			return '<input type="radio" data-col="' + col.name + '" ' + col.attributes + ' value="0" />';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'radio',
+				value: '0'
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			var select = '';
+		draw: function (data, rowno, row) {
+			var select = new SafeHtml();
 			var self = this;
 			if (this.selectOptions) {
 				_.each(this.selectOptions, function (o) {
-					select += ' <label><input type="radio" name="r' + rowno + 'c' + self.name + '" data-col="' + self.name + '" '
-						+ self.attributes + ' value="' + o.id + '"'
-						+ (o.id == data ? ' checked="checked"' : '') + ' />' + _.escape(o.value) + '</label>';
+					select.addTo(select.add('label', {
+						text: o.value
+					}), 'input', self, rowno, {
+						type: 'radio',
+						value: o.id,
+						checked: o.id == data
+					});
 				});
 			} else
-				select = '<label><input type="radio" id="r' + rowno + 'c' + this.name + '" name="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + ' value="0" />Other</label>';
-			return select;
+				select.addTo(select.add('label', {
+					text: 'Other'
+				}), 'input', this, rowno, {
+					type: 'radio',
+					value: '0'
+				});
+			return select.html();
 		},
-		update: function(cell, data, rowno, row) {
-			if(cell.find('input#r' + rowno + 'c' + this.name).length == 0) {
+		update: function (cell, data, rowno, row) {
+			if (cell.find('input#r' + rowno + 'c' + this.name).length == 0) {
 				cell.html(this.draw(data, rowno, row));
 			} else {
 				var i = cell.find('input[type=radio][value=' + data + ']');
@@ -1030,38 +1271,58 @@ var Type = {
 					i.prop('checked', true);
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			return field.value;
 		}
 
 	},
 	textAreaField: {
-		defaultContent: function(index, col) {
+		defaultContent: function (index, col) {
 			var rows = col.rows || 6;
 			var cols = col.cols || 50;
-			return '<textarea rows="' + rows + '" cols="' + cols + '" data-col="' + col.name + '" ' + col.attributes + ' disabled="disabled""></textarea>';
+			return new SafeHtml('textarea', col, {
+				rows: rows,
+				cols: cols,
+				maxlength: col.maxlength,
+				disabled: true
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			if(data == null)
+		draw: function (data, rowno, row) {
+			if (data == null)
 				data = "";
 			var rows = this.rows || 5;
 			var cols = this.cols || 50;
-			return '<textarea id="r' + rowno + 'c' + this.name + '" rows="' + rows + '" cols="' + cols + '" data-col="' + this.name + '" ' + this.attributes + ' disabled="disabled">' + _.escape(data) + '</textarea>';
+			return new SafeHtml('textarea', this, rowno, {
+				rows: rows,
+				cols: cols,
+				maxlength: this.maxlength,
+				text: data,
+				disabled: true
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('textarea', cell, data, rowno, this, row);
 		}
 	},
 	decimalField: {
-		defaultContent: function(index, col) {
-			return '<input type="number" step="0.01" value="0.00" data-col="' + col.name + '" disabled ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'number',
+				step: '0.01',
+				disabled: true
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<input type="number" step="0.01" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + formatNumber(data) + '" disabled ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'number',
+				step: '0.01',
+				value: formatNumber(data),
+				disabled: true
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('input');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(formatNumber(data));
 			} else {
 				cell.html(this.draw(data, rowno, row));
@@ -1070,81 +1331,101 @@ var Type = {
 		sClass: 'ni'
 	},
 	doubleField: {
-		defaultContent: function(index, col) {
-			return '<input type="number" value="0" data-col="' + col.name + '" disabled ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('input', col, {
+				type: 'text',
+				value: 0,
+				disabled: true
+			}).html();
 		},
-		draw: function(data, rowno, row) {
-			return '<input type="number" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + data + '" disabled ' + this.attributes + '/>';
+		draw: function (data, rowno, row) {
+			return new SafeHtml('input', this, rowno, {
+				type: 'text',
+				value: toUnit(data, row.Unit),
+				disabled: true
+			}).html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('input', cell, data, rowno, this, row);
 		},
 		sClass: 'ni'
 	},
 	selectInput: {
-		defaultContent: function(index, col) {
-			return '<select data-col="' + col.name + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('select', col).html();
 		},
-		draw: function(data, rowno, row) {
-			var select = '<select id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" ' + this.attributes + '/>';
-			if(this.selectOptions) {
-				var jselect = $(select);
-				addOptionsToSelect(jselect, this.selectOptions, data, this);
-				select = $('<div />').append(jselect).html();
-				select = select.replace(' value="' + data + '"', ' value="' + data + '" selected');
-			}
-			return select;
+		draw: function (data, rowno, row) {
+			var result = new SafeHtml();
+			var select = result.add('select', this, rowno);
+			if (this.selectOptions)
+				addOptionsToSelect(select, this.selectOptions, data, this);
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('select', cell, data, rowno, this, row);
 		}
 	},
 	selectFilter: {
 		// Report filter
-		defaultContent: function(index, col) {
-			return '<select data-col="' + col.name + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('select', col).html();
 		},
-		draw: function(data, rowno, row) {
-			var select = '<select id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" />';
-			if(this.selectOptions) {
-				var jselect = $(select);
-				addOptionsToSelect(jselect, this.selectOptions, data, this);
-				select = $('<div />').append(jselect).html();
-				select = select.replace(' value="' + data + '"', ' value="' + data + '" selected');
-			}
-			return select;
+		draw: function (data, rowno, row) {
+			var result = new SafeHtml();
+			var select = result.add('select', this, rowno);
+			if (this.selectOptions)
+				addOptionsToSelect(select, this.selectOptions, data, this);
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			colUpdate('select', cell, data, rowno, this, row);
 		}
 	},
 	dateFilter: {
 		// Report date filter
-		defaultContent: function(index, col) {
-			return '<select data-col="' + col.name + '" ' + col.attributes + '/> <nobr><input type="number" disabled data-col="' + col.name + '" ' + col.attributes + '/><input type="date" disabled data-col="' + col.name + '" ' + col.attributes + '/> - <input type="date" disabled data-col="' + col.name + '" ' + col.attributes + '/></nobr>';
+		defaultContent: function (index, col) {
+			var result = new SafeHtml('select', col);
+			var nobr = result.add('nobr');
+			result.addTo(nobr, 'input', col, { type: 'number' });
+			result.addTo(nobr, 'input', col, { type: 'date' });
+			nobr.append(' - ');
+			result.addTo(nobr, 'input', col, { type: 'date' });
+			return result.html();
 		},
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			var range = data.range || 4;
-			var disabled = range == 12 ? '' : 'disabled ';
-			var countDisabled = range > 12 ? '' : 'disabled ';
 			var count = data.count ? data.count : '';
 			var start = data.start ? data.start.substr(0, 10) : '';
 			var end = data.end ? data.end.substr(0, 10) : '';
-			var select = '<select id="r' + rowno + 'c' + this.name + 'r" data-col="' + this.name + '" >'
-				+ '';
-			var jselect = $(select);
-			addOptionsToSelect(jselect, dateSelectOptions, range);
-			select = $('<div />').append(jselect).html();
-			select = select.replace(' value="' + range + '"', ' value="' + range + '" selected');
-			return select + ' <nobr><input type="number" id="r' + rowno + 'c' + this.name + 'c" data-col="' + this.name + '" value="' + count + '" ' + countDisabled + this.attributes + '/><input type="date" id="r' + rowno + 'c' + this.name + 's" data-col="' + this.name + '" value="' + start + '" ' + disabled + this.attributes + '/> - <input type="date" id="r' + rowno + 'c' + this.name + 'e" data-col="' + this.name + '" value="' + end + '" ' + disabled + this.attributes + '/></nobr>';
+			var result = new SafeHtml();
+			var select = result.add('select', this, rowno, 'r');
+			addOptionsToSelect(select, dateSelectOptions, range);
+			var nobr = result.add('nobr');
+			result.addTo(nobr, 'input', this, rowno, 'c', {
+				type: 'number',
+				value: count,
+				disabled: range <= 12
+			});
+			result.addTo(nobr, 'input', this, rowno, 's', {
+				type: 'date',
+				value: start,
+				disabled: range != 12
+			});
+			nobr.append(' - ');
+			result.addTo(nobr, 'input', this, rowno, 'e', {
+				type: 'date',
+				value: end,
+				disabled: range != 12
+			});
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('select');
 			var range = data.range || 4;
 			var count = data.count ? data.count : '';
 			var start = data.start ? data.start.substr(0, 10) : '';
 			var end = data.end ? data.end.substr(0, 10) : '';
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(range);
 				i = cell.find('input');
 				i.prop('disabled', range != 12);
@@ -1156,7 +1437,7 @@ var Type = {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			var cell = $(field).closest('td');
 			var range = cell.find('select').val();
 			i = cell.find('input');
@@ -1172,30 +1453,27 @@ var Type = {
 	},
 	multiSelectFilter: {
 		// Report multi select filter
-		defaultContent: function(index, col) {
-			return '<select multiple data-col="' + col.name + '" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			return new SafeHtml('select', col, { multiple: true }).html();
 		},
-		draw: function(data, rowno, row) {
-			var select = '<select id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" multiple />';
-			if(this.selectOptions) {
-				var jselect = $(select);
-				addOptionsToSelect(jselect, this.selectOptions, data, this);
-				select = $('<div />').append(jselect).html();
-				_.each(data, function(d) {
-					select = select.replace(' value="' + d + '"', ' value="' + d + '" selected');
-				});
+		draw: function (data, rowno, row) {
+			var result = new SafeHtml();
+			var select = result.add('select', this, rowno, { multiple: true });
+			if (this.selectOptions) {
+				addOptionsToSelect(select, this.selectOptions, data, this);
+				select.val(data);
 			}
-			return select;
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('select');
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(data);
 			} else {
 				cell.html(this.draw(data, rowno, row));
 				i = cell.find('select');
 			}
-			if(i.css('display') != 'none')
+			if (i.css('display') != 'none')
 				i.multiselect({
 					selectedList: 2,
 					uncheckAllText: 'No filter',
@@ -1205,26 +1483,35 @@ var Type = {
 	},
 	decimalFilter: {
 		// Report decimal filter
-		defaultContent: function(index, col) {
-			return '<select data-col="' + col.name + '" ' + col.attributes + '/> <input type="number" step="0.01" data-col="' + col.name + '"value="0.00" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			var result = new SafeHtml();
+			result.add('select', col);
+			result.add('input', col, {
+				type: 'number',
+				step: '0.01',
+				value: '0.00'
+			});
+			return result.html();
 		},
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			var comparison = data.comparison || 0;
-			var disabled = comparison > 2 ? '' : 'disabled ';
 			var value = data.value || 0;
-			var select = '<select id="r' + rowno + 'c' + this.name + 'r" data-col="' + this.name + '" >'
-				+ '';
-			var jselect = $(select);
-			addOptionsToSelect(jselect, decimalSelectOptions, comparison);
-			select = $('<div />').append(jselect).html();
-			select = select.replace(' value="' + comparison + '"', ' value="' + comparison + '" selected');
-			return select + '<input type="number" step="0.01" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + formatNumber(value) + '" ' + disabled + this.attributes + '/>';
+			var result = new SafeHtml();
+			var select = result.add('select', this, rowno, 'r');
+			addOptionsToSelect(select, decimalSelectOptions, comparison);
+			result.add('input', this, rowno, {
+				type: 'number',
+				step: '0.01',
+				value: formatNumber(value),
+				disabled: comparison <= 2
+			});
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('select');
 			var comparison = data.comparison || 0;
 			var value = data.value || 0;
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(comparison);
 				i = cell.find('input');
 				i.prop('disabled', comparison <= 2);
@@ -1233,7 +1520,7 @@ var Type = {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			var cell = $(field).closest('td');
 			var comparison = cell.find('select').val();
 			cell.find('input').prop('disabled', comparison <= 2);
@@ -1245,26 +1532,33 @@ var Type = {
 	},
 	doubleFilter: {
 		// Report double (up tp 4 places) filter
-		defaultContent: function(index, col) {
-			return '<select data-col="' + col.name + '" ' + col.attributes + '/> <input type="number" data-col="' + col.name + '"value="0" ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			var result = new SafeHtml();
+			result.add('select', col);
+			result.add('input', col, {
+				type: 'number',
+				value: '0'
+			});
+			return result.html();
 		},
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			var comparison = data.comparison || 0;
-			var disabled = comparison > 2 ? '' : 'disabled ';
 			var value = data.value || 0;
-			var select = '<select id="r' + rowno + 'c' + this.name + 'r" data-col="' + this.name + '" >'
-				+ '';
-			var jselect = $(select);
-			addOptionsToSelect(jselect, decimalSelectOptions, comparison);
-			select = $('<div />').append(jselect).html();
-			select = select.replace(' value="' + comparison + '"', ' value="' + comparison + '" selected');
-			return select + '<input type="number" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + value + '" ' + disabled + this.attributes + '/>';
+			var result = new SafeHtml();
+			var select = result.add('select', this, rowno, 'r');
+			addOptionsToSelect(select, decimalSelectOptions, comparison);
+			result.add('input', this, rowno, {
+				type: 'number',
+				value: value,
+				disabled: comparison <= 2
+			});
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('select');
 			var comparison = data.comparison || 0;
 			var value = data.value || 0;
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(comparison);
 				i = cell.find('input');
 				i.prop('disabled', comparison <= 2);
@@ -1273,7 +1567,7 @@ var Type = {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			var cell = $(field).closest('td');
 			var comparison = cell.find('select').val();
 			cell.find('input').prop('disabled', comparison <= 2);
@@ -1285,26 +1579,30 @@ var Type = {
 	},
 	stringFilter: {
 		// Report string filter
-		defaultContent: function(index, col) {
-			return '<select data-col="' + col.name + '" ' + col.attributes + '/> <input type="text" data-col="' + col.name + ' ' + col.attributes + '/>';
+		defaultContent: function (index, col) {
+			var result = new SafeHtml();
+			result.add('select', col);
+			result.add('input', col, { type: 'text' });
+			return result.html();
 		},
-		draw: function(data, rowno, row) {
+		draw: function (data, rowno, row) {
 			var comparison = data.comparison || 0;
-			var disabled = comparison > 2 ? '' : 'disabled ';
 			var value = data.value || '';
-			var select = '<select id="r' + rowno + 'c' + this.name + 'r" data-col="' + this.name + '" >'
-				+ '';
-			var jselect = $(select);
-			addOptionsToSelect(jselect, stringSelectOptions, comparison);
-			select = $('<div />').append(jselect).html();
-			select = select.replace(' value="' + comparison + '"', ' value="' + comparison + '" selected');
-			return select + '<input type="text" id="r' + rowno + 'c' + this.name + '" data-col="' + this.name + '" value="' + value + '" ' + disabled + this.attributes + '/>';
+			var result = new SafeHtml();
+			var select = result.add('select', this, rowno, 'r');
+			addOptionsToSelect(select, stringSelectOptions, comparison);
+			result.add('input', this, rowno, {
+				type: 'text',
+				value: value,
+				disabled: comparison <= 2
+			});
+			return result.html();
 		},
-		update: function(cell, data, rowno, row) {
+		update: function (cell, data, rowno, row) {
 			var i = cell.find('select');
 			var comparison = data.comparison || 0;
 			var value = data.value || '';
-			if(i.length && i.attr('id')) {
+			if (i.length && i.attr('id')) {
 				i.val(comparison);
 				i = cell.find('input');
 				i.prop('disabled', comparison <= 2);
@@ -1313,7 +1611,7 @@ var Type = {
 				cell.html(this.draw(data, rowno, row));
 			}
 		},
-		inputValue: function(field, row) {
+		inputValue: function (field, row) {
 			var cell = $(field).closest('td');
 			var comparison = cell.find('select').val();
 			cell.find('input').prop('disabled', comparison <= 2);
@@ -1438,24 +1736,24 @@ function makeDataTable(selector, options) {
 	var dtParam = getParameter('dt');
 	var nzList = dtParam === null || dtParam === '' ? [] : dtParam.split(',');
 	// Default number of items to display depends on screen size
-    if (options.iDisplayLength === undefined) {
-        if ($(window).height() >= 1200)
-            options.iDisplayLength = 25;
-        if (localStorage) {
-            var l = localStorage.getItem('iDisplayLength');
-            if (l)
-                options.iDisplayLength = l;
-            $(body).on('change', 'div.dataTables_length select', function () {
-                localStorage.setItem('iDisplayLength', $(this).val());
-            });
-        }
-    }
-	if (typeof(selectUrl) == 'string') {
+	if (options.iDisplayLength === undefined) {
+		if ($(window).height() >= 1200)
+			options.iDisplayLength = 25;
+		if (localStorage) {
+			var l = localStorage.getItem('iDisplayLength');
+			if (l)
+				options.iDisplayLength = l;
+			$(body).on('change', 'div.dataTables_length select', function () {
+				localStorage.setItem('iDisplayLength', $(this).val());
+			});
+		}
+	}
+	if (typeof (selectUrl) == 'string') {
 		// Turn into a function that goes to url, adding id of current row as parameter
 		var s = selectUrl;
-        selectUrl = function (row, e) {
-            goto(urlParameter('id', row[idName], s), e);
-        };
+		selectUrl = function (row, e) {
+			goto(urlParameter('id', row[idName], s), e);
+		};
 	}
 	// If no data or data url supplied, use an Ajax call to this method + "Listing"
 	if (options.data === undefined)
@@ -1465,7 +1763,7 @@ function makeDataTable(selector, options) {
 	var heading = $(selector).find('thead');
 	if (heading.length == 0) heading = $('<thead></thead>').appendTo($(selector));
 	heading = $('<tr></tr>').appendTo(heading);
-    var columns = {};
+	var columns = {};
 	_.each(options.columns, function (col, index) {
 		// Set up the column - add any missing functions, etc.
 		options.columns[index] = col = _setColObject(col, tableName, index);
@@ -1478,12 +1776,12 @@ function makeDataTable(selector, options) {
 		// "Show All" option?
 		var nz = myOption('nonZero', col);
 		if (nz != undefined) {
-			if (typeof(nz) == 'boolean') nz = {hide: nz};
+			if (typeof (nz) == 'boolean') nz = { hide: nz };
 			nz.col = col;
 			if (nz.hide === undefined) nz.hide = true;
 			if (nz.heading === undefined) nz.heading = title;
-			if(nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading;
-			if(nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading;
+			if (nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading;
+			if (nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading;
 			nz.regex = nz.regex === undefined ? /^([0\.]*|true|null)$/ : new RegExp(nz.regex);
 			if (nzList.length)
 				nz.hide = nzList.shift() == 1;
@@ -1515,63 +1813,63 @@ function makeDataTable(selector, options) {
 			}
 		};
 	}
-	if (typeof(selectUrl) == 'function')
+	if (typeof (selectUrl) == 'function')
 		$(selector).addClass('noselect');
 	var table = $(selector).dataTable(options);
 
 	// Attach mouse handlers to each row
-	if (typeof(selectUrl) == 'function') {
+	if (typeof (selectUrl) == 'function') {
 		selectClick(selector, function (e) {
-            return selectUrl.call(this, table.rowData($(this)), e);
+			return selectUrl.call(this, table.rowData($(this)), e);
 		});
 	} else {
 		selectClick(selector, null);
 	}
-	if(options.download || options.download === undefined) {
+	if (options.download || options.download === undefined) {
 		actionButton('Download').click(function () {
 			var data = downloadData(table.fields, table.api().data());
 			download(this, data);
 		});
 	}
 	// "Show All" functionality
-	_.each(nzColumns, function(nz) {
-        var zText = nz.zeroText;
-        var nzText = nz.nonZeroText;
+	_.each(nzColumns, function (nz) {
+		var zText = nz.zeroText;
+		var nzText = nz.nonZeroText;
 		//noinspection JSUnusedLocalSymbols
-		$('<button id="nz' + nz.col.name + '" data-nz="' + nz.hide + '"></button>').insertBefore($(selector))
+		$('<button></button>').attr('id', 'nz' + nz.col.name).attr('data-nz', nz.hide).insertBefore($(selector))
 			.html(nz.hide ? nzText : zText)
-			.click(function(e) {
+			.click(function (e) {
 				nz.hide = !nz.hide;
 				$(this).attr('data-nz', nz.hide);
 				$(this).html(nz.hide ? nzText : zText);
 				table.api().draw();
 			});
 		$.fn.dataTable.ext.search.push(
-			function(settings, dataArray, dataIndex, data) {
+			function (settings, dataArray, dataIndex, data) {
 				return !nz.hide || !nz.regex.test(data[nz.col.data]);
 			}
 		);
-		if(nz.hide)
+		if (nz.hide)
 			table.api().draw(false);
 	});
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
-	$('body').on('change', selector + ' :input', function() {
+	$('body').on('change', selector + ' :input', function () {
 		$('button#Back').text('Cancel');
 		var col = table.fields[$(this).attr('data-col')];
-		if(col) {
+		if (col) {
 			var row = table.row(this);
 			var data = row.data();
 			var val;
 			try {
 				//noinspection JSCheckFunctionSignatures
 				val = col.inputValue(this, row);
-			} catch(e) {
+			} catch (e) {
 				message(col.heading + ':' + e);
 				$(this).focus();
 				return;
 			}
-			setTimeout(function() {
+			setTimeout(function () {
 				if ($(selector).triggerHandler('changed.field', [val, data, col, this]) != false) {
 					data[col.data] = val;
 				}
@@ -1583,34 +1881,34 @@ function makeDataTable(selector, options) {
 	 * @param item
 	 * @returns {*}
 	 */
-	table.row = function(item) {
+	table.row = function (item) {
 		item = $(item);
-		if(item.attr['tagName'] != 'tr') item = item.closest('tr');
+		if (item.attr['tagName'] != 'tr') item = item.closest('tr');
 		return table.api().row(item);
 	};
 	/**
 	 * Refresh the row containing item without losing the focus
 	 * @param item
 	 */
-	table.refreshRow = function(item) {
+	table.refreshRow = function (item) {
 		var focus = $(':focus');
 		var col = focus.closest('td').index();
 		var row = focus.closest('tr').index();
 		var refocus = focus.closest('table')[0] == table[0];
 		table.row(item).invalidate().draw(false);
-		if(refocus)
+		if (refocus)
 			table.find('tbody tr:eq(' + row + ') td:eq(' + col + ') :input').focus();
 	};
 	/**
 	 * Refresh the whole table without losing the focus
- 	 */
-	table.refresh = function() {
+	   */
+	table.refresh = function () {
 		var focus = $(':focus');
 		var col = focus.closest('td').index();
 		var row = focus.closest('tr').index();
 		var refocus = focus.closest('table')[0] == table[0];
 		table.api().draw(false);
-		if(refocus)
+		if (refocus)
 			table.find('tbody tr:eq(' + row + ') td:eq(' + col + ') :input').focus();
 	};
 	/**
@@ -1618,14 +1916,14 @@ function makeDataTable(selector, options) {
 	 * @param r
 	 * @returns {*}
 	 */
-	table.rowData = function(r) {
+	table.rowData = function (r) {
 		return table.row(r).data();
 	};
 	/**
 	 * When data has arrived, update the table
 	 * @param data
 	 */
-	table.dataReady = function(data) {
+	table.dataReady = function (data) {
 		table.api().clear();
 		table.api().rows.add(data);
 		table.api().draw();
@@ -1667,113 +1965,113 @@ function makeForm(selector, options) {
 	var canDelete = myOption('canDelete', options);
 	var submitUrl = myOption('submit', options);
 	var deleteButton;
-	if(submitUrl === undefined) {
+	if (submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
-	if(typeof(submitUrl) == 'string') {
+	if (typeof (submitUrl) == 'string') {
 		// Turn url into a function that validates and posts
 		var submitHref = submitUrl;
 		/**
 		 * Submit method attached to button
 		 * @param button The button pushed
 		 */
-        submitUrl = function (button) {
-            var hdg = null;
-            try {
-                // Check each input value is valid
-                _.each(options.columns, function (col) {
-                    if (col.inputValue) {
-                        hdg = col.heading;
-                        col.inputValue(col.cell.find('#r0c' + col.name), result.data);
-                    }
-                });
-            } catch (e) {
-                message(hdg + ':' + e);
-                return;
-            }
-            if (options.validate) {
-                var msg = options.validate();
-                message(msg);
-                if (msg) return;
-            }
-            postJson(submitHref, result.data, function (d) {
-                $('button#Back').text('Back');
-                if ($(button).hasClass('goback')) {
-                    goback();	// Save
-                } else if ($(button).hasClass('new')) {
-                    window.location = urlParameter('id', 0);	// Save and New
-                } else if (tableName && d.id) {
-                    window.location = urlParameter('id', d.id);	// Apply - redisplay saved record
-                }
-            });
-        };
+		submitUrl = function (button) {
+			var hdg = null;
+			try {
+				// Check each input value is valid
+				_.each(options.columns, function (col) {
+					if (col.inputValue) {
+						hdg = col.heading;
+						col.inputValue(col.cell.find('#r0c' + col.name), result.data);
+					}
+				});
+			} catch (e) {
+				message(hdg + ':' + e);
+				return;
+			}
+			if (options.validate) {
+				var msg = options.validate();
+				message(msg);
+				if (msg) return;
+			}
+			postJson(submitHref, result.data, function (d) {
+				$('button#Back').text('Back');
+				if ($(button).hasClass('goback')) {
+					goback();	// Save
+				} else if ($(button).hasClass('new')) {
+					window.location = urlParameter('id', 0);	// Save and New
+				} else if (tableName && d.id) {
+					window.location = urlParameter('id', d.id);	// Apply - redisplay saved record
+				}
+			});
+		};
 	}
 	var deleteUrl = canDelete ? myOption('delete', options) : null;
-	if(deleteUrl === undefined) {
+	if (deleteUrl === undefined) {
 		deleteUrl = defaultUrl('Delete');
 	}
-	if(typeof(deleteUrl) == 'string') {
+	if (typeof (deleteUrl) == 'string') {
 		var deleteHref = deleteUrl;
 		//noinspection JSUnusedLocalSymbols
-        deleteUrl = function (button) {
-            postJson(deleteHref, result.data, goback);
-        };
+		deleteUrl = function (button) {
+			postJson(deleteHref, result.data, goback);
+		};
 	}
 	$(selector).addClass('form');
 	_setAjaxObject(options, 'Data', '');
 	var row;
 	var columns = {};
-	_.each(options.columns, function(col, index) {
+	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
-		if(!row || !col.sameRow)
+		if (!row || !col.sameRow)
 			row = $('<tr></tr>').appendTo($(selector));
-        var hdg = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
-        if (col.hint)
-            hdg.append(' <span class="hint">?</span>');
+		var hdg = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+		if (col.hint)
+			hdg.append(' <span class="hint">?</span>');
 		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
-		if(col.colspan)
+		if (col.colspan)
 			col.cell.attr('colspan', col.colspan);
-        if (col.sClass)
-            col.cell.attr('class', col.sClass);
-        if (col["@class"])
-            row.addClass(col["@class"]);
+		if (col.sClass)
+			col.cell.attr('class', col.sClass);
+		if (col["@class"])
+			row.addClass(col["@class"]);
 		columns[col.name] = col;
 		col.index = index;
 	});
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
-	$('body').on('change', selector + ' :input', function(/** this: jElement */) {
+	$('body').on('change', selector + ' :input', function (/** this: jElement */) {
 		$('button#Back').text('Cancel');
 		var col = result.fields[$(this).attr('data-col')];
-		if(col) {
+		if (col) {
 			var val;
 			try {
 				//noinspection JSCheckFunctionSignatures
 				val = col.inputValue(this, result.data);
-			} catch(e) {
+			} catch (e) {
 				message(col.heading + ':' + e);
 				$(this).focus();
 				return;
 			}
-			if(col.change) {
+			if (col.change) {
 				var nval = col.change(val, result.data, col, this);
-				if(nval === false) {
+				if (nval === false) {
 					col.update(col.cell, result.data[col.data], 0, result.data);
 					$(this).focus();
 					return;
-				} else if(nval !== undefined && nval !== null)
+				} else if (nval !== undefined && nval !== null)
 					val = nval;
 			}
-			if($(selector).triggerHandler('changed.field', [val, result.data, col, this]) !== false) {
-				if(this.type == 'file' && $(this).hasClass('autoUpload')) {
+			if ($(selector).triggerHandler('changed.field', [val, result.data, col, this]) !== false) {
+				if (this.type == 'file' && $(this).hasClass('autoUpload')) {
 					var img = $(this).prev('img');
 					var submitHref = defaultUrl('Upload');
 					var d = new FormData();
-					for(var f = 0; f < this.files.length; f++)
+					for (var f = 0; f < this.files.length; f++)
 						d.append('file' + (f || ''), this.files[f]);
 					d.append('json', JSON.stringify(result.data));
-					postFormData(submitHref, d, function(d) {
-						if(tableName && d.id)
+					postFormData(submitHref, d, function (d) {
+						if (tableName && d.id)
 							window.location = urlParameter('id', d.id);
 					});
 				} else {
@@ -1799,7 +2097,7 @@ function makeForm(selector, options) {
 			col.update(col.cell, colData, 0, result.data);
 		});
 		addJQueryUiControls();
-		if(options.readonly)
+		if (options.readonly)
 			result.find('input,select,textarea,button.ui-multiselect').attr('disabled', true);
 	}
 	var drawn = false;
@@ -1810,27 +2108,27 @@ function makeForm(selector, options) {
 	 */
 	function dataReady(d) {
 		result.data = d;
-		if(deleteButton && !d[idName])
+		if (deleteButton && !d[idName])
 			deleteButton.remove();
 		draw();
 		// Only do this bit once
-		if(drawn)
+		if (drawn)
 			return;
 		drawn = true;
-		if(submitUrl) {
-			if(options.dialog) {
+		if (submitUrl) {
+			if (options.dialog) {
 				// Wrap form in a dialog, called by Edit button
 				result.wrap('<div id="dialog"></div>');
 				result.parent().dialog({
 					autoOpen: false,
 					modal: true,
 					height: Math.min(result.height() + 200, $(window).height() * 0.9),
-                    width: Math.min(result.width() + 100, $(window).width() - 50),
+					width: Math.min(result.width() + 100, $(window).width() - 50),
 					buttons: options.readonly ? {
 						Ok: {
 							id: 'Ok',
 							text: 'Ok',
-							click: function() {
+							click: function () {
 								$(this).dialog("close");
 							}
 						}
@@ -1838,9 +2136,9 @@ function makeForm(selector, options) {
 						Ok: {
 							id: 'Ok',
 							text: 'Ok',
-							click: function() {
-								if(!options.readonly)
-								submitUrl(this);
+							click: function () {
+								if (!options.readonly)
+									submitUrl(this);
 								$(this).dialog("close");
 							}
 						},
@@ -1858,28 +2156,28 @@ function makeForm(selector, options) {
 						result.parent().dialog('open');
 						e.preventDefault();
 					});
-            } else {
-                    // Add Buttons
-				if(!options.readonly) {
-                    actionButton(options.submitText || 'Save')
-                        .addClass('goback')
-                        .click(function (e) {
-                            submitUrl(this);
-                            e.preventDefault();
-                        });
-                    if (options.apply)
-                        actionButton(options.applyText || 'Apply')
-                            .click(function (e) {
-                                submitUrl(this);
-                                e.preventDefault();
-                            });
-                    if (options.saveAndNew)
-                        actionButton((options.submitText || 'Save') + ' and New')
-                            .addClass('new')
-                            .click(function (e) {
-                                submitUrl(this);
-                                e.preventDefault();
-                            });
+			} else {
+				// Add Buttons
+				if (!options.readonly) {
+					actionButton(options.submitText || 'Save')
+						.addClass('goback')
+						.click(function (e) {
+							submitUrl(this);
+							e.preventDefault();
+						});
+					if (options.apply)
+						actionButton(options.applyText || 'Apply')
+							.click(function (e) {
+								submitUrl(this);
+								e.preventDefault();
+							});
+					if (options.saveAndNew)
+						actionButton((options.submitText || 'Save') + ' and New')
+							.addClass('new')
+							.click(function (e) {
+								submitUrl(this);
+								e.preventDefault();
+							});
 					actionButton('Reset')
 						.click(function () {
 							window.location.reload();
@@ -1899,18 +2197,18 @@ function makeForm(selector, options) {
 	result.fields = columns;
 	result.settings = options;
 	result.dataReady = dataReady;
-    result.draw = draw;
-    result.submit = submitUrl;
-    result.updateSelectOptions = function (col, selectOptions) {
-        col.selectOptions = selectOptions;
-        col.cell.html(col.draw(result.data[col.data], 0, result.data));
-    };
+	result.draw = draw;
+	result.submit = submitUrl;
+	result.updateSelectOptions = function (col, selectOptions) {
+		col.selectOptions = selectOptions;
+		col.cell.html(col.draw(result.data[col.data], 0, result.data));
+	};
 
 
 	Forms.push(result);
-	if(options.data)
+	if (options.data)
 		dataReady(options.data);
-	else if(options.ajax) {
+	else if (options.ajax) {
 		get(options.ajax.url, null, dataReady);
 	}
 	return result;
@@ -1925,68 +2223,68 @@ function makeForm(selector, options) {
 function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	var submitUrl = options.submit;
 	var tableName = options.header.table;
-	if(submitUrl === undefined) {
+	if (submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
-	if(typeof(submitUrl) == 'string') {
+	if (typeof (submitUrl) == 'string') {
 		var submitHref = submitUrl;
-        submitUrl = function (button) {
-            var hdg = null;
-            try {
-                // Validate everything
-                _.each(options.header.columns, function (col) {
-                    if (col.inputValue) {
-                        hdg = col.heading;
-                        col.inputValue(result.header.find('#r0c' + col.name), result.header.data);
-                    }
-                });
-                _.each(options.detail.columns, function (col) {
-                    if (col.inputValue) {
-                        hdg = col.heading;
-                        _.each(result.detail.data, function (row, index) {
-                            col.inputValue(result.detail.find('#r' + index + 'c' + col.name), row);
-                        });
-                    }
-                });
-            } catch (e) {
-                message(hdg + ':' + e);
-                return;
-            }
-            if (options.header.validate) {
-                var msg = options.header.validate();
-                message(msg);
-                if (msg) return;
-            }
-            if (options.validate) {
-                msg = options.validate();
-                message(msg);
-                if (msg) return;
-            }
-            postJson(submitHref, {
-                header: result.header.data,
-                detail: result.detail.data
-            }, function (d) {
-                if ($(button).hasClass('goback'))
-                    goback();
-                else if ($(button).hasClass('new'))
-                    window.location = urlParameter('id', 0);
-                else if (tableName && d.id)
-                    window.location = urlParameter('id', d.id);
-            });
-        };
+		submitUrl = function (button) {
+			var hdg = null;
+			try {
+				// Validate everything
+				_.each(options.header.columns, function (col) {
+					if (col.inputValue) {
+						hdg = col.heading;
+						col.inputValue(result.header.find('#r0c' + col.name), result.header.data);
+					}
+				});
+				_.each(options.detail.columns, function (col) {
+					if (col.inputValue) {
+						hdg = col.heading;
+						_.each(result.detail.data, function (row, index) {
+							col.inputValue(result.detail.find('#r' + index + 'c' + col.name), row);
+						});
+					}
+				});
+			} catch (e) {
+				message(hdg + ':' + e);
+				return;
+			}
+			if (options.header.validate) {
+				var msg = options.header.validate();
+				message(msg);
+				if (msg) return;
+			}
+			if (options.validate) {
+				msg = options.validate();
+				message(msg);
+				if (msg) return;
+			}
+			postJson(submitHref, {
+				header: result.header.data,
+				detail: result.detail.data
+			}, function (d) {
+				if ($(button).hasClass('goback'))
+					goback();
+				else if ($(button).hasClass('new'))
+					window.location = urlParameter('id', 0);
+				else if (tableName && d.id)
+					window.location = urlParameter('id', d.id);
+			});
+		};
 	}
-	if(options.header.submit === undefined)
+	if (options.header.submit === undefined)
 		options.header.submit = submitUrl;
 	options.detail.submit = null;
-	if(options.header.readonly === undefined)
+	if (options.header.readonly === undefined)
 		options.header.readonly = options.readonly;
-	if(options.detail.readonly === undefined)
+	if (options.detail.readonly === undefined)
 		options.detail.readonly = options.header.readonly;
-	if(options.header.ajax === undefined || options.detail.ajax === undefined) {
+	if (options.header.ajax === undefined || options.detail.ajax === undefined) {
 		if (options.data) {
-			if(options.header.ajax === undefined)
+			if (options.header.ajax === undefined)
 				options.header.ajax = null;
-			if(options.detail.ajax === undefined)
+			if (options.detail.ajax === undefined)
 				options.detail.ajax = null;
 		} else {
 			_setAjaxObject(options, 'Data', 'detail');
@@ -2006,15 +2304,15 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 		header: makeForm(headerSelector, options.header),
 		detail: makeListForm(detailSelector, options.detail),
 		data: options.data,
-        dataReady: dataReady,
-        submit: submitUrl
+		dataReady: dataReady,
+		submit: submitUrl
 	};
 	result.detail.header = result.header;
 	nextPreviousButtons(result.data);
-	result.detail.bind('changed.field', function() {
+	result.detail.bind('changed.field', function () {
 		$('button#Back').text('Cancel');
 	});
-	if(options.data)
+	if (options.data)
 		dataReady(options.data);
 	return result;
 }
@@ -2035,51 +2333,51 @@ function makeListForm(selector, options) {
 	var idName = myOption('id', options, 'id' + tableName);
 	var submitUrl = myOption('submit', options);
 	var selectUrl = myOption('select', options);
-	if(selectUrl === undefined && submitUrl === undefined) {
+	if (selectUrl === undefined && submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
-	if(selectUrl === undefined && typeof(submitUrl) == 'string') {
+	if (selectUrl === undefined && typeof (submitUrl) == 'string') {
 		var s = submitUrl;
 		//noinspection JSUnusedAssignment,JSUnusedLocalSymbols
-        submitUrl = function (button) {
-            try {
-                var hdg;
-                _.each(options.columns, function (col) {
-                    if (col.inputValue) {
-                        hdg = col.heading;
-                        _.each(table.data, function (row, index) {
-                            col.inputValue(table.find('#r' + index + 'c' + col.name), row);
-                        });
-                    }
-                });
-            } catch (e) {
-                message(e);
-                return;
-            }
-            if (options.validate) {
-                var msg = options.validate();
-                message(msg);
-                if (msg) return;
-            }
-            postJson(s, table.data);
-        };
+		submitUrl = function (button) {
+			try {
+				var hdg;
+				_.each(options.columns, function (col) {
+					if (col.inputValue) {
+						hdg = col.heading;
+						_.each(table.data, function (row, index) {
+							col.inputValue(table.find('#r' + index + 'c' + col.name), row);
+						});
+					}
+				});
+			} catch (e) {
+				message(e);
+				return;
+			}
+			if (options.validate) {
+				var msg = options.validate();
+				message(msg);
+				if (msg) return;
+			}
+			postJson(s, table.data);
+		};
 	}
-	if(typeof(selectUrl) == 'string') {
+	if (typeof (selectUrl) == 'string') {
 		var sel = selectUrl;
-        selectUrl = function (row, e) {
-            goto(urlParameter('id', row[idName], sel), e);
-        };
+		selectUrl = function (row, e) {
+			goto(urlParameter('id', row[idName], sel), e);
+		};
 	}
-	if(typeof(selectUrl) == 'function') {
+	if (typeof (selectUrl) == 'function') {
 		selectClick(selector, function (e) {
-            return selectUrl.call(this, table.rowData($(this)), e);
+			return selectUrl.call(this, table.rowData($(this)), e);
 		});
 	} else {
 		selectClick(selector, null);
 	}
-	if(options.addRows && (options.deleteRows === true)) {
-		options.deleteRows = function(data) {
-			if($(this).index() == table.data.length - 1)
+	if (options.addRows && (options.deleteRows === true)) {
+		options.deleteRows = function (data) {
+			if ($(this).index() == table.data.length - 1)
 				return false;
 		};
 	}
@@ -2089,22 +2387,22 @@ function makeListForm(selector, options) {
 	var row = null;
 	var columns = {};
 	var heading = table.find('thead');
-	if(heading.length == 0) heading = $('<thead></thead>').appendTo(table);
+	if (heading.length == 0) heading = $('<thead></thead>').appendTo(table);
 	var body = table.find('tbody');
-	if(body.length == 0) body = $('<tbody></tbody>').appendTo(table);
+	if (body.length == 0) body = $('<tbody></tbody>').appendTo(table);
 	var rowsPerRecord = 0;
 	var colCount = 0;
 	var c = 0;
 	var skip = 0;
-	_.each(options.columns, function(col, index) {
+	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
-		if(!row || col.newRow) {
+		if (!row || col.newRow) {
 			row = $('<tr></tr>').appendTo(heading);
 			row.addClass("r" + ++rowsPerRecord);
 			c = 0;
 		}
 		c++;
-		if(skip) {
+		if (skip) {
 			skip--;
 		} else {
 			var cell = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
@@ -2121,47 +2419,47 @@ function makeListForm(selector, options) {
 		col.index = index;
 		colCount = Math.max(colCount, c);
 	});
-	if(!options.readonly && rowsPerRecord == 1) {
-		if(options.deleteRows)
+	if (!options.readonly && rowsPerRecord == 1) {
+		if (options.deleteRows)
 			$('<th></th>').appendTo(row);
-		if(options.sortable)
+		if (options.sortable)
 			$('<th></th>').appendTo(row);
 	}
 	$('body').off('change', selector + ' :input');
-	$('body').on('change', selector + ' :input', function() {
+	$('body').on('change', selector + ' :input', function () {
 		var col = table.fields[$(this).attr('data-col')];
-		if(col) {
+		if (col) {
 			var rowIndex = table.rowIndex(this);
 			var val;
 			try {
 				//noinspection JSCheckFunctionSignatures
 				val = col.inputValue(this, table.data[rowIndex]);
-			} catch(e) {
+			} catch (e) {
 				message(col.heading + ':' + e);
 				$(this).focus();
 				return;
 			}
-			if(col.change) {
+			if (col.change) {
 				var nval = col.change(val, table.data[rowIndex], col, this);
-				if(nval === false) {
+				if (nval === false) {
 					col.update(col.cell, table.data[rowIndex][col.data], rowIndex, table.data[rowIndex]);
 					$(this).focus();
 					return;
-				} else if(nval !== undefined && nval !== null)
+				} else if (nval !== undefined && nval !== null)
 					val = nval;
 			}
-			if(table.triggerHandler('changed.field', [val, table.data[rowIndex], col, this]) !== false) {
-				if(this.type == 'file' && $(this).hasClass('autoUpload')) {
+			if (table.triggerHandler('changed.field', [val, table.data[rowIndex], col, this]) !== false) {
+				if (this.type == 'file' && $(this).hasClass('autoUpload')) {
 					var img = $(this).prev('img');
 					var submitHref = defaultUrl('Upload');
 					var d = new FormData();
-					for(var f = 0; f < this.files.length; f++)
+					for (var f = 0; f < this.files.length; f++)
 						d.append('file' + (f || ''), this.files[f]);
-					if(table.header)
+					if (table.header)
 						d.append('header', JSON.stringify(table.header.data));
 					d.append('detail', JSON.stringify(table.data[rowIndex]));
-					postFormData(submitHref, d, function(d) {
-						if(tableName && d.id)
+					postFormData(submitHref, d, function (d) {
+						if (tableName && d.id)
 							window.location = urlParameter('id', d.id);
 					});
 				} else {
@@ -2169,18 +2467,18 @@ function makeListForm(selector, options) {
 					row = body.find('tr:eq(' + (rowIndex * rowsPerRecord) + ')');
 					var cell = row.find('td:first');
 				}
-				_.each(options.columns, function(c) {
-					if(c.newRow) {
-							row = row.next('tr');
-							cell = row.find('td:first');
-						}
-					if(c.data == col.data) {
+				_.each(options.columns, function (c) {
+					if (c.newRow) {
+						row = row.next('tr');
+						cell = row.find('td:first');
+					}
+					if (c.data == col.data) {
 						c.update(cell, val, rowIndex, table.data[rowIndex]);
 					}
 					cell = cell.next('td');
 				});
 			}
-			if(options.addRows)
+			if (options.addRows)
 				checkForNewRow();
 		}
 	});
@@ -2192,71 +2490,71 @@ function makeListForm(selector, options) {
 		var row = null;
 		var cell = null;
 		var rowData = table.data[rowIndex];
-        var rowno = 1;
-        var isNewRow;
-        function newRow(r) {
-            isNewRow = r.length == 0;
-            if (isNewRow)
-                r = $('<tr></tr>').appendTo(body);
+		var rowno = 1;
+		var isNewRow;
+		function newRow(r) {
+			isNewRow = r.length == 0;
+			if (isNewRow)
+				r = $('<tr></tr>').appendTo(body);
 			row = r;
-			if(rowData["@class"])
+			if (rowData["@class"])
 				row.addClass(rowData["@class"]);
 			row.addClass("r" + rowno++);
 			cell = row.find('td:first');
 		}
 		newRow(body.find('tr:eq(' + (rowIndex * rowsPerRecord) + ')'));
 		_.each(options.columns, function (col) {
-			if(col.newRow)
+			if (col.newRow)
 				newRow(row.next('tr'));
-			if(cell.length == 0) {
+			if (cell.length == 0) {
 				cell = $('<td></td>').appendTo(row);
-				if(col.sClass)
+				if (col.sClass)
 					cell.attr('class', col.sClass);
 			}
 			var data = rowData[col.data];
 			col.update(cell, data, rowIndex, rowData);
 			cell = cell.next('td');
 		});
-		if(isNewRow && !options.readonly && rowsPerRecord == 1) {
-			if(options.deleteRows) {
-				if(cell.length != 0)
+		if (isNewRow && !options.readonly && rowsPerRecord == 1) {
+			if (options.deleteRows) {
+				if (cell.length != 0)
 					cell.remove();
 				cell = $('<td class="deleteButton"></td>').appendTo(row);
-				$('<button class="deleteButton"><img src="/images/close.png" /></button>').appendTo(cell).click(function() {
+				$('<button class="deleteButton"><img src="/images/close.png" /></button>').appendTo(cell).click(function () {
 					var thisrow = $(this).closest('tr');
 					var index = thisrow.index();
 					var callback;
-					if(typeof(options.deleteRows) == "function")
+					if (typeof (options.deleteRows) == "function")
 						callback = options.deleteRows.call(thisrow, table.data[index]);
-					if(callback != false) {
+					if (callback != false) {
 						unsavedInput = true;
 						$('button#Back').text('Cancel');
 						thisrow.remove();
 						table.data.splice(index, 1);
-						if(typeof(callback) == 'function')
+						if (typeof (callback) == 'function')
 							callback();
 					}
 				});
 			}
-			if(options.sortable)
+			if (options.sortable)
 				$('<td class="draghandle" data-row="' + rowIndex + '"><div class="ui-icon-arrowthick-2-n-s"/></td>').appendTo(row);
 		}
 	}
 
 	function hasData(row) {
-		if(options.hasData && typeof(options.hasData) == 'function')
+		if (options.hasData && typeof (options.hasData) == 'function')
 			return options.hasData(row);
 		emptyRow = options.emptyRow === undefined ? {} : options.emptyRow;
-		for(var key in row)
-			if(!key.match(/^@/) && row[key] && row[key] != emptyRow[key])
+		for (var key in row)
+			if (!key.match(/^@/) && row[key] && row[key] != emptyRow[key])
 				return true;
-		
+
 	}
 	function checkForNewRow() {
-        var lastRow = table.data[table.data.length - 1];
-		if(lastRow == null || hasData(lastRow)) {
-            if (lastRow)
-                delete lastRow['@class'];
+		var lastRow = table.data[table.data.length - 1];
+		if (lastRow == null || hasData(lastRow)) {
+			if (lastRow)
+				delete lastRow['@class'];
 			table.find('tbody tr.noDeleteButton').removeClass('noDeleteButton');
 			var newRow = options.emptyRow === undefined ? {} : _.clone(options.emptyRow);
 			newRow['@class'] = 'noDeleteButton';
@@ -2269,13 +2567,13 @@ function makeListForm(selector, options) {
 	 * Draw the whole form
 	 */
 	function draw() {
-		for(var row = 0; row < table.data.length; row++) {
+		for (var row = 0; row < table.data.length; row++) {
 			drawRow(row);
 		}
 		addJQueryUiControls();
-		if(options.readonly)
+		if (options.readonly)
 			table.find('input,select,textarea,button.ui-multiselect').attr('disabled', true);
-		if(options.sortable && !options.readonly && rowsPerRecord == 1) {
+		if (options.sortable && !options.readonly && rowsPerRecord == 1) {
 			table.find('tbody').sortable({
 				items: "> tr:not(.noDeleteButton)",
 				appendTo: "parent",
@@ -2287,21 +2585,21 @@ function makeListForm(selector, options) {
 					dragFrom = ui.item.index();
 					console.log('Start: from=' + dragFrom);
 				},
-				update: function(event, ui) {
+				update: function (event, ui) {
 					var data = [];
-					table.find('tbody tr td.draghandle').each(function(index) {
+					table.find('tbody tr td.draghandle').each(function (index) {
 						var r = parseInt($(this).attr('data-row'));
-						if(index != r) {
+						if (index != r) {
 							unsavedInput = true;
 							$('button#Back').text('Cancel');
 						}
 						data.push(table.data[r]);
 					});
-					if(data.length) {
+					if (data.length) {
 						dragTo = ui.item.index();
 						console.log('Update: from=' + dragFrom + ' to=' + dragTo);
 						table.dataReady(data);
-						if(dragFrom != dragTo)
+						if (dragFrom != dragTo)
 							table.triggerHandler('dragged.row', [dragFrom, dragTo]);
 					}
 				}
@@ -2311,16 +2609,16 @@ function makeListForm(selector, options) {
 	var drawn = false;
 	function dataReady(d) {
 		table.data = d;
-		if(options.addRows && !options.readonly && rowsPerRecord == 1) {
+		if (options.addRows && !options.readonly && rowsPerRecord == 1) {
 			checkForNewRow();
 		}
 		body.find('tr').remove();
 		draw();
-		if(!drawn && submitUrl) {
+		if (!drawn && submitUrl) {
 			drawn = true;
-			if(!options.readonly) {
+			if (!options.readonly) {
 				actionButton(options.submitText || 'Save')
-                    .addClass('goback')
+					.addClass('goback')
 					.click(function (e) {
 						submitUrl(this);
 						e.preventDefault();
@@ -2343,9 +2641,9 @@ function makeListForm(selector, options) {
 	 * Redraw
 	 */
 	function refresh() {
-		if(options.data)
+		if (options.data)
 			dataReady(options.data);
-		else if(options.ajax) {
+		else if (options.ajax) {
 			body.html('<tr><td colspan="' + colCount + '" style="text-align: center;">Loading...</td></tr>');
 			get(options.ajax.url, null, dataReady);
 		}
@@ -2355,15 +2653,15 @@ function makeListForm(selector, options) {
 	table.dataReady = dataReady;
 	table.draw = draw;
 	table.refresh = refresh;
-    table.submit = submitUrl;
+	table.submit = submitUrl;
 	/**
 	 * Return the row index of item r
 	 * @param r
 	 * @returns {number}
 	 */
-	table.rowIndex = function(r) {
+	table.rowIndex = function (r) {
 		r = $(r);
-		if(r.attr('tagName') != 'TR')
+		if (r.attr('tagName') != 'TR')
 			r = r.closest('tr');
 		return Math.floor(r.index() / rowsPerRecord);
 	};
@@ -2372,15 +2670,15 @@ function makeListForm(selector, options) {
 	 * @param r
 	 * @returns {*}
 	 */
-	table.rowData = function(r) {
+	table.rowData = function (r) {
 		return table.data[table.rowIndex(r)];
 	};
 	/**
 	 * Draw the row
 	 * @param {number|jElement} r rowIndex or item in a row
 	 */
-	table.drawRow = function(r) {
-		if(typeof(r) != 'number')
+	table.drawRow = function (r) {
+		if (typeof (r) != 'number')
 			r = table.rowIndex(r);
 		drawRow(r);
 	};
@@ -2388,7 +2686,7 @@ function makeListForm(selector, options) {
 	 * Add a new row
 	 * @param row The data to add
 	 */
-	table.addRow = function(row) {
+	table.addRow = function (row) {
 		table.data.push(row);
 		drawRow(table.data.length - 1);
 		addJQueryUiControls();
@@ -2399,26 +2697,26 @@ function makeListForm(selector, options) {
 	 * @param col The col object
 	 * @returns {*|{}}
 	 */
-	table.cellFor = function(rowIndex, col) {
+	table.cellFor = function (rowIndex, col) {
 		var row = body.find('tr:eq(' + (rowIndex * rowsPerRecord) + ')');
 		var cell = row.find('td:first');
-		for(var c = 0; c < options.columns.length; c++) {
-			if(options.columns[c].newRow) {
+		for (var c = 0; c < options.columns.length; c++) {
+			if (options.columns[c].newRow) {
 				row = row.next();
 				cell = row.find('td:first');
 			}
-			if(options.columns[c] == col)
+			if (options.columns[c] == col)
 				return cell;
 			cell = cell.next();
 		}
 	};
-    table.updateSelectOptions = function (col, selectOptions) {
-        col.selectOptions = selectOptions;
-        _.each(table.data, function (rowData, index) {
-            var cell = cellFor(index, col);
-            cell.html(col.draw(rowData[col.data], index, rowData));
-        });
-    };
+	table.updateSelectOptions = function (col, selectOptions) {
+		col.selectOptions = selectOptions;
+		_.each(table.data, function (rowData, index) {
+			var cell = cellFor(index, col);
+			cell.html(col.draw(rowData[col.data], index, rowData));
+		});
+	};
 	refresh();
 	Forms.push(table);
 	return table;
@@ -2449,76 +2747,76 @@ function makeListForm(selector, options) {
 function makeDumbForm(selector, options) {
 	var tableName = myOption('table', options);
 	var submitUrl = myOption('submit', options);
-    var canDelete = myOption('canDelete', options);
+	var canDelete = myOption('canDelete', options);
 	var deleteButton;
-	if(submitUrl === undefined) {
+	if (submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
-	if(submitUrl) {
+	if (submitUrl) {
 		$(selector).closest('form').attr("action", submitUrl);
 	}
-    var deleteUrl = canDelete ? myOption('delete', options) : null;
-    if (deleteUrl === undefined) {
-        deleteUrl = defaultUrl('Delete');
-    }
-    if (typeof (deleteUrl) == 'string') {
-        var deleteHref = deleteUrl;
-        //noinspection JSUnusedLocalSymbols
-        deleteUrl = function (button) {
-            postJson(deleteHref, result.data, goback);
-        };
-    }
+	var deleteUrl = canDelete ? myOption('delete', options) : null;
+	if (deleteUrl === undefined) {
+		deleteUrl = defaultUrl('Delete');
+	}
+	if (typeof (deleteUrl) == 'string') {
+		var deleteHref = deleteUrl;
+		//noinspection JSUnusedLocalSymbols
+		deleteUrl = function (button) {
+			postJson(deleteHref, result.data, goback);
+		};
+	}
 	$(selector).addClass('form');
 	_setAjaxObject(options, 'Data', '');
 	var row;
 	var columns = {};
-	_.each(options.columns, function(col, index) {
+	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
-		if(!row || !col.sameRow)
+		if (!row || !col.sameRow)
 			row = $('<tr></tr>').appendTo($(selector));
 		var hdg = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
 		if (col.hint)
 			hdg.append(' <span class="hint">?</span>');
 		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
-		if(col.colspan)
+		if (col.colspan)
 			col.cell.attr('colspan', col.colspan);
 		columns[col.name] = col;
 		col.index = index;
 	});
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
-	$('body').on('change', selector + ' :input', function(/** this: jElement */) {
+	$('body').on('change', selector + ' :input', function (/** this: jElement */) {
 		$('button#Back').text('Cancel');
 		var col = result.fields[$(this).attr('data-col')];
-		if(col) {
+		if (col) {
 			var val;
 			try {
 				//noinspection JSCheckFunctionSignatures
 				val = col.inputValue(this, result.data);
-			} catch(e) {
+			} catch (e) {
 				message(col.heading + ':' + e);
 				$(this).focus();
 				return;
 			}
-			if(col.change) {
+			if (col.change) {
 				var nval = col.change(val, result.data, col, this);
-				if(nval === false) {
+				if (nval === false) {
 					col.update(col.cell, result.data[col.data], 0, result.data);
 					$(this).focus();
 					return;
-				} else if(nval !== undefined && nval !== null)
+				} else if (nval !== undefined && nval !== null)
 					val = nval;
 			}
-			if($(selector).triggerHandler('changed.field', [val, result.data, col, this]) !== false) {
-				if(this.type == 'file' && $(this).hasClass('autoUpload')) {
+			if ($(selector).triggerHandler('changed.field', [val, result.data, col, this]) !== false) {
+				if (this.type == 'file' && $(this).hasClass('autoUpload')) {
 					var img = $(this).prev('img');
 					var submitHref = defaultUrl('Upload');
 					var d = new FormData();
-					for(var f = 0; f < this.files.length; f++)
+					for (var f = 0; f < this.files.length; f++)
 						d.append('file' + (f || ''), this.files[f]);
 					d.append('json', JSON.stringify(result.data));
-					postFormData(submitHref, d, function(d) {
-						if(tableName && d.id)
+					postFormData(submitHref, d, function (d) {
+						if (tableName && d.id)
 							window.location = urlParameter('id', d.id);
 					});
 				} else {
@@ -2544,7 +2842,7 @@ function makeDumbForm(selector, options) {
 			col.update(col.cell, colData, 0, result.data);
 		});
 		addJQueryUiControls();
-		if(options.readonly)
+		if (options.readonly)
 			result.find('input,select,textarea').attr('disabled', true);
 	}
 	var drawn = false;
@@ -2556,17 +2854,17 @@ function makeDumbForm(selector, options) {
 	function dataReady(d) {
 		result.data = d;
 		draw();
-		$(selector).find(':input').each(function() { this.name = $(this).attr('data-col'); });
+		$(selector).find(':input').each(function () { this.name = $(this).attr('data-col'); });
 		// Only do this bit once
-		if(drawn)
+		if (drawn)
 			return;
 		drawn = true;
-		if(submitUrl) {
-				// Add Buttons
-			if(!options.readonly) {
+		if (submitUrl) {
+			// Add Buttons
+			if (!options.readonly) {
 				actionButton(options.submitText || 'Save')
 					.click(function (e) {
-                       	unsavedInput = false;
+						unsavedInput = false;
 						$(selector).closest('form').submit();
 						e.preventDefault();
 					});
@@ -2577,23 +2875,23 @@ function makeDumbForm(selector, options) {
 			}
 		}
 	}
-    if (deleteUrl && !options.readonly) {
-        deleteButton = actionButton(options.deleteText || 'Delete')
-            .click(function (e) {
-                if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
-                    deleteUrl(this);
-                e.preventDefault();
-            });
-    }
+	if (deleteUrl && !options.readonly) {
+		deleteButton = actionButton(options.deleteText || 'Delete')
+			.click(function (e) {
+				if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
+					deleteUrl(this);
+				e.preventDefault();
+			});
+	}
 	result.fields = columns;
 	result.settings = options;
 	result.dataReady = dataReady;
 	result.draw = draw;
-    result.submit = submitUrl;
+	result.submit = submitUrl;
 	Forms.push(result);
-	if(options.data)
+	if (options.data)
 		dataReady(options.data);
-	else if(options.ajax) {
+	else if (options.ajax) {
 		get(options.ajax.url, null, dataReady);
 	}
 	return result;
@@ -2606,12 +2904,12 @@ function downloadData(columns, record) {
 	var data = [];
 	var dataRow = [];
 	var skip;
-	_.each(columns, function(col, index) {
-		if(col.newRow) {
+	_.each(columns, function (col, index) {
+		if (col.newRow) {
 			data.push(dataRow);
 			dataRow = [];
 		}
-		if(skip) {
+		if (skip) {
 			skip--;
 			dataRow.push('');
 		} else {
@@ -2623,8 +2921,8 @@ function downloadData(columns, record) {
 	data.push(dataRow);
 	function buildRow(row, rowdata) {
 		dataRow = [];
-		_.each(columns, function(col, index) {
-			if(col.newRow) {
+		_.each(columns, function (col, index) {
+			if (col.newRow) {
 				data.push(dataRow);
 				dataRow = [];
 			}
@@ -2632,7 +2930,7 @@ function downloadData(columns, record) {
 		});
 		data.push(dataRow);
 	}
-	if(record[1]) {
+	if (record[1]) {
 		for (var row = 0; row < record.length; row++) {
 			buildRow(row, record[row]);
 		}
@@ -2651,10 +2949,10 @@ function downloadData(columns, record) {
  */
 function myOption(name, opts, defaultValue) {
 	var result = opts[name];
-	if(result === undefined) {
+	if (result === undefined) {
 		result = defaultValue;
 	} else {
-		if(typeof(result) != 'function') result = _.clone(result);
+		if (typeof (result) != 'function') result = _.clone(result);
 		delete opts[name];
 	}
 	return result;
@@ -2666,15 +2964,15 @@ function myOption(name, opts, defaultValue) {
  * @param {number} record.previous id of previous record
  */
 function nextPreviousButtons(record) {
-	if(record && record.previous != null) {
+	if (record && record.previous != null) {
 		actionButton('Previous')
-			.click(function() {
+			.click(function () {
 				window.location = urlParameter('id', record.previous);
 			});
 	}
-	if(record && record.next != null) {
+	if (record && record.next != null) {
 		actionButton('Next')
-			.click(function() {
+			.click(function () {
 				window.location = urlParameter('id', record.next);
 			});
 	}
@@ -2687,11 +2985,11 @@ function nextPreviousButtons(record) {
  * @param {function} [success]
  */
 function postJson(url, data, success) {
-	if(typeof(data) == 'function') {
+	if (typeof (data) == 'function') {
 		success = data;
 		data = {};
 	}
-	if(data == null)
+	if (data == null)
 		data = {};
 	postData(url, { json: JSON.stringify(data) }, false, success);
 }
@@ -2725,43 +3023,43 @@ function postData(url, data, asForm, success, timeout) {
 			withCredentials: true
 		}
 	};
-	if(asForm) {
+	if (asForm) {
 		ajax.enctype = 'multipart/form-data';
 		ajax.processData = false;
 		ajax.contentType = false;
 	}
 	$.ajax(ajax)
 		.done(
-		/**
-		 * @param {string} [result.error] Error message
-		 * @param {string} [result.message] Info message
-		 * @param {string} [result.confirm] Confirmation question
-		 * @param {string} [result.redirect] Where to go now
-		 */
-		function(result) {
-			if(result.error)
-				message(result.error);
-			else {
-				message(result.message);
-				if(result.confirm) {
-					// C# code wants a confirmation
-					if(confirm(result.confirm)) {
-						url += /\?/.test(url) ? '&' : '?';
-						url += 'confirm';
-						postData(url, data, asForm, success, timeout);
+			/**
+			 * @param {string} [result.error] Error message
+			 * @param {string} [result.message] Info message
+			 * @param {string} [result.confirm] Confirmation question
+			 * @param {string} [result.redirect] Where to go now
+			 */
+			function (result) {
+				if (result.error)
+					message(result.error);
+				else {
+					message(result.message);
+					if (result.confirm) {
+						// C# code wants a confirmation
+						if (confirm(result.confirm)) {
+							url += /\?/.test(url) ? '&' : '?';
+							url += 'confirm';
+							postData(url, data, asForm, success, timeout);
+						}
+						return;
 					}
-					return;
+					unsavedInput = false;
+					if (success && !result.redirect) {
+						success(result);
+						return;
+					}
 				}
-				unsavedInput = false;
-				if(success && !result.redirect) {
-					success(result);
-					return;
-				}
-			}
-			if(result.redirect)
-				window.location = result.redirect;
-		})
-		.fail(function(jqXHR, textStatus, errorThrown) {
+				if (result.redirect)
+					window.location = result.redirect;
+			})
+		.fail(function (jqXHR, textStatus, errorThrown) {
 			message(textStatus == errorThrown ? textStatus : textStatus + ' ' + errorThrown);
 		});
 }
@@ -2797,30 +3095,30 @@ function selectOff() {
  */
 function selectClick(selector, selectFunction) {
 	$('body').off('click', selector + ' tbody td:not(:has(input))');
-	if(!touchScreen) {
+	if (!touchScreen) {
 		$('body').off('mouseenter', selector + ' tbody tr')
 			.off('mouseleave', selector + ' tbody tr');
 	}
-	if(!selectFunction)
+	if (!selectFunction)
 		return;
 	var table = $(selector);
 	table.addClass('noselect');
 	table.find('tbody').css('cursor', 'pointer');
-	$('body').on('click', selector + ' tbody td:not(:has(input))', function(e) {
-		if(e.target.tagName == 'A')
+	$('body').on('click', selector + ' tbody td:not(:has(input))', function (e) {
+		if (e.target.tagName == 'A')
 			return;
 		var row = $(this).closest('tr');
 		// On touch screens, tap something once to select, twice to open it
 		// On ordinary screens, click once to open (mouseover selects)
 		var select = !touchScreen || row.hasClass('selected');
 		selectOn.call(row);
-		if(select && selectFunction.call(this, e) == false)
+		if (select && selectFunction.call(this, e) == false)
 			selectOff.call(row);
 		e.preventDefault();
 		e.stopPropagation();
 		return false;
 	});
-	if(!touchScreen) {
+	if (!touchScreen) {
 		// Mouse over highlights row
 		$('body').on('mouseenter', selector + ' tbody tr', selectOn)
 			.on('mouseleave', selector + ' tbody tr', selectOff);
@@ -2834,11 +3132,11 @@ function selectClick(selector, selectFunction) {
  */
 function defaultUrl(defaultSuffix) {
 	var url = window.location.pathname.replace(/\.html$/, '');
-	if(url == '/')
+	if (url == '/')
 		url = '/home/default';
-	else if(url.substr(1).indexOf('/') < 0)
+	else if (url.substr(1).indexOf('/') < 0)
 		url += '/default';
-    return url + defaultSuffix + ".html" + window.location.search;
+	return url + defaultSuffix + ".html" + window.location.search;
 }
 
 /**
@@ -2849,16 +3147,15 @@ function defaultUrl(defaultSuffix) {
  * @returns {string}
  */
 function urlParameter(name, value, url) {
-	if(url === undefined)
-		{ //noinspection JSCheckFunctionSignatures
-			url = urlParameter('message', null, window.location.href);
-		}
+	if (url === undefined) { //noinspection JSCheckFunctionSignatures
+		url = urlParameter('message', null, window.location.href);
+	}
 	var regex = new RegExp('([\?&])' + name + '(=[^\?&]*)?');
-	if(value === null || value === undefined) {
+	if (value === null || value === undefined) {
 		var m = regex.exec(url);
-		if(m)
+		if (m)
 			url = url.replace(regex, m[1] == '?' ? '?' : '').replace('?&', '?');
-	} else if(regex.test(url))
+	} else if (regex.test(url))
 		url = url.replace(regex, '$1' + name + '=' + value);
 	else
 		url += (url.indexOf('?') < 0 ? '?' : '&') + name + '=' + value;
@@ -2873,16 +3170,16 @@ function urlParameter(name, value, url) {
  * @private
  */
 function _setAjaxObject(options, defaultSuffix, defaultDataSrc) {
-	if(typeof(options.ajax) == 'string') {
-        options.ajax = {
-            url: options.ajax
-        };
-	} else if(options.ajax === undefined && !options.data) {
-        options.ajax = {
-            url: defaultUrl(defaultSuffix)
-        };
+	if (typeof (options.ajax) == 'string') {
+		options.ajax = {
+			url: options.ajax
+		};
+	} else if (options.ajax === undefined && !options.data) {
+		options.ajax = {
+			url: defaultUrl(defaultSuffix)
+		};
 	}
-	if(options.ajax && typeof(options.ajax) == 'object' && options.ajax.dataSrc === undefined) {
+	if (options.ajax && typeof (options.ajax) == 'object' && options.ajax.dataSrc === undefined) {
 		options.ajax.dataSrc = defaultDataSrc;
 	}
 }
@@ -2909,7 +3206,7 @@ function getValueFromField(field, row) {
  */
 function colUpdate(selector, cell, data, rowno, col, row) {
 	var i = cell.find(selector);
-	if(i.length && i.attr('id')) {
+	if (i.length && i.attr('id')) {
 		// Field exists
 		i.val(data);
 	} else {
@@ -2931,7 +3228,7 @@ function colUpdate(selector, cell, data, rowno, col, row) {
  * @returns {string}
  */
 function colRender(data, type, row, meta) {
-	switch(type) {
+	switch (type) {
 		case 'display':
 		case 'filter':
 			var col = meta.settings.oInit.columns[meta.col];
@@ -2954,7 +3251,7 @@ function colRender(data, type, row, meta) {
  * @returns {string}
  */
 function numberRender(data, type, row, meta) {
-	switch(type) {
+	switch (type) {
 		case 'display':
 			return colRender(data, type, row, meta);
 		case 'filter':
@@ -2973,7 +3270,7 @@ function numberRender(data, type, row, meta) {
  * @returns {string}
  */
 function colDraw(data, rowno, row) {
-	return data;
+	return new SafeHtml().text(data).html();
 }
 
 /**
@@ -2986,9 +3283,9 @@ function colDraw(data, rowno, row) {
  */
 function _setColObject(col, tableName, index) {
 	var type;
-	if(typeof(col) == 'string') {
+	if (typeof (col) == 'string') {
 		// Shorthand - [#/@]name[/heading]
-		switch(col[0]) {
+		switch (col[0]) {
 			case '#':
 				type = 'decimal';
 				col = col.substr(1);
@@ -3004,19 +3301,19 @@ function _setColObject(col, tableName, index) {
 		}
 		var split = col.split('/');
 		col = { data: split[0] };
-		if(split.length > 1) col.heading = split[1];
+		if (split.length > 1) col.heading = split[1];
 		col.type = type;
 	} else {
 		type = col.type;
 	}
 	if (type) _.defaults(col, Type[type]);
-	if(col.attributes == null)
+	if (col.attributes == null)
 		col.attributes = '';
 	if (!col.name) col.name = col.data.toString();
-	if(col.heading === undefined) {
+	if (col.heading === undefined) {
 		var title = col.name;
 		// Remove table name from front
-		if(tableName && title.indexOf(tableName) == 0 && title != tableName)
+		if (tableName && title.indexOf(tableName) == 0 && title != tableName)
 			title = title.substr(tableName.length);
 		// Split "CamelCase" name into "Camel Case", and remove Id from end
 		title = title.replace(/Id$/, '').replace(/([A-Z])(?=[a-z0-9])/g, " $1").trim();
@@ -3025,16 +3322,16 @@ function _setColObject(col, tableName, index) {
 	if (typeof (col.defaultContent) == "function") {
 		col.defaultContent = col.defaultContent(index, col);
 	}
-	if(col.inputValue === undefined)
+	if (col.inputValue === undefined)
 		col.inputValue = getValueFromField;
-	if(col.download === undefined)
+	if (col.download === undefined)
 		col.download = colDraw;
-	if(col.draw === undefined)
+	if (col.draw === undefined)
 		col.draw = col.download;
-	if(col.render === undefined)
+	if (col.render === undefined)
 		col.render = colRender;		// Render function for dataTable
-	if(!col.update)
-		col.update = function(cell, data, rowno, row) {
+	if (!col.update)
+		col.update = function (cell, data, rowno, row) {
 			cell.html(this.draw(data, rowno, row));
 		};
 	return col;
@@ -3058,7 +3355,7 @@ function get(url, data, success, failure) {
 		}
 	})
 		.done(success)
-		.fail(failure || function(jqXHR, textStatus, errorThrown) {
+		.fail(failure || function (jqXHR, textStatus, errorThrown) {
 			message(textStatus == errorThrown ? textStatus : textStatus + ' ' + errorThrown);
 		});
 }
@@ -3078,8 +3375,9 @@ function addOptionsToSelect(select, data, val, col) {
 	var category;
 	var optgroup = select;
 	var multi = select.prop('multiple');
+	var array = multi && Array.isArray(val);
 	var date = col && col.date;
-	if(val == null)
+	if (val == null)
 		val = col && col.emptyValue != null ? col.emptyValue : '';
 	_.each(data,
 		/**
@@ -3090,28 +3388,30 @@ function addOptionsToSelect(select, data, val, col) {
 		 * @param {string} [opt.category] For categorised options
 		 * @param {string}[opt.class] css class
 		 */
-		function(opt) {
-		var id = opt.id;
-		if(id === undefined)
-			id = opt.value;
-		if(opt.hide && id != val)
-			return;
+		function (opt) {
+			var id = opt.id;
+			if (id === undefined)
+				id = opt.value;
+			if (opt.hide && id != val)
+				return;
+			var option = $('<option></option>');
+			option.attr('value', id);
+			option.text(date ? formatDate(opt.value) : opt.value);
+			if (id == val || (array && val.indexOf(id))) {
+				option.attr('selected', 'selected');
+				found = true;
+			}
+			if (opt.category && opt.category != category) {
+				category = opt.category;
+				optgroup = $('<optgroup></optgroup>').attr('label', opt.category).appendTo(select);
+			}
+			if (opt['class'])
+				option.addClass(opt['class']);
+			option.appendTo(opt.category ? optgroup : select);
+		});
+	if (!found && !multi) {
 		var option = $('<option></option>');
-        option.attr('value', id);
-		option.text(date ? formatDate(opt.value) : opt.value);
-		if(id == val)
-			found = true;
-		if(opt.category && opt.category != category) {
-			category = opt.category;
-			optgroup = $('<optgroup label="' + opt.category + '"></optgroup>').appendTo(select);
-		}
-		if(opt['class'])
-			option.addClass(opt['class']);
-		option.appendTo(opt.category ? optgroup : select);
-	});
-	if(!found && !multi) {
-		var option = $('<option></option>');
-		if(col && col.emptyOption)
+		if (col && col.emptyOption)
 			option.text(col.emptyOption);
 		option.attr('value', val);
 		option.prependTo(select);
@@ -3127,8 +3427,8 @@ function addOptionsToSelect(select, data, val, col) {
  */
 function hashFromArray(array, key) {
 	var hash = {};
-	if(key == null) key = 'id';
-	_.each(array, function(value) {
+	if (key == null) key = 'id';
+	_.each(array, function (value) {
 		hash[value[key]] = value;
 	});
 	return hash;
@@ -3140,7 +3440,7 @@ function hashFromArray(array, key) {
  */
 function getTableUrl() {
 	var dt = [];
-	$('button[data-nz]').each(function() {
+	$('button[data-nz]').each(function () {
 		dt.push($(this).attr('data-nz') == 'true' ? 1 : 0);
 	});
 	return urlParameter('dt', dt.toString());
@@ -3173,10 +3473,10 @@ function goto(url, e) {
  */
 function goback() {
 	var from = getParameter('from');
-	if(!from) {
+	if (!from) {
 		from = window.location.pathname;
 		var pos = from.substr(1).indexOf('/');
-		if(pos >= 0)
+		if (pos >= 0)
 			from = from.substr(0, pos + 1);
 	}
 	window.location = from;
@@ -3217,7 +3517,7 @@ function csvQuote(text) {
 
 function download(button, data) {
 	var menu = $('ul.menu');
-	if(menu.length)	{
+	if (menu.length) {
 		menu.remove();
 		return;
 	}
@@ -3230,10 +3530,10 @@ function download(button, data) {
 			var text = '';
 			var tab = ui.item[0].id == 'csv' ? ',' : "\t";
 			var quote = ui.item[0].id == 'csv' ? csvQuote : textQuote;
-			_.each(data, function(row) {
+			_.each(data, function (row) {
 				var rowText = '';
-				_.each(row, function(datum, index) {
-					if(index)
+				_.each(row, function (datum, index) {
+					if (index)
 						rowText += tab;
 					rowText += datum === null || datum === undefined ? '' : quote(datum + '');
 				});
@@ -3280,7 +3580,7 @@ function downloadFile(filename, text) {
  * Add years to a date
  * @param {number} y
  */
-Date.prototype.addYears = function(y) {
+Date.prototype.addYears = function (y) {
 	this.setYear(this.getYear() + 1900 + y);
 };
 
@@ -3288,10 +3588,10 @@ Date.prototype.addYears = function(y) {
  * Add months to a date
  * @param {number} m
  */
-Date.prototype.addMonths = function(m) {
+Date.prototype.addMonths = function (m) {
 	var month = (this.getMonth() + m) % 12;
 	this.setMonth(this.getMonth() + m);
-	while(this.getMonth() > month)
+	while (this.getMonth() > month)
 		this.addDays(-1);
 };
 
@@ -3299,7 +3599,7 @@ Date.prototype.addMonths = function(m) {
  * Add days to a date
  * @param {number} d
  */
-Date.prototype.addDays = function(d) {
+Date.prototype.addDays = function (d) {
 	this.setDate(this.getDate() + d);
 };
 
@@ -3307,7 +3607,7 @@ Date.prototype.addDays = function(d) {
  * Convert this date to yyyy-mm-dd format
  * @returns {string}
  */
-Date.prototype.toYMD = function() {
+Date.prototype.toYMD = function () {
 	var y = this.getYear() + 1900;
 	var m = (this.getMonth() + 101).toString().substr(1);
 	var d = (this.getDate() + 100).toString().substr(1);

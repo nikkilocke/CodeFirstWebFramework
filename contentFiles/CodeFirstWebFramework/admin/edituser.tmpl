@@ -2,7 +2,7 @@
 	<script>
 		$(function() {
 			var table = makeHeaderDetailForm('#docs', '#detail', 
-				{{Form.Options}}
+				{{Form.SafeOptions}}
 			);
 			$('#detail').toggle(table.header.data.ModulePermissions);
 			table.header.bind('changed.field', function(e, newValue, rowData, col, input) {

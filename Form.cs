@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -301,6 +302,15 @@ namespace CodeFirstWebFramework {
 		/// Form options passed to javascript.
 		/// </summary>
 		public JObject Options;
+
+		static Regex _sanitise = new Regex("< */script", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+		/// <summary>
+		/// Options as safe json (for direct inclusion in javascript)
+		/// </summary>
+		public string SafeOptions {
+			get { return _sanitise.Replace(Options.ToString(), @"<\/script"); }
+		}
 
 		/// <summary>
 		/// Build the form html from a template. By default it uses /modulename/methodname.tmpl, but, if that doesn't

@@ -746,11 +746,11 @@ namespace CodeFirstWebFramework {
 				if (!ResponseSent) {
 					// Method has not sent a response - do the default response
 					Response.AddHeader("Expires", DateTime.UtcNow.ToString("R"));
-					if (method.ReturnType == typeof(void))
-						Respond();									// Builds response from template
-					else if(o is BaseForm)
+					if (method.ReturnType == typeof(void)) {
+						Respond();                                  // Builds response from template
+					} else if (o is BaseForm) {
 						(o as BaseForm).Show();
-					else
+					} else
 						WriteResponse(o, null, HttpStatusCode.OK);	// Builds response from return value
 				}
 			} catch (Exception ex) {

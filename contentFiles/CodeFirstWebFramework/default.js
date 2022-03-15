@@ -1245,13 +1245,18 @@ var Type = {
 			var self = this;
 			if (this.selectOptions) {
 				_.each(this.selectOptions, function (o) {
-					select.addTo(select.add('label', {
-						text: o.value
-					}), 'input', self, rowno, {
+					var s = select.add('span', { text: ' ' });
+					var l = select.addTo(s, 'label');
+					var b = select.addTo(l, 'input', self, rowno, {
 						type: 'radio',
 						value: o.id,
 						checked: o.id == data
 					});
+					l.append(_.escape(o.value));
+					if (o.hint) {
+						s.attr('title', o.hint);
+						s.append(' <span class="hint">?</span>');
+					}
 				});
 			} else
 				select.addTo(select.add('label', {

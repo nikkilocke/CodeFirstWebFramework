@@ -39,7 +39,10 @@ class SafeHtml {
 			this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
 	}
 
-	static properties = ['checked', 'selected', 'disabled', 'multiple'];
+	/**
+	 * Which items are properties rather than attributes
+	 */
+	static properties = { checked: true, selected: true, disabled: true, multiple: true };
 
 	/**
 	 * Add an item to the div, and return it
@@ -96,17 +99,13 @@ class SafeHtml {
 				attributes.id = 'r' + rowno + 'c' + col.name + (suffix || '');
 			attributes['data-col'] = col.name;
 		}
-		if (attributes) {
-			_.each(SafeHtml.properties, function (p) {
-				if (attributes[p] !== undefined) {
-					if (attributes[p])
-						attributes[p] = p;
-					else
-						delete attributes[p];
-				}
-			});
+		var result = $('<' + htmlItem + '>');
+		for (a in attributes) {
+			if (SafeHtml.properties[a]) {
+				result.prop(a, attributes[a]);
+			} else
+				result.attr(a, attributes[a]);
 		}
-		var result = $('<' + htmlItem + '>', attributes);
 		item.append(result);
 		return result;
 	}

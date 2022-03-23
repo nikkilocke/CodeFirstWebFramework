@@ -12,13 +12,13 @@
       Includes Mustache templating for whole site and individual pages, automatic calling of code from urls, with translation of parameters, Ajax, forms and data tables, context-sensitive help and many other features.
     </Summary>
     <Copyright>2017-2021 Trumphurst Ltd.</Copyright>
-    <PackageProjectUrl>Try to make the framework compatible with LinqPad</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/nikkilocke/CodeFirstWebFramework</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.65</Version>
-    <AssemblyVersion>1.3.65.0</AssemblyVersion>
-    <FileVersion>1.3.65.0</FileVersion>
+    <Version>1.3.66</Version>
+    <AssemblyVersion>1.3.66.0</AssemblyVersion>
+    <FileVersion>1.3.66.0</FileVersion>
     <PackageReleaseNotes>Lots of extra checks to avoid html/java injection.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>

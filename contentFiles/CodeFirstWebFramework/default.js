@@ -103,7 +103,9 @@ class SafeHtml {
 		for (a in attributes) {
 			if (SafeHtml.properties[a]) {
 				result.prop(a, attributes[a]);
-			} else
+			} else if (a == 'text')
+				result.text(attributes[a]);
+			else
 				result.attr(a, attributes[a]);
 		}
 		item.append(result);
@@ -225,7 +227,7 @@ $(function () {
 });
 
 function addBackButton() {
-	insertActionButton('Back').click(goback);
+	insertActionButton('Back', 'back').click(goback);
 }
 
 function setFocusToFirstInputField() {
@@ -276,9 +278,13 @@ function jumpButton(text, url) {
  * @param text Button text
  * @returns {*|jQuery} Button
  */
-function actionButton(text) {
+function actionButton(text, type) {
+	id = text.replace(/ /g, '');
+	if (!type)
+		type = id;
 	var btn = $('<button></button>')
-		.attr('id', text.replace(/ /g, ''))
+		.attr('id', id)
+		.addClass(type)
 		.text(text)
 		.appendTo($('#menu3').show());
 	resize();
@@ -290,9 +296,13 @@ function actionButton(text) {
  * @param text Button text
  * @returns {*|jQuery} Button
  */
-function insertActionButton(text) {
+function insertActionButton(text, type) {
+	id = text.replace(/ /g, '');
+	if (!type)
+		type = id;
 	var btn = $('<button></button>')
-		.attr('id', text.replace(/ /g, ''))
+		.attr('id', id)
+		.addClass(type)
 		.text(text)
 		.prependTo($('#menu3').show());
 	resize();
@@ -1830,7 +1840,7 @@ function makeDataTable(selector, options) {
 		selectClick(selector, null);
 	}
 	if (options.download || options.download === undefined) {
-		actionButton('Download').click(function () {
+		actionButton('Download', 'download').click(function () {
 			var data = downloadData(table.fields, table.api().data());
 			download(this, data);
 		});
@@ -2155,7 +2165,7 @@ function makeForm(selector, options) {
 						}
 					}
 				});
-				actionButton(options.readonly ? 'View' : 'Edit')
+				actionButton(options.readonly ? 'View' : 'Edit', 'openDialog')
 					.click(function (e) {
 						result.parent().dialog('open');
 						e.preventDefault();
@@ -2163,26 +2173,26 @@ function makeForm(selector, options) {
 			} else {
 				// Add Buttons
 				if (!options.readonly) {
-					actionButton(options.submitText || 'Save')
+					actionButton(options.submitText || 'Save', 'save')
 						.addClass('goback')
 						.click(function (e) {
 							submitUrl(this);
 							e.preventDefault();
 						});
 					if (options.apply)
-						actionButton(options.applyText || 'Apply')
+						actionButton(options.applyText || 'Apply', 'apply')
 							.click(function (e) {
 								submitUrl(this);
 								e.preventDefault();
 							});
 					if (options.saveAndNew)
-						actionButton((options.submitText || 'Save') + ' and New')
+						actionButton((options.submitText || 'Save') + ' and New', 'savenew')
 							.addClass('new')
 							.click(function (e) {
 								submitUrl(this);
 								e.preventDefault();
 							});
-					actionButton('Reset')
+					actionButton('Reset', 'reset')
 						.click(function () {
 							window.location.reload();
 						});
@@ -2190,7 +2200,7 @@ function makeForm(selector, options) {
 			}
 		}
 		if (deleteUrl && !options.readonly) {
-			deleteButton = actionButton(options.deleteText || 'Delete')
+			deleteButton = actionButton(options.deleteText || 'Delete', 'delete')
 				.click(function (e) {
 					if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
 						deleteUrl(this);
@@ -2621,19 +2631,19 @@ function makeListForm(selector, options) {
 		if (!drawn && submitUrl) {
 			drawn = true;
 			if (!options.readonly) {
-				actionButton(options.submitText || 'Save')
+				actionButton(options.submitText || 'Save', 'save')
 					.addClass('goback')
 					.click(function (e) {
 						submitUrl(this);
 						e.preventDefault();
 					});
 				if (options.apply)
-					actionButton(options.applyText || 'Apply')
+					actionButton(options.applyText || 'Apply', 'apply')
 						.click(function (e) {
 							submitUrl(this);
 							e.preventDefault();
 						});
-				actionButton('Reset')
+				actionButton('Reset', 'reset')
 					.click(function () {
 						window.location.reload();
 					});
@@ -2866,13 +2876,13 @@ function makeDumbForm(selector, options) {
 		if (submitUrl) {
 			// Add Buttons
 			if (!options.readonly) {
-				actionButton(options.submitText || 'Save')
+				actionButton(options.submitText || 'Save', 'save')
 					.click(function (e) {
 						unsavedInput = false;
 						$(selector).closest('form').submit();
 						e.preventDefault();
 					});
-				actionButton('Reset')
+				actionButton('Reset', 'reset')
 					.click(function () {
 						window.location.reload();
 					});
@@ -2880,7 +2890,7 @@ function makeDumbForm(selector, options) {
 		}
 	}
 	if (deleteUrl && !options.readonly) {
-		deleteButton = actionButton(options.deleteText || 'Delete')
+		deleteButton = actionButton(options.deleteText || 'Delete', 'delete')
 			.click(function (e) {
 				if (confirm('Are you sure you want to ' + (options.deleteText ? options.deleteText : 'delete this record')))
 					deleteUrl(this);
@@ -2969,13 +2979,13 @@ function myOption(name, opts, defaultValue) {
  */
 function nextPreviousButtons(record) {
 	if (record && record.previous != null) {
-		actionButton('Previous')
+		actionButton('Previous', 'previous')
 			.click(function () {
 				window.location = urlParameter('id', record.previous);
 			});
 	}
 	if (record && record.next != null) {
-		actionButton('Next')
+		actionButton('Next', 'next')
 			.click(function () {
 				window.location = urlParameter('id', record.next);
 			});

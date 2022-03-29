@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.66</Version>
-    <AssemblyVersion>1.3.66.0</AssemblyVersion>
-    <FileVersion>1.3.66.0</FileVersion>
-    <PackageReleaseNotes>Lots of extra checks to avoid html/java injection.</PackageReleaseNotes>
+    <Version>1.3.68</Version>
+    <AssemblyVersion>1.3.68.0</AssemblyVersion>
+    <FileVersion>1.3.68.0</FileVersion>
+    <PackageReleaseNotes>Add button type (sets class by default) to all actionButtons. You can then override actionButton and insertActionButton if you want to do something different, rather than adding them to menu3.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

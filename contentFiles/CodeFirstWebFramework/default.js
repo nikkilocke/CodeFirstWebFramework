@@ -279,7 +279,7 @@ function jumpButton(text, url) {
  * @returns {*|jQuery} Button
  */
 function actionButton(text, type) {
-	id = text.replace(/ /g, '');
+	var id = text.replace(/ /g, '');
 	if (!type)
 		type = id;
 	var btn = $('<button></button>')
@@ -297,7 +297,7 @@ function actionButton(text, type) {
  * @returns {*|jQuery} Button
  */
 function insertActionButton(text, type) {
-	id = text.replace(/ /g, '');
+	var id = text.replace(/ /g, '');
 	if (!type)
 		type = id;
 	var btn = $('<button></button>')

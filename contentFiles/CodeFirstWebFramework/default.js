@@ -102,7 +102,8 @@ class SafeHtml {
 		var result = $('<' + htmlItem + '>');
 		for (a in attributes) {
 			if (SafeHtml.properties[a]) {
-				result.prop(a, attributes[a]);
+				if (attributes[a])
+					result.attr(a, a);
 			} else if (a == 'text')
 				result.text(attributes[a]);
 			else

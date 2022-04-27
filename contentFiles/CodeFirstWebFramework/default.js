@@ -40,11 +40,6 @@ class SafeHtml {
 	}
 
 	/**
-	 * Which items are properties rather than attributes
-	 */
-	static properties = { checked: true, selected: true, disabled: true, multiple: true };
-
-	/**
 	 * Add an item to the div, and return it
 	 * @param {string} htmlItem item name (e.g. 'input')
 	 * @param {any} col Optional column def (sets data-col to name)
@@ -131,6 +126,10 @@ class SafeHtml {
 
 }
 
+/**
+	* Which items are properties rather than attributes
+	*/
+SafeHtml.properties = { checked: true, selected: true, disabled: true, multiple: true };
 
 $(function () {
 	//	testHarness = bowser.firefox && hasParameter('test');

@@ -31,104 +31,100 @@ var False = false;
 function addJQueryUiControls() {
 }
 
-class SafeHtml {
-
-	constructor(htmlItem, col, rowno, suffix, attributes) {
-		this.item = $('<div></div>');
-		if (htmlItem)
-			this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
-	}
-
-	/**
-	 * Add an item to the div, and return it
-	 * @param {string} htmlItem item name (e.g. 'input')
-	 * @param {any} col Optional column def (sets data-col to name)
-	 * @param {int} rowno Optional row number (sets id as well)
-	 * @param {string} suffix Optional suffix (added to id)
-	 * @param {any} attributes Optional attributes to set on the item
-	 */
-	add(htmlItem, col, rowno, suffix, attributes) {
-		return this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
-	}
-
-	/**
-	 * Add an item to the provided item, and return it
-	 * @param {jquery object} item the item to add to
-	 * @param {string} htmlItem item name (e.g. 'input')
-	 * @param {any} col Optional column def (sets data-col to name)
-	 * @param {int} rowno Optional row number (sets id as well)
-	 * @param {string} suffix Optional suffix (added to id)
-	 * @param {any} attributes Optional attributes to set on the item
-	 */
-	addTo(item, htmlItem, col, rowno, suffix, attributes) {
-		if (attributes === undefined) {
-			var a = suffix;
-			if (a === undefined)
-				a = rowno;
-			if (a === undefined)
-				a = col;
-			if (a && typeof (a) == 'object' && a.draw === undefined) {
-				attributes = a;
-				if (a === suffix)
-					suffix = undefined;
-				else if (a === rowno)
-					rowno = undefined;
-				else if (a === col)
-					col = undefined;
-			} else
-				attributes = {};
-		}
-		if (col) {
-			if (col.attributes) {
-				var re = /([^ "=]+) *= *"([^"]*)"/g;
-				for (; ;) {
-					var m = re.exec(col.attributes);
-					if (m)
-						attributes[m[1]] = m[2];
-					else
-						break;
-				}
-			}
-
-			if (rowno !== undefined)
-				attributes.id = 'r' + rowno + 'c' + col.name + (suffix || '');
-			attributes['data-col'] = col.name;
-		}
-		var result = $('<' + htmlItem + '>');
-		for (a in attributes) {
-			if (SafeHtml.properties[a]) {
-				if (attributes[a])
-					result.attr(a, a);
-			} else if (a == 'text')
-				result.text(attributes[a]);
-			else
-				result.attr(a, attributes[a]);
-		}
-		item.append(result);
-		return result;
-	}
-
-	/**
-	 * Set the text of the div itself
-	 * @param {string} s the text
-	 */
-	text(s) {
-		this.item.text(s === null || s === undefined ? '' : s);
-		return this;
-	}
-
-	/**
-	 * Return the html of the div
-	 */
-	html() {
-		return this.item.html();
-	}
-
+function SafeHtml(htmlItem, col, rowno, suffix, attributes) {
+	this.item = $('<div></div>');
+	if (htmlItem)
+		this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
 }
 
 /**
-	* Which items are properties rather than attributes
-	*/
+ * Add an item to the div, and return it
+ * @param {string} htmlItem item name (e.g. 'input')
+ * @param {any} col Optional column def (sets data-col to name)
+ * @param {int} rowno Optional row number (sets id as well)
+ * @param {string} suffix Optional suffix (added to id)
+ * @param {any} attributes Optional attributes to set on the item
+*/
+SafeHtml.prototype.add = function(htmlItem, col, rowno, suffix, attributes) {
+	return this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
+}
+
+/**
+ * Add an item to the provided item, and return it
+ * @param {jquery object} item the item to add to
+ * @param {string} htmlItem item name (e.g. 'input')
+ * @param {any} col Optional column def (sets data-col to name)
+ * @param {int} rowno Optional row number (sets id as well)
+ * @param {string} suffix Optional suffix (added to id)
+ * @param {any} attributes Optional attributes to set on the item
+*/
+SafeHtml.prototype.addTo = function(item, htmlItem, col, rowno, suffix, attributes) {
+	if (attributes === undefined) {
+		var a = suffix;
+		if (a === undefined)
+			a = rowno;
+		if (a === undefined)
+			a = col;
+		if (a && typeof (a) == 'object' && a.draw === undefined) {
+			attributes = a;
+			if (a === suffix)
+				suffix = undefined;
+			else if (a === rowno)
+				rowno = undefined;
+			else if (a === col)
+				col = undefined;
+		} else
+			attributes = {};
+	}
+	if (col) {
+		if (col.attributes) {
+			var re = /([^ "=]+) *= *"([^"]*)"/g;
+			for (; ;) {
+				var m = re.exec(col.attributes);
+				if (m)
+					attributes[m[1]] = m[2];
+				else
+					break;
+			}
+		}
+
+		if (rowno !== undefined)
+			attributes.id = 'r' + rowno + 'c' + col.name + (suffix || '');
+		attributes['data-col'] = col.name;
+	}
+	var result = $('<' + htmlItem + '>');
+	for (a in attributes) {
+		if (SafeHtml.properties[a]) {
+			if (attributes[a])
+				result.attr(a, a);
+		} else if (a == 'text')
+			result.text(attributes[a]);
+		else
+			result.attr(a, attributes[a]);
+	}
+	item.append(result);
+	return result;
+}
+
+/**
+ * Set the text of the div itself
+ * @param {string} s the text
+ */
+SafeHtml.prototype.text = function(s) {
+	this.item.text(s === null || s === undefined ? '' : s);
+	return this;
+}
+
+/**
+ * Return the html of the div
+ */
+SafeHtml.prototype.html = function() {
+	return this.item.html();
+}
+
+/**
+ * Which items are properties rather than attributes
+ */
 SafeHtml.properties = { checked: true, selected: true, disabled: true, multiple: true };
 
 $(function () {

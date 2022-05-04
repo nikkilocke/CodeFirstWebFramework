@@ -1255,6 +1255,7 @@ var Type = {
 					var b = select.addTo(l, 'input', self, rowno, {
 						type: 'radio',
 						value: o.id,
+						name: 'r' + rowno + 'c' + self.name,
 						checked: o.id == data
 					});
 					l.append(_.escape(o.value));
@@ -1268,7 +1269,8 @@ var Type = {
 					text: 'Other'
 				}), 'input', this, rowno, {
 					type: 'radio',
-					value: '0'
+					value: '0',
+					name: 'r' + rowno + 'c' + self.name
 				});
 			return select.html();
 		},

@@ -144,6 +144,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Return SQL to cast a value to a type
+		/// </summary>
+		public string GroupConcat(string expression, string separator = null) {
+			return $"STRING_AGG({expression}, {Quote(separator == null ? "," : separator)})";
+		}
+
+		/// <summary>
 		/// Insert a record
 		/// </summary>
 		/// <param name="table">Table</param>

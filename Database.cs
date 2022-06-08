@@ -493,6 +493,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Return SQL to cast a value to a type
+		/// </summary>
+		public string GroupConcat(string expression, string separator = null) {
+			return db.GroupConcat(expression, separator);
+		}
+
+		/// <summary>
 		/// Produce an "IN(...)" SQL statement from a list of values
 		/// </summary>
 		public string In(params object[] args) {

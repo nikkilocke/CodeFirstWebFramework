@@ -47,6 +47,11 @@ namespace CodeFirstWebFramework {
 		int Execute(string sql);
 
 		/// <summary>
+		/// Return SQL to do a GROUP_CONCAT
+		/// </summary>
+		string GroupConcat(string expression, string separator = null);
+
+		/// <summary>
 		/// Do the table names in code and database match (some implementations are case insensitive)
 		/// </summary>
 		bool TableNamesMatch(Table code, Table database);

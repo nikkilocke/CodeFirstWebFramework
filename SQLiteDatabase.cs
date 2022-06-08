@@ -134,6 +134,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Return SQL to cast a value to a type
+		/// </summary>
+		public string GroupConcat(string expression, string separator = null) {
+			return $"GROUP_CONCAT({expression}{(separator == null ? "" : "," + Quote(separator))})";
+		}
+
+		/// <summary>
 		/// Execute arbitrary sql
 		/// </summary>
 		public int Execute(string sql) {
@@ -267,7 +274,7 @@ namespace CodeFirstWebFramework {
 					string indexName = ind["INDEX_NAME"].ToString();
 					if (!indexName.StartsWith("fk_")) {
 						string prefix = "i_" + name + "_";
-						string indName = indexName = indexName.StartsWith(prefix) ? indexName.Substring(prefix.Length) : indexName;
+						string indName = indexName.StartsWith(prefix) ? indexName.Substring(prefix.Length) : indexName;
 						tableIndexes.Add(new Index(indName, ind["UNIQUE"].ToString() == "True",
 							indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
 							.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));

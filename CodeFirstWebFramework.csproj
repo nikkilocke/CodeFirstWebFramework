@@ -16,11 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.76</Version>
-    <AssemblyVersion>1.3.76.0</AssemblyVersion>
-    <FileVersion>1.3.75.0</FileVersion>
-    <PackageReleaseNotes>Fixed bug where SQLite recreated indexes unnecessarily.
-Added GroupConcat method for portability between databases.</PackageReleaseNotes>
+    <Version>1.3.77</Version>
+    <AssemblyVersion>1.3.77.0</AssemblyVersion>
+    <FileVersion>1.3.77.0</FileVersion>
+    <PackageReleaseNotes>Move shared config folder to /Users/Shared/.config on OSX.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

@@ -14,6 +14,7 @@ using System.Reflection;
 using Mustache;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Runtime.InteropServices;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -100,7 +101,13 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// The default (and only) Config file
 		/// </summary>
-		public static Config Default = new Config();
+		public static Config Default;
+
+		static Config() {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+				DataPath = Path.Combine("/Users/Shared/.config", EntryModule);
+			Default = new Config();
+		}
 
 		/// <summary>
 		/// Save this configuration by name

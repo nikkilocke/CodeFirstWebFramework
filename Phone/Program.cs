@@ -10,6 +10,7 @@ using CodeFirstWebFramework;
 namespace Phone {
 	class Program {
 		public static void Main(string[] args) {
+			Console.WriteLine(Config.DataPath);
 			Config.Load(args);
 			switch (Environment.OSVersion.Platform) {
 				case PlatformID.Win32NT:

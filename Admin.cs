@@ -192,10 +192,14 @@ namespace CodeFirstWebFramework {
 			user.Password = "";
 			HeaderDetailForm f = new HeaderDetailForm(module, new Form(module, user.GetType()), 
 				new ListForm(module, typeof(Permission), true, "Module", "Function", "FunctionAccessLevel"));
+			f.Header["Password"].MaxLength = 512;
+            f.Header["Password"].Options["size"] = 45;
 			f.Header.Insert(f.Header.IndexOf("Password") + 1, new FieldAttribute() {
 				Data = "RepeatPassword",
-				Type = "passwordInput"
+				Type = "passwordInput",
+				MaxLength = 512
 			});
+			f.Header["RepeatPassword"].Options["size"] = 45;
 			AccessLevel levels = module.Server.NamespaceDef.GetAccessLevel();
 			f.Header["AccessLevel"].MakeSelectable(levels.Select(module.UserAccessLevel));
 			f.Detail["FunctionAccessLevel"].MakeSelectable(new JObject[] { new JObject().AddRange("id", AccessLevel.Any, "value", "User Setting") }.Concat(levels.Select(module.UserAccessLevel)));
@@ -352,16 +356,22 @@ namespace CodeFirstWebFramework {
 			Form f = new Form(module, true);
 			f.Add(new FieldAttribute() {
 				Data = "OldPassword",
-				Type = "passwordInput"
+				Type = "passwordInput",
+				MaxLength = 512
 			});
 			f.Add(new FieldAttribute() {
 				Data = "NewPassword",
-				Type = "passwordInput"
+				Type = "passwordInput",
+				MaxLength = 512
 			});
 			f.Add(new FieldAttribute() {
 				Data = "RepeatNewPassword",
-				Type = "passwordInput"
+				Type = "passwordInput",
+				MaxLength = 512
 			});
+			f["OldPassword"].Options["size"] = 45;
+			f["NewPassword"].Options["size"] = 45;
+			f["RepeatNewPassword"].Options["size"] = 45;
 			f.Data = new JObject();
 			return f;
 		}

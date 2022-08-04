@@ -45,7 +45,7 @@ function SafeHtml(htmlItem, col, rowno, suffix, attributes) {
  * @param {string} suffix Optional suffix (added to id)
  * @param {any} attributes Optional attributes to set on the item
 */
-SafeHtml.prototype.add = function(htmlItem, col, rowno, suffix, attributes) {
+SafeHtml.prototype.add = function (htmlItem, col, rowno, suffix, attributes) {
 	return this.addTo(this.item, htmlItem, col, rowno, suffix, attributes);
 }
 
@@ -58,7 +58,7 @@ SafeHtml.prototype.add = function(htmlItem, col, rowno, suffix, attributes) {
  * @param {string} suffix Optional suffix (added to id)
  * @param {any} attributes Optional attributes to set on the item
 */
-SafeHtml.prototype.addTo = function(item, htmlItem, col, rowno, suffix, attributes) {
+SafeHtml.prototype.addTo = function (item, htmlItem, col, rowno, suffix, attributes) {
 	if (attributes === undefined) {
 		var a = suffix;
 		if (a === undefined)
@@ -110,7 +110,7 @@ SafeHtml.prototype.addTo = function(item, htmlItem, col, rowno, suffix, attribut
  * Set the text of the div itself
  * @param {string} s the text
  */
-SafeHtml.prototype.text = function(s) {
+SafeHtml.prototype.text = function (s) {
 	this.item.text(s === null || s === undefined ? '' : s);
 	return this;
 }
@@ -118,7 +118,7 @@ SafeHtml.prototype.text = function(s) {
 /**
  * Return the html of the div
  */
-SafeHtml.prototype.html = function() {
+SafeHtml.prototype.html = function () {
 	return this.item.html();
 }
 
@@ -2036,11 +2036,13 @@ function makeForm(selector, options) {
 	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
 		if (!row || !col.sameRow)
-			row = $('<tr></tr>').appendTo($(selector));
-		var hdg = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+			row = $('<tr class="form-question"></tr>').appendTo($(selector));
+		var hdg = $('<th class="form-label"></th>').appendTo(row);
+		var lbl = $('<label for="r0c' + col.name + '"></label>').appendTo(hdg);
+		lbl.text(col.heading).attr('title', col.hint);
 		if (col.hint)
-			hdg.append(' <span class="hint">?</span>');
-		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
+			lbl.append(' <span class="hint">?</span>');
+		col.cell = $('<td class="form-inputs"></td>').appendTo(row).html(col.defaultContent);
 		if (col.colspan)
 			col.cell.attr('colspan', col.colspan);
 		if (col.sClass)
@@ -2418,6 +2420,7 @@ function makeListForm(selector, options) {
 			skip--;
 		} else {
 			var cell = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+			cell.attr('id', 'c-' + col.name);
 			if (col.hint)
 				cell.append(' <span class="hint">?</span>');
 			if (col.colspan) {
@@ -2520,6 +2523,7 @@ function makeListForm(selector, options) {
 				newRow(row.next('tr'));
 			if (cell.length == 0) {
 				cell = $('<td></td>').appendTo(row);
+				cell.attr('aria-labelled-by', 'c-' + col.name);
 				if (col.sClass)
 					cell.attr('class', col.sClass);
 			}
@@ -2785,11 +2789,13 @@ function makeDumbForm(selector, options) {
 	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
 		if (!row || !col.sameRow)
-			row = $('<tr></tr>').appendTo($(selector));
-		var hdg = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
+			row = $('<tr class="form-question"></tr>').appendTo($(selector));
+		var hdg = $('<th class="form-label"></th>').appendTo(row);
+		var lbl = $('<label for="r0c' + col.name + '"></label>').appendTo(hdg);
+		lbl.text(col.heading).attr('title', col.hint);
 		if (col.hint)
-			hdg.append(' <span class="hint">?</span>');
-		col.cell = $('<td></td>').appendTo(row).html(col.defaultContent);
+			lbl.append(' <span class="hint">?</span>');
+		col.cell = $('<td class="form-inputs"></td>').appendTo(row).html(col.defaultContent);
 		if (col.colspan)
 			col.cell.attr('colspan', col.colspan);
 		columns[col.name] = col;

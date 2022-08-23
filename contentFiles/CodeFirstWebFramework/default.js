@@ -1198,7 +1198,9 @@ var Type = {
 			if (data == null)
 				data = '';
 			var result = new SafeHtml();
-			result.add('img');
+			result.add('img', this, rowno, {
+				src: data
+			});
 			result.add('br');
 			result.add('input', this, rowno, {
 				type: 'file',

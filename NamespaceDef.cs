@@ -511,7 +511,7 @@ namespace CodeFirstWebFramework {
 		void processFields(Type tbl, ref List<Field> fields, ref Dictionary<string, IndexDef> indexes, ref List<Tuple<int, Field>> primary, ref string primaryName) {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType, ref fields, ref indexes, ref primary, ref primaryName);
-			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
+			foreach (FieldInfo field in tbl.GetFieldsInOrder(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
 				PrimaryAttribute pk;
 				Field fld = Field.FieldFor(field, out pk);
 				if (fld == null)

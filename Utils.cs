@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Reflection;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -421,6 +422,15 @@ namespace CodeFirstWebFramework {
 				output.Append(alphabet[dualbyte]);
 			}
 			return output.ToString().Substring(0, 26);
+		}
+
+		/// <summary>
+		/// Attempt to make GetFields return the fields in the right order
+		/// </summary>
+		/// <param name="self">Type to get the fields for</param>
+		/// <param name="bindingAttr">Binding flags to pass to GetFields</param>
+		public static IEnumerable<FieldInfo> GetFieldsInOrder(this Type self, BindingFlags bindingAttr) {
+			return self.GetFields(bindingAttr).OrderBy(field => field.MetadataToken);
 		}
 
 	}

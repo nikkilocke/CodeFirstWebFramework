@@ -1091,7 +1091,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public string Template(string filename, object obj) {
 			string body = LoadTemplate(filename, obj);
-			foreach(FieldInfo field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)) {
+			foreach(FieldInfo field in GetType().GetFieldsInOrder(BindingFlags.Instance | BindingFlags.Public)) {
 				if (!field.IsDefined(typeof(TemplateSectionAttribute)))
 					continue;
 				field.SetValue(this, ExtractSection(field.Name.ToLower(), ref body, (string)field.GetValue(this) ?? ""));

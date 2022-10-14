@@ -570,7 +570,7 @@ namespace CodeFirstWebFramework {
 			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
 				processFields(tbl.BaseType, inTable);
 			bool readwrite = ReadWrite && inTable;
-			foreach (FieldInfo field in tbl.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
+			foreach (FieldInfo field in tbl.GetFieldsInOrder(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
 				FieldAttribute f = FieldAttribute.FieldFor(Module.Database, field, readwrite || (ReadWrite && field.IsDefined(typeof(WriteableAttribute))));
 				if (f != null && RequireField(f))
 					columns.Add(f.Options);

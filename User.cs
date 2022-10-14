@@ -263,7 +263,7 @@ namespace CodeFirstWebFramework {
 			List<JObject> values = new List<JObject>();
 			values.Add(new JObject().AddRange("id", 0, "value", "None"));
 			foreach (FieldInfo c in GetType()
-					.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+					.GetFieldsInOrder(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
 					.Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(int))) {
 				int id = (int)c.GetRawConstantValue();
 				if(id > 0 && id <= maxLevel && !values.Any(v => v.AsInt("id") == id))

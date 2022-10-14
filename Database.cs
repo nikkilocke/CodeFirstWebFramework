@@ -1555,7 +1555,7 @@ namespace CodeFirstWebFramework {
 		FieldInfo idField {
 			get {
 			FieldInfo found = null;
-				foreach(FieldInfo f in GetType().GetFields(BindingFlags.Public | BindingFlags.Instance)) {
+				foreach(FieldInfo f in GetType().GetFieldsInOrder(BindingFlags.Public | BindingFlags.Instance)) {
 					PrimaryAttribute p = f.GetCustomAttribute<PrimaryAttribute>();
 					if(p != null) {
 						if(p.Sequence > 0 || f.FieldType != typeof(int?))

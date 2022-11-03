@@ -1033,7 +1033,7 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			if (defaultValue == null && !nullable) {
-				if (type == typeof(bool) || type == typeof(int) || type == typeof(long) || type == typeof(decimal) || type == typeof(double)) {
+				if (type == typeof(bool) || type == typeof(int) || type.IsEnum || type == typeof(long) || type == typeof(decimal) || type == typeof(double)) {
 					defaultValue = "0";
 				} else if (type == typeof(string)) {
 					defaultValue = "";
@@ -1077,8 +1077,10 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public string Quote(object o, Func<object, string> quote) {
 			if (o == null || o == DBNull.Value || (o is JToken && ((JToken)o).Type == JTokenType.Null)) return quote(null);
+			if (Type.IsEnum)
+				return quote(Convert.ChangeType(o, typeof(int)));
 			string s = o.ToString();
-			if ((Type == typeof(int) || Type == typeof(long) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return quote(null);
+			if ((Type.IsEnum || Type == typeof(int) || Type == typeof(long) || Type == typeof(decimal) || Type == typeof(double) || Type == typeof(DateTime) || Type == typeof(bool)) && s == "") return quote(null);
 			if (Type == typeof(bool)) {
 				// Accept numeric value as bool (non-zero = true)
 				if (Regex.IsMatch(s, @"^\d+$"))
@@ -1120,7 +1122,9 @@ namespace CodeFirstWebFramework {
 					case "String":
 						return "string";
 					default:
-						return name;
+						if(Type.IsEnum)
+                            return "int";
+                        return name;
 				}
 			}
 		}
@@ -1203,12 +1207,12 @@ namespace CodeFirstWebFramework {
 				pt = typeof(DateTime);
 				nullable = true;
 			}
-			if (pk != null)
+            if (pk != null)
 				nullable = false;
 			if (pt == typeof(bool)) {
 				length = 1;
 				defaultValue = "0";
-			} else if (pt == typeof(int)) {
+			} else if (pt == typeof(int) || pt.IsEnum) {
 				length = 11;
 				defaultValue = "0";
 			} else if (pt == typeof(long)) {

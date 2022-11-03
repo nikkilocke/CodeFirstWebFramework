@@ -4,7 +4,7 @@ using System.Text;
 using CodeFirstWebFramework;
 
 namespace Phone {
-	enum TestValues {
+	public enum TestValues {
 		Value0,
 		Value1,
 		Value2,
@@ -21,8 +21,8 @@ namespace Phone {
 		public double Double;
 		public int Integer;
 		public bool Boolean;
-		public int Option;
-		[Length(0)]
+		public TestValues Option;
+        [Length(0)]
 		public string TextArea;
 	}
 	public class Tests : AppModule {
@@ -37,13 +37,13 @@ namespace Phone {
 			if (!edit)
 				InsertMenuOption(new MenuOption("Edit", Request.Url + (string.IsNullOrEmpty(Request.Url.Query) ?"?" : "&") + "edit=y"));
 			Form form = new Form(this, typeof(TestData), edit);
-			form["Option"].MakeSelectable(typeof(TestValues));
 			if(GetParameters["credit"] == "y") {
 				form["Decimal"].Type = "creditInput";
 				form["Decimal"].Heading = "Debit";
 				form.Insert(form.IndexOf("Decimal") + 1, new FieldAttribute("name", "Debit", "data", "Decimal", "heading", "Debit", "type", "debitInput"));
-				form["Option"].Type = edit ? "radioInput" : "radio";
-			}
+				if (edit)
+					form["Option"].Type = "radioInput";
+            }
 			form.Data = Database.QueryOne("SELECT * FROM TestData") ?? new Newtonsoft.Json.Linq.JObject();
 			return form;
 		}

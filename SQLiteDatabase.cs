@@ -454,7 +454,11 @@ namespace CodeFirstWebFramework {
 					b.Append(" COLLATE NOCASE");
 					break;
 				default:
-					throw new CheckException("Unknown type {0}", f.Type.Name);
+					if(f.Type.IsEnum) {
+                        b.Append("INTEGER");
+                        break;
+                    }
+                    throw new CheckException("Unknown type {0}", f.Type.Name);
 			}
 			if (f.AutoIncrement)
 				b.Append(" PRIMARY KEY AUTOINCREMENT");

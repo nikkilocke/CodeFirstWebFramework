@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.81</Version>
-    <AssemblyVersion>1.3.81.0</AssemblyVersion>
-    <FileVersion>1.3.81.0</FileVersion>
-    <PackageReleaseNotes>Added labels, aria-labelled-by and identifying classes to form tables.</PackageReleaseNotes>
+    <Version>1.3.82</Version>
+    <AssemblyVersion>1.3.82.0</AssemblyVersion>
+    <FileVersion>1.3.82.0</FileVersion>
+    <PackageReleaseNotes>Added ability to use enums in database fields</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

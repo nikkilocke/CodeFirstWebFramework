@@ -434,7 +434,11 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 						b.AppendFormat("VARCHAR({0})", f.Length);
 					break;
 				default:
-					throw new CheckException("Unknown type {0}", f.Type.Name);
+                    if (f.Type.IsEnum) {
+                        b.Append("INT");
+                        break;
+                    }
+                    throw new CheckException("Unknown type {0}", f.Type.Name);
 			}
 			b.AppendFormat(" {0}NULL", f.Nullable ? "" : "NOT ");
 			if (f.AutoIncrement)

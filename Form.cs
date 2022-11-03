@@ -123,27 +123,28 @@ namespace CodeFirstWebFramework {
 			get { return Name ?? Data; }
 		}
 
-		/// <summary>
-		/// Turn a field into a select or selectInput
-		/// </summary>
-		public FieldAttribute MakeSelectable(JObjectEnumerable values) {
-			Options["selectOptions"] = (JArray)values;
-			Type = Options.AsBool("readonly") ? "select" : "selectInput";
-			return this;
-		}
-
-		/// <summary>
-		/// Turn a field into a select or selectInput
-		/// </summary>
-		public FieldAttribute MakeSelectable(IEnumerable<JObject> values) {
-			return MakeSelectable(new JObjectEnumerable(values));
+        /// <summary>
+        /// Turn a field into a select or selectInput
+        /// </summary>
+		/// <param name="values">IEnumerable JObject containing id and value to make the select options</param>
+		/// <param name="defaultLabel">Label to use if there is to be an option for "none of the above" (null if there isn't to be such an option)</param>
+		/// <param name="defaultValue">Value to use for for "none of the above"</param>
+        public FieldAttribute MakeSelectable(IEnumerable<JObject> values, string defaultLabel = null, int defaultValue = 0) {
+            if (defaultLabel != null)
+                values = (new JObject[] { new JObject().AddRange("id", defaultValue, "value", defaultLabel) }).Concat(values);
+            JArray j = new JArray();
+            foreach (JObject jo in values)
+                j.Add(jo);
+            Options["selectOptions"] = j;
+            Type = Options.AsBool("readonly") ? "select" : "selectInput";
+            return this;
 		}
 
 		/// <summary>
 		/// Turn an Enum field into a select or selectInput
 		/// </summary>
 		static public IEnumerable<JObject> SelectValues(Type enumType) {
-			foreach (var v in Enum.GetValues(enumType)) {
+            foreach (var v in Enum.GetValues(enumType)) {
 				JObject j = new JObject {
 					["id"] = (int)v,
 					["value"] = Enum.GetName(enumType, v).UnCamel()
@@ -152,11 +153,14 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
-		/// <summary>
-		/// Turn a field into a select or selectInput
-		/// </summary>
-		public FieldAttribute MakeSelectable(Type enumType) {
-			return MakeSelectable(SelectValues(enumType));
+        /// <summary>
+        /// Turn a field into a select or selectInput
+        /// </summary>
+		/// <param name="enumType">Enum type for field</param>
+        /// <param name="defaultLabel">Label to use if there is to be an option for "none of the above" (null if there isn't to be such an option)</param>
+        /// <param name="defaultValue">Value to use for for "none of the above"</param>
+        public FieldAttribute MakeSelectable(Type enumType, string defaultLabel = null, int defaultValue = 0) {
+			return MakeSelectable(SelectValues(enumType), defaultLabel, defaultValue);
 		}
 
 		/// <summary>
@@ -217,7 +221,8 @@ namespace CodeFirstWebFramework {
 			Field = fld;
 			if (Data == null)
 				Data = fld.Name;
-			if (Type == null) {
+            Options["readonly"] = !readwrite;
+            if (Type == null) {
 				if (Types != null) {
 					string[] t = Types.Split(',');
 					if (readwrite) {
@@ -245,6 +250,10 @@ namespace CodeFirstWebFramework {
 							Type = readwrite ? "dateInput" : "date";
 							break;
 						default:
+							if(fld.Type.IsEnum) {
+								MakeSelectable(fld.Type);
+								break;
+							}
 							Type = fld.Length == 0 ?
 								readwrite ? "textAreaInput" : "textArea" :
 								readwrite ? "textInput" : "string";
@@ -254,7 +263,6 @@ namespace CodeFirstWebFramework {
 			}
 			if (Type == "textInput" && MaxLength == 0 && fld.Length > 0)
 				MaxLength = (int)Math.Floor(fld.Length);
-			Options["readonly"] = !readwrite;
 		}
 	}
 

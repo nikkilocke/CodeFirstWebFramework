@@ -202,7 +202,9 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public static object To(this JToken self, Type t) {
 			try {
-				return self.ToObject(t, _converter);
+				if (self == null || self.Type == JTokenType.Null)
+					return t.IsValueType ? Activator.CreateInstance(t) : null;
+                return self.ToObject(t, _converter);
 			} catch (Exception ex) {
 				Match m = Regex.Match(ex.Message, "Error converting value (.*) to type '(.*)'. Path '(.*)', line");
 				if (m.Success)

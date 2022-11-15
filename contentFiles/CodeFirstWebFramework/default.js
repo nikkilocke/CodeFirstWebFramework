@@ -2731,7 +2731,7 @@ function makeListForm(selector, options) {
 	table.updateSelectOptions = function (col, selectOptions) {
 		col.selectOptions = selectOptions;
 		_.each(table.data, function (rowData, index) {
-			var cell = cellFor(index, col);
+			var cell = table.cellFor(index, col);
 			cell.html(col.draw(rowData[col.data], index, rowData));
 		});
 	};

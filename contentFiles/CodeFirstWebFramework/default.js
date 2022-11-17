@@ -2009,7 +2009,10 @@ function makeForm(selector, options) {
 				if (msg) return;
 			}
 			postJson(submitHref, result.data, function (d) {
+				// Success
 				$('button#Back').text('Back');
+				if (result.submitCallback && result.submitCallback(d))
+					return;
 				if ($(button).hasClass('goback')) {
 					goback();	// Save
 				} else if ($(button).hasClass('new')) {
@@ -2017,6 +2020,10 @@ function makeForm(selector, options) {
 				} else if (tableName && d.id) {
 					window.location = urlParameter('id', d.id);	// Apply - redisplay saved record
 				}
+			}, function (d) {
+				// Failure
+				if (result.submitCallback)
+					result.submitCallback(d);
 			});
 		};
 	}
@@ -2215,6 +2222,7 @@ function makeForm(selector, options) {
 	result.dataReady = dataReady;
 	result.draw = draw;
 	result.submit = submitUrl;
+	result.submitCallback = options.submitCallback;
 	result.updateSelectOptions = function (col, selectOptions) {
 		col.selectOptions = selectOptions;
 		col.cell.html(col.draw(result.data[col.data], 0, result.data));
@@ -2280,12 +2288,19 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 				header: result.header.data,
 				detail: result.detail.data
 			}, function (d) {
+				// Success
+				if (result.submitCallback && result.submitCallback(d))
+					return;
 				if ($(button).hasClass('goback'))
 					goback();
 				else if ($(button).hasClass('new'))
 					window.location = urlParameter('id', 0);
 				else if (tableName && d.id)
 					window.location = urlParameter('id', d.id);
+			}, function (d) {
+				// Failure
+				if (result.submitCallback)
+					result.submitCallback(d);
 			});
 		};
 	}
@@ -2321,7 +2336,8 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 		detail: makeListForm(detailSelector, options.detail),
 		data: options.data,
 		dataReady: dataReady,
-		submit: submitUrl
+		submit: submitUrl,
+		submitCallback: options.submitCallback
 	};
 	result.detail.header = result.header;
 	nextPreviousButtons(result.data);
@@ -2353,7 +2369,7 @@ function makeListForm(selector, options) {
 		submitUrl = defaultUrl('Save');
 	}
 	if (selectUrl === undefined && typeof (submitUrl) == 'string') {
-		var s = submitUrl;
+		var submitHref = submitUrl;
 		//noinspection JSUnusedAssignment,JSUnusedLocalSymbols
 		submitUrl = function (button) {
 			try {
@@ -2375,7 +2391,15 @@ function makeListForm(selector, options) {
 				message(msg);
 				if (msg) return;
 			}
-			postJson(s, table.data);
+			postJson(submitHref, table.data, function (d) {
+				// Success
+				if (result.submitCallback)
+					result.submitCallback(d);
+			}, function (d) {
+				// Failure
+				if (result.submitCallback)
+					result.submitCallback(d);
+			});
 		};
 	}
 	if (typeof (selectUrl) == 'string') {
@@ -2672,6 +2696,7 @@ function makeListForm(selector, options) {
 	table.draw = draw;
 	table.refresh = refresh;
 	table.submit = submitUrl;
+	table.submitCallback = options.submitCallback;
 	/**
 	 * Return the row index of item r
 	 * @param r
@@ -2908,6 +2933,7 @@ function makeDumbForm(selector, options) {
 	result.dataReady = dataReady;
 	result.draw = draw;
 	result.submit = submitUrl;
+	result.submitCallback = options.submitCallback;
 	Forms.push(result);
 	if (options.data)
 		dataReady(options.data);
@@ -3003,15 +3029,17 @@ function nextPreviousButtons(record) {
  * @param {string} url
  * @param data
  * @param {function} [success]
+ * @param {function} [failure]
  */
-function postJson(url, data, success) {
+function postJson(url, data, success, failure) {
 	if (typeof (data) == 'function') {
+		failure = success;
 		success = data;
 		data = {};
 	}
 	if (data == null)
 		data = {};
-	postData(url, { json: JSON.stringify(data) }, false, success);
+	postData(url, { json: JSON.stringify(data) }, false, success, failure);
 }
 
 /**
@@ -3019,9 +3047,10 @@ function postJson(url, data, success) {
  * @param {string} url
  * @param data
  * @param {function} [success]
+ * @param {function} [failure]
  */
-function postFormData(url, data, success) {
-	postData(url, data, true, success, 60000);
+function postFormData(url, data, success, failure) {
+	postData(url, data, true, success, failure, 60000);
 }
 
 /**
@@ -3030,9 +3059,14 @@ function postFormData(url, data, success) {
  * @param data
  * @param {boolean} asForm true to post as multiplart/form-data (uploaded file)
  * @param {function} [success]
+ * @param {function} [failure]
  * @param {number} [timeout] in msec
  */
-function postData(url, data, asForm, success, timeout) {
+function postData(url, data, asForm, success, failure, timeout) {
+	if (typeof (failure) != 'function') {
+		timeout = failure;
+		failure = undefined;
+	}
 	message(timeout > 10000 ? 'Please wait, uploading data...' : 'Please wait...');
 	var ajax = {
 		url: url,
@@ -3057,9 +3091,11 @@ function postData(url, data, asForm, success, timeout) {
 			 * @param {string} [result.redirect] Where to go now
 			 */
 			function (result) {
-				if (result.error)
+				if (result.error) {
 					message(result.error);
-				else {
+					if (failure)
+						failure(result);
+				} else {
 					message(result.message);
 					if (result.confirm) {
 						// C# code wants a confirmation
@@ -3080,7 +3116,10 @@ function postData(url, data, asForm, success, timeout) {
 					window.location = result.redirect;
 			})
 		.fail(function (jqXHR, textStatus, errorThrown) {
-			message(textStatus == errorThrown ? textStatus : textStatus + ' ' + errorThrown);
+			var txt = textStatus == errorThrown ? textStatus : textStatus + ' ' + errorThrown;
+			message(txt);
+			if (failure)
+				failure({ error: txt });
 		});
 }
 

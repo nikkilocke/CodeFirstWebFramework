@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.85</Version>
+    <Version>1.3.89</Version>
     <AssemblyVersion>1.3.84.0</AssemblyVersion>
     <FileVersion>1.3.84.0</FileVersion>
-    <PackageReleaseNotes>Make JToken.To&lt;type&gt; work even if JToken is null.</PackageReleaseNotes>
+    <PackageReleaseNotes>Callback on submit function</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

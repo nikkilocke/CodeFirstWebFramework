@@ -1816,6 +1816,7 @@ function makeDataTable(selector, options) {
 					));
 			} catch (e) {
 			}
+			return {};
 		};
 		options.stateSaveCallback = function (settings, data) {
 			try {
@@ -3153,7 +3154,7 @@ function selectOff() {
  * @param {function} selectFunction (returns false if row can't be selected)
  */
 function selectClick(selector, selectFunction) {
-	$('body').off('click', selector + ' tbody td:not(:has(input))');
+	$('body').off('click', selector + ' tbody td:not(:has(input)):not(.dtr-control)');
 	if (!touchScreen) {
 		$('body').off('mouseenter', selector + ' tbody tr')
 			.off('mouseleave', selector + ' tbody tr');
@@ -3163,7 +3164,7 @@ function selectClick(selector, selectFunction) {
 	var table = $(selector);
 	table.addClass('noselect');
 	table.find('tbody').css('cursor', 'pointer');
-	$('body').on('click', selector + ' tbody td:not(:has(input))', function (e) {
+	$('body').on('click', selector + ' tbody td:not(:has(input)):not(.dtr-control)', function (e) {
 		if (e.target.tagName == 'A')
 			return;
 		var row = $(this).closest('tr');

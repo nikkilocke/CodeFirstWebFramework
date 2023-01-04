@@ -1219,12 +1219,8 @@ namespace CodeFirstWebFramework {
 				(int)status,
 				status);
 			Response.ContentEncoding = Encoding;
-			switch (contentType) {
-				case "text/plain":
-				case "text/html":
-					contentType += ";charset=" + Charset;
-					break;
-			}
+			if(contentType != null && contentType.Split('/')[0] == "text" && !contentType.Contains("charset"))
+				contentType += ";charset=" + Charset;
 			string logStatus = status.ToString();
 			byte[] msg;
 			if (o != null) {

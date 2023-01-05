@@ -60,6 +60,7 @@ namespace Phone {
 			DataTableForm form = new DataTableForm(this, typeof(PhoneNumber)) {
 				Select = "/home/PhoneNumber"
 			};
+			form.Options["responsive"] = true;
 			form.Show();
 		}
 

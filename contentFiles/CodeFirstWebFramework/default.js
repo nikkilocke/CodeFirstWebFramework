@@ -1831,6 +1831,8 @@ function makeDataTable(selector, options) {
 	if (typeof (selectUrl) == 'function')
 		$(selector).addClass('noselect');
 	var table = $(selector).dataTable(options);
+	if (options.responsive)
+		table.closest('.datatableContainer').addClass('screenWidth');
 
 	// Attach mouse handlers to each row
 	if (typeof (selectUrl) == 'function') {
@@ -3154,7 +3156,7 @@ function selectOff() {
  * @param {function} selectFunction (returns false if row can't be selected)
  */
 function selectClick(selector, selectFunction) {
-	$('body').off('click', selector + ' tbody td:not(:has(input)):not(.dtr-control)');
+	$('body').off('click', selector + ' tbody td:not(:has(input))');
 	if (!touchScreen) {
 		$('body').off('mouseenter', selector + ' tbody tr')
 			.off('mouseleave', selector + ' tbody tr');
@@ -3164,9 +3166,11 @@ function selectClick(selector, selectFunction) {
 	var table = $(selector);
 	table.addClass('noselect');
 	table.find('tbody').css('cursor', 'pointer');
-	$('body').on('click', selector + ' tbody td:not(:has(input)):not(.dtr-control)', function (e) {
+	$('body').on('click', selector + ' tbody td:not(:has(input))', function (e) {
 		if (e.target.tagName == 'A')
 			return;
+		if (table.hasClass('collapsed') && $(e.target).hasClass('dtr-control') && e.clientX < 35)
+			return;		// Responsive data-table click on +/- sign
 		var row = $(this).closest('tr');
 		// On touch screens, tap something once to select, twice to open it
 		// On ordinary screens, click once to open (mouseover selects)

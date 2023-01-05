@@ -254,6 +254,9 @@ input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
+.screenWidth {
+    max-width: calc(100vw - 12px);
+}
 ul.menu {
     position: absolute;
     display: block;

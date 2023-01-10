@@ -1,6 +1,7 @@
 var unsavedInput;	// True if an edit field has been changed, and not saved
 // var testHarness;	// True if running in Firefox (used for automated tests)
 var touchScreen;	// True if running on a tablet or phone
+var doubleClickToSelect;	// Set to true if you want the user to have to tap twice to select items in data tables and list forms
 var decPoint;		// The decimal point character of this locale
 // Extend auto-complete widget to cope with multiple categories
 $.widget("custom.catcomplete", $.ui.autocomplete, {
@@ -3174,7 +3175,7 @@ function selectClick(selector, selectFunction) {
 		var row = $(this).closest('tr');
 		// On touch screens, tap something once to select, twice to open it
 		// On ordinary screens, click once to open (mouseover selects)
-		var select = !touchScreen || row.hasClass('selected');
+		var select = !touchScreen || !doubleClickToSelect || row.hasClass('selected');
 		selectOn.call(row);
 		if (select && selectFunction.call(this, e) == false)
 			selectOff.call(row);

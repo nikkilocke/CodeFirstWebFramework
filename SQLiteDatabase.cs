@@ -21,6 +21,7 @@ namespace CodeFirstWebFramework {
 		SQLiteConnection _conn;
 		SQLiteTransaction _tran;
 		Database _db;
+		bool _viewsDropped;
 
 		/// <summary>
 		/// Static constructor registers the extension functions to make SQLite more like MySql
@@ -303,19 +304,33 @@ namespace CodeFirstWebFramework {
 			return tables;
 		}
 
-		/// <summary>
-		/// Upgrade the table definition
-		/// </summary>
-		/// <param name="code">Defintiion required, from code</param>
-		/// <param name="database">Definition in database</param>
-		/// <param name="insert">Fields to insert</param>
-		/// <param name="update">Fields to change</param>
-		/// <param name="remove">Fields to remove</param>
-		/// <param name="insertFK">Foreign keys to insert</param>
-		/// <param name="dropFK">Foreign keys to remove</param>
-		/// <param name="insertIndex">Indexes to insert</param>
-		/// <param name="dropIndex">Indexes to remove</param>
-		public void UpgradeTable(Table code, Table database, List<Field> insert, List<Field> update, List<Field> remove,
+        /// <summary>
+        /// Get a Dictionary of existing tables in the database
+        /// </summary>
+        void dropAllViews() {
+            if (!_viewsDropped) {
+                // Need to drop all views, in case one of them depends on this table
+                DataTable views = _conn.GetSchema("Views");
+                List<string> viewNames = new List<string>(views.Select().Select(table => table["TABLE_NAME"].ToString())).ToList();
+                foreach (string view in viewNames)
+                    executeLog($"DROP VIEW IF EXISTS `{view}`");
+                _viewsDropped = true;
+            }
+        }
+
+        /// <summary>
+        /// Upgrade the table definition
+        /// </summary>
+        /// <param name="code">Defintiion required, from code</param>
+        /// <param name="database">Definition in database</param>
+        /// <param name="insert">Fields to insert</param>
+        /// <param name="update">Fields to change</param>
+        /// <param name="remove">Fields to remove</param>
+        /// <param name="insertFK">Foreign keys to insert</param>
+        /// <param name="dropFK">Foreign keys to remove</param>
+        /// <param name="insertIndex">Indexes to insert</param>
+        /// <param name="dropIndex">Indexes to remove</param>
+        public void UpgradeTable(Table code, Table database, List<Field> insert, List<Field> update, List<Field> remove,
 			List<Field> insertFK, List<Field> dropFK, List<Index> insertIndex, List<Index> dropIndex) {
 				for (int i = dropIndex.Count; i-- > 0; ) {
 					Index ind = dropIndex[i];
@@ -427,7 +442,8 @@ namespace CodeFirstWebFramework {
 		string fieldDef(Field f) {
 			StringBuilder b = new StringBuilder();
 			b.AppendFormat("`{0}` ", f.Name);
-			switch (f.Type.Name) {
+            string defaultValue = f.DefaultValue;
+            switch (f.Type.Name) {
 				case "Int64":
 					b.Append("BIGINT");
 					break;
@@ -445,7 +461,9 @@ namespace CodeFirstWebFramework {
 					break;
 				case "DateTime":
 					b.Append("DATETIME");
-					break;
+                    if (defaultValue == null)
+                        defaultValue = "1900-01-01";
+                    break;
 				case "String":
 					if (f.Length == 0)
 						b.Append("TEXT");
@@ -464,8 +482,8 @@ namespace CodeFirstWebFramework {
 				b.Append(" PRIMARY KEY AUTOINCREMENT");
 			else {
 				b.AppendFormat(" {0}NULL", f.Nullable ? "" : "NOT ");
-				if (f.DefaultValue != null)
-					b.AppendFormat(" DEFAULT {0}", Quote(f.DefaultValue));
+				if (defaultValue != null)
+					b.AppendFormat(" DEFAULT {0}", Quote(defaultValue));
 			}
 			return b.ToString();
 		}
@@ -518,7 +536,9 @@ namespace CodeFirstWebFramework {
 			try {
 				executeLogSafe("PRAGMA foreign_keys=OFF");
 				executeLog("BEGIN TRANSACTION");
-				createTable(code, newTable);
+				// We may need to drop views, in case they depend on this table
+				dropAllViews();
+                createTable(code, newTable);
 				executeLog(string.Format("INSERT INTO {0} ({2}) SELECT {2} FROM {1}", newTable, database.Name,
 					string.Join(", ", code.Fields.Select(f => f.Name)
 						.Where(f => database.Fields.FirstOrDefault(d => d.Name == f) != null).ToArray())));

@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.96</Version>
-    <AssemblyVersion>1.3.96.0</AssemblyVersion>
-    <FileVersion>1.3.96.0</FileVersion>
-    <PackageReleaseNotes>Make double tap to select items in data tables and lists optional (default not needed).</PackageReleaseNotes>
+    <Version>1.3.97</Version>
+    <AssemblyVersion>1.3.97.0</AssemblyVersion>
+    <FileVersion>1.3.97.0</FileVersion>
+    <PackageReleaseNotes>Fix bug which recursed infinitely if a view contained its own table name</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

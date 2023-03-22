@@ -1602,16 +1602,19 @@ namespace CodeFirstWebFramework {
 
 		void add(Table table) {
 			if (IndexOf(table) >= 0) return;
-			foreach (Table detail in _allTables.Where(t => t.ForeignKeyFieldFor(table) != null)) {
+            Add(table);	// Put table in so if 2 tables depend on each other we don't get infinite recursion
+            foreach (Table detail in _allTables.Where(t => t.ForeignKeyFieldFor(table) != null)) {
 				add(detail);
 			}
 			if (table is View) {
 				foreach (Table detail in _allTables.Where(t => t is View && (t as View).Sql.Contains(table.Name))) {
-					add(detail);
+                    add(detail);
 				}
 
 			}
-			Add(table);
+			// Now take table out, and put it back at the end (as it depends on any added above)
+            Remove(table);
+            Add(table);
 		}
 	}
 

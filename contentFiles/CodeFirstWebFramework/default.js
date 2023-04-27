@@ -1831,6 +1831,10 @@ function makeDataTable(selector, options) {
 	}
 	if (typeof (selectUrl) == 'function')
 		$(selector).addClass('noselect');
+	options.rowCallback = function (row, data) {
+		if (data['@class'])
+			$(row).addClass(data['@class']);
+	}
 	var table = $(selector).dataTable(options);
 	if (options.responsive)
 		table.closest('.datatableContainer').addClass('screenWidth');

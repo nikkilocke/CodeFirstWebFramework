@@ -11,15 +11,15 @@
       Easy to use web server for building web apps that use sql databases generated and updated automatically from c# classes.
       Includes Mustache templating for whole site and individual pages, automatic calling of code from urls, with translation of parameters, Ajax, forms and data tables, context-sensitive help and many other features.
     </Summary>
-    <Copyright>2017-2022 Trumphurst Ltd.</Copyright>
+    <Copyright>2017-2023 Trumphurst Ltd.</Copyright>
     <PackageProjectUrl>https://github.com/nikkilocke/CodeFirstWebFramework</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.97</Version>
-    <AssemblyVersion>1.3.97.0</AssemblyVersion>
-    <FileVersion>1.3.97.0</FileVersion>
-    <PackageReleaseNotes>Fix bug which recursed infinitely if a view contained its own table name</PackageReleaseNotes>
+    <Version>1.3.98</Version>
+    <AssemblyVersion>1.3.98.0</AssemblyVersion>
+    <FileVersion>1.3.98.0</FileVersion>
+    <PackageReleaseNotes>Add ability to specify @class on dataTable rows</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

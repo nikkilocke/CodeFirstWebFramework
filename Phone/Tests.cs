@@ -20,10 +20,16 @@ namespace Phone {
 		public decimal Decimal;
 		public double Double;
 		public int Integer;
+		[Field("hint", "This is a test hint on a checkbox", "preamble", "This is a preamble with a <a href=\"/\" target=\"_blank\">link</a>")]
 		public bool Boolean;
+		[Field("hint", "This is a test hint on an Enum")]
 		public TestValues Option;
         [Length(0)]
+		[Field("hint", "This is a test hint")]
 		public string TextArea;
+		[Length(0)]
+		[Field(Type = "inlineImageInput")]
+		public string Image;
 	}
 	public class Tests : AppModule {
 		protected override void Init() {

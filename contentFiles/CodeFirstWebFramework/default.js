@@ -179,7 +179,8 @@ $(function () {
 		// Button to set document number field to <next>, so C# will fill it in with the next one.
 		$(this).prev('input[type="text"]').val('<next>').trigger('change');
 	});
-	$('body').on('click', 'table.form span.hint', function () {
+	$('body').on('click', 'table.form span.hint', function (e) {
+		e.preventDefault();
 		var showing = $(this).parent().find('#tooltip');
 		$('#tooltip').remove();
 		if (showing && showing.length)
@@ -188,8 +189,9 @@ $(function () {
 		var $title = $(this).parent().attr('title');
 		$(this).next().append($title);
 	});
-	$('body').on('click', 'table.form #tooltip', function () {
+	$('body').on('click', 'table.form #tooltip', function (e) {
 		$('#tooltip').remove();
+		e.preventDefault();
 	});
 
 	if (!touchScreen) {
@@ -214,6 +216,37 @@ $(function () {
 		if (href == window.location.pathname + window.location.search)
 			$(this).addClass('highlight');
 	});
+
+	$("html").on("dragover", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	});
+
+	// inlineImageInput processing
+	$("html").on("drop", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	});
+
+	$('body').on('paste', 'div.inlineImageInput', function (e) {
+		// use event.originalEvent.clipboard for newer chrome versions
+		updateImageInput.call(this, (e.clipboardData || e.originalEvent.clipboardData).items);
+	});
+	$('body').on('drop', 'div.inlineImageInput', function (e) {
+		updateImageInput.call(this, e.originalEvent.dataTransfer.files);
+	});
+
+	$('body').on('change', 'div.inlineImageInput input[type=file]', function (e) {
+		updateImageInput.call($(this).closest('div.inlineImageInput'), e.originalEvent.target.files);
+	});
+	$('body').on('click', 'img.autoDropdown', function (e) {
+		var p = $(this).prev();
+		p.focus();
+		p.autocomplete("option", "minLength", 0);
+		p.autocomplete("search", "");
+		p.autocomplete("option", "minLength", 2);
+	});
+
 	setTimeout(function () {
 		// Once initial form creation is done:
 		//  add a Back button if there isn't one
@@ -222,6 +255,24 @@ $(function () {
 		setFocusToFirstInputField();
 	}, 100);
 });
+
+function updateImageInput(items) {
+	// load image if there is oneimage
+	for (var i = 0; i < items.length; i++) {
+		if (items[i].type.indexOf("image") === 0) {
+			var img = $(this).find('img');
+			var inp = $(this).find('input.imageDummy');
+			var reader = new FileReader();
+			reader.onload = function (event) {
+				img.prop('src', event.target.result);
+				inp.val(event.target.result);
+				inp.trigger('change');
+			};
+			reader.readAsDataURL(items[i]);
+			break;
+		}
+	}
+}
 
 function addBackButton() {
 	insertActionButton('Back', 'back').click(goback);
@@ -405,7 +456,7 @@ function formatDate(date, format) {
  * @returns {string} Formatted date, or '' if invalid
  */
 function formatDateForInput(date) {
-	return date ? date.substr(0, 10) : '';
+	return date ? date.substring(0, 10) : '';
 }
 
 /**
@@ -444,7 +495,7 @@ function formatNumberWithCommas(number) {
 	var p = number.indexOf(decPoint);
 	if (p == -1)
 		return number + '.00';
-	return (number + '00').substr(0, p + 3);
+	return (number + '00').substring(0, p + 3);
 }
 
 /**
@@ -456,7 +507,7 @@ function formatWholeNumberWithCommas(number) {
 	number = formatNumberWithCommas(number);
 	var p = number.indexOf(decPoint);
 	if (p >= 0)
-		number = number.substr(0, p);
+		number = number.substring(0, p);
 	return number;
 }
 
@@ -470,7 +521,7 @@ function formatNumberWithBrackets(number) {
 		return '';
 	number = formatNumberWithCommas(number);
 	if (number[0] == '-')
-		number = '(' + number.substr(1) + ')';
+		number = '(' + number.substring(1) + ')';
 	else
 		number += "\u00a0";
 	return number;
@@ -487,7 +538,7 @@ function formatDouble(number) {
 		if (number.indexOf('.') >= 0) {
 			var zeroes = /\.?0+$/.exec(number);
 			if (zeroes) {
-				number = number.substr(0, number.length - zeroes[0].length)
+				number = number.substring(0, number.length - zeroes[0].length)
 					+ '<span class="t">' + zeroes[0] + '</span>';
 			}
 		}
@@ -660,7 +711,7 @@ var Type = {
 				case 'filter':
 					return formatDate(data);
 				default:
-					return data ? data.substr(0, 10) : data;
+					return data ? data.substring(0, 10) : data;
 			}
 		},
 		download: function (data, rowno, row) {
@@ -770,6 +821,17 @@ var Type = {
 	},
 	select: {
 		// Displays appropriate text from selectOptions according to value
+		draw: function (data, rowno, row) {
+			if (this.selectOptions) {
+				var opt = _.find(this.selectOptions, function (o) { return o.id == data; });
+				if (opt)
+					return new SafeHtml('span', {
+						title: opt.hint,
+						text: opt.value
+					}).html();
+			}
+			return _.escape(data);
+		},
 		download: function (data, rowno, row) {
 			if (this.selectOptions) {
 				var opt = _.find(this.selectOptions, function (o) { return o.id == data; });
@@ -789,6 +851,71 @@ var Type = {
 			}).html();
 		}
 	},
+	inlineImage: {
+		// Base64 encoded Image
+		defaultContent: function (index, col) {
+			var result = new SafeHtml();
+			result.add('img', col, );
+			return result.html();
+		},
+		draw: function (data, rowno, row) {
+			if (data == null)
+				data = '';
+			var result = new SafeHtml();
+			result.add('img', this, rowno, {
+				src: data
+			});
+			return result.html();
+		},
+	},
+	inlineImageInput: {
+		// Base64 encoded Image
+		defaultContent: function (index, col) {
+			var result = new SafeHtml();
+			var div = result.add('div', col, {
+				"class": "inlineImageInput"
+			});
+			div.add('img');
+			div.add('br');
+			result.addTo(div, 'input', col, {
+				type: 'file'
+			});
+			return result.html();
+		},
+		draw: function (data, rowno, row) {
+			if (data == null)
+				data = '';
+			var result = new SafeHtml();
+			var div = result.add('div', {
+				"class": "inlineImageInput"
+			});
+			result.addTo(div, 'img', {
+				src: data
+			});
+			result.addTo(div, 'input', {
+				type: 'file'
+			});
+			result.addTo(div, 'input', this, rowno, {
+				type: 'text',
+				class: 'imageDummy',
+				value: data
+			});
+			return result.html();
+		},
+		update: function (cell, data, rowno, row) {
+			if (data == null)
+				data = '';
+			var i = cell.find('img');
+			if (i.length && i.attr('id')) {
+				i.prop('src', data);
+			} else {
+				cell.html(this.draw(data, rowno, row));
+			}
+			i = cell.find('input.imageDummy');
+			if (i.length)
+				i.val(data);
+		}
+	},
 	textArea: {
 		draw: function (data, rowno, row) {
 			if (data == null)
@@ -797,6 +924,17 @@ var Type = {
 				"class": 'prewrap',
 				text: data
 			}).html();
+		}
+	},
+	colour: {
+		draw: function (data, rowno, row) {
+			if (data == null)
+				data = "";
+			var result = new SafeHtml('div', this, rowno, {
+				style: "background-color: " + data,
+				text: data
+			});
+			return result.html();
 		}
 	},
 	autoComplete: {
@@ -892,6 +1030,17 @@ var Type = {
 			} else {
 				i.autocomplete(options);
 			}
+		}
+	},
+	autoDropdown: {
+		defaultContent: function (index, col, row) {
+			return Type.autoComplete.defaultContent.call(this, index, col, row) + '<img class="autoDropdown" src="/images/down.png" />';
+		},
+		draw: function (data, rowno, row) {
+			return Type.autoComplete.draw.call(this, data, rowno, row) + '<img class="autoDropdown" src="/images/down.png" />';
+		},
+		update: function (cell, data, rowno, row) {
+			Type.autoComplete.update.call(cell, data, rowno, row);
 		}
 	},
 	textInput: {
@@ -1183,6 +1332,70 @@ var Type = {
 			return $(field).prop('checked') ? 1 : 0;
 		}
 	},
+	bitFlag: {
+		defaultContent: function (index, col) {
+			return new SafeHtml('img', col, {
+				src: '/images/untick.png'
+			}).html();
+		},
+		draw: function (data, rowno, row) {
+			var select = new SafeHtml();
+			if (this.selectOptions) {
+				_.each(this.selectOptions, function (o) {
+					if (!o.id)
+						return;
+					var l = select.add('label');
+					select.addTo(l, 'img', this, rowno, {
+						src: '/images/' + ((o.id & data) == o.id ? 'tick' : 'untick') + '.png'
+					});
+					l.append(_.escape(o.value));
+				});
+			}
+			return select.html();
+		}
+	},
+	bitFlagInput: {
+		draw: function (data, rowno, row) {
+			var select = new SafeHtml();
+			var self = this;
+			if (this.selectOptions) {
+				_.each(this.selectOptions, function (o) {
+					if (!o.id)
+						return;
+					var l = select.add('label');
+					select.addTo(l, 'input', self, rowno, {
+						type: 'checkbox',
+						value: o.id,
+						checked: (o.id & data) == o.id
+					});
+					l.append(_.escape(o.value));
+				});
+			}
+			return select.html();
+		},
+		update: function (cell, data, rowno, row) {
+			if (cell.find('input#r' + rowno + 'c' + this.name).length == 0) {
+				cell.html(this.draw(data, rowno, row));
+			} else {
+				if (this.selectOptions) {
+					_.each(this.selectOptions, function (o) {
+						var i = cell.find('input[type=checkbox][value=' + o.id + ']');
+						if (i.length)
+							i.prop('checked', (o.id & data) == o.id);
+					});
+				}
+			}
+		},
+		inputValue: function (field, row) {
+			var value = 0;
+			var cell = $(field).closest('td');
+			cell.find('input').each(function () {
+				if ($(this).prop('checked'))
+					value |= parseInt(this.value);
+			});
+			return value;
+		}
+	},
 	imageInput: {
 		// Image file, with auto upload
 		defaultContent: function (index, col) {
@@ -1410,8 +1623,8 @@ var Type = {
 		draw: function (data, rowno, row) {
 			var range = data.range || 4;
 			var count = data.count ? data.count : '';
-			var start = data.start ? data.start.substr(0, 10) : '';
-			var end = data.end ? data.end.substr(0, 10) : '';
+			var start = data.start ? data.start.substring(0, 10) : '';
+			var end = data.end ? data.end.substring(0, 10) : '';
 			var result = new SafeHtml();
 			var select = result.add('select', this, rowno, 'r');
 			addOptionsToSelect(select, dateSelectOptions, range);
@@ -1438,8 +1651,8 @@ var Type = {
 			var i = cell.find('select');
 			var range = data.range || 4;
 			var count = data.count ? data.count : '';
-			var start = data.start ? data.start.substr(0, 10) : '';
-			var end = data.end ? data.end.substr(0, 10) : '';
+			var start = data.start ? data.start.substring(0, 10) : '';
+			var end = data.end ? data.end.substring(0, 10) : '';
 			if (i.length && i.attr('id')) {
 				i.val(range);
 				i = cell.find('input');
@@ -2048,13 +2261,30 @@ function makeForm(selector, options) {
 	}
 	$(selector).addClass('form');
 	_setAjaxObject(options, 'Data', '');
-	var row;
+	var row, preambleRow, itemsInRow = 0;
 	var columns = {};
 	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
-		if (!row || !col.sameRow)
+		if (!row || !col.sameRow) {
 			row = $('<tr class="form-question"></tr>').appendTo($(selector));
+			preambleRow = null;
+			itemsInRow = 0;
+		} else if (col.sameRow)
+			itemsInRow++;
 		var hdg = $('<th class="form-label"></th>').appendTo(row);
+		if (col.preamble) {
+			if (!preambleRow) {
+				preambleRow = $('<tr class="form-question preamble"></tr>');
+				preambleRow.insertBefore(row);
+				while (itemsInRow) {
+					$('<td class="form-label" colspan="2"></td>').appendTo(preambleRow);
+					itemsInRow--;
+				}
+			}
+			$('<td class="form-label" colspan="2"></td>').appendTo(preambleRow).html(col.preamble);
+		} else if (preambleRow) {
+			$('<td class="form-label" colspan="2"></td>').appendTo(preambleRow);
+		}
 		var lbl = $('<label for="r0c' + col.name + '"></label>').appendTo(hdg);
 		lbl.text(col.heading).attr('title', col.hint);
 		if (col.hint)
@@ -3203,7 +3433,7 @@ function defaultUrl(defaultSuffix) {
 	var url = window.location.pathname.replace(/\.html$/, '');
 	if (url == '/')
 		url = '/home/default';
-	else if (url.substr(1).indexOf('/') < 0)
+	else if (url.substring(1).indexOf('/') < 0)
 		url += '/default';
 	return url + defaultSuffix + ".html" + window.location.search;
 }
@@ -3357,15 +3587,15 @@ function _setColObject(col, tableName, index) {
 		switch (col[0]) {
 			case '#':
 				type = 'decimal';
-				col = col.substr(1);
+				col = col.substring(1);
 				break;
 			case '/':
 				type = 'date';
-				col = col.substr(1);
+				col = col.substring(1);
 				break;
 			case '@':
 				type = 'email';
-				col = col.substr(1);
+				col = col.substring(1);
 				break;
 		}
 		var split = col.split('/');
@@ -3383,7 +3613,7 @@ function _setColObject(col, tableName, index) {
 		var title = col.name;
 		// Remove table name from front
 		if (tableName && title.indexOf(tableName) == 0 && title != tableName)
-			title = title.substr(tableName.length);
+			title = title.substring(tableName.length);
 		// Split "CamelCase" name into "Camel Case", and remove Id from end
 		title = title.replace(/Id$/, '').replace(/([A-Z])(?=[a-z0-9])/g, " $1").trim();
 		col.heading = title;
@@ -3544,9 +3774,9 @@ function goback() {
 	var from = getParameter('from');
 	if (!from) {
 		from = window.location.pathname;
-		var pos = from.substr(1).indexOf('/');
+		var pos = from.substring(1).indexOf('/');
 		if (pos >= 0)
-			from = from.substr(0, pos + 1);
+			from = from.substring(0, pos + 1);
 	}
 	window.location = from;
 }
@@ -3616,18 +3846,7 @@ function download(button, data) {
 					downloadFile(document.title + '.csv', text);
 					break;
 				case 'clip':
-					/*
-					document.dispatchEvent(new ClipboardEvent('copy', {
-						dataType: 'text/plain',
-						data: data
-					}));
-					*/
-					var txt = $('<textarea></textarea>');
-					txt.text(text);
-					txt.appendTo('body');
-					txt.select();
-					document.execCommand('copy');
-					txt.remove();
+					navigator.clipboard.writeText(text);
 					break;
 			}
 			menu.remove();
@@ -3678,7 +3897,7 @@ Date.prototype.addDays = function (d) {
  */
 Date.prototype.toYMD = function () {
 	var y = this.getYear() + 1900;
-	var m = (this.getMonth() + 101).toString().substr(1);
-	var d = (this.getDate() + 100).toString().substr(1);
+	var m = (this.getMonth() + 101).toString().substring(1);
+	var d = (this.getDate() + 100).toString().substring(1);
 	return y + "-" + m + "-" + d;
 };

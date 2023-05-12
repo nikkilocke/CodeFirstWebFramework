@@ -69,6 +69,22 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Popup hint text (text only)
+		/// </summary>
+		public string Hint {
+			get { return Options.AsString("hint"); }
+			set { Options["hint"] = value; }
+		}
+
+		/// <summary>
+		/// Preamble appears above field in plain Forms (may have html)
+		/// </summary>
+		public string Preamble {
+			get { return Options.AsString("preamble"); }
+			set { Options["preamble"] = value; }
+		}
+
+		/// <summary>
 		/// How many columns for field
 		/// </summary>
 		public int Colspan {
@@ -114,6 +130,14 @@ namespace CodeFirstWebFramework {
 		public bool Visible {
 			get { return Options["visible"] == null ? true : Options.AsBool("visible"); }
 			set { Options["visible"] = value; }
+		}
+
+		/// <summary>
+		/// Class name to apply to field row in plain Forms
+		/// </summary>
+		public string Class {
+			get { return Options.AsString("@class"); }
+			set { Options["@class"] = value; }
 		}
 
 		/// <summary>

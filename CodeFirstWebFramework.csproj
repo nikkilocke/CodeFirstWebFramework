@@ -16,9 +16,9 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.99</Version>
-    <AssemblyVersion>1.3.99.0</AssemblyVersion>
-    <FileVersion>1.3.99.0</FileVersion>
+    <Version>1.3.101</Version>
+    <AssemblyVersion>1.3.101.0</AssemblyVersion>
+    <FileVersion>1.3.101.0</FileVersion>
     <PackageReleaseNotes>Hint, Preamble and Class properties for FieldAttribute. 
 Preamble places some html above the field in Forms.
 Select field shows hint if present.

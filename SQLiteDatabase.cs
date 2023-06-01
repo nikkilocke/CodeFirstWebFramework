@@ -352,9 +352,7 @@ namespace CodeFirstWebFramework {
 		/// Do the views in code and database match
 		/// </summary>
 		public bool? ViewsMatch(View code, View database) {
-			string c = Regex.Replace(code.Sql, @"[ \r\n\t]+", " ", RegexOptions.Singleline).Trim();
-			string d = Regex.Replace(database.Sql, @"[ \r\n\t]+", " ", RegexOptions.Singleline).Trim();
-			return c == d;
+			return null;
 		}
 
 		SQLiteCommand command(string sql) {

@@ -2210,7 +2210,9 @@ function makeForm(selector, options) {
 		 * Submit method attached to button
 		 * @param button The button pushed
 		 */
-		submitUrl = function (button) {
+		submitUrl = function (button, callback) {
+			if (typeof (callback) != 'function')
+				callback = null;
 			var hdg = null;
 			try {
 				// Check each input value is valid
@@ -2232,6 +2234,8 @@ function makeForm(selector, options) {
 			postJson(submitHref, result.data, function (d) {
 				// Success
 				$('button#Back').text('Back');
+				if (callback && callback(d, true))
+					return;
 				if (result.submitCallback && result.submitCallback(d))
 					return;
 				if ($(button).hasClass('goback')) {
@@ -2243,6 +2247,8 @@ function makeForm(selector, options) {
 				}
 			}, function (d) {
 				// Failure
+				if (callback && callback(d, false))
+					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
 			});
@@ -2490,7 +2496,9 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	}
 	if (typeof (submitUrl) == 'string') {
 		var submitHref = submitUrl;
-		submitUrl = function (button) {
+		submitUrl = function (button, callback) {
+			if (typeof (callback) != 'function')
+				callback = null;
 			var hdg = null;
 			try {
 				// Validate everything
@@ -2527,6 +2535,8 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 				detail: result.detail.data
 			}, function (d) {
 				// Success
+				if (callback && callback(d, true))
+					return;
 				if (result.submitCallback && result.submitCallback(d))
 					return;
 				if ($(button).hasClass('goback'))
@@ -2537,6 +2547,8 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 					window.location = urlParameter('id', d.id);
 			}, function (d) {
 				// Failure
+				if (callback && callback(d, false))
+					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
 			});
@@ -2609,7 +2621,9 @@ function makeListForm(selector, options) {
 	if (selectUrl === undefined && typeof (submitUrl) == 'string') {
 		var submitHref = submitUrl;
 		//noinspection JSUnusedAssignment,JSUnusedLocalSymbols
-		submitUrl = function (button) {
+		submitUrl = function (button, callback) {
+			if (typeof (callback) != 'function')
+				callback = null;
 			try {
 				var hdg;
 				_.each(options.columns, function (col) {
@@ -2631,10 +2645,14 @@ function makeListForm(selector, options) {
 			}
 			postJson(submitHref, table.data, function (d) {
 				// Success
+				if (callback && callback(d, true))
+					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
 			}, function (d) {
 				// Failure
+				if (callback && callback(d, false))
+					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
 			});

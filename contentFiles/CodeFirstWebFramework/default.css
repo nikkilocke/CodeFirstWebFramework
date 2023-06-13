@@ -83,240 +83,309 @@ table.form #tooltip {
     z-index: 1;
     white-space: pre-wrap;
 }
-@media screen and (min-width:700px) and (min-height:400px) {
-    #spacer {
-        height: 120px;
+
+@media screen and (max-width:576px) {
+    /* Prompts and Fields one above the other, centred */
+    table.form {
+        width: fit-content;
+        margin: auto;
     }
 
-    #menuicon {
-        display: none;
-    }
+        table.form input {
+            max-width: 385px;
+        }
 
-    #header {
+    table#headerform th, table#form:not(.listform) th {
         display: block;
-        width: 100%;
+        padding-bottom: 0px;
+        margin: 0px;
     }
 
-    #menu1 {
-        width: 100%;
+    table#headerform td, table#form:not(.listform) td {
+        display: block;
+        margin: 0px;
     }
-
-    #menu2 {
-        width: 100%;
-    }
-
-    #menu3 {
-        width: 100%;
-    }
-
-    #body {
-        width: 100%;
-    }
-}
-#message {
-    clear: both;
-    color: red;
-    font-weight: bold;
-}
-.warning {
-    color: red;
-    font-weight: bold;
-}
-.header {
-    font-weight: bold;
-}
-.title {
-    font-weight: bold;
-    text-decoration: underline;
-}
-.total {
-    font-weight: bold;
-}
-tr.total td.n:not(:empty) {
-    border-top: 1px solid black;
-    border-bottom: 3px double black;
-}
-tr.totalSpacer {
-    height: 10px;
-}
-div.buttons {
-    padding: 5px;
-}
-th, td {
-    vertical-align: top;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-th {
-    text-align: left;
-}
-td.n, th.n, td.ni, th.ni {
-    text-align: right;
-}
-span.t {
-    color: transparent;
-}
-th.ni {
-    padding-right: 16px;
-}
-table.listform tr td {
-    vertical-align: middle;
-}
-.dataTables_wrapper {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.dataTables_wrapper>button {
-    margin-left: 10px;
-}
-input[type="number"] {
-    text-align: right;
-    width: 5em;
-}
-button {
-    margin: 5px;
-}
-button.highlight {
-    font-weight: bold;
-    border-width: 2px;
-    background-color: lightgray;
-}
-button.nextButton {
-    margin: 0 5px;
-}
-div.fixedTable {
-    position: fixed;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-}
-button.deleteButton {
-    padding: 0;
-    margin: 0;
-    height: 18px;
-    width: 18px;
-    position: relative;
-    top: 2px;
-}
-tr.noDeleteButton button.deleteButton {
-    visibility: hidden;
-}
-td.draghandle {
-	width: 32px;
-}
-td.draghandle div {
-	width: 16px;
-	height: 16px;
-	margin: 4px;
-	background-image:url("/libs/images/ui-icons_222222_256x240.png");
-}
-tr.noDeleteButton td.draghandle {
-    visibility: hidden;
-}
-tr.selected {
-    background-color: #b0bed9 !important;
-}
-tr.current {
-    background-color: green !important;
-}
-tr.future {
-    color: orange;
-}
-tr.matches {
-    color: red;
-}
-tr.r2 {
-    color: darkblue;
-}
-td.ch {
-    background-color: yellow !important;
-}
-.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
-	font-family: Times New Roman;
-	font-size: 16px;
-}
-.ui-autocomplete-category {
-    font-weight: bold;
-}
-.noselect {
-    -webkit-user-select: none; /* Chrome/Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+ */
-    user-select: none;
-}
-#reportDates {
-    font-weight: bold;
-    margin-left: 5px;
-    margin-bottom: 0.5cm;
-}
-input::-webkit-inner-spin-button,
-input::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-}
-.screenWidth {
-    max-width: calc(100vw - 12px);
-}
-ul.menu {
-    position: absolute;
-    display: block;
-}
-div.inlineImageInput {
-    display: flex;
-    min-width: 200px;
-    min-height: 100px;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='200px'><text x='0' y='15' fill='gray' font-size='20'>Drop or paste image here</text></svg>");
-    background-repeat: no-repeat;
-    cursor: pointer;
 }
 
-div.inlineImageInput.img {
-    pointer-events: none;
-}
+    @media screen and (min-width:700px) and (min-height:400px) {
+        #spacer {
+            height: 120px;
+        }
 
-div.inlineImageInput input.imageDummy {
-    display: none;
-}
+        #menuicon {
+            display: none;
+        }
 
-div.inlineImageInput input[type=file] {
-    align-self: flex-end;
-}
+        #header {
+            display: block;
+            width: 100%;
+        }
 
-@media print {
-    #outerheader {
-        display: none;
+        #menu1 {
+            width: 100%;
+        }
+
+        #menu2 {
+            width: 100%;
+        }
+
+        #menu3 {
+            width: 100%;
+        }
+
+        #body {
+            width: 100%;
+        }
     }
-    #heading {
-        color: black;
-        background-color: transparent;
+
+    #message {
+        clear: both;
+        color: red;
+        font-weight: bold;
     }
-	#menu1, #menu2, #menu3, #message {
-		display: none;
-	}
-    #menuicon {
-        display: none;
+
+    .warning {
+        color: red;
+        font-weight: bold;
     }
-	#body {
-		overflow: visible;
-        height: auto;
-	}
-    #spacer {
-        height: 30px;
+
+    .header {
+        font-weight: bold;
     }
-    .noprint {
-    	display: none;
+
+    .title {
+        font-weight: bold;
+        text-decoration: underline;
     }
+
+    .total {
+        font-weight: bold;
+    }
+
+    tr.total td.n:not(:empty) {
+        border-top: 1px solid black;
+        border-bottom: 3px double black;
+    }
+
+    tr.totalSpacer {
+        height: 10px;
+    }
+
+    div.buttons {
+        padding: 5px;
+    }
+
+    th, td {
+        vertical-align: top;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    td.n input, th.n input, td.ni input, th.ni input {
+        text-align: right;
+    }
+
+    span.t {
+        color: transparent;
+    }
+
+    table.listform tr td {
+        vertical-align: middle;
+    }
+
+    .dataTables_wrapper {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+        .dataTables_wrapper > button {
+            margin-left: 10px;
+        }
+
+    input[type="number"] {
+        text-align: right;
+        width: 5em;
+    }
+
+    button {
+        margin: 5px;
+    }
+
+        button.highlight {
+            font-weight: bold;
+            border-width: 2px;
+            background-color: lightgray;
+        }
+
+        button.nextButton {
+            margin: 0 5px;
+        }
+
+    div.fixedTable {
+        position: fixed;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+
     button.deleteButton {
-        display: none;
-    }
-    tr, td {
-        page-break-inside: avoid;
-        page-break-before:auto;
-    }
-    table.form span.hint {
-        display: none;
+        padding: 0;
+        margin: 0;
+        height: 18px;
+        width: 18px;
+        position: relative;
+        top: 2px;
     }
 
-    table.form #tooltip {
-        display: none;
+    tr.noDeleteButton button.deleteButton {
+        visibility: hidden;
     }
-}
+
+    td.draghandle {
+        width: 32px;
+    }
+
+        td.draghandle div {
+            width: 16px;
+            height: 16px;
+            margin: 4px;
+            background-image: url("/libs/images/ui-icons_222222_256x240.png");
+        }
+
+    tr.noDeleteButton td.draghandle {
+        visibility: hidden;
+    }
+
+    tr.selected {
+        background-color: #b0bed9 !important;
+    }
+
+    tr.current {
+        background-color: green !important;
+    }
+
+    tr.future {
+        color: orange;
+    }
+
+    tr.matches {
+        color: red;
+    }
+
+    tr.r2 {
+        color: darkblue;
+    }
+
+    td.ch {
+        background-color: yellow !important;
+    }
+
+    .ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+        font-family: Times New Roman;
+        font-size: 16px;
+    }
+
+    .ui-autocomplete-category {
+        font-weight: bold;
+    }
+
+    .noselect {
+        -webkit-user-select: none; /* Chrome/Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+ */
+        user-select: none;
+    }
+
+    #reportDates {
+        font-weight: bold;
+        margin-left: 5px;
+        margin-bottom: 0.5cm;
+    }
+
+    input::-webkit-inner-spin-button,
+    input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .screenWidth {
+        max-width: calc(100vw - 12px);
+    }
+
+    ul.menu {
+        position: absolute;
+        display: block;
+    }
+
+    div.inlineImageInput {
+        display: flex;
+        min-width: 200px;
+        min-height: 100px;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='200px'><text x='0' y='15' fill='gray' font-size='20'>Drop or paste image here</text></svg>");
+        background-repeat: no-repeat;
+        cursor: pointer;
+    }
+
+        div.inlineImageInput.img {
+            pointer-events: none;
+        }
+
+        div.inlineImageInput input.imageDummy {
+            display: none;
+        }
+
+        div.inlineImageInput input[type=file] {
+            align-self: flex-end;
+        }
+
+    @media print {
+        #outerheader {
+            display: none;
+        }
+
+        #heading {
+            color: black;
+            background-color: transparent;
+        }
+
+        #menu1, #menu2, #menu3, #message {
+            display: none;
+        }
+
+        #menuicon {
+            display: none;
+        }
+
+        #body {
+            overflow: visible;
+            height: auto;
+        }
+
+        #spacer {
+            height: 30px;
+        }
+
+        .noprint {
+            display: none;
+        }
+
+        button.deleteButton {
+            display: none;
+        }
+
+        tr, td {
+            page-break-inside: avoid;
+            page-break-before: auto;
+        }
+
+        table.form span.hint {
+            display: none;
+        }
+
+        table.form #tooltip {
+            display: none;
+        }
+    }

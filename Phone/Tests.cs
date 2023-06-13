@@ -20,7 +20,9 @@ namespace Phone {
 		public decimal Decimal;
 		public double Double;
 		public int Integer;
-		[Field("hint", "This is a test hint on a checkbox", "preamble", "This is a preamble with a <a href=\"/\" target=\"_blank\">link</a>")]
+		[Field("hint", "This is a test hint on a checkbox", 
+			"preamble", "This is a preamble with a <a href=\"/\" target=\"_blank\">link</a>",
+			"postamble", "This is a postamble with a <a href=\"/\" target=\"_blank\">link</a>")]
 		public bool Boolean;
 		[Field("hint", "This is a test hint on an Enum")]
 		public TestValues Option;

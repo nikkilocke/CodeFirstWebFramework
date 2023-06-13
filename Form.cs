@@ -85,6 +85,14 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Postamble appears immediately after field, in the same cell
+		/// </summary>
+		public string Postamble {
+			get { return Options.AsString("postamble"); }
+			set { Options["postamble"] = value; }
+		}
+
+		/// <summary>
 		/// How many columns for field
 		/// </summary>
 		public int Colspan {

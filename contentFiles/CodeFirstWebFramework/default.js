@@ -2271,6 +2271,12 @@ function makeForm(selector, options) {
 	var columns = {};
 	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
+		if (col.postamble) {
+			col.drawNoPostamble = col.draw;
+			col.draw = function (data, rowno, row) {
+				return col.drawNoPostamble(data, rowno, row) + " " + col.postamble;
+			}
+		}
 		if (!row || !col.sameRow) {
 			row = $('<tr class="form-question"></tr>').appendTo($(selector));
 			preambleRow = null;

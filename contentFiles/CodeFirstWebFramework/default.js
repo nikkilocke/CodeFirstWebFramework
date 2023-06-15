@@ -2267,7 +2267,7 @@ function makeForm(selector, options) {
 	}
 	$(selector).addClass('form');
 	_setAjaxObject(options, 'Data', '');
-	var row, preambleRow, itemsInRow = 0;
+	var row, preambleRow, preambleCell, itemsInRow = 0;
 	var columns = {};
 	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
@@ -2293,7 +2293,7 @@ function makeForm(selector, options) {
 					itemsInRow--;
 				}
 			}
-			$('<td class="form-label" colspan="2"></td>').appendTo(preambleRow).html(col.preamble);
+			preambleCell = $('<td class="form-label" colspan="2"></td>').appendTo(preambleRow).html(col.preamble);
 		} else if (preambleRow) {
 			$('<td class="form-label" colspan="2"></td>').appendTo(preambleRow);
 		}
@@ -2305,11 +2305,16 @@ function makeForm(selector, options) {
 		if (col.colspan)
 			col.cell.attr('colspan', col.colspan);
 		if (col.sClass)
-			col.cell.attr('class', col.sClass);
-		if (col["@class"])
-			row.addClass(col["@class"]);
+			col.cell.addClass(col.sClass);
+		if (col["@class"]) {
+			hdg.addClass(col["@class"]);
+			col.cell.addClass(col["@class"]);
+			if (preambleCell)
+				preambleCell.addClass(col["@class"]);
+		}
 		columns[col.name] = col;
 		col.index = index;
+		preambleCell = null;
 	});
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');

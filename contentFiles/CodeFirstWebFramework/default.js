@@ -3243,13 +3243,9 @@ function downloadData(columns, record) {
 		});
 		data.push(dataRow);
 	}
-	if (record[1]) {
-		for (var row = 0; row < record.length; row++) {
-			buildRow(row, record[row]);
-		}
-	} else {
-		buildRow(0, record);
-	}
+	table.api().rows({ order: 'current', search: 'applied' }).every(function (rowIdx) {
+		buildRow(rowIdx, record[rowIdx]);
+	});
 	return data;
 }
 

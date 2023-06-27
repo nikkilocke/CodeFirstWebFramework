@@ -61,6 +61,7 @@ namespace Phone {
 				Select = "/home/PhoneNumber"
 			};
 			form.Options["responsive"] = true;
+			form["Analysis"].Options["nonZero"] = true;
 			form.Show();
 		}
 

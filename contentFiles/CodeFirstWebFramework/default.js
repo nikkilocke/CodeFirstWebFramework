@@ -2062,7 +2062,7 @@ function makeDataTable(selector, options) {
 	}
 	if (options.download || options.download === undefined) {
 		actionButton('Download', 'download').click(function () {
-			var data = downloadData(table.fields, table.api().data());
+			var data = downloadData(table);
 			download(this, data);
 		});
 	}
@@ -3213,11 +3213,11 @@ function makeDumbForm(selector, options) {
 /**
  * The data for download. Returns array of arrays of fields.
  */
-function downloadData(columns, record) {
+function downloadData(table) {
 	var data = [];
 	var dataRow = [];
 	var skip;
-	_.each(columns, function (col, index) {
+	_.each(table.fields, function (col, index) {
 		if (col.newRow) {
 			data.push(dataRow);
 			dataRow = [];
@@ -3234,7 +3234,7 @@ function downloadData(columns, record) {
 	data.push(dataRow);
 	function buildRow(row, rowdata) {
 		dataRow = [];
-		_.each(columns, function (col, index) {
+		_.each(table.fields, function (col, index) {
 			if (col.newRow) {
 				data.push(dataRow);
 				dataRow = [];
@@ -3244,7 +3244,7 @@ function downloadData(columns, record) {
 		data.push(dataRow);
 	}
 	table.api().rows({ order: 'current', search: 'applied' }).every(function (rowIdx) {
-		buildRow(rowIdx, record[rowIdx]);
+		buildRow(rowIdx, this.data());
 	});
 	return data;
 }

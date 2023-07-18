@@ -352,7 +352,7 @@ namespace CodeFirstWebFramework {
 		/// Do the views in code and database match
 		/// </summary>
 		public bool? ViewsMatch(View code, View database) {
-			return null;
+			return false;	// Always return false, in case views have been dropped
 		}
 
 		SQLiteCommand command(string sql) {

@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.105</Version>
-    <AssemblyVersion>1.3.105.0</AssemblyVersion>
+    <Version>1.3.106</Version>
+    <AssemblyVersion>1.3.106.0</AssemblyVersion>
     <FileVersion>1.3.105.0</FileVersion>
-    <PackageReleaseNotes>Download button now honours current sort order and search/filters - bugfix</PackageReleaseNotes>
+    <PackageReleaseNotes>Force views to be recreated in SQLite</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

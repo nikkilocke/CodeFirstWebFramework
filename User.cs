@@ -256,19 +256,32 @@ namespace CodeFirstWebFramework {
 		public const int None = 0;
 
 		/// <summary>
+		/// Add the possible values of AccessLevel to the dictionary, base classes first,
+		/// so the derived values override the base ones
+		/// </summary>
+		/// <param name="values">The dictionary</param>
+		/// <param name="t">The type to process</param>
+		/// <param name="maxLevel">Ignore values above maxLevel</param>
+		void addValues(Dictionary<int, JObject> values, Type t, int maxLevel = int.MaxValue) {
+			if (t.BaseType.Name == "AccessLevel")
+				addValues(values, t.BaseType, maxLevel);
+            foreach (FieldInfo c in t
+					.GetFieldsInOrder(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
+					.Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(int))) {
+				int id = (int)c.GetRawConstantValue();
+				if (id > 0 && id <= maxLevel)
+					values[id] = new JObject().AddRange("id", id, "value", c.Name.UnCamel());
+			}
+		}
+
+		/// <summary>
 		/// Return the options for a selectInput field to select AccessLevel.
 		/// NB Must always have 0, "None" as the first item.
 		/// </summary>
 		public virtual IEnumerable<JObject> Select(int maxLevel = int.MaxValue) {
 			Dictionary<int, JObject> values = new Dictionary<int, JObject>();
 			values[0] = new JObject().AddRange("id", 0, "value", "None");
-			foreach (FieldInfo c in GetType()
-					.GetFieldsInOrder(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-					.Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(int))) {
-				int id = (int)c.GetRawConstantValue();
-				if(id > 0 && id <= maxLevel)
-					values[id] = new JObject().AddRange("id", id, "value", c.Name.UnCamel());
-			}
+			addValues(values, GetType(), maxLevel);
 			return values.Values.OrderBy(v => v.AsInt("id"));
 		}
 	}

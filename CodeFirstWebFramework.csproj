@@ -16,10 +16,13 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.107</Version>
-    <AssemblyVersion>1.3.107.0</AssemblyVersion>
-    <FileVersion>1.3.107.0</FileVersion>
-    <PackageReleaseNotes>Fix bug in AccessLevel.Select, which didn't override base values with derived ones</PackageReleaseNotes>
+    <Version>1.3.109</Version>
+    <AssemblyVersion>1.3.109.0</AssemblyVersion>
+    <FileVersion>1.3.109.0</FileVersion>
+    <PackageReleaseNotes>New show option for nonZero columns, reverses the regex, so it matches items to show rather than items to hide.
+New code to implement search - an input with class searchbox will search all items within the same parent that have class searchable, and hide al the ones that don't match.
+Searchbox is configurable with attributes data-area to say where to search (instead of parent) and data-filter (so say what to search, instead of searchable).
+New search option in ListForms to implement a searchbox.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

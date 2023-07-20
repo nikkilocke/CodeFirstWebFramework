@@ -128,6 +128,34 @@ SafeHtml.prototype.html = function () {
  */
 SafeHtml.properties = { checked: true, selected: true, disabled: true, multiple: true };
 
+function getValues(selector) {
+	var v = [];
+	$(selector).find('input').each(function () {
+		v.push($(this).val());
+	});
+	return v.join(' ');
+}
+
+function createSearchRegex(search, caseSensitive, dumb) {
+	if (dumb)
+		search = val.replace(new RegExp('(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\', '$', '^', '-'].join('|\\') + ')', 'g'), '\\$1');
+	var a = $.map(search.match(/"[^"]+"|[^ ]+/g) || [''], function (word) {
+		if (word.charAt(0) === '"') {
+			var m = word.match(/^"(.*)"$/);
+			word = m ? m[1] : word;
+		}
+		return word.replace('"', '');
+	});
+	search = '^(?=.*?' + a.join(')(?=.*?') + ').*$';
+	return new RegExp(search, caseSensitive ? 's' : 'is');
+}
+
+function searchFilter(root, selector, regex) {
+	root.find(selector).filter(function () {
+		$(this).toggle(regex.test($(this).text() + ' ' + getValues(this)));
+	});
+}
+
 $(function () {
 	//	testHarness = bowser.firefox && hasParameter('test');
 	touchScreen = bowser.mobile || bowser.tablet;
@@ -160,7 +188,7 @@ $(function () {
 		message("Please wait...");
 		$(':input').prop('disabled', true);
 	});
-	$('body').on('change', ':input:not(.nosave)', function () {
+	$('body').on('change', ':input:not(.nosave):not(.searchbox)', function () {
 		// User has changed an input field - set unsavedInput (except for dataTable search field)
 		if (!$(this).attr('aria-controls'))
 			unsavedInput = true;
@@ -192,6 +220,15 @@ $(function () {
 	$('body').on('click', 'table.form #tooltip', function (e) {
 		$('#tooltip').remove();
 		e.preventDefault();
+	});
+	// input.searchbox searches all siblings with .searchable and hides ones that don't match
+	$('body').on('input', 'input.searchbox', function (e) {
+		var searchbox = $(this);
+		var search = createSearchRegex(this.value, searchbox.hasClass('case'), searchbox.hasClass('dumb'));
+		var area = searchbox.attr('data-area');
+		var root = area ? searchbox.closest(area) : searchbox.parent();
+		var filter = searchbox.attr('data-filter') || '.searchable';
+		searchFilter(root, filter, search);
 	});
 
 	if (!touchScreen) {
@@ -1938,7 +1975,7 @@ var Forms = [];
  * 	{string} [heading] to use in button text (col.heading)
  * 	{string} [zeroText] prompt for button (Show all <heading>)
  * 	{string} [nonZeroText] prompt for button (Only non-zero <heading>)
- * 	{string} [regex] regex matching data to hide (^([0\.]*|true|null)$) - NB: default hides ticked checkboxes
+ * 	{string} [regex] regex matching data to hide (^([0\.]*|true|null)$) - NB: default hidetches data to sho rather than data to hide
  * @param {string} selector
  * @param options
  * @param {string} [options.table] Name of SQL table
@@ -2010,6 +2047,7 @@ function makeDataTable(selector, options) {
 			if (nz.heading === undefined) nz.heading = title;
 			if (nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading;
 			if (nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading;
+			nz.only = nz.only == true;
 			nz.regex = nz.regex === undefined ? /^([0\.]*|true|null)$/ : new RegExp(nz.regex);
 			if (nzList.length)
 				nz.hide = nzList.shift() == 1;
@@ -2081,7 +2119,7 @@ function makeDataTable(selector, options) {
 			});
 		$.fn.dataTable.ext.search.push(
 			function (settings, dataArray, dataIndex, data) {
-				return !nz.hide || !nz.regex.test(data[nz.col.data]);
+				return !nz.hide || (nz.only == nz.regex.test(data[nz.col.data]));
 			}
 		);
 		if (nz.hide)
@@ -2376,7 +2414,7 @@ function makeForm(selector, options) {
 		});
 		addJQueryUiControls();
 		if (options.readonly)
-			result.find('input,select,textarea,button.ui-multiselect').attr('disabled', true);
+			result.find('input:not(.searchbox),select,textarea,button.ui-multiselect').attr('disabled', true);
 	}
 	var drawn = false;
 
@@ -2727,6 +2765,23 @@ function makeListForm(selector, options) {
 		col.index = index;
 		colCount = Math.max(colCount, c);
 	});
+	if (options.search) {
+		if (typeof (options.search) == 'boolean') options.search = {};
+		var sbox = $('<input />')
+			.attr('type', 'search')
+			.addClass('searchbox');
+		if (options.search.caseSensitive)
+			sbox.addClass('case');
+		if (options.search.dumb)
+			sbox.addClass('dumb');
+		sbox.attr('data-area', options.search.area || 'table');
+		sbox.attr('data-filter', options.search.filter || 'tbody tr');
+		$('<tr/>').append($('<td/>').append($('<span>Search: </span>')
+			.attr('colspan', colCount)
+			.append(sbox))
+			)
+			.prependTo(heading);
+	}
 	if (!options.readonly && rowsPerRecord == 1) {
 		if (options.deleteRows)
 			$('<th></th>').appendTo(row);
@@ -2881,7 +2936,7 @@ function makeListForm(selector, options) {
 		}
 		addJQueryUiControls();
 		if (options.readonly)
-			table.find('input,select,textarea,button.ui-multiselect').attr('disabled', true);
+			table.find('input:not(.searchbox),select,textarea,button.ui-multiselect').attr('disabled', true);
 		if (options.sortable && !options.readonly && rowsPerRecord == 1) {
 			table.find('tbody').sortable({
 				items: "> tr:not(.noDeleteButton)",
@@ -3155,7 +3210,7 @@ function makeDumbForm(selector, options) {
 		});
 		addJQueryUiControls();
 		if (options.readonly)
-			result.find('input,select,textarea').attr('disabled', true);
+			result.find('input:not(.searchbox),select,textarea').attr('disabled', true);
 	}
 	var drawn = false;
 

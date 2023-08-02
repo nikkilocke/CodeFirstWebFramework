@@ -1505,12 +1505,13 @@ var Type = {
 				_.each(this.selectOptions, function (o) {
 					var s = select.add('span', { text: ' ' });
 					var l = select.addTo(s, 'label');
+					var v = o.id === undefined ? o.value : o.id;
 					var b = select.addTo(l, 'input', self, rowno, {
 						type: 'radio',
-						value: o.id,
+						value: v,
 						name: 'r' + rowno + 'c' + self.name,
-						checked: o.id == data
-					});
+						checked: == data
+					}
 					l.append(_.escape(o.value));
 					if (o.hint) {
 						s.attr('title', o.hint);

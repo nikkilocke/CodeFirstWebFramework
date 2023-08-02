@@ -1510,8 +1510,8 @@ var Type = {
 						type: 'radio',
 						value: v,
 						name: 'r' + rowno + 'c' + self.name,
-						checked: == data
-					}
+						checked: v == data
+					});
 					l.append(_.escape(o.value));
 					if (o.hint) {
 						s.attr('title', o.hint);

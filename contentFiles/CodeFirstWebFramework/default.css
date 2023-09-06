@@ -260,7 +260,7 @@ table.form #tooltip {
         visibility: hidden;
     }
 
-    tr.selected {
+    tr.selected:not(.child) {
         background-color: #b0bed9 !important;
     }
 

@@ -3472,17 +3472,17 @@ function selectOff() {
  * @param {function} selectFunction (returns false if row can't be selected)
  */
 function selectClick(selector, selectFunction) {
-	$('body').off('click', selector + ' tbody td:not(:has(input))');
+	$('body').off('click', selector + ' tbody tr:not(.child) td:not(:has(input))');
 	if (!touchScreen) {
-		$('body').off('mouseenter', selector + ' tbody tr')
-			.off('mouseleave', selector + ' tbody tr');
+		$('body').off('mouseenter', selector + ' tbody tr:not(.child)')
+			.off('mouseleave', selector + ' tbody tr:not(.child)');
 	}
 	if (!selectFunction)
 		return;
 	var table = $(selector);
 	table.addClass('noselect');
 	table.find('tbody').css('cursor', 'pointer');
-	$('body').on('click', selector + ' tbody td:not(:has(input))', function (e) {
+	$('body').on('click', selector + ' tbody tr:not(.child) td:not(:has(input))', function (e) {
 		if (e.target.tagName == 'A')
 			return;
 		if (table.hasClass('collapsed') && $(e.target).hasClass('dtr-control') && e.clientX < 35)
@@ -3500,8 +3500,8 @@ function selectClick(selector, selectFunction) {
 	});
 	if (!touchScreen) {
 		// Mouse over highlights row
-		$('body').on('mouseenter', selector + ' tbody tr', selectOn)
-			.on('mouseleave', selector + ' tbody tr', selectOff);
+		$('body').on('mouseenter', selector + ' tbody tr:not(.child)', selectOn)
+			.on('mouseleave', selector + ' tbody tr:not(.child)', selectOff);
 	}
 }
 

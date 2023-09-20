@@ -593,6 +593,14 @@ function formatInteger(number) {
 	return number == null || number === '' ? '' : parseInt(number);
 }
 
+function formatStringForSort(data) {
+	return data === undefined || data === null ? '' : data;
+}
+
+function formatNumberForSort(data) {
+	return data === undefined || data === null ? 0 : data;
+}
+
 /**
  * Split a fractional number into 2 parts (e.g. Hours and Minutes)
  * @param {number} n number
@@ -747,6 +755,8 @@ var Type = {
 				case 'display':
 				case 'filter':
 					return formatDate(data);
+				case 'sort':
+					return formatStringForSort(data);
 				default:
 					return data ? data.substring(0, 10) : data;
 			}
@@ -763,7 +773,8 @@ var Type = {
 	decimal: {
 		render: {
 			display: formatNumberWithCommas,
-			filter: formatNumber
+			filter: formatNumber,
+			sort: formatNumberForSort
 		},
 		draw: formatNumberWithCommas,
 		download: formatNumber,
@@ -772,7 +783,8 @@ var Type = {
 	wholeDecimal: {
 		render: {
 			display: formatWholeNumberWithCommas,
-			filter: formatNumber
+			filter: formatNumber,
+			sort: formatNumberForSort
 		},
 		draw: formatWholeNumberWithCommas,
 		download: formatNumber,
@@ -781,7 +793,8 @@ var Type = {
 	bracket: {
 		render: {
 			display: formatNumberWithBrackets,
-			filter: formatNumber
+			filter: formatNumber,
+			sort: formatNumberForSort
 		},
 		draw: formatNumberWithBrackets,
 		download: formatNumber,
@@ -3613,6 +3626,8 @@ function colRender(data, type, row, meta) {
 		case 'filter':
 			var col = meta.settings.oInit.columns[meta.col];
 			return col.draw(data, meta.row, row);
+		case 'sort':
+			return formatStringForSort(data);
 		default:
 			return data;
 	}
@@ -3636,6 +3651,8 @@ function numberRender(data, type, row, meta) {
 			return colRender(data, type, row, meta);
 		case 'filter':
 			return formatNumber(data);
+		case 'sort':
+			return formatNumberForSort(data);
 		default:
 			return data;
 	}

@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.119</Version>
-    <AssemblyVersion>1.3.119.0</AssemblyVersion>
-    <FileVersion>1.3.119.0</FileVersion>
-    <PackageReleaseNotes>Stop child rows being highlighted in responsive dataTables.</PackageReleaseNotes>
+    <Version>1.3.121</Version>
+    <AssemblyVersion>1.3.121.0</AssemblyVersion>
+    <FileVersion>1.3.121.0</FileVersion>
+    <PackageReleaseNotes>Fix sorting of null values.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

@@ -2062,7 +2062,9 @@ function makeDataTable(selector, options) {
 			if (nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading;
 			if (nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading;
 			nz.only = nz.only == true;
-			nz.regex = nz.regex === undefined ? /^([0\.]*|true|null)$/ : new RegExp(nz.regex);
+			if (nz.regex === undefined)
+				nz.regex = nz.only ? '^([0\.]*|true)$' : '^([0\.]*|true|null)$';
+			nz.regex = new RegExp(nz.regex);
 			if (nzList.length)
 				nz.hide = nzList.shift() == 1;
 			nzColumns.push(nz);
@@ -2133,7 +2135,7 @@ function makeDataTable(selector, options) {
 			});
 		$.fn.dataTable.ext.search.push(
 			function (settings, dataArray, dataIndex, data) {
-				return !nz.hide || (nz.only == nz.regex.test(data[nz.col.data]));
+				return !nz.hide || (nz.only == nz.regex.test(data[nz.col.data] + ''));
 			}
 		);
 		if (nz.hide)

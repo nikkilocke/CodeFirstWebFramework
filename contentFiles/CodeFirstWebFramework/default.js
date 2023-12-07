@@ -2162,6 +2162,10 @@ function makeDataTable(selector, options) {
 				if ($(selector).triggerHandler('changed.field', [val, data, col, this]) != false) {
 					data[col.data] = val;
 				}
+				colHandleInput(col, data, table, function (d) {
+					if (!d.error && d.data)
+						row.data(d.data).draw(false);
+				});
 			}, 10);
 		}
 	});
@@ -2218,6 +2222,7 @@ function makeDataTable(selector, options) {
 		table.api().draw();
 	};
 	table.fields = columns;
+	table.settings = options;
 	DataTable = table.api();
 	Forms.push(table);
 	return table;
@@ -2415,6 +2420,10 @@ function makeForm(selector, options) {
 					});
 				}
 			}
+			colHandleInput(col, result.data, result, function (d) {
+				if (!d.error && d.data)
+					dataReady(d.data);
+			});
 		}
 	});
 	var result = $(selector);
@@ -2857,6 +2866,12 @@ function makeListForm(selector, options) {
 					cell = cell.next('td');
 				});
 			}
+			colHandleInput(col, table.data[rowIndex], table, function (d) {
+				if (!d.error && d.data) {
+					table.data[rowIndex] = d.data;
+					drawRow(rowIndex);
+				}
+			});
 			if (options.addRows)
 				checkForNewRow();
 		}
@@ -3211,6 +3226,10 @@ function makeDumbForm(selector, options) {
 					});
 				}
 			}
+			colHandleInput(col, result.data, result, function (d) {
+				if (!d.error && d.data)
+					dataReady(d.data);
+			});
 		}
 	});
 	var result = $(selector);
@@ -3440,7 +3459,8 @@ function postData(url, data, asForm, success, failure, timeout) {
 						}
 						return;
 					}
-					unsavedInput = false;
+					if (result.saved)
+						unsavedInput = false;
 					if (success && !result.redirect) {
 						success(result);
 						return;
@@ -3632,6 +3652,27 @@ function colRender(data, type, row, meta) {
 			return formatStringForSort(data);
 		default:
 			return data;
+	}
+}
+
+/**
+ * Do notify and/or autosave callbacks
+ * @param {any} col
+ * @param {any} rowData
+ * @param {any} form
+ * @param {function} callback called back with AjaxReturn on success
+ */
+function colHandleInput(col, rowData, form, callback) {
+	if (col.notify)
+		postJson(urlParameter("field", col.name, defaultUrl('notify')), rowData, function (d) {
+			if (callback)
+				callback(d);
+		});
+	if (form.settings.autosave) {
+		postJson(defaultUrl('autosave'), form.data, function(d) {
+			if(callback)
+				callback(d);
+		});
 	}
 }
 

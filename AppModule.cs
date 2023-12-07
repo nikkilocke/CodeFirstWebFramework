@@ -1066,6 +1066,25 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Add multiple menu options to the default Menu (checking security - no add if no access)
+		/// </summary>
+		/// <param name="opts"></param>
+		public void AppendMenuOptions(params MenuOption[] opts) {
+			foreach (MenuOption o in opts)
+				AppendMenuOption(o);
+		}
+		/// <summary>
+		/// Add a menu option to the default Menu (checking security - no add if no access)
+		/// </summary>
+		public void AppendMenuOption(MenuOption o) {
+			if (!HasAccess(o.Url))
+				return;
+			if (Menu == null)
+				Menu = new List<MenuOption>();
+			Menu.Add(o);
+		}
+
+		/// <summary>
 		/// Get the IFileInfo matching the filename
 		/// </summary>
 		/// <param name="filename">Like a url - e.g. "admin/settings.html"</param>
@@ -1381,7 +1400,14 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public int? id;
 		/// <summary>
+		/// Indicate the record has been completely saved, so the user can exit the screen
+		/// Resets the record modified flag
+		/// <b>YOU MUST SET THIS TO FALSE IN Notification calls</b> if the complete record hasn't been saved
+		/// </summary>
+		public bool saved = true;
+		/// <summary>
 		/// Arbitrary data which the caller needs
+		/// In Notification calls, this data replaces the existing data in the form or row
 		/// </summary>
 		public object data;
 #pragma warning restore IDE1006 // Naming Styles

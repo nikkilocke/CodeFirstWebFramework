@@ -125,6 +125,14 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Set to true to call MethodNameNotify(string fieldName, JObject json) when the field is changed by the user
+		/// </summary>
+		public bool Notify {
+			get { return Options["notify"] == null ? false : Options.AsBool("notify"); }
+			set { Options["notify"] = value; }
+		}
+
+		/// <summary>
 		/// Number of characters to allow in input
 		/// </summary>
 		public int MaxLength {
@@ -331,6 +339,14 @@ namespace CodeFirstWebFramework {
 		public object Data {
 			get { return Options["data"]; }
 			set { Options["data"] = value.ToJToken(); }
+		}
+
+		/// <summary>
+		/// Set to true to call MethodNameAutoSave(JObject json) when any field is changed by the user
+		/// </summary>
+		public bool AutoSave {
+			get { return Options["autosave"] == null ? false : Options.AsBool("autosave"); }
+			set { Options["autosave"] = value; }
 		}
 
 		/// <summary>

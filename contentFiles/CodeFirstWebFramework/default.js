@@ -1984,8 +1984,16 @@ var Forms = [];
  * {*} [type] Type.* - sets defaults for column options
  * {string} data item name
  * {string} [heading]
- * {boolean|*}	nonZero true to suppress zero items, with button to reveal, false opposite, or:
- * 	{boolean} [hide] true to suppress zero items, with button to reveal, false opposite
+ * (boolean|*) filter true to filter out zero/unticked items, with button to reveal, false show all, with button to hide, or:
+ * 	{boolean} [filterMatches] true to filter out zero/unticked, false to filter out non-zero/ticked items) (true)
+ * 	{boolean} [hide] true to suppress filtered items, with button to reveal, false show all, with button to hide (true)
+ * 	{string} [heading] to use in button text (col.heading)
+ * 	{string} [hideText] prompt for button (Only ticked|non-zero <heading>)
+ * 	{string} [revealText] prompt for button (Show all <heading>)
+ * 	{string} [regex] regex matching data to filter out (^([0\.]*|false||null)$)
+ * Old-style filtering included for backward compatibility
+ * {boolean|*}	nonZero true to suppress zero/ticked items, with button to reveal, false opposite, or:
+ * 	{boolean} [hide] true to suppress zero/ticked items, with button to reveal, false opposite
  * 	{string} [heading] to use in button text (col.heading)
  * 	{string} [zeroText] prompt for button (Show all <heading>)
  * 	{string} [nonZeroText] prompt for button (Only non-zero <heading>)
@@ -2052,23 +2060,38 @@ function makeDataTable(selector, options) {
 			hdg.append(' <span class="hint">?</span>');
 		// Add to columns hash by name
 		columns[col.name] = col;
-		// "Show All" option?
-		var nz = myOption('nonZero', col);
+		// Filter option?
+		var nz = myOption('filter', col);
 		if (nz != undefined) {
 			if (typeof (nz) == 'boolean') nz = { hide: nz };
 			nz.col = col;
 			if (nz.hide === undefined) nz.hide = true;
 			if (nz.heading === undefined) nz.heading = title;
-			if (nz.zeroText === undefined) nz.zeroText = (col.type == 'checkbox' ? 'Exclude ' : 'Only non-zero ') + nz.heading;
-			if (nz.nonZeroText === undefined) nz.nonZeroText = (col.type == 'checkbox' ? 'Include ' : 'Show all ') + nz.heading;
-			nz.only = nz.only == true;
+			nz.filterMatches = !(nz.filterMatches == false);
+			if (nz.hideText === undefined) nz.hideText = 'Only ' + ((col.type + '').startsWith('checkbox') ? (nz.filterMatches ? 'ticked ' : 'unticked ') : (nz.filterMatches ? 'non-zero' : 'zero ')) + nz.heading;
+			if (nz.revealText === undefined) nz.revealText = 'Show all ' + nz.heading;
 			if (nz.regex === undefined)
-				nz.regex = nz.only ? '^([0\.]*|true)$' : '^([0\.]*|true|null)$';
+				nz.regex = '^([0\.]*|false||null)$';
+			nz.regex = new RegExp(nz.regex);
+			if (nzList.length)
+				nz.hide = nzList.shift() == 1;
+			nzColumns.push(nz);
+		} else if((nz = myOption('nonZero', col)) != undefined) {
+			if (typeof (nz) == 'boolean') nz = { hide: nz };
+			nz.col = col;
+			if (nz.hide === undefined) nz.hide = true;
+			if (nz.heading === undefined) nz.heading = title;
+			if (nz.hideText === undefined) nz.hideText = ((col.type + '').startsWith('checkbox') ? 'Exclude ' : 'Only non-zero ') + nz.heading;
+			if (nz.revealText === undefined) nz.revealText = ((col.type + '').startsWith('checkbox') ? 'Include ' : 'Show all ') + nz.heading;
+			nz.filterMatches = !(nz.only == true);
+			if (nz.regex === undefined)
+				nz.regex = nz.filterMatches ? '^([0\.]*|true|null)$' : '^([0\.]*|true)$';
 			nz.regex = new RegExp(nz.regex);
 			if (nzList.length)
 				nz.hide = nzList.shift() == 1;
 			nzColumns.push(nz);
 		}
+
 		col.index = index;
 	});
 	if (options.order == null)
@@ -2122,8 +2145,8 @@ function makeDataTable(selector, options) {
 	}
 	// "Show All" functionality
 	_.each(nzColumns, function (nz) {
-		var zText = nz.zeroText;
-		var nzText = nz.nonZeroText;
+		var zText = nz.hideText;
+		var nzText = nz.revealText;
 		//noinspection JSUnusedLocalSymbols
 		$('<button></button>').attr('id', 'nz' + nz.col.name).attr('data-nz', nz.hide).insertBefore($(selector))
 			.html(nz.hide ? nzText : zText)
@@ -2135,7 +2158,8 @@ function makeDataTable(selector, options) {
 			});
 		$.fn.dataTable.ext.search.push(
 			function (settings, dataArray, dataIndex, data) {
-				return !nz.hide || (nz.only == nz.regex.test(data[nz.col.data] + ''));
+				var result = !nz.hide || (nz.filterMatches != nz.regex.test(data[nz.col.data] + ''));
+				return result;
 			}
 		);
 		if (nz.hide)

@@ -16,10 +16,10 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.130</Version>
-    <AssemblyVersion>1.3.130.0</AssemblyVersion>
-    <FileVersion>1.3.130.0</FileVersion>
-    <PackageReleaseNotes>New filter option on DataTable columns, easier to understand than old nonZero option (but it is retained for backward compatibility).</PackageReleaseNotes>
+    <Version>1.3.132</Version>
+    <AssemblyVersion>1.3.132.0</AssemblyVersion>
+    <FileVersion>1.3.132.0</FileVersion>
+    <PackageReleaseNotes>Add hint click handler to each hint span, instead of catching in body, so that it overrides and handlers in the enclosing element (like sorting datatable column headers)</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

@@ -156,6 +156,23 @@ function searchFilter(root, selector, regex) {
 	});
 }
 
+function hintClick(e) {
+	e.preventDefault();
+	e.stopPropagation();
+	var showing = $(this).parent().find('#tooltip');
+	$('#tooltip').remove();
+	if (showing && showing.length)
+		return;
+	$(this).after('<span id="tooltip"></span>');
+	var $title = $(this).parent().attr('title');
+	$(this).next().append($title);
+};
+
+function addHint(item) {
+	item.append(' ');
+	item.append($('<span class="hint">?</span>').click(hintClick));
+}
+
 $(function () {
 	//	testHarness = bowser.firefox && hasParameter('test');
 	touchScreen = bowser.mobile || bowser.tablet;
@@ -207,16 +224,7 @@ $(function () {
 		// Button to set document number field to <next>, so C# will fill it in with the next one.
 		$(this).prev('input[type="text"]').val('<next>').trigger('change');
 	});
-	$('body').on('click', 'table.form span.hint', function (e) {
-		e.preventDefault();
-		var showing = $(this).parent().find('#tooltip');
-		$('#tooltip').remove();
-		if (showing && showing.length)
-			return;
-		$(this).after('<span id="tooltip"></span>');
-		var $title = $(this).parent().attr('title');
-		$(this).next().append($title);
-	});
+	$('body').on('click', 'table.form span.hint', hintClick);
 	$('body').on('click', 'table.form #tooltip', function (e) {
 		$('#tooltip').remove();
 		e.preventDefault();
@@ -1528,7 +1536,7 @@ var Type = {
 					l.append(_.escape(o.value));
 					if (o.hint) {
 						s.attr('title', o.hint);
-						s.append(' <span class="hint">?</span>');
+						addHint(s);
 					}
 				});
 			} else
@@ -2057,7 +2065,7 @@ function makeDataTable(selector, options) {
 		var title = col.heading;
 		var hdg = $('<th></th>').appendTo(heading).text(title).addClass(col.sClass).attr('title', col.hint);
 		if (col.hint)
-			hdg.append(' <span class="hint">?</span>');
+			addHint(hdg);
 		// Add to columns hash by name
 		columns[col.name] = col;
 		// Filter option?
@@ -2383,7 +2391,7 @@ function makeForm(selector, options) {
 		var lbl = $('<label for="r0c' + col.name + '"></label>').appendTo(hdg);
 		lbl.text(col.heading).attr('title', col.hint);
 		if (col.hint)
-			lbl.append(' <span class="hint">?</span>');
+			addHint(lbl);
 		col.cell = $('<td class="form-inputs"></td>').appendTo(row).html(col.defaultContent);
 		if (col.colspan)
 			col.cell.attr('colspan', col.colspan);
@@ -2802,7 +2810,7 @@ function makeListForm(selector, options) {
 			var cell = $('<th></th>').appendTo(row).text(col.heading).attr('title', col.hint);
 			cell.attr('id', 'c-' + col.name);
 			if (col.hint)
-				cell.append(' <span class="hint">?</span>');
+				addHint(cell);
 			if (col.colspan) {
 				cell.attr('colspan', col.colspan);
 				skip = col.colspan - 1;
@@ -3198,7 +3206,7 @@ function makeDumbForm(selector, options) {
 		var lbl = $('<label for="r0c' + col.name + '"></label>').appendTo(hdg);
 		lbl.text(col.heading).attr('title', col.hint);
 		if (col.hint)
-			lbl.append(' <span class="hint">?</span>');
+			addHint(lbl);
 		col.cell = $('<td class="form-inputs"></td>').appendTo(row).html(col.defaultContent);
 		if (col.colspan)
 			col.cell.attr('colspan', col.colspan);

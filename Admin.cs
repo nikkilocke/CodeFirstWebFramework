@@ -83,7 +83,7 @@ namespace CodeFirstWebFramework {
 					result.data = batch;
 					if (batch.Finished) {
 						result.error = batch.Error;
-						result.redirect = batch.Redirect;
+						result.redirect = batch.RedirectWithMessage();
 						module.Log("Batch finished - redirecting to {0}", batch.Redirect);
 					}
 				}

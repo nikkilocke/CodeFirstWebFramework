@@ -415,6 +415,13 @@ namespace CodeFirstWebFramework {
 		static public string UniqueId() {
 			Guid guid = Guid.NewGuid();
 			byte[] bytes = guid.ToByteArray();
+			return UniqueId(bytes).Substring(0, 26);
+		}
+		/// <summary>
+		/// Static method to generate a unique id based on an array of bytes.
+		/// Based on what Mattermost does to create unique record ids.
+		/// </summary>
+		static public string UniqueId(byte[] bytes) {
 			StringBuilder output = new StringBuilder();
 			for (int bitIndex = 0; bitIndex < bytes.Length * 8; bitIndex += 5) {
 				int dualbyte = bytes[bitIndex / 8] << 8;
@@ -423,7 +430,7 @@ namespace CodeFirstWebFramework {
 				dualbyte = 0x1f & (dualbyte >> (16 - bitIndex % 8 - 5));
 				output.Append(alphabet[dualbyte]);
 			}
-			return output.ToString().Substring(0, 26);
+			return output.ToString();
 		}
 
 		/// <summary>

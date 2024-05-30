@@ -386,7 +386,7 @@ namespace CodeFirstWebFramework {
 			/// <summary>
 			/// Where to redirect to at the end
 			/// </summary>
-			protected string _redirect;
+			public string Redirect;
 			int _record;
 
 			/// <summary>
@@ -425,7 +425,7 @@ namespace CodeFirstWebFramework {
 			/// <param name="redirect">Where to redirect to after batch (or null for default)</param>
 			protected BatchJob(AppModule module, string redirect) {
 				_module = module;
-				_redirect = redirect ?? "/" + module.Module.ToLower() + "/" + module.Method.ToLower() + ".html";
+				Redirect = redirect ?? "/" + module.Module.ToLower() + "/" + module.Method.ToLower() + ".html";
 				Status = "";
 				Records = 100;
 				module.Batch = this;
@@ -497,16 +497,12 @@ namespace CodeFirstWebFramework {
 			public int Records;
 
 			/// <summary>
-			/// Where redirecting to on completion
+			/// Where redirecting to on completion (with any Message added)
 			/// </summary>
-			public string Redirect {
-				get {
-					return _redirect == null ? null : _redirect + (_redirect.Contains('?') ? '&' : '?') + "message=" 
-						+ (string.IsNullOrEmpty(_module.Message) ? "Job completed" : HttpUtility.UrlEncode(_module.Message));
-				}
-				set {
-					_redirect = value;
-				}
+			public string RedirectWithMessage() {
+				if (Redirect == null || string.IsNullOrEmpty(_module.Message))
+					return Redirect;
+				return Redirect + (Redirect.Contains('?') ? '&' : '?') + "message=" + _module.Session.AddTextMessage(_module.Message);
 			}
 
 			/// <summary>
@@ -684,9 +680,12 @@ namespace CodeFirstWebFramework {
 				if (key == null) {
 					GetParameters[value] = "";
 				} else {
-					GetParameters[key] = value;
-					if (key == "message")
-						Message = value;
+					if (key == "message") {
+						string m = Session.GetMessage(value);
+						if(m != null)
+							Message = m;
+					} else
+						GetParameters[key] = value;
 				}
 			}
 			// Add into parameters array

@@ -300,6 +300,59 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Message text/html for displaying in a new screen.
+		/// This is stored in the Session, so people can't hack the text.
+		/// </summary>
+		public class MessageInfo {
+			/// <summary>
+			/// The text of the message
+			/// </summary>
+			public string Text;
+			/// <summary>
+			/// Day number since 1/1/2000 the message was created
+			/// </summary>
+			public int Date;
+			/// <summary>
+			/// Sequence number of this message (resets to 1 at midnight)
+			/// </summary>
+			public int Sequence;
+			/// <summary>
+			/// Unique id of this message
+			/// </summary>
+			public string Handle { get; private set; }
+			/// <summary>
+			/// Next sequence number today
+			/// </summary>
+			static int NextSequence = 1;
+			static int LastDate;
+			static DateTime Base = new DateTime(2000, 1, 1);
+			/// <summary>
+			/// Convert a DateTime into days since Base
+			/// </summary>
+			public static int Days(DateTime d) {
+				return (int)(DateTime.Today - Base).TotalDays;
+			}
+			/// <summary>
+			/// Object to prevent two threads updating NextSequence at the same time
+			/// </summary>
+			static object Lock = new object();
+			/// <summary>
+			/// Create a new message
+			/// </summary>
+			public MessageInfo(string text) {
+				Text = text;
+				lock (Lock) {
+					Date = Days(DateTime.Today);
+					if (Date != LastDate)
+						NextSequence = 1;
+					Sequence = NextSequence++;
+				}
+				byte[] bytes = BitConverter.GetBytes(Date).Concat(BitConverter.GetBytes(Sequence)).ToArray();
+				Handle = Utils.UniqueId(bytes);
+			}
+		}
+
+		/// <summary>
 		/// Simple session
 		/// </summary>
 		[Table]
@@ -348,6 +401,9 @@ namespace CodeFirstWebFramework {
 			[DoNotStore]
 			[JsonIgnore]
 			public ServerConfig Config { get; private set; }
+			[JsonIgnore]
+			[DoNotStore]
+			List<MessageInfo> Messages;
 
 			/// <summary>
 			/// Constructor
@@ -373,6 +429,48 @@ namespace CodeFirstWebFramework {
 			/// </summary>
 			public Session() {
 				Object = new JObject();
+			}
+
+			/// <summary>
+			/// Add a message to the message list
+			/// </summary>
+			/// <returns>Handle of the added message</returns>
+			public string AddMessage(string message) {
+				MessageInfo m = new MessageInfo(message);
+				if (Messages == null)
+					Messages = new List<MessageInfo>();
+				else {
+					// Get rid of messages more than a day old
+					lock(Object) {
+						int old = MessageInfo.Days(DateTime.Today.AddDays(-1));
+						while (Messages.Count > 0 && Messages[0].Date < old)
+							Messages.RemoveAt(0);
+					}
+				}
+				Messages.Add(m);
+				return m.Handle;
+			}
+
+			/// <summary>
+			/// Add a message to the message list (encoding to avoid any html, but keeping newlines as <br/>)
+			/// </summary>
+			/// <returns>Handle of the added message</returns>
+			public string AddTextMessage(string message) {
+				message = string.Join("<br/>\n", message.Replace("\r", "").Split('\n').Select(s => HttpUtility.HtmlEncode(s)));
+				return AddMessage(message);
+			}
+
+			/// <summary>
+			/// Get the text of a message from the list for this session (and remove it)
+			/// </summary>
+			/// <returns>Message text, or null if no such message</returns>
+			public string GetMessage(string handle) {
+				if (Messages == null)
+					return null;
+				MessageInfo r = Messages.FirstOrDefault(m => m.Handle == handle);
+				if(r == null) return null;
+				Messages.Remove(r);
+				return r.Text;
 			}
 
 			/// <summary>

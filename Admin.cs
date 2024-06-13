@@ -292,7 +292,7 @@ namespace CodeFirstWebFramework {
 				string error = user.PasswordValid(user.Password);
 				if (error != null)
 					throw new CheckException(error);
-				user.Password = user.HashPassword(user.Password);
+				user.Password = user.HashPassword(user.Password, true);
 			}
 			AjaxReturn r = module.SaveRecord(user);
 			if (!string.IsNullOrEmpty(r.error))
@@ -391,7 +391,7 @@ namespace CodeFirstWebFramework {
 			string error = user.PasswordValid(password);
 			if (error != null)
 				throw new CheckException(error);
-			user.Password = user.HashPassword(password);
+			user.Password = user.HashPassword(password, true);
 			return module.SaveRecord(user);
 		}
 
@@ -430,6 +430,10 @@ namespace CodeFirstWebFramework {
 					+ module.Database.Quote(login) + " OR Email = " + module.Database.Quote(login));
 				if (user.idUser > 0) {
 					if (user.HashPassword(password) == user.Password) {
+						if(user.OldHashingMethod) {
+							user.Password = user.HashPassword(password, true);
+							module.Database.Update(user);
+						}
 						user.ReloadAccessLevels(module);
 						module.Session.User = user;
 						module.Message = "Logged in successfully";

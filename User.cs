@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation.PBKDF2;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Tls;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -30,8 +33,21 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Password.
 		/// </summary>
+		[Length(90)]
 		[Field(Type = "passwordInput")]
 		public string Password;
+		/// <summary>
+		/// Random salt to add to password before hashing. 
+		/// First character is $ in this version (may change if new hashing algorithm used)
+		/// </summary>
+		[Length(90)]
+		[Field(Visible = false)]
+		public string Salt;
+		/// <summary>
+		/// Determines if the password is stored using an obsolete hashing method, and needs to be updated
+		/// </summary>
+		[DoNotStore]
+		public bool OldHashingMethod => Salt == null || !Salt.StartsWith("$");
 		/// <summary>
 		/// See AccessLevel class for possible values
 		/// </summary>
@@ -44,7 +60,39 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Hash a password using SHA and Base64
 		/// </summary>
-		public virtual string HashPassword(string password) {
+		/// <param name="password">The password to hash into Password</param>
+		/// <param name="forceLatestAlgorithm">True to always use the latest hashing method</param>
+		public virtual string HashPassword(string password, bool forceLatestAlgorithm = false) {
+			if (idUser == null)
+				forceLatestAlgorithm = true;
+			if(forceLatestAlgorithm && OldHashingMethod) {
+				// New user or changing algorithm- create salt
+				byte[] salt = new byte[64];
+				RandomNumberGenerator.Create().GetBytes(salt);
+				Salt = "$" + Convert.ToBase64String(salt);
+			}
+			if (string.IsNullOrEmpty(Salt))
+				return LegacyHashPassword(password);
+			var hash = KeyDerivation.Pbkdf2(
+				password,
+				GetSalt(),
+				KeyDerivationPrf.HMACSHA256,
+				10000,
+				64);
+			return Convert.ToBase64String(hash);
+		}
+
+		/// <summary>
+		/// Return the salt byte array
+		/// </summary>
+		protected byte[] GetSalt() {
+			return Convert.FromBase64String(Salt.Substring(1));
+		}
+
+		/// <summary>
+		/// Hash a password using SHA and Base64
+		/// </summary>
+		public string LegacyHashPassword(string password) {
 			Encoding enc = Encoding.GetEncoding(1252);
 			return Convert.ToBase64String(new SHA1CryptoServiceProvider().ComputeHash(enc.GetBytes(password)));
 		}

@@ -292,7 +292,7 @@ namespace CodeFirstWebFramework {
 				string error = user.PasswordValid(user.Password);
 				if (error != null)
 					throw new CheckException(error);
-				user.Password = user.HashPassword(user.Password, true);
+				user.UpdatePassword(user.Password);
 			}
 			AjaxReturn r = module.SaveRecord(user);
 			if (!string.IsNullOrEmpty(r.error))
@@ -391,7 +391,7 @@ namespace CodeFirstWebFramework {
 			string error = user.PasswordValid(password);
 			if (error != null)
 				throw new CheckException(error);
-			user.Password = user.HashPassword(password, true);
+			user.UpdatePassword(password);
 			return module.SaveRecord(user);
 		}
 

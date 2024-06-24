@@ -37,6 +37,12 @@ namespace CodeFirstWebFramework {
 		[Field(Type = "passwordInput")]
 		public string Password;
 		/// <summary>
+		/// Date and time the password was last changed, or 1/1/2000 if not changed after this field was created
+		/// </summary>
+		[DefaultValue("2000-01-01")]
+		[Field(Type = "datetime")]
+		public DateTime PasswordLastChanged;
+		/// <summary>
 		/// Random salt to add to password before hashing. 
 		/// First character is $ in this version (may change if new hashing algorithm used)
 		/// </summary>
@@ -80,6 +86,16 @@ namespace CodeFirstWebFramework {
 				10000,
 				64);
 			return Convert.ToBase64String(hash);
+		}
+
+		/// <summary>
+		/// Update the stored Hashed password (using the latest hashing algortihm
+		/// Also update the password age.
+		/// It will be necessary to save the record to the database aftereards
+		/// </summary>
+		public virtual void UpdatePassword(string password) {
+			Password = HashPassword(password, true);
+			PasswordLastChanged = DateTime.Now;
 		}
 
 		/// <summary>

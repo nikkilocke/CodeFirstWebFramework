@@ -211,6 +211,7 @@ namespace CodeFirstWebFramework {
 					module.Server = server;
 					module.ActiveModule = webmodules[server.Namespace];
 					module.LogString = log;
+					module.GenerateNonce();
 					if (cookie != null) {
 						if (!_sessions.TryGetValue(cookie.Value, out session) && server.PersistentSessions)
 							session = Session.FromStore(this, module, cookie.Value);
@@ -256,6 +257,7 @@ namespace CodeFirstWebFramework {
 								module.Method = "default";
 								module.Title = "Exception";
 								module.Exception = ex;
+								module.GenerateNonce();
 								HttpStatusCode code = HttpStatusCode.InternalServerError;
 								string template = "exception";
 								if (ex is CheckException check) {

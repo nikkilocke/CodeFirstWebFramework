@@ -16,10 +16,11 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.135</Version>
-    <AssemblyVersion>1.3.135.0</AssemblyVersion>
-    <FileVersion>1.3.135.0</FileVersion>
-    <PackageReleaseNotes>Encode message= parameter so people cannot add arbitrary html to messages</PackageReleaseNotes>
+    <Version>1.3.136</Version>
+    <AssemblyVersion>1.3.136.0</AssemblyVersion>
+    <FileVersion>1.3.136.0</FileVersion>
+    <PackageReleaseNotes>Use more secure Pbkdf2 password hashing algorithm, with a random salt, and extend stored password length to 90 characters.
+Also record last time password was changed.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

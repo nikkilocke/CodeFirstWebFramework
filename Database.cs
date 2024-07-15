@@ -118,7 +118,6 @@ namespace CodeFirstWebFramework {
 		public void Upgrade() {
 			try {
 				_startup = true;
-				Dictionary<string, Table> dbTables = db.Tables();
 				int p = -1;
 				try {
 					JObject q = QueryOne("SELECT DbVersion FROM Settings");
@@ -131,6 +130,7 @@ namespace CodeFirstWebFramework {
 				}
 				if (p < CurrentDbVersion)
 					PreUpgradeFromVersion(p);
+				Dictionary<string, Table> dbTables = db.Tables();
 				TableList orderedTables = new TableList(_tables.Values);
 				foreach (Table t in orderedTables.Reverse<Table>()) {
 					Table database;
@@ -162,14 +162,16 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Code that must be run before the database is reconfigured - e.g. renaming old fields
+		/// Code that must be run before the database is reconfigured - e.g. renaming old fields.
+		/// May alter the database structure, if required.
 		/// </summary>
 		/// <param name="version">Original version (-1 = new database)</param>
 		public virtual void PreUpgradeFromVersion(int version) {
 		}
 
 		/// <summary>
-		/// Code that must be run after the database is reconfigured - e.g. populating new fields
+		/// Code that must be run after the database is reconfigured - e.g. populating new fields.
+		/// MUST NOT alter the database structure.
 		/// </summary>
 		/// <param name="version">Original version (-1 = new database)</param>
 		public virtual void PostUpgradeFromVersion(int version) {

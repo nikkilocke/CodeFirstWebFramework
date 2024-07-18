@@ -2,27 +2,26 @@
 <html>
 <head lang="en">
 {{#if Nonce}}
-	meta http-equiv="Content-Security-Policy" content="script-src 'nonce-{{Nonce}}'" />
-	meta http-equiv="Content-Security-Policy" content="style-src 'nonce-{{Nonce}}'" />
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-{{Nonce}}'; style-src 'nonce-{{Nonce}}'; connect-src 'self'; img-src 'self'; font-src 'self';" />
 {{/if}}
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-	<link href="/libs/jquery-ui.structure.css" rel="stylesheet" type="text/css" />
-	<link href="/libs/jquery-ui.min.css" rel="stylesheet" type="text/css" />
-	<link href="/libs/theme.min.css" rel="stylesheet" type="text/css" />
-	<link href="/libs/jquery.multiselect.css" rel="stylesheet" type="text/css" />
-	<link href="/libs/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
-	<script src="/libs/jquery.min.js" type="text/javascript"></script>
-	<script src="/libs/underscore-min.js" type="text/javascript"></script>
-	<script src="/libs/jquery-ui.min.js" type="text/javascript"></script>
-	<script src="/libs/jquery.dataTables.min.js" type="text/javascript"></script>
-	<script src="/libs/jquery.multiselect.js" type="text/javascript"></script>
-	<script src="/libs/bowser.min.js" type="text/javascript"></script>
-	<link id="defaultStyles" href="/default{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
-	<link href="/skin/{{Settings.Skin}}{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
-	<script src="/default{{VersionSuffix}}.js" type="text/javascript"></script>
+	<link{{NonceAttribute}} href="/libs/jquery-ui.structure.css" rel="stylesheet" type="text/css" />
+	<link{{NonceAttribute}} href="/libs/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+	<link{{NonceAttribute}} href="/libs/theme.min.css" rel="stylesheet" type="text/css" />
+	<link{{NonceAttribute}} href="/libs/jquery.multiselect.css" rel="stylesheet" type="text/css" />
+	<link{{NonceAttribute}} href="/libs/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+	<script{{NonceAttribute}} src="/libs/jquery.min.js" type="text/javascript"></script>
+	<script{{NonceAttribute}} src="/libs/underscore-min.js" type="text/javascript"></script>
+	<script{{NonceAttribute}} src="/libs/jquery-ui.min.js" type="text/javascript"></script>
+	<script{{NonceAttribute}} src="/libs/jquery.dataTables.min.js" type="text/javascript"></script>
+	<script{{NonceAttribute}} src="/libs/jquery.multiselect.js" type="text/javascript"></script>
+	<script{{NonceAttribute}} src="/libs/bowser.min.js" type="text/javascript"></script>
+	<link{{NonceAttribute}} id="defaultStyles" href="/default{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
+	<link{{NonceAttribute}} href="/skin/{{Settings.Skin}}{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
+	<script{{NonceAttribute}} src="/default{{VersionSuffix}}.js" type="text/javascript"></script>
 	{{include default.inc}}
 	{{HeaderScript}}
-	<script src="/skin/{{Settings.Skin}}{{VersionSuffix}}.js" type="text/javascript"></script>
+	<script{{NonceAttribute}} src="/skin/{{Settings.Skin}}{{VersionSuffix}}.js" type="text/javascript"></script>
 	<title>{{Config.Filename}} - {{Server.Namespace}} - {{{Title}}}</title>
 	{{Head}}
 </head>

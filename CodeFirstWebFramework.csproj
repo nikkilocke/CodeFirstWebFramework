@@ -18,7 +18,7 @@
     <PackageTags>C# SQL Code First Web Server</PackageTags>
     <Version>1.3.139</Version>
     <AssemblyVersion>1.3.139.0</AssemblyVersion>
-    <FileVersion>1.3.138.0</FileVersion>
+    <FileVersion>1.3.139.0</FileVersion>
     <PackageReleaseNotes>Ability to turn on NONCE in config file. If set to true, every page generated will have a unique nonce, which can be accessed in templates as {{Nonce}} od {{NonceAttribute}} (which gives ` nonce="the nonce"`). 
 The default templates will turn on Content-Security-Policy nonces for script-src and style-src, and set all the others to 'self'.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>

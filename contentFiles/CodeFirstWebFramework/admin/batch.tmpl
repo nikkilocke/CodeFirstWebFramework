@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script>
+<script {{NonceAttribute}}>
 var batchId = getParameter('id'){{#if Batch}} || {{Batch.Id}}{{/if}};
 
 function checkStatus() {

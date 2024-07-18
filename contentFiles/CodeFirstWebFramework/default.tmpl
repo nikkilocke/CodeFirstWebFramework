@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
+{{#if Nonce}}
+	meta http-equiv="Content-Security-Policy" content="script-src 'nonce-{{Nonce}}'" />
+	meta http-equiv="Content-Security-Policy" content="style-src 'nonce-{{Nonce}}'" />
+{{/if}}
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<link href="/libs/jquery-ui.structure.css" rel="stylesheet" type="text/css" />
 	<link href="/libs/jquery-ui.min.css" rel="stylesheet" type="text/css" />

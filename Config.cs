@@ -94,6 +94,13 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public bool PersistentSessions;
 		/// <summary>
+		/// Set to true to generate a Nonce for each request.
+		/// If set to true, the AppModule will have a different string in Nonce for every request,
+		/// and the default template will use CSP to enforce nonces on script-src and style-src.
+		/// If not set, or set to false, the Nonce string will be null.
+		/// </summary>
+		public bool Nonce;
+		/// <summary>
 		/// Command line flags extracted from program command line
 		/// </summary>
 		static public NameValueCollection CommandLineFlags;
@@ -276,6 +283,13 @@ namespace CodeFirstWebFramework {
 		/// Cookies are stored in a database, rather than in memory
 		/// </summary>
 		public bool PersistentSessions;
+		/// <summary>
+		/// Set to true to generate a Nonce for each request.
+		/// If set to true, the AppModule will have a different string in Nonce for every request,
+		/// and the default template will use CSP to enforce nonces on script-src and style-src.
+		/// If not set, or set to false, the Nonce string will be null.
+		/// </summary>
+		public bool ?Nonce;
 		/// <summary>
 		/// Details of the namespace
 		/// </summary>

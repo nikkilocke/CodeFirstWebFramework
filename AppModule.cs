@@ -14,6 +14,7 @@ using Mustache;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Security.Policy;
+using System.Security.Cryptography;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -130,6 +131,16 @@ namespace CodeFirstWebFramework {
 		public string VersionSuffix {
 			get { return WebServer.VersionSuffix; }
 		}
+
+		/// <summary>
+		/// Nonce generated for scripts if the Config.Nonce setting is on
+		/// </summary>
+		public string Nonce;
+
+		/// <summary>
+		/// Nonce attribute to add to inline scripts or styles - empty if nonces are off
+		/// </summary>
+		public string NonceAttribute => string.IsNullOrEmpty(Nonce) ? "" : " nonce=\"" + Nonce + "\" ";
 
 		Database _db;
 
@@ -647,6 +658,7 @@ namespace CodeFirstWebFramework {
 				PostParameters = value.PostParameters;
 				Info = value.Info;
 				UserAccessLevel = value.UserAccessLevel;
+				GenerateNonce();
 			}
 		}
 
@@ -839,6 +851,19 @@ namespace CodeFirstWebFramework {
 			}
 			Init();
 			return method.Invoke(self, parms.Count == 0 ? null : parms.ToArray());
+		}
+
+		/// <summary>
+		/// Generate nonce if required
+		/// </summary>
+		public void GenerateNonce() {
+			bool nonce = Server.Nonce ?? Config.Default.Nonce;
+			if (nonce) {
+				var nonceBytes = new byte[32];
+				using (var generator = RandomNumberGenerator.Create())
+					generator.GetBytes(nonceBytes);
+				Nonce = Convert.ToBase64String(nonceBytes);
+			}
 		}
 
 		/// <summary>

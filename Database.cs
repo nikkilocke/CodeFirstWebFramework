@@ -183,6 +183,8 @@ namespace CodeFirstWebFramework {
 					return new SQLiteDatabase(this, connectionString);
 				case "mysql":
 					return new MySqlDatabase(this, connectionString);
+				case "mariadb":
+					return new MySqlConnector(this, connectionString);
 				case "sqlserver":
 					throw new CheckException("Support for SQL Server has temporarily been dropped");
 					// return new SqlServerDatabase(this, connectionString);

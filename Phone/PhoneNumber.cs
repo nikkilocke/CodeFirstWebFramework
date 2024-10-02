@@ -36,7 +36,7 @@ namespace Phone {
 		public string PhoneKey;
 		public string Number;
 		[Index("Name")]
-		[Length(0)]
+		[Length(200)]
 		public string Name;
 		[ForeignKey("Analysis")]
 		public int Analysis;

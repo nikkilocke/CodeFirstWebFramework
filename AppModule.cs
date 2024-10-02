@@ -693,7 +693,7 @@ namespace CodeFirstWebFramework {
 					GetParameters[value] = "";
 				} else {
 					if (key == "message") {
-						string m = Session.GetMessage(value);
+						string m = Session.TakeMessage(value);
 						if(m != null)
 							Message = m;
 					} else
@@ -801,9 +801,19 @@ namespace CodeFirstWebFramework {
 					return null;
 			}
 			if (!HasAccess(Info, Method, out UserAccessLevel)) {
-				if (Session.User == null && !typeof(AjaxReturn).IsAssignableFrom(method.ReturnType)) {
-					Redirect("/admin/login?from=" + Uri.EscapeDataString(Request.Url.PathAndQuery));
-					return null;
+				if (!typeof(AjaxReturn).IsAssignableFrom(method.ReturnType)) {
+					if (Session.User == null) {
+						Redirect("/admin/login?from=" + Uri.EscapeDataString(Request.Url.PathAndQuery));
+						return null;
+					}
+					if (Method == "default" && Module != "home") {
+						// Incorrectly redirected to default method
+						// (which is the default if no from parameter was
+						// supplied to a form and they press Save or Back)
+						// in a module which requires greater access
+						Redirect("/");	// Send them to home page
+						return null;
+					}
 				}
 				throw new CheckException("Unauthorised access");
 			}

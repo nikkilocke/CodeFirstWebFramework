@@ -263,7 +263,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public void Delete(string tableName, int id) {
 			Table t = TableFor(tableName);
-			Execute("DELETE FROM " + tableName + " WHERE " + t.PrimaryKey.Name + '=' + id);
+			Execute("DELETE FROM " + tableName + " WHERE " + QuoteName(t.PrimaryKey.Name) + '=' + id);
 		}
 
 		/// <summary>
@@ -282,7 +282,7 @@ namespace CodeFirstWebFramework {
 		public void delete(Table table, JObject data) {
 			Index index = table.IndexFor(data);
 			Utils.Check(index != null, "Deleting from {0}:data does not specify unique record", table.Name);
-			Execute("DELETE FROM " + table.Name + " WHERE " + index.Where(data, Quote));
+			Execute("DELETE FROM " + QuoteName(table.Name) + " WHERE " + index.Where(data, Quote, QuoteName));
 		}
 
 		/// <summary>
@@ -349,8 +349,8 @@ namespace CodeFirstWebFramework {
 		public bool Exists(string tableName, int? id) {
 			Table table = TableFor(tableName);
 			string idName = table.PrimaryKey.Name;
-			return id != null && QueryOne("SELECT " + idName + " FROM " + tableName + " WHERE "
-				+ idName + " = " + id) != null;
+			return id != null && QueryOne("SELECT " + idName + " FROM " + QuoteName(tableName) + " WHERE "
+				+ QuoteName(idName) + " = " + id) != null;
 		}
 
 		/// <summary>
@@ -378,7 +378,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public T Get<T>(int id) where T : JsonObject {
 			Table table = TableFor(typeof(T));
-			return QueryOne<T>("SELECT * FROM " + table.Name + " WHERE " + table.PrimaryKey.Name + " = " + id);
+			return QueryOne<T>("SELECT * FROM " + QuoteName(table.Name) + " WHERE " + QuoteName(table.PrimaryKey.Name) + " = " + id);
 		}
 
 		/// <summary>
@@ -389,7 +389,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="record">Returned record (will be empty if record doesn't exist)</param>
 		public bool TryGet<T>(int id, out T record) where T : JsonObject {
 			Table table = TableFor(typeof(T));
-			record = QueryOne<T>("SELECT * FROM " + table.Name + " WHERE " + table.PrimaryKey.Name + " = " + id);
+			record = QueryOne<T>("SELECT * FROM " + QuoteName(table.Name) + " WHERE " + QuoteName(table.PrimaryKey.Name) + " = " + id);
 			return record.Id == id;
 		}
 
@@ -452,7 +452,7 @@ namespace CodeFirstWebFramework {
 			JObject data = criteria.ToJObject();
 			Index index = table.IndexFor(data);
 			if (index != null) {
-				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data, Quote));
+				data = QueryOne("SELECT * FROM " + QuoteName(table.Name) + " WHERE " + index.Where(data, Quote, QuoteName));
 			} else {
 				data = null;
 			}
@@ -480,7 +480,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		JObject getByIndex(Table table, Index index, JObject data) {
 			if (index != null) {
-				data = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data, Quote));
+				data = QueryOne("SELECT * FROM " + QuoteName(table.Name) + " WHERE " + index.Where(data, Quote, QuoteName));
 			} else {
 				data = null;
 			}
@@ -492,7 +492,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public JObject Get(string tableName, int id) {
 			Table table = TableFor(tableName);
-			JObject result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + table.PrimaryKey.Name + " = " + id);
+			JObject result = QueryOne("SELECT * FROM " + QuoteName(table.Name) + " WHERE " + QuoteName(table.PrimaryKey.Name) + " = " + id);
 			return result ?? emptyRecord(table);
 		}
 
@@ -559,8 +559,8 @@ namespace CodeFirstWebFramework {
 			string idName = idField.Name;
 			List<Field> fields = table.Fields.Where(f => !data.IsMissingOrNull(f.Name)).ToList();
 			checkForMissingFields(table, data, true);
-			string sql = "INSERT INTO " + table.Name + " ("
-				+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
+			string sql = "INSERT INTO " + QuoteName(table.Name) + " ("
+				+ string.Join(", ", fields.Select(f => QuoteName(f.Name)).ToArray()) + ") VALUES ("
 				+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name], Quote)).ToArray()) + ")";
 			try {
 				using (new Timer(sql)) {
@@ -611,8 +611,8 @@ namespace CodeFirstWebFramework {
 			string idName = table.PrimaryKey.Name;
 			Index index = table.IndexFor(data);
 			if (index == null || index.Fields.FirstOrDefault(f => data[f.Name].ToString() != "") == null) return null;
-			JObject result = QueryOne("SELECT " + idName + " FROM " + tableName + " WHERE "
-				+ index.Where(data, Quote));
+			JObject result = QueryOne("SELECT " + QuoteName(idName) + " FROM " + QuoteName(tableName) + " WHERE "
+				+ index.Where(data, Quote, QuoteName));
 			return result?[idName].To<int?>();
 		}
 
@@ -661,14 +661,14 @@ namespace CodeFirstWebFramework {
 				processed.Add(q);
 				Field pk = q.PrimaryKey;
 				if (joins.Count == 0) {
-					joins.Add("FROM " + q.Name);
+					joins.Add("FROM " + QuoteName(q.Name));
 					allFields.AddRange(q.Fields);
 				} else {
 					Table detail = processed.FirstOrDefault(t => t.ForeignKeyFieldFor(q) != null);
 					if (detail != null) {
 						// q is master
 						Field fk = detail.ForeignKeyFieldFor(q);
-						joins.Add("LEFT JOIN " + q.Name + " ON " + q.Name + "." + fk.ForeignKey.Field.Name + " = " + detail.Name + "." + fk.Name);
+						joins.Add("LEFT JOIN " + QuoteName(q.Name) + " ON " + QuoteName(q.Name) + "." + QuoteName(fk.ForeignKey.Field.Name) + " = " + QuoteName(detail.Name) + "." + QuoteName(fk.Name));
 						allFields.AddRange(q.Fields.Where(f => f != pk));
 					} else {
 						// q is detail
@@ -677,14 +677,14 @@ namespace CodeFirstWebFramework {
 							throw new CheckException("No joins between {0} and any of {1}",
 								q.Name, string.Join(",", tables.Select(t => t.Name).ToArray()));
 						Field fk = q.ForeignKeyFieldFor(master);
-						joins.Add("LEFT JOIN " + q.Name + " ON " + q.Name + "." + fk.Name + " = " + master.Name + "." + fk.ForeignKey.Field.Name);
+						joins.Add("LEFT JOIN " + QuoteName(q.Name) + " ON " + QuoteName(q.Name) + "." + QuoteName(fk.Name) + " = " + QuoteName(master.Name) + "." + QuoteName(fk.ForeignKey.Field.Name));
 						allFields.AddRange(q.Fields.Where(f => f != pk));
 					}
 				}
 				foreach (Field fk in q.Fields.Where(f => f.ForeignKey != null && f.ForeignKey.Table.Indexes.Length > 1 && tables.IndexOf(f.ForeignKey.Table) < 0)) {
 					Table master = fk.ForeignKey.Table;
 					string joinName = q.Name + "_" + master.Name + ++joinCount;
-					joins.Add("LEFT JOIN " + master.Name + " AS " + joinName + " ON " + joinName + "." + fk.ForeignKey.Field.Name + " = " + q.Name + "." + fk.Name);
+					joins.Add("LEFT JOIN " + QuoteName(master.Name) + " AS " + QuoteName(joinName) + " ON " + QuoteName(joinName) + "." + QuoteName(fk.ForeignKey.Field.Name) + " = " + QuoteName(q.Name) + "." + QuoteName(fk.Name));
 					int i = allFields.IndexOf(fk);
 					if (i <= 0)		// Do not remove first field, which will be key of first file
 						i = allFields.Count;
@@ -694,7 +694,7 @@ namespace CodeFirstWebFramework {
 				}
 			}
 			if (string.IsNullOrEmpty(fields) || fields == "+")
-				fields = string.Join(",", allFields.Select(f => f.Name).ToArray());
+				fields = string.Join(",", allFields.Select(f => QuoteName(f.Name)).ToArray());
 			return "SELECT " + fields + "\r\n" + string.Join("\r\n", joins) + "\r\n" + conditions;
 		}
 
@@ -777,6 +777,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Quote a field or table name when creating SQL
+		/// </summary>
+		public string QuoteName(string name) {
+			return db.QuoteName(name);
+		}
+
+		/// <summary>
 		/// Determine if a record with the given id exists
 		/// </summary>
 		public bool RecordExists(string table, int id) {
@@ -789,7 +796,7 @@ namespace CodeFirstWebFramework {
 		public bool RecordExists(Table table, int id) {
 			Field idField = table.PrimaryKey;
 			string idName = idField.Name;
-			return QueryOne("SELECT " + idName + " FROM " + table.Name + " WHERE " + idName + " = " + id) != null;
+			return QueryOne("SELECT " + QuoteName(idName) + " FROM " + QuoteName(table.Name) + " WHERE " + QuoteName(idName) + " = " + id) != null;
 		}
 
 		/// <summary>
@@ -893,7 +900,7 @@ namespace CodeFirstWebFramework {
 			string idName = idField.Name;
 			JToken idValue = null;
 			Index index = table.Indexes[0];
-			JObject result = QueryOne("SELECT " + idName + " FROM " + table.Name + " WHERE " + index.Where(data, Quote));
+			JObject result = QueryOne("SELECT " + QuoteName(idName) + " FROM " + QuoteName(table.Name) + " WHERE " + index.Where(data, Quote, QuoteName));
 			if (result != null)
 				data[idName] = idValue = result[idName];
 			List<Field> fields = table.Fields.Where(f => data[f.Name] != null && (f.Nullable || data[f.Name].Type != JTokenType.Null)).ToList();
@@ -901,9 +908,9 @@ namespace CodeFirstWebFramework {
 				Log.Debug.WriteLine("Fields set to null " + string.Join(",", fields.Where(f => data[f.Name].Type == JTokenType.Null).Select(f => f.Name).ToArray()));
 			checkForMissingFields(table, data, idValue == null);
 			if (idValue != null) {
-				Execute("UPDATE " + table.Name + " SET "
-					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name], Quote)).ToArray())
-					+ " WHERE " + index.Where(data, Quote));
+				Execute("UPDATE " + QuoteName(table.Name) + " SET "
+					+ string.Join(", ", fields.Where(f => f != idField).Select(f => QuoteName(f.Name) + '=' + f.Quote(data[f.Name], Quote)).ToArray())
+					+ " WHERE " + index.Where(data, Quote, QuoteName));
 			} else {
 				insert(table, data);
 			}
@@ -920,19 +927,19 @@ namespace CodeFirstWebFramework {
 			List<Field> fields = table.Fields.Where(f => data[f.Name] != null).ToList();
 			Index index = table.IndexFor(data);
 			JObject result = null;
-			result = QueryOne("SELECT * FROM " + table.Name + " WHERE " + index.Where(data, Quote));
+			result = QueryOne("SELECT * FROM " + QuoteName(table.Name) + " WHERE " + index.Where(data, Quote, QuoteName));
 			if (result != null)
 				data[idName] = idValue = result[idName];
 			if (idValue != null) {
 				fields = fields.Where(f => data.AsString(f.Name) != result.AsString(f.Name)).ToList();
 				if (fields.Count == 0)
 					return;
-				Execute("UPDATE " + table.Name + " SET "
-					+ string.Join(", ", fields.Where(f => f != idField).Select(f => f.Name + '=' + f.Quote(data[f.Name], Quote)).ToArray())
-					+ " WHERE " + index.Where(data, Quote));
+				Execute("UPDATE " + QuoteName(table.Name) + " SET "
+					+ string.Join(", ", fields.Where(f => f != idField).Select(f => QuoteName(f.Name) + '=' + f.Quote(data[f.Name], Quote)).ToArray())
+					+ " WHERE " + index.Where(data, Quote, QuoteName));
 			} else {
-				string sql = "INSERT INTO " + table.Name + " ("
-					+ string.Join(", ", fields.Select(f => f.Name).ToArray()) + ") VALUES ("
+				string sql = "INSERT INTO " + QuoteName(table.Name) + " ("
+					+ string.Join(", ", fields.Select(f => QuoteName(f.Name)).ToArray()) + ") VALUES ("
 					+ string.Join(", ", fields.Select(f => f.Quote(data[f.Name], Quote)).ToArray()) + ")";
 				try {
 					data[idName] = db.Insert(table, sql, false);
@@ -1327,8 +1334,8 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Generate a WHERE clause (without the "WHERE") to select the record matching data for this index
 		/// </summary>
-		public string Where(JObject data, Func<object, string> quote) {
-			return string.Join(" AND ", Fields.Select(f => f.Name + "=" + f.Quote(data[f.Name], quote)).ToArray());
+		public string Where(JObject data, Func<object, string> quote, Func<string, string> quoteName) {
+			return string.Join(" AND ", Fields.Select(f => quoteName(f.Name) + "=" + f.Quote(data[f.Name], quote)).ToArray());
 		}
 
 		/// <summary>

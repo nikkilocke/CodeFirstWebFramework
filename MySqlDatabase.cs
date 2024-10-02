@@ -229,6 +229,13 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Quote a field or table name when creating SQL
+		/// </summary>
+		public string QuoteName(string name) {
+			return '`' + name + '`';
+		}
+
+		/// <summary>
 		/// Rollback transaction
 		/// </summary>
 		public void Rollback() {

@@ -80,6 +80,11 @@ namespace CodeFirstWebFramework {
 		string Quote(object o);
 
 		/// <summary>
+		/// Quote a field or table name when creating SQL
+		/// </summary>
+		string QuoteName(string name);
+
+		/// <summary>
 		/// Rollback transaction
 		/// </summary>
 		void Rollback();

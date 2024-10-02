@@ -345,8 +345,10 @@ namespace CodeFirstWebFramework {
 				Text = text;
 				lock (Lock) {
 					Date = Days(DateTime.Today);
-					if (Date != LastDate)
+					if (Date != LastDate) {
+						LastDate = Date;
 						NextSequence = 1;
+					}
 					Sequence = NextSequence++;
 				}
 				byte[] bytes = BitConverter.GetBytes(Date).Concat(BitConverter.GetBytes(Sequence)).ToArray();
@@ -466,7 +468,7 @@ namespace CodeFirstWebFramework {
 			/// Get the text of a message from the list for this session (and remove it)
 			/// </summary>
 			/// <returns>Message text, or null if no such message</returns>
-			public string GetMessage(string handle) {
+			public string TakeMessage(string handle) {
 				if (Messages == null)
 					return null;
 				MessageInfo r = Messages.FirstOrDefault(m => m.Handle == handle);

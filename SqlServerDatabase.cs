@@ -373,6 +373,13 @@ WHERE CTU.CONSTRAINT_NAME LIKE 'FK_%'")) {
 			return "'" + o.ToString().Replace("'", "''") + "'";
 		}
 
+		/// <summary>
+		/// Quote a field or table name when creating SQL
+		/// </summary>
+		public string QuoteName(string name) {
+			return '[' + name + ']';
+		}
+
 		SqlCommand command(string sql) {
 			try {
 				return new SqlCommand(sql, _conn, _tran);

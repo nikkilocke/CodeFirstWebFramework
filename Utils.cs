@@ -230,6 +230,14 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Check a condition is true. Throw a FormException with the field page number if not.
+		/// </summary>
+		public static void Check(int page, bool condition, string error) {
+			if (!condition)
+				throw new FormException(error, page);
+		}
+
+		/// <summary>
 		/// Copy all the relevant properties of the source object into this object.
 		/// </summary>
 		public static void CopyFrom<T>(this T self, object source) {

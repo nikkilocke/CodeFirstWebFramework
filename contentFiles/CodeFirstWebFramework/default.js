@@ -2280,6 +2280,8 @@ function makeDataTable(selector, options) {
  * @param {boolean} [options.apply} Include Apply button (default false)
  * @param {string} [options.applyText} Text to use for Apply button (default "Apply")
  * @param {boolean} [options.saveAndNew} Include Save and New button (default false)
+ * @param {Array} [options.pages} List of page titles for multi-page forms
+ * @param {boolean} [options.saveOnAllPages} Always enable the save button on multi-oage forms (if false, disables it except for the last page)
  * @param {*} [options.data] Existing data to display
  * @param {Array} options.columns
  * @param {function} [options.validate] Callback to validate data
@@ -2342,6 +2344,8 @@ function makeForm(selector, options) {
 					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
+				if (options.pages && options.pages.length && d.error && d.id)
+					showPage(d.id, d.error);
 			});
 		};
 	}
@@ -2362,6 +2366,8 @@ function makeForm(selector, options) {
 	var columns = {};
 	_.each(options.columns, function (col, index) {
 		options.columns[index] = col = _setColObject(col, tableName, index);
+		if (col.page > 0)
+			col['@class'] += ' page' + col.page;
 		if (col.postamble) {
 			col.drawNoPostamble = col.draw;
 			col.draw = function (data, rowno, row) {
@@ -2378,6 +2384,8 @@ function makeForm(selector, options) {
 		if (col.preamble) {
 			if (!preambleRow) {
 				preambleRow = $('<tr class="form-question preamble"></tr>');
+				if (col.page > 0)
+					preambleRow.addClass('page' + col.page);
 				preambleRow.insertBefore(row);
 				while (itemsInRow) {
 					$('<td class="form-label" colspan="2"></td>').appendTo(preambleRow);
@@ -2458,6 +2466,34 @@ function makeForm(selector, options) {
 			});
 		}
 	});
+	var prevButton;
+	var nextButton;
+	var page;
+	var pages;
+	var origTitle = $('div#title').text();
+	function showPage(p, message) {
+		if (options.pages && options.pages.length) {
+			if (p != page) {
+				message = message ? message : '';
+				$('#message,#messagea').text(message);
+			}
+			$('button[data-page=' + page + ']').prop('disabled', false);
+			page = p;
+			for (var i = 1; i <= pages; i++) {
+				if (i != page)
+					$('.page' + i).hide();
+			}
+			$('.page' + page).show();
+			$('div#title').text(origTitle + ' - ' + options.pages[page - 1] + ' - step ' + page + ' of ' + pages);
+			prevButton.prop('disabled', page == 1);
+			nextButton.prop('disabled', page == pages);
+			if (!options.saveOnAllPages)
+				$('button.save').prop('disabled', page != pages);
+			$('button[data-page=' + page + ']').prop('disabled', true);
+			history.replaceState({ "id": 0 }, "", urlParameter('page', page));
+		}
+	}
+
 	var result = $(selector);
 
 	/**
@@ -2472,6 +2508,14 @@ function makeForm(selector, options) {
 		addJQueryUiControls();
 		if (options.readonly)
 			result.find('input:not(.searchbox),select,textarea,button.ui-multiselect').attr('disabled', true);
+		if (options.pages && options.pages.length) {
+			pages = options.pages.length;
+			page = getParameter('page');
+			page = page ? parseInt(page) : 1;
+			if (page < 1 || page > pages)
+				page = 1;
+			showPage(page);
+		}
 	}
 	var drawn = false;
 
@@ -2483,6 +2527,20 @@ function makeForm(selector, options) {
 		result.data = d;
 		if (deleteButton && !d[idName])
 			deleteButton.remove();
+		if (!drawn && options.pages && options.pages.length) {
+			var pages = options.pages.length;
+			nextButton = insertActionButton('Next').click(function (e) {
+				showPage(page + 1);
+			});
+			for (var i = pages; i > 0; i--) {
+				insertActionButton(i + '-' + options.pages[i - 1]).attr('id', 'p' + i).attr('data-page', i).click(function (e) {
+					showPage(parseInt($(this).attr('data-page')));
+				});
+			}
+			prevButton = insertActionButton('Previous').click(function (e) {
+				showPage(page - 1);
+			});
+		}
 		draw();
 		// Only do this bit once
 		if (drawn)
@@ -2558,6 +2616,8 @@ function makeForm(selector, options) {
 				}
 			}
 		}
+		if (!drawn && options.pages && options.pages.length && !options.saveOnAllPages)
+			$('button.save').prop('disabled', page != pages);
 		if (deleteUrl && !options.readonly) {
 			deleteButton = actionButton(options.deleteText || 'Delete', 'delete')
 				.click(function (e) {
@@ -2573,6 +2633,7 @@ function makeForm(selector, options) {
 	result.draw = draw;
 	result.submit = submitUrl;
 	result.submitCallback = options.submitCallback;
+	result.showPage = showPage;
 	result.updateSelectOptions = function (col, selectOptions) {
 		col.selectOptions = selectOptions;
 		col.cell.html(col.draw(result.data[col.data], 0, result.data));
@@ -2657,6 +2718,8 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
+				if (options.header.pages && options.header.pages.length && d.error && d.id)
+					result.header.showPage(d.id, d.error);
 			});
 		};
 	}
@@ -2785,6 +2848,8 @@ function makeListForm(selector, options) {
 	}
 	$(selector).addClass('form');
 	$(selector).addClass('listform');
+	if (options.page)
+		$(selector).addClass('page' + options.page);
 	_setAjaxObject(options, 'Listing', '');
 	var row = null;
 	var columns = {};

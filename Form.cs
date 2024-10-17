@@ -7,6 +7,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using System.Net;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -74,6 +75,14 @@ namespace CodeFirstWebFramework {
 		public string Hint {
 			get { return Options.AsString("hint"); }
 			set { Options["hint"] = value; }
+		}
+
+		/// <summary>
+		/// Page number
+		/// </summary>
+		public int Page {
+			get { return Options.AsInt("page"); }
+			set { Options["page"] = value; }
 		}
 
 		/// <summary>
@@ -444,6 +453,24 @@ namespace CodeFirstWebFramework {
 		public bool ReadWrite;
 
 		/// <summary>
+		/// List of page titles for multi-page forms
+		/// </summary>
+		public string[] Pages {
+			get {
+				JToken p = Options["pages"];
+				return p is JArray && ((JArray)p).Count > 0 ? p.To<string[]>() : null; 
+			}
+			set { Options["pages"] = value.ToJToken(); }
+		}
+
+		/// <summary>
+		/// Helper function to set list of page titles for multi-page forms
+		/// </summary>
+		public void SetPages(params string[] pageTitles) {
+			Options["pages"] = pageTitles.ToJToken();
+		}
+
+		/// <summary>
 		/// Add a field from a C# class to the form
 		/// </summary>
 		public FieldAttribute Add(FieldInfo field) {
@@ -469,6 +496,13 @@ namespace CodeFirstWebFramework {
 
 		bool readWriteFlagForTable(Type t, bool writeable) {
 			return ReadWrite && (writeable || t.IsDefined(typeof(TableAttribute), false) || t.IsDefined(typeof(WriteableAttribute), false));
+		}
+
+		/// <summary>
+		/// Add all the fields from a type
+		/// </summary>
+		public void Add(Type t) {
+			processFields(t, false);
 		}
 
 		/// <summary>
@@ -633,7 +667,36 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Check a condition is true on a field. Throw a FormException with the field page number if not.
+		/// </summary>
+		public void Check(string fieldName, bool condition, string error) {
+			if (!condition) {
+				FieldAttribute f = this[fieldName];
+				throw new FormException(error, f == null ? 0 : f.Page);
+			}
+		}
 	}
+
+	/// <summary>
+	/// Exception thrown by Form.Check assertion function
+	/// </summary>
+	public class FormException : CheckException {
+		/// <summary>
+		/// Field page number (0 for none)
+		/// </summary>
+		public int Page { get; private set; }
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public FormException(string message, int page = 0)
+			: base(null, message) {
+			Page = page;
+		}
+
+	}
+
 
 	/// <summary>
 	/// DataTable (jquery) form - always readonly.
@@ -726,6 +789,14 @@ namespace CodeFirstWebFramework {
 				if (Module.HasAccess(value))
 					Options["select"] = value;
 			}
+		}
+
+		/// <summary>
+		/// Page to display this form on, if multi-page
+		/// </summary>
+		public int Page {
+			get { return Options.AsInt("page"); }
+			set { Options["page"] = value; }
 		}
 
 		/// <summary>

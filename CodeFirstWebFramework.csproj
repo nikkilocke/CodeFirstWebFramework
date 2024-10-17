@@ -80,6 +80,7 @@
     <None Remove=".gitmodules" />
     <None Remove="CodeFirstWebFramework.v11.suo" />
     <None Remove="CodeFirstWebFramework.zip" />
+    <None Remove="contentfiles\codefirstwebframework\multipageform.css" />
     <None Remove="Properties\launchSettings.json" />
     <None Remove="zip.cmd" />
   </ItemGroup>

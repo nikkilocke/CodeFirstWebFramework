@@ -1,0 +1,23 @@
+button.Back {
+	display:none;
+}
+div.help li { margin-bottom: 10px; }
+td.form-inputs>span { display: block; }
+div.help table tr, div.help table td, div.help table th { 
+    background-color: inherit; 
+    border-bottom: 1px solid gray;
+}
+div.saveButtons {
+	width: fit-content;
+	margin: auto;
+}
+div.saveButtons button {
+    text-transform: none;
+    border: none !important;
+    background-color: rgb(var(--bs-dark-rgb));
+    color: white;
+    padding: 0.5rem 1rem;
+}
+textarea#r0cPurpose, table#detailform0, table#detailform1 {
+	width: 445px;
+}

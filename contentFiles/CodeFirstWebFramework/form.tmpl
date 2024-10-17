@@ -1,4 +1,7 @@
 <head>
+{{#if Form.Pages}}
+<link{{NonceAttribute}} href="/multipageform.css" rel="stylesheet" type="text/css" />
+{{/if}}
 	<script {{NonceAttribute}}>
 		$(function() {
 			var table = makeForm('#form', 

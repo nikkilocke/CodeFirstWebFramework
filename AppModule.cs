@@ -772,9 +772,13 @@ namespace CodeFirstWebFramework {
 				}
 				if (ex is DatabaseException)
 					Log(((DatabaseException)ex).Sql);	// Log Sql of all database exceptions
-				if (method == null || method.ReturnType == typeof(void) || method.ReturnType.IsSubclassOf(typeof(BaseForm))) throw;	// Will produce exception page
-				// Send an AjaxReturn object indicating the error
-				WriteResponse(new AjaxReturn() { error = ex.Message }, null, HttpStatusCode.OK);
+				if (method == null || method.ReturnType == typeof(void) || method.ReturnType.IsSubclassOf(typeof(BaseForm))) throw; // Will produce exception page
+																																	// Send an AjaxReturn object indicating the error
+				AjaxReturn r = new AjaxReturn() { error = ex.Message };
+				FormException fe = ex as FormException;
+				if (fe != null && fe.Page > 0)
+					r.id = fe.Page;
+				WriteResponse(r, null, HttpStatusCode.OK);
 			}
 		}
 

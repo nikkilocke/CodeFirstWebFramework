@@ -2471,12 +2471,10 @@ function makeForm(selector, options) {
 	var page;
 	var pages;
 	var origTitle = $('div#title').text();
-	function showPage(p, message) {
+	function showPage(p, msg) {
 		if (options.pages && options.pages.length) {
-			if (p != page) {
-				message = message ? message : '';
-				$('#message,#messagea').text(message);
-			}
+			if (p != page)
+				message(msg);
 			$('button[data-page=' + page + ']').prop('disabled', false);
 			page = p;
 			for (var i = 1; i <= pages; i++) {

@@ -78,7 +78,7 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
-		/// Page number
+		/// Page number for multi-page forms - leave at 0 for the field to appear on every page
 		/// </summary>
 		public int Page {
 			get { return Options.AsInt("page"); }
@@ -453,7 +453,7 @@ namespace CodeFirstWebFramework {
 		public bool ReadWrite;
 
 		/// <summary>
-		/// List of page titles for multi-page forms
+		/// List of page titles for multi-page forms. If not set, the form will be single page.
 		/// </summary>
 		public string[] Pages {
 			get {

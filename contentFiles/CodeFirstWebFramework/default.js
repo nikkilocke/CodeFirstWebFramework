@@ -2380,6 +2380,8 @@ function makeForm(selector, options) {
 			itemsInRow = 0;
 		} else if (col.sameRow)
 			itemsInRow++;
+		if (col.page > 0)
+			row.addClass('page' + col.page);
 		var hdg = $('<th class="form-label"></th>').appendTo(row);
 		if (col.preamble) {
 			if (!preambleRow) {

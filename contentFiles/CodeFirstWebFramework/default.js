@@ -2280,8 +2280,9 @@ function makeDataTable(selector, options) {
  * @param {boolean} [options.apply} Include Apply button (default false)
  * @param {string} [options.applyText} Text to use for Apply button (default "Apply")
  * @param {boolean} [options.saveAndNew} Include Save and New button (default false)
- * @param {Array} [options.pages} List of page titles for multi-page forms
- * @param {boolean} [options.saveOnAllPages} Always enable the save button on multi-oage forms (if false, disables it except for the last page)
+ * @param {Array} [options.multipage.pages} List of page titles for multi-page forms
+ * @param {boolean} [options.multipage.saveOnAllPages} Always enable the save button on multi-oage forms (if false, disables it except for the last page)
+ * @param {boolean} [options.multipage.cancel} Leave the back button on all pages, but call it Cancel
  * @param {*} [options.data] Existing data to display
  * @param {Array} options.columns
  * @param {function} [options.validate] Callback to validate data
@@ -2295,6 +2296,9 @@ function makeForm(selector, options) {
 	var deleteButton;
 	if (submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
+	}
+	function isMultiPage() {
+		return options.multipage && options.multipage.pages && options.multipage.pages.length;
 	}
 	if (typeof (submitUrl) == 'string') {
 		// Turn url into a function that validates and posts
@@ -2344,7 +2348,7 @@ function makeForm(selector, options) {
 					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
-				if (options.pages && options.pages.length && d.error && d.id)
+				if (isMultiPage() && d.error && d.id)
 					showPage(d.id, d.error);
 			});
 		};
@@ -2474,9 +2478,11 @@ function makeForm(selector, options) {
 	var pages;
 	var origTitle = $('div#title').text();
 	function showPage(p, msg) {
-		if (options.pages && options.pages.length) {
-			if (p != page)
+		if (isMultiPage()) {
+			if (p != page) {
 				message(msg);
+				$('button#Back').text('Cancel');
+			}
 			$('button[data-page=' + page + ']').prop('disabled', false);
 			page = p;
 			for (var i = 1; i <= pages; i++) {
@@ -2484,11 +2490,13 @@ function makeForm(selector, options) {
 					$('.page' + i).hide();
 			}
 			$('.page' + page).show();
-			$('div#title').text(origTitle + ' - ' + options.pages[page - 1] + ' - step ' + page + ' of ' + pages);
+			$('div#title').text(origTitle + ' - ' + options.multipage.pages[page - 1] + ' - step ' + page + ' of ' + pages);
 			prevButton.prop('disabled', page == 1);
 			nextButton.prop('disabled', page == pages);
-			if (!options.saveOnAllPages)
+			if (!options.multipage.saveOnAllPages)
 				$('button.save').prop('disabled', page != pages);
+			if (!options.multipage.cancel)
+				$('button#Back').hide();
 			$('button[data-page=' + page + ']').prop('disabled', true);
 			history.replaceState({ "id": 0 }, "", urlParameter('page', page));
 		}
@@ -2508,8 +2516,8 @@ function makeForm(selector, options) {
 		addJQueryUiControls();
 		if (options.readonly)
 			result.find('input:not(.searchbox),select,textarea,button.ui-multiselect').attr('disabled', true);
-		if (options.pages && options.pages.length) {
-			pages = options.pages.length;
+		if (isMultiPage()) {
+			pages = options.multipage.pages.length;
 			page = getParameter('page');
 			page = page ? parseInt(page) : 1;
 			if (page < 1 || page > pages)
@@ -2527,13 +2535,13 @@ function makeForm(selector, options) {
 		result.data = d;
 		if (deleteButton && !d[idName])
 			deleteButton.remove();
-		if (!drawn && options.pages && options.pages.length) {
-			var pages = options.pages.length;
+		if (!drawn && isMultiPage()) {
+			var pages = options.multipage.pages.length;
 			nextButton = insertActionButton('Next').click(function (e) {
 				showPage(page + 1);
 			});
 			for (var i = pages; i > 0; i--) {
-				insertActionButton(i + '-' + options.pages[i - 1]).attr('id', 'p' + i).attr('data-page', i).click(function (e) {
+				insertActionButton(i + '-' + options.multipage.pages[i - 1]).attr('id', 'p' + i).attr('data-page', i).click(function (e) {
 					showPage(parseInt($(this).attr('data-page')));
 				});
 			}
@@ -2616,7 +2624,7 @@ function makeForm(selector, options) {
 				}
 			}
 		}
-		if (!drawn && options.pages && options.pages.length && !options.saveOnAllPages)
+		if (!drawn && isMultiPage() && !options.multipage.saveOnAllPages)
 			$('button.save').prop('disabled', page != pages);
 		if (deleteUrl && !options.readonly) {
 			deleteButton = actionButton(options.deleteText || 'Delete', 'delete')
@@ -2718,7 +2726,7 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
-				if (options.header.pages && options.header.pages.length && d.error && d.id)
+				if (options.header.multipage && options.header.multipage.pages && options.header.multipage.pages.length && d.error && d.id)
 					result.header.showPage(d.id, d.error);
 			});
 		};

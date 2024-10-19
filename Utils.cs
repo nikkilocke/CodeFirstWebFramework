@@ -91,6 +91,24 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Make sure the given path exists in he JObject, and return is as a JObject 
+		/// </summary>
+		/// <param name="o">Original object</param>
+		/// <param name="path">with dots between parts</param>
+		/// <returns>The found or created JObject</returns>
+		public static JObject FindOrCreatePath(this JObject o, string path) {
+			if (!string.IsNullOrEmpty(path)) {
+				foreach (string name in path.Split('.')) {
+					JToken j = o[name];
+					if (j == null)
+						o[name] = j = new JObject();
+					o = (JObject)j;
+				}
+			}
+			return o;
+		}
+
+		/// <summary>
 		/// this[name] as a bool
 		/// </summary>
 		public static bool AsBool(this JObject self, string name) {

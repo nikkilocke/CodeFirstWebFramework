@@ -453,21 +453,26 @@ namespace CodeFirstWebFramework {
 		public bool ReadWrite;
 
 		/// <summary>
-		/// List of page titles for multi-page forms
+		/// Find or create the "multipage" options JObject
+		/// </summary>
+		public JObject MultiPageOptions => Options.FindOrCreatePath("multipage");
+
+		/// <summary>
+		/// List of page titles for multi-page forms. If not set, the form will be single page.
 		/// </summary>
 		public string[] Pages {
 			get {
-				JToken p = Options["pages"];
+				JToken p = Options.SelectToken("multipage.pages");
 				return p is JArray && ((JArray)p).Count > 0 ? p.To<string[]>() : null; 
 			}
-			set { Options["pages"] = value.ToJToken(); }
+			set { MultiPageOptions["pages"] = value.ToJToken(); }
 		}
 
 		/// <summary>
 		/// Helper function to set list of page titles for multi-page forms
 		/// </summary>
 		public void SetPages(params string[] pageTitles) {
-			Options["pages"] = pageTitles.ToJToken();
+			MultiPageOptions["pages"] = pageTitles.ToJToken();
 		}
 
 		/// <summary>

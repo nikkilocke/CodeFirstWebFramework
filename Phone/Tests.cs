@@ -104,7 +104,8 @@ namespace Phone {
 			if (pages == "y") {
 				header.SetPages("Text", "Numbers", "Others", "Details");
 				detail.Page = 4;
-				header.Options["saveOnAllPages"] = true;
+				header.MultiPageOptions["saveOnAllPages"] = true;
+				header.MultiPageOptions["cancel"] = true;
 			} else
 				InsertMenuOption(new MenuOption("Pages", Request.Url + (string.IsNullOrEmpty(Request.Url.Query) ? "?" : "&") + "pages=y"));
 			return form;

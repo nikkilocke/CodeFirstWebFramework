@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Diagnostics.Contracts;
+using System.Xml.Linq;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -26,7 +29,7 @@ namespace CodeFirstWebFramework {
 		/// Constructor
 		/// </summary>
 		/// <param name="args">Pairs of name, value, passed direct into Options (so must be javascript style starting with lower case letter)</param>
-		public FieldAttribute(params object [] args) {
+		public FieldAttribute(params object[] args) {
 			Utils.Check(args.Length % 2 == 0, "Field arguments must be in pairs");
 			for (int i = 0; i < args.Length; i += 2) {
 				string name = args[i] as string;
@@ -172,28 +175,28 @@ namespace CodeFirstWebFramework {
 			get { return Name ?? Data; }
 		}
 
-        /// <summary>
-        /// Turn a field into a select or selectInput
-        /// </summary>
+		/// <summary>
+		/// Turn a field into a select or selectInput
+		/// </summary>
 		/// <param name="values">IEnumerable JObject containing id and value to make the select options</param>
 		/// <param name="defaultLabel">Label to use if there is to be an option for "none of the above" (null if there isn't to be such an option)</param>
 		/// <param name="defaultValue">Value to use for for "none of the above"</param>
-        public FieldAttribute MakeSelectable(IEnumerable<JObject> values, string defaultLabel = null, int defaultValue = 0) {
-            if (defaultLabel != null)
-                values = (new JObject[] { new JObject().AddRange("id", defaultValue, "value", defaultLabel) }).Concat(values);
-            JArray j = new JArray();
-            foreach (JObject jo in values)
-                j.Add(jo);
-            Options["selectOptions"] = j;
-            Type = Options.AsBool("readonly") ? "select" : "selectInput";
-            return this;
+		public FieldAttribute MakeSelectable(IEnumerable<JObject> values, string defaultLabel = null, int defaultValue = 0) {
+			if (defaultLabel != null)
+				values = (new JObject[] { new JObject().AddRange("id", defaultValue, "value", defaultLabel) }).Concat(values);
+			JArray j = new JArray();
+			foreach (JObject jo in values)
+				j.Add(jo);
+			Options["selectOptions"] = j;
+			Type = Options.AsBool("readonly") ? "select" : "selectInput";
+			return this;
 		}
 
 		/// <summary>
 		/// Turn an Enum field into a select or selectInput
 		/// </summary>
 		static public IEnumerable<JObject> SelectValues(Type enumType) {
-            foreach (var v in Enum.GetValues(enumType)) {
+			foreach (var v in Enum.GetValues(enumType)) {
 				JObject j = new JObject {
 					["id"] = (int)v,
 					["value"] = Enum.GetName(enumType, v).UnCamel()
@@ -202,13 +205,13 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
-        /// <summary>
-        /// Turn a field into a select or selectInput
-        /// </summary>
+		/// <summary>
+		/// Turn a field into a select or selectInput
+		/// </summary>
 		/// <param name="enumType">Enum type for field</param>
-        /// <param name="defaultLabel">Label to use if there is to be an option for "none of the above" (null if there isn't to be such an option)</param>
-        /// <param name="defaultValue">Value to use for for "none of the above"</param>
-        public FieldAttribute MakeSelectable(Type enumType, string defaultLabel = null, int defaultValue = 0) {
+		/// <param name="defaultLabel">Label to use if there is to be an option for "none of the above" (null if there isn't to be such an option)</param>
+		/// <param name="defaultValue">Value to use for for "none of the above"</param>
+		public FieldAttribute MakeSelectable(Type enumType, string defaultLabel = null, int defaultValue = 0) {
 			return MakeSelectable(SelectValues(enumType), defaultLabel, defaultValue);
 		}
 
@@ -266,12 +269,12 @@ namespace CodeFirstWebFramework {
 			return f;
 		}
 
-		void SetField(Field fld, bool readwrite) { 
+		void SetField(Field fld, bool readwrite) {
 			Field = fld;
 			if (Data == null)
 				Data = fld.Name;
-            Options["readonly"] = !readwrite;
-            if (Type == null) {
+			Options["readonly"] = !readwrite;
+			if (Type == null) {
 				if (Types != null) {
 					string[] t = Types.Split(',');
 					if (readwrite) {
@@ -280,7 +283,7 @@ namespace CodeFirstWebFramework {
 					} else
 						Type = t[0];
 				}
-				if (string.IsNullOrEmpty(Type)) { 
+				if (string.IsNullOrEmpty(Type)) {
 					switch (fld.Type.Name) {
 						case "Int64":
 						case "Int32":
@@ -299,7 +302,7 @@ namespace CodeFirstWebFramework {
 							Type = readwrite ? "dateInput" : "date";
 							break;
 						default:
-							if(fld.Type.IsEnum) {
+							if (fld.Type.IsEnum) {
 								MakeSelectable(fld.Type);
 								break;
 							}
@@ -439,10 +442,10 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Form for C# type t with specific fields in specific order
 		/// </summary>
-		public Form(AppModule module, Type t, bool readwrite, params string [] fieldNames)
+		public Form(AppModule module, Type t, bool readwrite, params string[] fieldNames)
 			: this(module, readwrite) {
 			setTableName(t);
-			foreach(string name in fieldNames) {
+			foreach (string name in fieldNames) {
 				Add(t, name);
 			}
 		}
@@ -463,7 +466,7 @@ namespace CodeFirstWebFramework {
 		public string[] Pages {
 			get {
 				JToken p = Options.SelectToken("multipage.pages");
-				return p is JArray && ((JArray)p).Count > 0 ? p.To<string[]>() : null; 
+				return p is JArray && ((JArray)p).Count > 0 ? p.To<string[]>() : null;
 			}
 			set { MultiPageOptions["pages"] = value.ToJToken(); }
 		}
@@ -529,7 +532,7 @@ namespace CodeFirstWebFramework {
 			if (f != null) {
 				if (parts.Length > 1)
 					f.Heading = parts[1];
-				else if (string.IsNullOrEmpty(f.Heading) && Options["table"] != null && f.FieldName.StartsWith(Options.AsString("table")))	// If name starts with table name, remove table name from heading
+				else if (string.IsNullOrEmpty(f.Heading) && Options["table"] != null && f.FieldName.StartsWith(Options.AsString("table")))  // If name starts with table name, remove table name from heading
 					f.Heading = f.FieldName.Substring(Options.AsString("table").Length);
 				columns.Add(f.Options);
 			}
@@ -555,7 +558,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		public int IndexOf(string name) {
 			int i = 0;
-			foreach(FieldAttribute f in Fields) {
+			foreach (FieldAttribute f in Fields) {
 				if (f.FieldName == name)
 					return i;
 				i++;
@@ -604,7 +607,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Remove the named fields
 		/// </summary>
-		public void Remove(params string [] names) {
+		public void Remove(params string[] names) {
 			foreach (string name in names)
 				Remove(name);
 		}
@@ -662,7 +665,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="inTable">True if this is a base class of a Table or Writeable object</param>
 		void processFields(Type tbl, bool inTable) {
 			inTable |= tbl.IsDefined(typeof(TableAttribute), false) || tbl.IsDefined(typeof(WriteableAttribute), false);
-			if (tbl.BaseType != typeof(JsonObject))	// Process base types first
+			if (tbl.BaseType != typeof(JsonObject)) // Process base types first
 				processFields(tbl.BaseType, inTable);
 			bool readwrite = ReadWrite && inTable;
 			foreach (FieldInfo field in tbl.GetFieldsInOrder(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)) {
@@ -713,7 +716,7 @@ namespace CodeFirstWebFramework {
 		/// </summary>
 		/// <param name="module">Creating module</param>
 		/// <param name="t">Type to display in the form</param>
-		public DataTableForm(AppModule module, Type t) 
+		public DataTableForm(AppModule module, Type t)
 			: base(module, t, false) {
 		}
 
@@ -728,8 +731,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Url to call when the user selects a record.
 		/// </summary>
-		public string Select
-		{
+		public string Select {
 			get { return Options.AsString("select"); }
 			set {
 				if (Module.HasAccess(value))
@@ -787,8 +789,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Url to call when the user selects a record.
 		/// </summary>
-		public string Select
-		{
+		public string Select {
 			get { return Options.AsString("select"); }
 			set {
 				if (Module.HasAccess(value))
@@ -824,7 +825,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="module">Owning module</param>
 		/// <param name="header">C# type in the header</param>
 		/// <param name="detail">C# type in the detail</param>
-		public HeaderDetailForm(AppModule module, Type header, Type detail) 
+		public HeaderDetailForm(AppModule module, Type header, Type detail)
 		: base(module) {
 			Header = new Form(module, header);
 			Detail = new ListForm(module, detail);
@@ -866,8 +867,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Whether the user can delete record.
 		/// </summary>
-		public bool CanDelete
-		{
+		public bool CanDelete {
 			get { return Header.CanDelete; }
 			set { Header.CanDelete = value; }
 		}
@@ -918,4 +918,98 @@ namespace CodeFirstWebFramework {
 		}
 
 	}
+
+	/// <summary>
+	/// Class to check form fields
+	/// </summary>
+	public class FormChecker {
+		Type Type;
+		int Page;
+		Dictionary<string, int> Pages;
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="type">Table JsonObject being checked</param>
+		/// <param name="page">Page number to use if he whole form is one 1 page (so we don't need to check the fields)</param>
+		public FormChecker(Type type, int page = -1) {
+			Type = type;
+			Page = page;
+			if (page < 0)
+				Pages = new Dictionary<string, int>();
+		}
+
+
+		void check<T>(T value, Func<T, bool> validate, Func<string> error, string expression) {
+			if (!validate(value)) {
+				int p = Page;
+				if (p < 0) {
+					p = 0;
+					if (!string.IsNullOrEmpty(expression)) {
+						string member = expression.Split('.').Last();
+						if (!Pages.TryGetValue(member, out p)) {
+							// Retrieve page from type and add to dictionary
+							FieldAttribute f = null;
+							FieldInfo fld = Type.GetField(member);
+							if (fld == null) {
+								PropertyInfo prop = Type.GetProperty(member);
+								if (prop != null)
+									f = prop.GetCustomAttribute<FieldAttribute>();
+							} else {
+								f = fld.GetCustomAttribute<FieldAttribute>();
+							}
+							if (f != null)
+								p = f.Page;
+							Pages[member] = p;
+						}
+					}
+				}
+				throw new FormException(error(), p);
+			}
+		}
+
+		/// <summary>
+		/// Check a condition is true on a field. Throw a FormException with the field page number if not.
+		/// </summary>
+		/// <param name="value">The member item to check</param>
+		/// <param name="validate">A validation fnction to call, passing the value</param>
+		/// <param name="error">A method to call which returns the error message</param>
+		/// <param name="expression">Filled in automatically by the compiler</param>
+		public void Check<T>(T value, Func<T, bool> validate, Func<string> error, [CallerArgumentExpression(nameof(value))] string expression = null) {
+			check(value, validate, error, expression);
+		}
+
+		/// <summary>
+		/// Check a condition is true on a field. Throw a FormException with the field page number if not.
+		/// </summary>
+		/// <param name="value">The member item to check</param>
+		/// <param name="validate">A validation fnction to call, passing the value</param>
+		/// <param name="error">The error message string</param>
+		/// <param name="expression">Filled in automatically by the compiler</param>
+		public void Check<T>(T value, Func<T, bool> validate, string error, [CallerArgumentExpression(nameof(value))] string expression = null) {
+			check(value, validate, () => error, expression);
+		}
+
+		/// <summary>
+		/// Check a condition is true on a field. Throw a FormException with the field page number if not.
+		/// </summary>
+		/// <param name="value">The member item to check</param>
+		/// <param name="condition">Whether the item is valis</param>
+		/// <param name="error">The error message string</param>
+		/// <param name="expression">Filled in automatically by the compiler</param>
+		public void Check<T>(T value, bool condition, string error, [CallerArgumentExpression(nameof(value))] string expression = null) {
+			check(value, v => condition, () => error, expression);
+		}
+	}
 }
+
+namespace System.Runtime.CompilerServices {
+	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+	internal sealed class CallerArgumentExpressionAttribute : Attribute {
+		public CallerArgumentExpressionAttribute(string parameterName) {
+			ParameterName = parameterName;
+		}
+
+		public string ParameterName { get; }
+	}
+}
+

@@ -80,10 +80,10 @@ namespace Phone {
 		}
 
 		public AjaxReturn TestFormSave(TestData json) {
-			Form form = new Form(this, typeof(TestData));
-			form.Check("Text", !string.IsNullOrEmpty(json.Text), "Text may not be empty");
-			form.Check("Integer", json.Integer != 0, "Integer may not be zero");
-			form.Check("Option", json.Option != TestValues.Invalid, "You may not choose the Invalid option");
+			FormChecker checker = new FormChecker(typeof(TestData));
+			checker.Check(json.Text, v => !string.IsNullOrEmpty(v), "Text may not be empty");
+			checker.Check(json.Integer, v => v != 0, "Integer may not be zero");
+			checker.Check(json.Option, v  => v != TestValues.Invalid, "You may not choose the Invalid option");
 			return SaveRecord(json);
 		}
 
@@ -115,16 +115,17 @@ namespace Phone {
 			TestData header = json["header"].To<TestData>();
 			List<TestDetail> detail = json["detail"].To<List<TestDetail>>();
 			Database.BeginTransaction();
-			Form form = new Form(this, typeof(TestData));
-			form.Check("Text", !string.IsNullOrEmpty(header.Text), "Text may not be empty");
-			form.Check("Integer", header.Integer != 0, "Integer may not be zero");
-			form.Check("Option", header.Option != TestValues.Invalid, "You may not choose the Invalid option");
+			FormChecker checker = new FormChecker(typeof(TestData));
+			checker.Check(header.Text, v => !string.IsNullOrEmpty(v), "Text may not be empty");
+			checker.Check(header.Integer, v=> v != 0, "Integer may not be zero");
+			checker.Check(header.Option, v => v != TestValues.Invalid, "You may not choose the Invalid option");
 			AjaxReturn r = SaveRecord(header);
 			if(r.error == null) {
 				Database.Execute("DELETE FROM TestDetail");
+				FormChecker det = new FormChecker(typeof(TestDetail), 4);
 				foreach (TestDetail d in detail) {
 					if (!string.IsNullOrEmpty(d.Text)) {
-						Utils.Check(4, d.Option != TestValues.Invalid, "You may not choose the Invalid option");
+						det.Check(d.Option, v => v != TestValues.Invalid, "You may not choose the Invalid option");
 						d.idTestDetail = null;
 						Database.Insert(d);
 					}

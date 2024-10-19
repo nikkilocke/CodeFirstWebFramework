@@ -16,10 +16,11 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.150</Version>
-    <AssemblyVersion>1.3.150.0</AssemblyVersion>
-    <FileVersion>1.3.150.0</FileVersion>
-    <PackageReleaseNotes>Added multi-page Forms</PackageReleaseNotes>
+    <Version>1.3.151</Version>
+    <AssemblyVersion>1.3.151.0</AssemblyVersion>
+    <FileVersion>1.3.151.0</FileVersion>
+    <PackageReleaseNotes>Added multi-page Forms
+Added new FormChecker class to ease form checking</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

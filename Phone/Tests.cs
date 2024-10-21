@@ -60,11 +60,11 @@ namespace Phone {
 				);
 		}
 
-		public Form TestForm(string edit = null, string pages = null) {
+		public Form TestForm(string edit = null, string pages = null, string credit = null) {
 			if (edit != "y")
 				InsertMenuOption(new MenuOption("Edit", Request.Url + (string.IsNullOrEmpty(Request.Url.Query) ?"?" : "&") + "edit=y"));
 			Form form = new Form(this, typeof(TestData), edit == "y");
-			if(GetParameters["credit"] == "y") {
+			if(credit == "y") {
 				form["Decimal"].Type = "creditInput";
 				form["Decimal"].Heading = "Debit";
 				form.Insert(form.IndexOf("Decimal") + 1, new FieldAttribute("name", "Debit", "data", "Decimal", "heading", "Debit", "type", "debitInput"));
@@ -72,6 +72,7 @@ namespace Phone {
 					form["Option"].Type = "radioInput";
             }
 			form.Data = Database.QueryOne("SELECT * FROM TestData") ?? new JObject();
+			form.Options["cacheChanges"] = true;
 			if (pages == "y")
 				form.SetPages("Text", "Numbers", "Others");
 			else
@@ -101,6 +102,7 @@ namespace Phone {
 				"header", Database.QueryOne("SELECT * FROM TestData") ?? new JObject(),
 				"detail", Database.Query("SELECT * FROM TestDetail ORDER BY idTestDetail")
 				);
+			form.Options["cacheChanges"] = true;
 			if (pages == "y") {
 				header.SetPages("Text", "Numbers", "Others", "Details");
 				detail.Page = 4;

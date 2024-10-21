@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Security.Policy;
+using System.Web;
 
 namespace CodeFirstWebFramework {
 	/// <summary>
@@ -464,6 +466,62 @@ namespace CodeFirstWebFramework {
 			}
 			module.Redirect(redirect);
 		}
+
+		static readonly string[] transientItems = new string[] {
+			"from", "confirm"
+		};
+
+		void removeTransientItemsFromUrl(ref string u) {
+			Uri uri = new Uri(u);
+			var parms = HttpUtility.ParseQueryString(uri.Query);
+			foreach (string t in transientItems)
+				parms.Remove(t);
+			u = string.Join("?", uri.AbsolutePath, parms.ToString());
+		}
+
+		/// <summary>
+		/// Save a partially edited record in the CachedRecord table
+		/// </summary>
+		/// <param name="u">Url of the form edit screen</param>
+		/// <param name="h">Hash of the original record</param>
+		/// <param name="json">Json of the edited record</param>
+		[Auth(AccessLevel.Any)]
+		public AjaxReturn SaveCache(string u, int h, string json) {
+			AjaxReturn r = new AjaxReturn();
+			if (module.Session.User != null) {
+				removeTransientItemsFromUrl(ref u);
+				if (!module.Database.TryGet(out CachedRecord result, module.Session.User.idUser, u))
+					result = new CachedRecord() {
+						UserId = (int)module.Session.User.idUser,
+						Url = u,
+						OriginalRecordHash = h
+					};
+				result.Json = json;
+				module.Database.Update(result);
+			}
+			return r;
+		}
+
+		/// <summary>
+		/// Retrieve a partially edited record from the CachedRecord table
+		/// </summary>
+		/// <param name="u">Url of the form edit screen</param>
+		/// <param name="h">Hash of the original record</param>
+		[Auth(AccessLevel.Any)]
+		public AjaxReturn LoadCache(string u, int h) {
+			AjaxReturn r = new AjaxReturn();
+			if (module.Session.User != null) {
+				removeTransientItemsFromUrl(ref u);
+				if (module.Database.TryGet(out CachedRecord result, module.Session.User.idUser, u)) {
+					if (result.OriginalRecordHash == h)
+						r.data = JObject.Parse(result.Json);
+					else
+						module.Database.Delete(result);
+				}
+			}
+			return r;
+		}
+
 	}
 
 
@@ -500,5 +558,31 @@ namespace CodeFirstWebFramework {
 		}
 
 	}
+
+	/// <summary>
+	/// Table to store partially edited form data, so we can offer to restore it if they come back to the form
+	/// </summary>
+	[Table]
+	public class CachedRecord : JsonObject {
+		/// <summary>
+		/// Id of user editing the record
+		/// </summary>
+		[Primary(1, AutoIncrement = false)]
+		public int UserId;
+		/// <summary>
+		/// Url of the form edit screen, with transient variables like from, query, etc. removed
+		/// </summary>
+		[Primary(2, AutoIncrement = false)]
+		public string Url;
+		/// <summary>
+		/// Hash of the original record
+		/// </summary>
+		public int OriginalRecordHash;
+		/// <summary>
+		/// Json of the edited record
+		/// </summary>
+		[Length(0)]
+		public string Json;
+	}
+
 }
-	

@@ -362,6 +362,15 @@ namespace CodeFirstWebFramework {
 		}
 
 		/// <summary>
+		/// Set to true to cache all changes when any field is changed by the user, and offer to restore them
+		/// if they revisit the form with the same url and query string
+		/// </summary>
+		public bool CacheChanges {
+			get { return Options["cacheChanges"] == null ? false : Options.AsBool("cacheChanges"); }
+			set { Options["cacheChanges"] = value; }
+		}
+
+		/// <summary>
 		/// Module creating the form
 		/// </summary>
 		public AppModule Module;
@@ -872,6 +881,66 @@ namespace CodeFirstWebFramework {
 			set { Header.CanDelete = value; }
 		}
 
+
+	}
+
+	/// <summary>
+	/// Header + multi detail form
+	/// </summary>
+	public class MultiDetailForm : BaseForm {
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="module">Owning module</param>
+		/// <param name="header">C# type in the header</param>
+		/// <param name="details">C# type in the detail</param>
+		public MultiDetailForm(AppModule module, Type header, params Type[] details)
+		: base(module) {
+			Header = new Form(module, header);
+			Details = details.Select(d => new ListForm(module, d)).ToArray();
+			Options["header"] = Header.Options;
+			Options["detail"] = new JArray(Details.Select(d => d.Options));
+		}
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="module">Owning module</param>
+		/// <param name="header">Header form</param>
+		/// <param name="details">Detail form</param>
+		public MultiDetailForm(AppModule module, Form header, params ListForm[] details)
+		: base(module) {
+			Header = header;
+			Details = details;
+			Options["header"] = Header.Options;
+			Options["detail"] = new JArray(Details.Select(d => d.Options));
+		}
+
+		/// <summary>
+		/// The header Form
+		/// </summary>
+		public Form Header;
+
+		/// <summary>
+		/// The Detail ListForm
+		/// </summary>
+		public ListForm[] Details;
+
+		/// <summary>
+		/// Render the form to a web page using the appropriate template
+		/// </summary>
+		public override void Show() {
+			Show("MultiDetailForm");
+		}
+
+		/// <summary>
+		/// Whether the user can delete record.
+		/// </summary>
+		public bool CanDelete {
+			get { return Header.CanDelete; }
+			set { Header.CanDelete = value; }
+		}
 
 	}
 

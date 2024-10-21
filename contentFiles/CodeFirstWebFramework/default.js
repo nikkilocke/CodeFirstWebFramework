@@ -2194,7 +2194,7 @@ function makeDataTable(selector, options) {
 				if ($(selector).triggerHandler('changed.field', [val, data, col, this]) != false) {
 					data[col.data] = val;
 				}
-				colHandleInput(col, data, table, function (d) {
+				colHandleInput(col, data, table.owningForm, function (d) {
 					if (!d.error && d.data)
 						row.data(d.data).draw(false);
 				});
@@ -2244,6 +2244,7 @@ function makeDataTable(selector, options) {
 	table.rowData = function (r) {
 		return table.row(r).data();
 	};
+	var drawn;
 	/**
 	 * When data has arrived, update the table
 	 * @param data
@@ -2252,9 +2253,14 @@ function makeDataTable(selector, options) {
 		table.api().clear();
 		table.api().rows.add(data);
 		table.api().draw();
+		if (!drawn) {
+			drawn = true;
+			checkForCachedData(table);
+		}
 	};
 	table.fields = columns;
 	table.settings = options;
+	table.owningForm = table;
 	DataTable = table.api();
 	Forms.push(table);
 	return table;
@@ -2300,6 +2306,17 @@ function makeForm(selector, options) {
 	function isMultiPage() {
 		return options.multipage && options.multipage.pages && options.multipage.pages.length;
 	}
+	function validate() {
+		if (!validateForm(options, 0, data))
+			return false;
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
+
 	if (typeof (submitUrl) == 'string') {
 		// Turn url into a function that validates and posts
 		var submitHref = submitUrl;
@@ -2310,24 +2327,8 @@ function makeForm(selector, options) {
 		submitUrl = function (button, callback) {
 			if (typeof (callback) != 'function')
 				callback = null;
-			var hdg = null;
-			try {
-				// Check each input value is valid
-				_.each(options.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						col.inputValue(col.cell.find('#r0c' + col.name), result.data);
-					}
-				});
-			} catch (e) {
-				message(hdg + ':' + e);
+			if (!validate())
 				return;
-			}
-			if (options.validate) {
-				var msg = options.validate();
-				message(msg);
-				if (msg) return;
-			}
 			postJson(submitHref, result.data, function (d) {
 				// Success
 				$('button#Back').text('Back');
@@ -2466,7 +2467,7 @@ function makeForm(selector, options) {
 					});
 				}
 			}
-			colHandleInput(col, result.data, result, function (d) {
+			colHandleInput(col, result.data, result.owningForm, function (d) {
 				if (!d.error && d.data)
 					dataReady(d.data);
 			});
@@ -2554,6 +2555,7 @@ function makeForm(selector, options) {
 		if (drawn)
 			return;
 		drawn = true;
+		checkForCachedData(result);
 		if (submitUrl) {
 			if (options.dialog) {
 				// Wrap form in a dialog, called by Edit button
@@ -2642,6 +2644,8 @@ function makeForm(selector, options) {
 	result.submit = submitUrl;
 	result.submitCallback = options.submitCallback;
 	result.showPage = showPage;
+	result.validate = validate;
+	result.owningForm = result;
 	result.updateSelectOptions = function (col, selectOptions) {
 		col.selectOptions = selectOptions;
 		col.cell.html(col.draw(result.data[col.data], 0, result.data));
@@ -2669,42 +2673,23 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	if (submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
+	function validate() {
+		if (!result.header.validate() || !result.detail.validate())
+			return false;
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
 	if (typeof (submitUrl) == 'string') {
 		var submitHref = submitUrl;
 		submitUrl = function (button, callback) {
 			if (typeof (callback) != 'function')
 				callback = null;
-			var hdg = null;
-			try {
-				// Validate everything
-				_.each(options.header.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						col.inputValue(result.header.find('#r0c' + col.name), result.header.data);
-					}
-				});
-				_.each(options.detail.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						_.each(result.detail.data, function (row, index) {
-							col.inputValue(result.detail.find('#r' + index + 'c' + col.name), row);
-						});
-					}
-				});
-			} catch (e) {
-				message(hdg + ':' + e);
+			if (!validate())
 				return;
-			}
-			if (options.header.validate) {
-				var msg = options.header.validate();
-				message(msg);
-				if (msg) return;
-			}
-			if (options.validate) {
-				msg = options.validate();
-				message(msg);
-				if (msg) return;
-			}
 			postJson(submitHref, {
 				header: result.header.data,
 				detail: result.detail.data
@@ -2751,12 +2736,17 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 			}
 		}
 	}
+	var drawn;
 	function dataReady(d) {
 		result.data = d;
 		if (d.header)
 			result.header.dataReady(d.header);
 		if (d.detail)
 			result.detail.dataReady(d.detail);
+		if (!drawn) {
+			drawn = true;
+			checkForCachedData(result);
+		}
 	}
 	var result = {
 		header: makeForm(headerSelector, options.header),
@@ -2764,13 +2754,131 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 		data: options.data,
 		dataReady: dataReady,
 		submit: submitUrl,
-		submitCallback: options.submitCallback
+		submitCallback: options.submitCallback,
+		validate: validate
 	};
+	result.owningForm = result.header.owningForm = result.detail.owningForm = result;
 	result.detail.header = result.header;
 	nextPreviousButtons(result.data);
 	result.detail.bind('changed.field', function () {
 		$('button#Back').text('Cancel');
 	});
+	if (options.data)
+		dataReady(options.data);
+	return result;
+}
+
+/**
+ * Make a header and multiple details form
+ * @param headerSelector
+ * @param detailSelector
+ * @param options - has header and an array of detail objects for the form
+ */
+function makeMultiDetailForm(headerSelector, detailSelector, options) {
+	var submitUrl = options.submit;
+	var tableName = options.header.table;
+	if (submitUrl === undefined) {
+		submitUrl = defaultUrl('Save');
+	}
+	function validate() {
+		if (!result.header.validate())
+			return false;
+		for (var i = 0; i < result.detail.length; i++) {
+			if (!result.detail[i].validate())
+				return false;
+		}
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
+	if (typeof (submitUrl) == 'string') {
+		var submitHref = submitUrl;
+		submitUrl = function (button) {
+			if (!validate())
+				return;
+			postJson(submitHref, {
+				header: result.header.data,
+				detail: result.detail.map(function (d) { return d.data; })
+			}, function (d) {
+				// Success
+				$('button#Back').text('Back');
+				if (result.submitCallback && result.submitCallback(d))
+					return;
+				if ($(button).hasClass('goback'))
+					goback();
+				else if ($(button).hasClass('new'))
+					window.location = urlParameter('id', 0);
+				else if (tableName && d.id)
+					window.location = urlParameter('id', d.id);
+			}, function (d) {
+				// Failure
+				if (result.submitCallback)
+					result.submitCallback(d);
+				if (options.header.multipage && options.header.multipage.pages && options.header.multipage.pages.length && d.error && d.id)
+					result.header.showPage(d.id, d.error);
+			});
+		};
+	}
+	if (options.header.submit === undefined)
+		options.header.submit = submitUrl;
+	if (options.header.readonly === undefined)
+		options.header.readonly = options.readonly;
+	options.header.ajax = null;
+	_.each(options.detail, function (opts) {
+		opts.submit = null;
+		opts.ajax = null;
+		if (opts.readonly === undefined)
+			opts.readonly = options.header.readonly;
+	});
+	var drawn;
+	function dataReady(d) {
+		result.data = d;
+		if (d.header)
+			result.header.dataReady(d.header);
+		if (d.detail)
+			for (var i = 0; i < options.detail.length; i++)
+				result.detail[i].dataReady(d.detail[i]);
+		if (!drawn) {
+			drawn = true;
+			checkForCachedData(result);
+		}
+	}
+	var result = {
+		header: makeForm(headerSelector, options.header),
+		detail: [],
+		data: options.data,
+		dataReady: dataReady,
+		submit: submitUrl,
+		submitCallback: options.submitCallback,
+		validate: validate
+	};
+	result.owningForm = result.header.owningForm = result;
+	_.each(result.detail, function (d) {
+		d.owningForm = result;
+	});
+	var ds = $(detailSelector);
+	var after = ds;
+	var id = ds.prop('id') || 'detail';
+	_.each(options.detail, function (opts) {
+		var newid = id + result.detail.length;
+		var clone = $('#' + newid);
+		if (!clone.length) {
+			clone = ds.clone().prop('id', newid);
+			after.after(clone);
+		}
+		after = clone;
+		var f = makeListForm('#' + newid, opts);
+		f.header = result.header;
+		f.bind('changed.field', function () {
+			$('button#Back').text('Cancel');
+		});
+		result.detail.push(f);
+	});
+	ds.hide();
+	nextPreviousButtons(result.data);
 	if (options.data)
 		dataReady(options.data);
 	return result;
@@ -2795,31 +2903,25 @@ function makeListForm(selector, options) {
 	if (selectUrl === undefined && submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
+	function validate() {
+		for (var row = 0; row < table.data.length; row++)
+			if (!validateForm(options, row, data[row]))
+				return false;
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
 	if (selectUrl === undefined && typeof (submitUrl) == 'string') {
 		var submitHref = submitUrl;
 		//noinspection JSUnusedAssignment,JSUnusedLocalSymbols
 		submitUrl = function (button, callback) {
 			if (typeof (callback) != 'function')
 				callback = null;
-			try {
-				var hdg;
-				_.each(options.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						_.each(table.data, function (row, index) {
-							col.inputValue(table.find('#r' + index + 'c' + col.name), row);
-						});
-					}
-				});
-			} catch (e) {
-				message(e);
+			if (!validate())
 				return;
-			}
-			if (options.validate) {
-				var msg = options.validate();
-				message(msg);
-				if (msg) return;
-			}
 			postJson(submitHref, table.data, function (d) {
 				// Success
 				if (callback && callback(d, true))
@@ -2971,7 +3073,7 @@ function makeListForm(selector, options) {
 					cell = cell.next('td');
 				});
 			}
-			colHandleInput(col, table.data[rowIndex], table, function (d) {
+			colHandleInput(col, table.data[rowIndex], table.owningForm, function (d) {
 				if (!d.error && d.data) {
 					table.data[rowIndex] = d.data;
 					drawRow(rowIndex);
@@ -3114,9 +3216,10 @@ function makeListForm(selector, options) {
 		}
 		body.find('tr').remove();
 		draw();
-		if (!drawn && submitUrl) {
+		if (!drawn) {
 			drawn = true;
-			if (!options.readonly) {
+			checkForCachedData(result);
+			if (submitUrl && !options.readonly) {
 				actionButton(options.submitText || 'Save', 'save')
 					.addClass('goback')
 					.click(function (e) {
@@ -3155,6 +3258,7 @@ function makeListForm(selector, options) {
 	table.refresh = refresh;
 	table.submit = submitUrl;
 	table.submitCallback = options.submitCallback;
+	table.validate = validate;
 	/**
 	 * Return the row index of item r
 	 * @param r
@@ -3331,7 +3435,7 @@ function makeDumbForm(selector, options) {
 					});
 				}
 			}
-			colHandleInput(col, result.data, result, function (d) {
+			colHandleInput(col, result.data, result.owningForm, function (d) {
 				if (!d.error && d.data)
 					dataReady(d.data);
 			});
@@ -3366,6 +3470,7 @@ function makeDumbForm(selector, options) {
 		if (drawn)
 			return;
 		drawn = true;
+		checkForCachedData(result);
 		if (submitUrl) {
 			// Add Buttons
 			if (!options.readonly) {
@@ -3396,6 +3501,7 @@ function makeDumbForm(selector, options) {
 	result.draw = draw;
 	result.submit = submitUrl;
 	result.submitCallback = options.submitCallback;
+	result.owningForm = result;
 	Forms.push(result);
 	if (options.data)
 		dataReady(options.data);
@@ -3403,6 +3509,71 @@ function makeDumbForm(selector, options) {
 		get(options.ajax.url, null, dataReady);
 	}
 	return result;
+}
+
+/**
+ * Validate all the fields in a data row
+ * @param {*} options Form options
+ * @param {int} row Row no (0 for main form)
+ * @param {*} data Data for the row
+ */
+function validateForm(options, row, data) {
+	try {
+		var hdg = null;
+		// Check each input value is valid
+		_.each(options.columns, function (col) {
+			if (col.inputValue) {
+				hdg = col.heading;
+				col.inputValue(col.cell.find('#r' + row + 'c' + col.name), data);
+			}
+		});
+	} catch (e) {
+		message(hdg + ':' + e);
+		return false;
+	}
+	if (options.validate) {
+		var msg = options.validate();
+		message(msg);
+		if (msg) return false;
+	}
+	return true;
+}
+
+function checkForCachedData(form) {
+	if (!form.settings.cacheChanges)
+		return;
+	form.settings.originalRecordHash = murmurhash2_32_gc(JSON.stringify(form.data));
+	var ajax = {
+		url: '/admin/loadcache',
+		type: 'post',
+		data: {
+			u: window.location.href,
+			h: form.settings.originalRecordHash
+		},
+		timeout: 10000,
+		xhrFields: {
+			withCredentials: true
+		}
+	};
+	$.ajax(ajax)
+		.done(
+			/**
+			 * @param {string} [result.error] Error message
+			 * @param {string} [result.message] Info message
+			 * @param {*} [result.data] Previously cached data
+			 */
+			function (result) {
+				if (result.error) {
+					message(result.error);
+				} else if (result.message) {
+					message(result.message);
+				}
+				if (result.data) {
+					// There is cached data - offer to restore it
+					if (confirm("You abandoned an edit of this form previously - would you like to resume where you left off?"))
+						form.dataReady(result.data);
+				}
+			});
 }
 
 /**
@@ -3761,7 +3932,7 @@ function colRender(data, type, row, meta) {
 }
 
 /**
- * Do notify and/or autosave callbacks
+ * Do notify and/or cacheChanges/autosave callbacks
  * @param {any} col
  * @param {any} rowData
  * @param {any} form
@@ -3773,9 +3944,25 @@ function colHandleInput(col, rowData, form, callback) {
 			if (callback)
 				callback(d);
 		});
+	if (form.settings.cacheChanges) {
+		var ajax = {
+			url: '/admin/savecache',
+			type: 'post',
+			data: {
+				u: window.location.href,
+				h: form.settings.originalRecordHash,
+				json: JSON.stringify(form.data)
+			},
+			timeout: 10000,
+			xhrFields: {
+				withCredentials: true
+			}
+		};
+		$.ajax(ajax);
+	}
 	if (form.settings.autosave) {
-		postJson(defaultUrl('autosave'), form.data, function(d) {
-			if(callback)
+		postJson(defaultUrl('autosave'), form.data, function (d) {
+			if (callback)
 				callback(d);
 		});
 	}

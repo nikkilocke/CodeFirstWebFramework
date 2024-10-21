@@ -16,11 +16,11 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.151</Version>
-    <AssemblyVersion>1.3.151.0</AssemblyVersion>
-    <FileVersion>1.3.151.0</FileVersion>
-    <PackageReleaseNotes>Added multi-page Forms
-Added new FormChecker class to ease form checking</PackageReleaseNotes>
+    <Version>1.3.152</Version>
+    <AssemblyVersion>1.3.152.0</AssemblyVersion>
+    <FileVersion>1.3.152.0</FileVersion>
+    <PackageReleaseNotes>Added MultiDetailForm.
+Option to cache abandoned changes to a form, and resore them next time the exact same form is visited</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>
@@ -81,6 +81,8 @@ Added new FormChecker class to ease form checking</PackageReleaseNotes>
     <None Remove=".gitmodules" />
     <None Remove="CodeFirstWebFramework.v11.suo" />
     <None Remove="CodeFirstWebFramework.zip" />
+    <None Remove="contentfiles\codefirstwebframework\libs\murmurhash.js" />
+    <None Remove="contentfiles\codefirstwebframework\multidetailform.tmpl" />
     <None Remove="contentfiles\codefirstwebframework\multipageform.css" />
     <None Remove="Properties\launchSettings.json" />
     <None Remove="zip.cmd" />

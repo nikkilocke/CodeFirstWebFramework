@@ -2,11 +2,9 @@
 {{#if Form.Header.Pages}}
 <link{{NonceAttribute}} href="/multipageform{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
 {{/if}}
-	<script {{NonceAttribute}}>
+	<script{{NonceAttribute}}>
 		$(function() {
-			var table = makeHeaderDetailForm('#headerform', '#detailform', 
-				{{Form.SafeOptions}}
-			);
+			makeMultiDetailForm('#headerform', '#detailform', {{Form.SafeOptions}});
 		});
 	</script>
 </head>

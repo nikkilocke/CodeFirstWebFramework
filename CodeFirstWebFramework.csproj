@@ -16,13 +16,15 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.150</Version>
-    <AssemblyVersion>1.3.150.0</AssemblyVersion>
-    <FileVersion>1.3.150.0</FileVersion>
-    <PackageReleaseNotes>Added multi-page Forms</PackageReleaseNotes>
+    <Version>1.3.157</Version>
+    <AssemblyVersion>1.3.157.0</AssemblyVersion>
+    <FileVersion>1.3.157.0</FileVersion>
+    <PackageReleaseNotes>Added MultiDetailForm.
+Option to cache abandoned changes to a form, and resore them next time the exact same form is visited</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,17 +37,21 @@
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.37.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.10" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageReference Include="MimeMapping" Version="3.0.1" />
     <PackageReference Include="mustache-sharp" Version="1.0.0" />
-    <PackageReference Include="MySql.Data" Version="9.0.0" />
+    <PackageReference Include="MySql.Data" Version="9.1.0" />
     <PackageReference Include="MySqlConnector" Version="2.3.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+    <PackageReference Include="Vsxmd" Version="1.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -80,9 +86,20 @@
     <None Remove=".gitmodules" />
     <None Remove="CodeFirstWebFramework.v11.suo" />
     <None Remove="CodeFirstWebFramework.zip" />
+    <None Remove="contentfiles\codefirstwebframework\libs\murmurhash.js" />
+    <None Remove="contentfiles\codefirstwebframework\multidetailform.tmpl" />
     <None Remove="contentfiles\codefirstwebframework\multipageform.css" />
     <None Remove="Properties\launchSettings.json" />
+    <None Remove="README.md" />
     <None Remove="zip.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

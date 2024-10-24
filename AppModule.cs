@@ -1321,6 +1321,92 @@ namespace CodeFirstWebFramework {
 			}
 		}
 
+		/// <summary>
+		/// Helper function to process input to a ListForm. The easy way to do this is to delete all the old records, 
+		/// and insert all the new ones. But this function can be more efficient and useful, as it matches the old and
+		/// new records by a key of your choice, and allows you to update the old record rather than deleting and recreating.
+		/// It also detects duplicate records (i.e. with the same key), so you can throw an error, or ignore them (your choice).
+		/// 
+		/// Process all the items newValues (entered on the form)
+		/// Match them to originalRecords using the Key returned by getKey
+		/// Items with a null or empty key are ignored
+		/// At the end, originalRecords not in the new list are deleted for you
+		/// </summary>
+		/// <typeparam name="K">Type of key</typeparam>
+		/// <typeparam name="T">Type of record</typeparam>
+		/// <param name="sql">SQL to return original records</param>
+		/// <param name="getKey">Returns a key for matching new to old records</param>
+		/// <param name="newValues">JToken containing the array of new records from the edit</param>
+		/// <param name="process">This is called this on each item, passing the new record, 
+		/// the original record (or null if this is a new record), and whether there is a previous new record with the same key. 
+		/// This is also called on deletions, with newRecord == null.
+		/// If it returns true, update the database with the new record</param>
+		protected void saveListForm<K, T>(string sql, Func<T, K> getKey, JToken newValues, Func<T, T, bool, bool> process) where T : JsonObject {
+			saveListForm(Database.Query<T>(sql), getKey, newValues, process);
+		}
+
+		/// <summary>
+		/// Helper function to process input to a ListForm. The easy way to do this is to delete all the old records, 
+		/// and insert all the new ones. But this function can be more efficient and useful, as it matches the old and
+		/// new records by a key of your choice, and allows you to update the old record rather than deleting and recreating.
+		/// It also detects duplicate records (i.e. with the same key), so you can throw an error, or ignore them (your choice).
+		/// 
+		/// Process all the items newValues (entered on the form)
+		/// Match them to originalRecords using the Key returned by getKey
+		/// Items with a null or empty key are ignored
+		/// At the end, originalRecords not in the new list are deleted for you
+		/// </summary>
+		/// <typeparam name="K">Type of key</typeparam>
+		/// <typeparam name="T">Type of record</typeparam>
+		/// <param name="originalRecords">Enumerable containing all the original records before editing</param>
+		/// <param name="getKey">Returns a key for matching new to old records</param>
+		/// <param name="newValues">JToken containing the array of new records from the edit</param>
+		/// <param name="process">This is called this on each item, passing the new record, 
+		/// the original record (or null if this is a new record), and whether there is a previous new record with the same key. 
+		/// This is also called on deletions, with newRecord == null.
+		/// If it returns true, update the database with the new record</param>
+		protected void saveListForm<K, T>(IEnumerable<T> originalRecords, Func<T, K> getKey, JToken newValues, Func<T, T, bool, bool> process) where T : JsonObject {
+			// Put the original records in a dictionary (ignore empty keys, and overwrite duplicate keys)
+			Dictionary<string, T> original = new Dictionary<string, T>();
+			bool useId = false;
+			bool hasNullIds = false;
+			foreach (T r in originalRecords) {
+				string key = getKey(r) + "";
+				if (r.Id == null) {
+					Utils.Check(!useId, "Record with Id == null");
+					hasNullIds = true;
+				} else if (!hasNullIds) {
+					useId = true;       // Use record Id as the lookup key, so we can detect changes in the key field
+				}
+				if (!string.IsNullOrEmpty(key)) {
+					if (useId)
+						key = r.Id + "";
+					original[key] = r;
+				}
+			}
+			HashSet<string> done = new HashSet<string>();
+			foreach (T d in newValues.ToObject<List<T>>()) {
+				string key = getKey(d) + "";
+				if (string.IsNullOrEmpty(key))
+					continue;
+				bool duplicate = done.Contains(key);
+				done.Add(key);
+				if (useId)
+					key = d.Id + "";
+				if (original.TryGetValue(key, out T orig)) {
+					d.Id = orig.Id;
+					original.Remove(key);
+				} else
+					d.Id = null;
+				if (process(d, orig, duplicate))
+					Database.Update(d);
+			}
+			foreach (T d in original.Values) {
+				if (process(null, d, false))
+					Database.Delete(d);
+			}
+		}
+
 	}
 
 	/// <summary>

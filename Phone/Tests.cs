@@ -60,11 +60,11 @@ namespace Phone {
 				);
 		}
 
-		public Form TestForm(string edit = null, string pages = null) {
+		public Form TestForm(string edit = null, string pages = null, string credit = null) {
 			if (edit != "y")
 				InsertMenuOption(new MenuOption("Edit", Request.Url + (string.IsNullOrEmpty(Request.Url.Query) ?"?" : "&") + "edit=y"));
 			Form form = new Form(this, typeof(TestData), edit == "y");
-			if(GetParameters["credit"] == "y") {
+			if(credit == "y") {
 				form["Decimal"].Type = "creditInput";
 				form["Decimal"].Heading = "Debit";
 				form.Insert(form.IndexOf("Decimal") + 1, new FieldAttribute("name", "Debit", "data", "Decimal", "heading", "Debit", "type", "debitInput"));
@@ -72,6 +72,7 @@ namespace Phone {
 					form["Option"].Type = "radioInput";
             }
 			form.Data = Database.QueryOne("SELECT * FROM TestData") ?? new JObject();
+			form.Options["cacheChanges"] = true;
 			if (pages == "y")
 				form.SetPages("Text", "Numbers", "Others");
 			else
@@ -80,10 +81,10 @@ namespace Phone {
 		}
 
 		public AjaxReturn TestFormSave(TestData json) {
-			Form form = new Form(this, typeof(TestData));
-			form.Check("Text", !string.IsNullOrEmpty(json.Text), "Text may not be empty");
-			form.Check("Integer", json.Integer != 0, "Integer may not be zero");
-			form.Check("Option", json.Option != TestValues.Invalid, "You may not choose the Invalid option");
+			FormChecker checker = new FormChecker(typeof(TestData));
+			checker.Check(json.Text, v => !string.IsNullOrEmpty(v), "Text may not be empty");
+			checker.Check(json.Integer, v => v != 0, "Integer may not be zero");
+			checker.Check(json.Option, v  => v != TestValues.Invalid, "You may not choose the Invalid option");
 			return SaveRecord(json);
 		}
 
@@ -101,10 +102,12 @@ namespace Phone {
 				"header", Database.QueryOne("SELECT * FROM TestData") ?? new JObject(),
 				"detail", Database.Query("SELECT * FROM TestDetail ORDER BY idTestDetail")
 				);
+			form.Options["cacheChanges"] = true;
 			if (pages == "y") {
 				header.SetPages("Text", "Numbers", "Others", "Details");
 				detail.Page = 4;
-				header.Options["saveOnAllPages"] = true;
+				header.MultiPageOptions["saveOnAllPages"] = true;
+				header.MultiPageOptions["cancel"] = true;
 			} else
 				InsertMenuOption(new MenuOption("Pages", Request.Url + (string.IsNullOrEmpty(Request.Url.Query) ? "?" : "&") + "pages=y"));
 			return form;
@@ -114,16 +117,17 @@ namespace Phone {
 			TestData header = json["header"].To<TestData>();
 			List<TestDetail> detail = json["detail"].To<List<TestDetail>>();
 			Database.BeginTransaction();
-			Form form = new Form(this, typeof(TestData));
-			form.Check("Text", !string.IsNullOrEmpty(header.Text), "Text may not be empty");
-			form.Check("Integer", header.Integer != 0, "Integer may not be zero");
-			form.Check("Option", header.Option != TestValues.Invalid, "You may not choose the Invalid option");
+			FormChecker checker = new FormChecker(typeof(TestData));
+			checker.Check(header.Text, v => !string.IsNullOrEmpty(v), "Text may not be empty");
+			checker.Check(header.Integer, v=> v != 0, "Integer may not be zero");
+			checker.Check(header.Option, v => v != TestValues.Invalid, "You may not choose the Invalid option");
 			AjaxReturn r = SaveRecord(header);
 			if(r.error == null) {
 				Database.Execute("DELETE FROM TestDetail");
+				FormChecker det = new FormChecker(typeof(TestDetail), 4);
 				foreach (TestDetail d in detail) {
 					if (!string.IsNullOrEmpty(d.Text)) {
-						Utils.Check(4, d.Option != TestValues.Invalid, "You may not choose the Invalid option");
+						det.Check(d.Option, v => v != TestValues.Invalid, "You may not choose the Invalid option");
 						d.idTestDetail = null;
 						Database.Insert(d);
 					}

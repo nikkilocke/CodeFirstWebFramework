@@ -11,6 +11,7 @@
   - [ReadWrite](#F-CodeFirstWebFramework-AccessLevel-ReadWrite 'CodeFirstWebFramework.AccessLevel.ReadWrite')
   - [Unspecified](#F-CodeFirstWebFramework-AccessLevel-Unspecified 'CodeFirstWebFramework.AccessLevel.Unspecified')
   - [Select()](#M-CodeFirstWebFramework-AccessLevel-Select-System-Int32- 'CodeFirstWebFramework.AccessLevel.Select(System.Int32)')
+  - [addValues(values,t,maxLevel)](#M-CodeFirstWebFramework-AccessLevel-addValues-System-Collections-Generic-Dictionary{System-Int32,Newtonsoft-Json-Linq-JObject},System-Type,System-Int32- 'CodeFirstWebFramework.AccessLevel.addValues(System.Collections.Generic.Dictionary{System.Int32,Newtonsoft.Json.Linq.JObject},System.Type,System.Int32)')
 - [AdminHelper](#T-CodeFirstWebFramework-AdminHelper 'CodeFirstWebFramework.AdminHelper')
   - [#ctor()](#M-CodeFirstWebFramework-AdminHelper-#ctor-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.AdminHelper.#ctor(CodeFirstWebFramework.AppModule)')
   - [Backup()](#M-CodeFirstWebFramework-AdminHelper-Backup 'CodeFirstWebFramework.AdminHelper.Backup')
@@ -25,11 +26,13 @@
   - [EditUserDelete()](#M-CodeFirstWebFramework-AdminHelper-EditUserDelete-System-Int32- 'CodeFirstWebFramework.AdminHelper.EditUserDelete(System.Int32)')
   - [EditUserSave()](#M-CodeFirstWebFramework-AdminHelper-EditUserSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminHelper.EditUserSave(Newtonsoft.Json.Linq.JObject)')
   - [GetLog()](#M-CodeFirstWebFramework-AdminHelper-GetLog 'CodeFirstWebFramework.AdminHelper.GetLog')
+  - [LoadCache(u,h)](#M-CodeFirstWebFramework-AdminHelper-LoadCache-System-String,System-Int64- 'CodeFirstWebFramework.AdminHelper.LoadCache(System.String,System.Int64)')
   - [Login()](#M-CodeFirstWebFramework-AdminHelper-Login 'CodeFirstWebFramework.AdminHelper.Login')
   - [LoginNoRedirect()](#M-CodeFirstWebFramework-AdminHelper-LoginNoRedirect 'CodeFirstWebFramework.AdminHelper.LoginNoRedirect')
   - [Logout()](#M-CodeFirstWebFramework-AdminHelper-Logout 'CodeFirstWebFramework.AdminHelper.Logout')
   - [RedirectAfterLogin()](#M-CodeFirstWebFramework-AdminHelper-RedirectAfterLogin-System-String- 'CodeFirstWebFramework.AdminHelper.RedirectAfterLogin(System.String)')
   - [Restore()](#M-CodeFirstWebFramework-AdminHelper-Restore 'CodeFirstWebFramework.AdminHelper.Restore')
+  - [SaveCache(u,h,json)](#M-CodeFirstWebFramework-AdminHelper-SaveCache-System-String,System-Int64,System-String- 'CodeFirstWebFramework.AdminHelper.SaveCache(System.String,System.Int64,System.String)')
   - [Users()](#M-CodeFirstWebFramework-AdminHelper-Users 'CodeFirstWebFramework.AdminHelper.Users')
   - [UsersListing()](#M-CodeFirstWebFramework-AdminHelper-UsersListing 'CodeFirstWebFramework.AdminHelper.UsersListing')
   - [permissions()](#M-CodeFirstWebFramework-AdminHelper-permissions-System-Int32- 'CodeFirstWebFramework.AdminHelper.permissions(System.Int32)')
@@ -43,6 +46,7 @@
   - [id](#F-CodeFirstWebFramework-AjaxReturn-id 'CodeFirstWebFramework.AjaxReturn.id')
   - [message](#F-CodeFirstWebFramework-AjaxReturn-message 'CodeFirstWebFramework.AjaxReturn.message')
   - [redirect](#F-CodeFirstWebFramework-AjaxReturn-redirect 'CodeFirstWebFramework.AjaxReturn.redirect')
+  - [saved](#F-CodeFirstWebFramework-AjaxReturn-saved 'CodeFirstWebFramework.AjaxReturn.saved')
   - [ToString()](#M-CodeFirstWebFramework-AjaxReturn-ToString 'CodeFirstWebFramework.AjaxReturn.ToString')
 - [AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule')
   - [#ctor()](#M-CodeFirstWebFramework-AppModule-#ctor 'CodeFirstWebFramework.AppModule.#ctor')
@@ -64,6 +68,7 @@
   - [Message](#F-CodeFirstWebFramework-AppModule-Message 'CodeFirstWebFramework.AppModule.Message')
   - [Method](#F-CodeFirstWebFramework-AppModule-Method 'CodeFirstWebFramework.AppModule.Method')
   - [Module](#F-CodeFirstWebFramework-AppModule-Module 'CodeFirstWebFramework.AppModule.Module')
+  - [Nonce](#F-CodeFirstWebFramework-AppModule-Nonce 'CodeFirstWebFramework.AppModule.Nonce')
   - [OriginalMethod](#F-CodeFirstWebFramework-AppModule-OriginalMethod 'CodeFirstWebFramework.AppModule.OriginalMethod')
   - [OriginalModule](#F-CodeFirstWebFramework-AppModule-OriginalModule 'CodeFirstWebFramework.AppModule.OriginalModule')
   - [Parameters](#F-CodeFirstWebFramework-AppModule-Parameters 'CodeFirstWebFramework.AppModule.Parameters')
@@ -83,6 +88,7 @@
   - [Help](#P-CodeFirstWebFramework-AppModule-Help 'CodeFirstWebFramework.AppModule.Help')
   - [Jobs](#P-CodeFirstWebFramework-AppModule-Jobs 'CodeFirstWebFramework.AppModule.Jobs')
   - [Modules](#P-CodeFirstWebFramework-AppModule-Modules 'CodeFirstWebFramework.AppModule.Modules')
+  - [NonceAttribute](#P-CodeFirstWebFramework-AppModule-NonceAttribute 'CodeFirstWebFramework.AppModule.NonceAttribute')
   - [ReadOnly](#P-CodeFirstWebFramework-AppModule-ReadOnly 'CodeFirstWebFramework.AppModule.ReadOnly')
   - [ReadWrite](#P-CodeFirstWebFramework-AppModule-ReadWrite 'CodeFirstWebFramework.AppModule.ReadWrite')
   - [Request](#P-CodeFirstWebFramework-AppModule-Request 'CodeFirstWebFramework.AppModule.Request')
@@ -93,6 +99,10 @@
   - [Settings](#P-CodeFirstWebFramework-AppModule-Settings 'CodeFirstWebFramework.AppModule.Settings')
   - [Today](#P-CodeFirstWebFramework-AppModule-Today 'CodeFirstWebFramework.AppModule.Today')
   - [VersionSuffix](#P-CodeFirstWebFramework-AppModule-VersionSuffix 'CodeFirstWebFramework.AppModule.VersionSuffix')
+  - [AllSessions(selector)](#M-CodeFirstWebFramework-AppModule-AllSessions-System-Func{CodeFirstWebFramework-WebServer-Session,System-Boolean}- 'CodeFirstWebFramework.AppModule.AllSessions(System.Func{CodeFirstWebFramework.WebServer.Session,System.Boolean})')
+  - [AllSessionsForUser()](#M-CodeFirstWebFramework-AppModule-AllSessionsForUser-System-Int32- 'CodeFirstWebFramework.AppModule.AllSessionsForUser(System.Int32)')
+  - [AppendMenuOption()](#M-CodeFirstWebFramework-AppModule-AppendMenuOption-CodeFirstWebFramework-MenuOption- 'CodeFirstWebFramework.AppModule.AppendMenuOption(CodeFirstWebFramework.MenuOption)')
+  - [AppendMenuOptions(opts)](#M-CodeFirstWebFramework-AppModule-AppendMenuOptions-CodeFirstWebFramework-MenuOption[]- 'CodeFirstWebFramework.AppModule.AppendMenuOptions(CodeFirstWebFramework.MenuOption[])')
   - [Call()](#M-CodeFirstWebFramework-AppModule-Call-System-Net-HttpListenerContext,System-String,System-String- 'CodeFirstWebFramework.AppModule.Call(System.Net.HttpListenerContext,System.String,System.String)')
   - [CallMethod(method)](#M-CodeFirstWebFramework-AppModule-CallMethod-System-Reflection-MethodInfo@- 'CodeFirstWebFramework.AppModule.CallMethod(System.Reflection.MethodInfo@)')
   - [CloseDatabase()](#M-CodeFirstWebFramework-AppModule-CloseDatabase 'CodeFirstWebFramework.AppModule.CloseDatabase')
@@ -104,8 +114,10 @@
   - [ExtractSection(name,template,defaultValue)](#M-CodeFirstWebFramework-AppModule-ExtractSection-System-String,System-String@,System-String- 'CodeFirstWebFramework.AppModule.ExtractSection(System.String,System.String@,System.String)')
   - [FileInfo(filename)](#M-CodeFirstWebFramework-AppModule-FileInfo-System-String- 'CodeFirstWebFramework.AppModule.FileInfo(System.String)')
   - [FromParameter(defaultValue)](#M-CodeFirstWebFramework-AppModule-FromParameter-System-String- 'CodeFirstWebFramework.AppModule.FromParameter(System.String)')
+  - [GenerateNonce()](#M-CodeFirstWebFramework-AppModule-GenerateNonce 'CodeFirstWebFramework.AppModule.GenerateNonce')
   - [GetBatchJob()](#M-CodeFirstWebFramework-AppModule-GetBatchJob-System-Int32- 'CodeFirstWebFramework.AppModule.GetBatchJob(System.Int32)')
   - [HasAccess()](#M-CodeFirstWebFramework-AppModule-HasAccess-System-String- 'CodeFirstWebFramework.AppModule.HasAccess(System.String)')
+  - [HasAccess()](#M-CodeFirstWebFramework-AppModule-HasAccess-System-String,System-Int32@- 'CodeFirstWebFramework.AppModule.HasAccess(System.String,System.Int32@)')
   - [HasAccess(info,mtd,accessLevel)](#M-CodeFirstWebFramework-AppModule-HasAccess-CodeFirstWebFramework-ModuleInfo,System-String,System-Int32@- 'CodeFirstWebFramework.AppModule.HasAccess(CodeFirstWebFramework.ModuleInfo,System.String,System.Int32@)')
   - [Init()](#M-CodeFirstWebFramework-AppModule-Init 'CodeFirstWebFramework.AppModule.Init')
   - [InsertMenuOption()](#M-CodeFirstWebFramework-AppModule-InsertMenuOption-CodeFirstWebFramework-MenuOption- 'CodeFirstWebFramework.AppModule.InsertMenuOption(CodeFirstWebFramework.MenuOption)')
@@ -122,6 +134,8 @@
   - [Template()](#M-CodeFirstWebFramework-AppModule-Template-System-String,System-Object- 'CodeFirstWebFramework.AppModule.Template(System.String,System.Object)')
   - [TextTemplate(text,obj)](#M-CodeFirstWebFramework-AppModule-TextTemplate-System-String,System-Object- 'CodeFirstWebFramework.AppModule.TextTemplate(System.String,System.Object)')
   - [WriteResponse(o,contentType,status)](#M-CodeFirstWebFramework-AppModule-WriteResponse-System-Object,System-String,System-Net-HttpStatusCode- 'CodeFirstWebFramework.AppModule.WriteResponse(System.Object,System.String,System.Net.HttpStatusCode)')
+  - [saveListForm\`\`2(sql,getKey,newValues,process)](#M-CodeFirstWebFramework-AppModule-saveListForm``2-System-String,System-Func{``1,``0},Newtonsoft-Json-Linq-JToken,System-Func{``1,``1,System-Boolean,System-Boolean}- 'CodeFirstWebFramework.AppModule.saveListForm``2(System.String,System.Func{``1,``0},Newtonsoft.Json.Linq.JToken,System.Func{``1,``1,System.Boolean,System.Boolean})')
+  - [saveListForm\`\`2(originalRecords,getKey,newValues,process)](#M-CodeFirstWebFramework-AppModule-saveListForm``2-System-Collections-Generic-IEnumerable{``1},System-Func{``1,``0},Newtonsoft-Json-Linq-JToken,System-Func{``1,``1,System-Boolean,System-Boolean}- 'CodeFirstWebFramework.AppModule.saveListForm``2(System.Collections.Generic.IEnumerable{``1},System.Func{``1,``0},Newtonsoft.Json.Linq.JToken,System.Func{``1,``1,System.Boolean,System.Boolean})')
 - [AsyncBatchJob](#T-CodeFirstWebFramework-AppModule-AsyncBatchJob 'CodeFirstWebFramework.AppModule.AsyncBatchJob')
   - [#ctor(module,action)](#M-CodeFirstWebFramework-AppModule-AsyncBatchJob-#ctor-CodeFirstWebFramework-AppModule,System-Func{System-Threading-Tasks-Task}- 'CodeFirstWebFramework.AppModule.AsyncBatchJob.#ctor(CodeFirstWebFramework.AppModule,System.Func{System.Threading.Tasks.Task})')
   - [#ctor(module,redirect,action)](#M-CodeFirstWebFramework-AppModule-AsyncBatchJob-#ctor-CodeFirstWebFramework-AppModule,System-String,System-Func{System-Threading-Tasks-Task}- 'CodeFirstWebFramework.AppModule.AsyncBatchJob.#ctor(CodeFirstWebFramework.AppModule,System.String,System.Func{System.Threading.Tasks.Task})')
@@ -129,13 +143,20 @@
   - [#ctor()](#M-CodeFirstWebFramework-AuthAttribute-#ctor 'CodeFirstWebFramework.AuthAttribute.#ctor')
   - [#ctor(AccessLevel)](#M-CodeFirstWebFramework-AuthAttribute-#ctor-System-Int32- 'CodeFirstWebFramework.AuthAttribute.#ctor(System.Int32)')
   - [AccessLevel](#F-CodeFirstWebFramework-AuthAttribute-AccessLevel 'CodeFirstWebFramework.AuthAttribute.AccessLevel')
+  - [Groups](#F-CodeFirstWebFramework-AuthAttribute-Groups 'CodeFirstWebFramework.AuthAttribute.Groups')
   - [Hide](#F-CodeFirstWebFramework-AuthAttribute-Hide 'CodeFirstWebFramework.AuthAttribute.Hide')
   - [Name](#F-CodeFirstWebFramework-AuthAttribute-Name 'CodeFirstWebFramework.AuthAttribute.Name')
+- [AuthGroupAttribute](#T-CodeFirstWebFramework-AuthGroupAttribute 'CodeFirstWebFramework.AuthGroupAttribute')
+  - [#ctor(name)](#M-CodeFirstWebFramework-AuthGroupAttribute-#ctor-System-String- 'CodeFirstWebFramework.AuthGroupAttribute.#ctor(System.String)')
+  - [Name](#F-CodeFirstWebFramework-AuthGroupAttribute-Name 'CodeFirstWebFramework.AuthGroupAttribute.Name')
 - [BaseForm](#T-CodeFirstWebFramework-BaseForm 'CodeFirstWebFramework.BaseForm')
   - [#ctor()](#M-CodeFirstWebFramework-BaseForm-#ctor-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.BaseForm.#ctor(CodeFirstWebFramework.AppModule)')
   - [Module](#F-CodeFirstWebFramework-BaseForm-Module 'CodeFirstWebFramework.BaseForm.Module')
   - [Options](#F-CodeFirstWebFramework-BaseForm-Options 'CodeFirstWebFramework.BaseForm.Options')
+  - [AutoSave](#P-CodeFirstWebFramework-BaseForm-AutoSave 'CodeFirstWebFramework.BaseForm.AutoSave')
+  - [CacheChanges](#P-CodeFirstWebFramework-BaseForm-CacheChanges 'CodeFirstWebFramework.BaseForm.CacheChanges')
   - [Data](#P-CodeFirstWebFramework-BaseForm-Data 'CodeFirstWebFramework.BaseForm.Data')
+  - [SafeOptions](#P-CodeFirstWebFramework-BaseForm-SafeOptions 'CodeFirstWebFramework.BaseForm.SafeOptions')
   - [Show()](#M-CodeFirstWebFramework-BaseForm-Show 'CodeFirstWebFramework.BaseForm.Show')
   - [Show()](#M-CodeFirstWebFramework-BaseForm-Show-System-String- 'CodeFirstWebFramework.BaseForm.Show(System.String)')
 - [BatchJob](#T-CodeFirstWebFramework-AppModule-BatchJob 'CodeFirstWebFramework.AppModule.BatchJob')
@@ -145,13 +166,13 @@
   - [Error](#F-CodeFirstWebFramework-AppModule-BatchJob-Error 'CodeFirstWebFramework.AppModule.BatchJob.Error')
   - [Finished](#F-CodeFirstWebFramework-AppModule-BatchJob-Finished 'CodeFirstWebFramework.AppModule.BatchJob.Finished')
   - [Records](#F-CodeFirstWebFramework-AppModule-BatchJob-Records 'CodeFirstWebFramework.AppModule.BatchJob.Records')
+  - [Redirect](#F-CodeFirstWebFramework-AppModule-BatchJob-Redirect 'CodeFirstWebFramework.AppModule.BatchJob.Redirect')
   - [Status](#F-CodeFirstWebFramework-AppModule-BatchJob-Status 'CodeFirstWebFramework.AppModule.BatchJob.Status')
   - [_module](#F-CodeFirstWebFramework-AppModule-BatchJob-_module 'CodeFirstWebFramework.AppModule.BatchJob._module')
-  - [_redirect](#F-CodeFirstWebFramework-AppModule-BatchJob-_redirect 'CodeFirstWebFramework.AppModule.BatchJob._redirect')
   - [Id](#P-CodeFirstWebFramework-AppModule-BatchJob-Id 'CodeFirstWebFramework.AppModule.BatchJob.Id')
   - [PercentComplete](#P-CodeFirstWebFramework-AppModule-BatchJob-PercentComplete 'CodeFirstWebFramework.AppModule.BatchJob.PercentComplete')
   - [Record](#P-CodeFirstWebFramework-AppModule-BatchJob-Record 'CodeFirstWebFramework.AppModule.BatchJob.Record')
-  - [Redirect](#P-CodeFirstWebFramework-AppModule-BatchJob-Redirect 'CodeFirstWebFramework.AppModule.BatchJob.Redirect')
+  - [RedirectWithMessage()](#M-CodeFirstWebFramework-AppModule-BatchJob-RedirectWithMessage 'CodeFirstWebFramework.AppModule.BatchJob.RedirectWithMessage')
 - [BatchJobItem](#T-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem')
   - [#ctor()](#M-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-#ctor-System-Int32,CodeFirstWebFramework-AppModule-BatchJob- 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.#ctor(System.Int32,CodeFirstWebFramework.AppModule.BatchJob)')
   - [Method](#F-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem-Method 'CodeFirstWebFramework.AppModule.BatchJob.BatchJobItem.Method')
@@ -164,6 +185,11 @@
   - [CanConvert()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-CanConvert-System-Type- 'CodeFirstWebFramework.BooleanFormatJsonConverter.CanConvert(System.Type)')
   - [ReadJson()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-ReadJson-Newtonsoft-Json-JsonReader,System-Type,System-Object,Newtonsoft-Json-JsonSerializer- 'CodeFirstWebFramework.BooleanFormatJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)')
   - [WriteJson()](#M-CodeFirstWebFramework-BooleanFormatJsonConverter-WriteJson-Newtonsoft-Json-JsonWriter,System-Object,Newtonsoft-Json-JsonSerializer- 'CodeFirstWebFramework.BooleanFormatJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)')
+- [CachedRecord](#T-CodeFirstWebFramework-CachedRecord 'CodeFirstWebFramework.CachedRecord')
+  - [Json](#F-CodeFirstWebFramework-CachedRecord-Json 'CodeFirstWebFramework.CachedRecord.Json')
+  - [OriginalRecordHash](#F-CodeFirstWebFramework-CachedRecord-OriginalRecordHash 'CodeFirstWebFramework.CachedRecord.OriginalRecordHash')
+  - [Url](#F-CodeFirstWebFramework-CachedRecord-Url 'CodeFirstWebFramework.CachedRecord.Url')
+  - [UserId](#F-CodeFirstWebFramework-CachedRecord-UserId 'CodeFirstWebFramework.CachedRecord.UserId')
 - [CheckException](#T-CodeFirstWebFramework-CheckException 'CodeFirstWebFramework.CheckException')
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Net-HttpStatusCode,System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Net.HttpStatusCode,System.String)')
   - [#ctor()](#M-CodeFirstWebFramework-CheckException-#ctor-System-String,System-Exception,System-Net-HttpStatusCode,System-String- 'CodeFirstWebFramework.CheckException.#ctor(System.String,System.Exception,System.Net.HttpStatusCode,System.String)')
@@ -187,6 +213,7 @@
   - [Filename](#F-CodeFirstWebFramework-Config-Filename 'CodeFirstWebFramework.Config.Filename')
   - [Logging](#F-CodeFirstWebFramework-Config-Logging 'CodeFirstWebFramework.Config.Logging')
   - [Namespace](#F-CodeFirstWebFramework-Config-Namespace 'CodeFirstWebFramework.Config.Namespace')
+  - [Nonce](#F-CodeFirstWebFramework-Config-Nonce 'CodeFirstWebFramework.Config.Nonce')
   - [PersistentSessions](#F-CodeFirstWebFramework-Config-PersistentSessions 'CodeFirstWebFramework.Config.PersistentSessions')
   - [Port](#F-CodeFirstWebFramework-Config-Port 'CodeFirstWebFramework.Config.Port')
   - [ServerName](#F-CodeFirstWebFramework-Config-ServerName 'CodeFirstWebFramework.Config.ServerName')
@@ -231,6 +258,7 @@
   - [Get()](#M-CodeFirstWebFramework-Database-Get-System-String,System-Int32- 'CodeFirstWebFramework.Database.Get(System.String,System.Int32)')
   - [Get\`\`1()](#M-CodeFirstWebFramework-Database-Get``1-System-Int32- 'CodeFirstWebFramework.Database.Get``1(System.Int32)')
   - [Get\`\`1()](#M-CodeFirstWebFramework-Database-Get``1-``0- 'CodeFirstWebFramework.Database.Get``1(``0)')
+  - [GroupConcat()](#M-CodeFirstWebFramework-Database-GroupConcat-System-String,System-String- 'CodeFirstWebFramework.Database.GroupConcat(System.String,System.String)')
   - [In()](#M-CodeFirstWebFramework-Database-In-System-Object[]- 'CodeFirstWebFramework.Database.In(System.Object[])')
   - [In\`\`1()](#M-CodeFirstWebFramework-Database-In``1-System-Collections-Generic-IEnumerable{``0}- 'CodeFirstWebFramework.Database.In``1(System.Collections.Generic.IEnumerable{``0})')
   - [Insert()](#M-CodeFirstWebFramework-Database-Insert-System-String,System-Collections-Generic-List{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.Database.Insert(System.String,System.Collections.Generic.List{Newtonsoft.Json.Linq.JObject})')
@@ -252,6 +280,7 @@
   - [Query\`\`1()](#M-CodeFirstWebFramework-Database-Query``1-System-String- 'CodeFirstWebFramework.Database.Query``1(System.String)')
   - [Query\`\`1(fields,conditions,tableNames)](#M-CodeFirstWebFramework-Database-Query``1-System-String,System-String,System-String[]- 'CodeFirstWebFramework.Database.Query``1(System.String,System.String,System.String[])')
   - [Quote()](#M-CodeFirstWebFramework-Database-Quote-System-Object- 'CodeFirstWebFramework.Database.Quote(System.Object)')
+  - [QuoteName()](#M-CodeFirstWebFramework-Database-QuoteName-System-String- 'CodeFirstWebFramework.Database.QuoteName(System.String)')
   - [RecordExists()](#M-CodeFirstWebFramework-Database-RecordExists-System-String,System-Int32- 'CodeFirstWebFramework.Database.RecordExists(System.String,System.Int32)')
   - [RecordExists()](#M-CodeFirstWebFramework-Database-RecordExists-CodeFirstWebFramework-Table,System-Int32- 'CodeFirstWebFramework.Database.RecordExists(CodeFirstWebFramework.Table,System.Int32)')
   - [Rollback()](#M-CodeFirstWebFramework-Database-Rollback 'CodeFirstWebFramework.Database.Rollback')
@@ -285,9 +314,12 @@
   - [Commit()](#M-CodeFirstWebFramework-DbInterface-Commit 'CodeFirstWebFramework.DbInterface.Commit')
   - [Execute()](#M-CodeFirstWebFramework-DbInterface-Execute-System-String- 'CodeFirstWebFramework.DbInterface.Execute(System.String)')
   - [FieldsMatch()](#M-CodeFirstWebFramework-DbInterface-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'CodeFirstWebFramework.DbInterface.FieldsMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Field,CodeFirstWebFramework.Field)')
+  - [GroupConcat()](#M-CodeFirstWebFramework-DbInterface-GroupConcat-System-String,System-String- 'CodeFirstWebFramework.DbInterface.GroupConcat(System.String,System.String)')
   - [Insert()](#M-CodeFirstWebFramework-DbInterface-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'CodeFirstWebFramework.DbInterface.Insert(CodeFirstWebFramework.Table,System.String,System.Boolean)')
   - [Quote()](#M-CodeFirstWebFramework-DbInterface-Quote-System-Object- 'CodeFirstWebFramework.DbInterface.Quote(System.Object)')
+  - [QuoteName()](#M-CodeFirstWebFramework-DbInterface-QuoteName-System-String- 'CodeFirstWebFramework.DbInterface.QuoteName(System.String)')
   - [Rollback()](#M-CodeFirstWebFramework-DbInterface-Rollback 'CodeFirstWebFramework.DbInterface.Rollback')
+  - [TableNamesMatch()](#M-CodeFirstWebFramework-DbInterface-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table- 'CodeFirstWebFramework.DbInterface.TableNamesMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table)')
   - [Tables()](#M-CodeFirstWebFramework-DbInterface-Tables 'CodeFirstWebFramework.DbInterface.Tables')
   - [UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex)](#M-CodeFirstWebFramework-DbInterface-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'CodeFirstWebFramework.DbInterface.UpgradeTable(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table,System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Index},System.Collections.Generic.List{CodeFirstWebFramework.Index})')
   - [ViewsMatch()](#M-CodeFirstWebFramework-DbInterface-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'CodeFirstWebFramework.DbInterface.ViewsMatch(CodeFirstWebFramework.View,CodeFirstWebFramework.View)')
@@ -339,7 +371,7 @@
   - [FieldFor(field)](#M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-FieldInfo- 'CodeFirstWebFramework.Field.FieldFor(System.Reflection.FieldInfo)')
   - [FieldFor(field)](#M-CodeFirstWebFramework-Field-FieldFor-System-Reflection-PropertyInfo- 'CodeFirstWebFramework.Field.FieldFor(System.Reflection.PropertyInfo)')
   - [FieldFor()](#M-CodeFirstWebFramework-Field-FieldFor-System-String,System-Type,System-Boolean,CodeFirstWebFramework-PrimaryAttribute,CodeFirstWebFramework-LengthAttribute,CodeFirstWebFramework-DefaultValueAttribute- 'CodeFirstWebFramework.Field.FieldFor(System.String,System.Type,System.Boolean,CodeFirstWebFramework.PrimaryAttribute,CodeFirstWebFramework.LengthAttribute,CodeFirstWebFramework.DefaultValueAttribute)')
-  - [Quote()](#M-CodeFirstWebFramework-Field-Quote-System-Object- 'CodeFirstWebFramework.Field.Quote(System.Object)')
+  - [Quote()](#M-CodeFirstWebFramework-Field-Quote-System-Object,System-Func{System-Object,System-String}- 'CodeFirstWebFramework.Field.Quote(System.Object,System.Func{System.Object,System.String})')
   - [ToString()](#M-CodeFirstWebFramework-Field-ToString 'CodeFirstWebFramework.Field.ToString')
 - [FieldAttribute](#T-CodeFirstWebFramework-FieldAttribute 'CodeFirstWebFramework.FieldAttribute')
   - [#ctor()](#M-CodeFirstWebFramework-FieldAttribute-#ctor 'CodeFirstWebFramework.FieldAttribute.#ctor')
@@ -348,20 +380,25 @@
   - [Options](#F-CodeFirstWebFramework-FieldAttribute-Options 'CodeFirstWebFramework.FieldAttribute.Options')
   - [Types](#F-CodeFirstWebFramework-FieldAttribute-Types 'CodeFirstWebFramework.FieldAttribute.Types')
   - [Attributes](#P-CodeFirstWebFramework-FieldAttribute-Attributes 'CodeFirstWebFramework.FieldAttribute.Attributes')
+  - [Class](#P-CodeFirstWebFramework-FieldAttribute-Class 'CodeFirstWebFramework.FieldAttribute.Class')
   - [Colspan](#P-CodeFirstWebFramework-FieldAttribute-Colspan 'CodeFirstWebFramework.FieldAttribute.Colspan')
   - [Data](#P-CodeFirstWebFramework-FieldAttribute-Data 'CodeFirstWebFramework.FieldAttribute.Data')
   - [FieldName](#P-CodeFirstWebFramework-FieldAttribute-FieldName 'CodeFirstWebFramework.FieldAttribute.FieldName')
   - [Heading](#P-CodeFirstWebFramework-FieldAttribute-Heading 'CodeFirstWebFramework.FieldAttribute.Heading')
+  - [Hint](#P-CodeFirstWebFramework-FieldAttribute-Hint 'CodeFirstWebFramework.FieldAttribute.Hint')
   - [MaxLength](#P-CodeFirstWebFramework-FieldAttribute-MaxLength 'CodeFirstWebFramework.FieldAttribute.MaxLength')
   - [Name](#P-CodeFirstWebFramework-FieldAttribute-Name 'CodeFirstWebFramework.FieldAttribute.Name')
+  - [Notify](#P-CodeFirstWebFramework-FieldAttribute-Notify 'CodeFirstWebFramework.FieldAttribute.Notify')
+  - [Page](#P-CodeFirstWebFramework-FieldAttribute-Page 'CodeFirstWebFramework.FieldAttribute.Page')
+  - [Postamble](#P-CodeFirstWebFramework-FieldAttribute-Postamble 'CodeFirstWebFramework.FieldAttribute.Postamble')
+  - [Preamble](#P-CodeFirstWebFramework-FieldAttribute-Preamble 'CodeFirstWebFramework.FieldAttribute.Preamble')
   - [SameRow](#P-CodeFirstWebFramework-FieldAttribute-SameRow 'CodeFirstWebFramework.FieldAttribute.SameRow')
   - [Type](#P-CodeFirstWebFramework-FieldAttribute-Type 'CodeFirstWebFramework.FieldAttribute.Type')
   - [Visible](#P-CodeFirstWebFramework-FieldAttribute-Visible 'CodeFirstWebFramework.FieldAttribute.Visible')
   - [FieldFor(db,field,readwrite)](#M-CodeFirstWebFramework-FieldAttribute-FieldFor-CodeFirstWebFramework-Database,System-Reflection-FieldInfo,System-Boolean- 'CodeFirstWebFramework.FieldAttribute.FieldFor(CodeFirstWebFramework.Database,System.Reflection.FieldInfo,System.Boolean)')
   - [FieldFor(field,readwrite)](#M-CodeFirstWebFramework-FieldAttribute-FieldFor-System-Reflection-PropertyInfo,System-Boolean- 'CodeFirstWebFramework.FieldAttribute.FieldFor(System.Reflection.PropertyInfo,System.Boolean)')
-  - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-CodeFirstWebFramework-JObjectEnumerable- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(CodeFirstWebFramework.JObjectEnumerable)')
-  - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject})')
-  - [MakeSelectable()](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Type- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Type)')
+  - [MakeSelectable(values,defaultLabel,defaultValue)](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject},System-String,System-Int32- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject},System.String,System.Int32)')
+  - [MakeSelectable(enumType,defaultLabel,defaultValue)](#M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Type,System-String,System-Int32- 'CodeFirstWebFramework.FieldAttribute.MakeSelectable(System.Type,System.String,System.Int32)')
   - [SelectValues()](#M-CodeFirstWebFramework-FieldAttribute-SelectValues-System-Type- 'CodeFirstWebFramework.FieldAttribute.SelectValues(System.Type)')
 - [FileInfo](#T-CodeFirstWebFramework-FileInfo 'CodeFirstWebFramework.FileInfo')
   - [#ctor()](#M-CodeFirstWebFramework-FileInfo-#ctor-System-String,System-IO-FileInfo- 'CodeFirstWebFramework.FileInfo.#ctor(System.String,System.IO.FileInfo)')
@@ -385,7 +422,10 @@
   - [Field](#P-CodeFirstWebFramework-ForeignKey-Field 'CodeFirstWebFramework.ForeignKey.Field')
   - [Table](#P-CodeFirstWebFramework-ForeignKey-Table 'CodeFirstWebFramework.ForeignKey.Table')
 - [ForeignKeyAttribute](#T-CodeFirstWebFramework-ForeignKeyAttribute 'CodeFirstWebFramework.ForeignKeyAttribute')
-  - [#ctor(table)](#M-CodeFirstWebFramework-ForeignKeyAttribute-#ctor-System-String- 'CodeFirstWebFramework.ForeignKeyAttribute.#ctor(System.String)')
+  - [#ctor(table,fieldName)](#M-CodeFirstWebFramework-ForeignKeyAttribute-#ctor-System-String,System-String- 'CodeFirstWebFramework.ForeignKeyAttribute.#ctor(System.String,System.String)')
+  - [AutoSelect](#F-CodeFirstWebFramework-ForeignKeyAttribute-AutoSelect 'CodeFirstWebFramework.ForeignKeyAttribute.AutoSelect')
+  - [NoAutoSelect](#F-CodeFirstWebFramework-ForeignKeyAttribute-NoAutoSelect 'CodeFirstWebFramework.ForeignKeyAttribute.NoAutoSelect')
+  - [FieldName](#P-CodeFirstWebFramework-ForeignKeyAttribute-FieldName 'CodeFirstWebFramework.ForeignKeyAttribute.FieldName')
   - [Table](#P-CodeFirstWebFramework-ForeignKeyAttribute-Table 'CodeFirstWebFramework.ForeignKeyAttribute.Table')
 - [Form](#T-CodeFirstWebFramework-Form 'CodeFirstWebFramework.Form')
   - [#ctor(module,readwrite)](#M-CodeFirstWebFramework-Form-#ctor-CodeFirstWebFramework-AppModule,System-Boolean- 'CodeFirstWebFramework.Form.#ctor(CodeFirstWebFramework.AppModule,System.Boolean)')
@@ -397,19 +437,32 @@
   - [CanDelete](#P-CodeFirstWebFramework-Form-CanDelete 'CodeFirstWebFramework.Form.CanDelete')
   - [Fields](#P-CodeFirstWebFramework-Form-Fields 'CodeFirstWebFramework.Form.Fields')
   - [Item](#P-CodeFirstWebFramework-Form-Item-System-String- 'CodeFirstWebFramework.Form.Item(System.String)')
+  - [MultiPageOptions](#P-CodeFirstWebFramework-Form-MultiPageOptions 'CodeFirstWebFramework.Form.MultiPageOptions')
+  - [Pages](#P-CodeFirstWebFramework-Form-Pages 'CodeFirstWebFramework.Form.Pages')
   - [Add()](#M-CodeFirstWebFramework-Form-Add-System-Reflection-FieldInfo- 'CodeFirstWebFramework.Form.Add(System.Reflection.FieldInfo)')
   - [Add()](#M-CodeFirstWebFramework-Form-Add-System-Reflection-FieldInfo,System-Boolean- 'CodeFirstWebFramework.Form.Add(System.Reflection.FieldInfo,System.Boolean)')
   - [Add()](#M-CodeFirstWebFramework-Form-Add-CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.Add(CodeFirstWebFramework.FieldAttribute)')
+  - [Add()](#M-CodeFirstWebFramework-Form-Add-System-Type- 'CodeFirstWebFramework.Form.Add(System.Type)')
   - [Add()](#M-CodeFirstWebFramework-Form-Add-System-Type,System-String- 'CodeFirstWebFramework.Form.Add(System.Type,System.String)')
   - [Build()](#M-CodeFirstWebFramework-Form-Build-System-Type- 'CodeFirstWebFramework.Form.Build(System.Type)')
+  - [Check()](#M-CodeFirstWebFramework-Form-Check-System-String,System-Boolean,System-String- 'CodeFirstWebFramework.Form.Check(System.String,System.Boolean,System.String)')
   - [IndexOf()](#M-CodeFirstWebFramework-Form-IndexOf-System-String- 'CodeFirstWebFramework.Form.IndexOf(System.String)')
   - [Insert()](#M-CodeFirstWebFramework-Form-Insert-System-Int32,CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.Insert(System.Int32,CodeFirstWebFramework.FieldAttribute)')
   - [Remove()](#M-CodeFirstWebFramework-Form-Remove-System-String- 'CodeFirstWebFramework.Form.Remove(System.String)')
   - [Remove()](#M-CodeFirstWebFramework-Form-Remove-System-String[]- 'CodeFirstWebFramework.Form.Remove(System.String[])')
   - [Replace()](#M-CodeFirstWebFramework-Form-Replace-System-Int32,CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.Replace(System.Int32,CodeFirstWebFramework.FieldAttribute)')
   - [RequireField()](#M-CodeFirstWebFramework-Form-RequireField-CodeFirstWebFramework-FieldAttribute- 'CodeFirstWebFramework.Form.RequireField(CodeFirstWebFramework.FieldAttribute)')
+  - [SetPages()](#M-CodeFirstWebFramework-Form-SetPages-System-String[]- 'CodeFirstWebFramework.Form.SetPages(System.String[])')
   - [Show()](#M-CodeFirstWebFramework-Form-Show 'CodeFirstWebFramework.Form.Show')
   - [processFields(tbl,inTable)](#M-CodeFirstWebFramework-Form-processFields-System-Type,System-Boolean- 'CodeFirstWebFramework.Form.processFields(System.Type,System.Boolean)')
+- [FormChecker](#T-CodeFirstWebFramework-FormChecker 'CodeFirstWebFramework.FormChecker')
+  - [#ctor(type,page)](#M-CodeFirstWebFramework-FormChecker-#ctor-System-Type,System-Int32- 'CodeFirstWebFramework.FormChecker.#ctor(System.Type,System.Int32)')
+  - [Check\`\`1(value,validate,error,expression)](#M-CodeFirstWebFramework-FormChecker-Check``1-``0,System-Func{``0,System-Boolean},System-Func{System-String},System-String- 'CodeFirstWebFramework.FormChecker.Check``1(``0,System.Func{``0,System.Boolean},System.Func{System.String},System.String)')
+  - [Check\`\`1(value,validate,error,expression)](#M-CodeFirstWebFramework-FormChecker-Check``1-``0,System-Func{``0,System-Boolean},System-String,System-String- 'CodeFirstWebFramework.FormChecker.Check``1(``0,System.Func{``0,System.Boolean},System.String,System.String)')
+  - [Check\`\`1(value,condition,error,expression)](#M-CodeFirstWebFramework-FormChecker-Check``1-``0,System-Boolean,System-String,System-String- 'CodeFirstWebFramework.FormChecker.Check``1(``0,System.Boolean,System.String,System.String)')
+- [FormException](#T-CodeFirstWebFramework-FormException 'CodeFirstWebFramework.FormException')
+  - [#ctor()](#M-CodeFirstWebFramework-FormException-#ctor-System-String,System-Int32- 'CodeFirstWebFramework.FormException.#ctor(System.String,System.Int32)')
+  - [Page](#P-CodeFirstWebFramework-FormException-Page 'CodeFirstWebFramework.FormException.Page')
 - [HandlesAttribute](#T-CodeFirstWebFramework-HandlesAttribute 'CodeFirstWebFramework.HandlesAttribute')
   - [#ctor()](#M-CodeFirstWebFramework-HandlesAttribute-#ctor-System-String[]- 'CodeFirstWebFramework.HandlesAttribute.#ctor(System.String[])')
   - [Extensions](#F-CodeFirstWebFramework-HandlesAttribute-Extensions 'CodeFirstWebFramework.HandlesAttribute.Extensions')
@@ -456,7 +509,7 @@
   - [CoversData()](#M-CodeFirstWebFramework-Index-CoversData-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Index.CoversData(Newtonsoft.Json.Linq.JObject)')
   - [Matches(other)](#M-CodeFirstWebFramework-Index-Matches-CodeFirstWebFramework-Index- 'CodeFirstWebFramework.Index.Matches(CodeFirstWebFramework.Index)')
   - [ToString()](#M-CodeFirstWebFramework-Index-ToString 'CodeFirstWebFramework.Index.ToString')
-  - [Where()](#M-CodeFirstWebFramework-Index-Where-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Index.Where(Newtonsoft.Json.Linq.JObject)')
+  - [Where()](#M-CodeFirstWebFramework-Index-Where-Newtonsoft-Json-Linq-JObject,System-Func{System-Object,System-String},System-Func{System-String,System-String}- 'CodeFirstWebFramework.Index.Where(Newtonsoft.Json.Linq.JObject,System.Func{System.Object,System.String},System.Func{System.String,System.String})')
 - [IndexAttribute](#T-CodeFirstWebFramework-IndexAttribute 'CodeFirstWebFramework.IndexAttribute')
   - [#ctor(name)](#M-CodeFirstWebFramework-IndexAttribute-#ctor-System-String- 'CodeFirstWebFramework.IndexAttribute.#ctor(System.String)')
   - [#ctor(name,sequence)](#M-CodeFirstWebFramework-IndexAttribute-#ctor-System-String,System-Int32- 'CodeFirstWebFramework.IndexAttribute.#ctor(System.String,System.Int32)')
@@ -484,6 +537,7 @@
   - [#ctor(module,t)](#M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type- 'CodeFirstWebFramework.ListForm.#ctor(CodeFirstWebFramework.AppModule,System.Type)')
   - [#ctor(module,t,readWrite)](#M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean- 'CodeFirstWebFramework.ListForm.#ctor(CodeFirstWebFramework.AppModule,System.Type,System.Boolean)')
   - [#ctor()](#M-CodeFirstWebFramework-ListForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Boolean,System-String[]- 'CodeFirstWebFramework.ListForm.#ctor(CodeFirstWebFramework.AppModule,System.Type,System.Boolean,System.String[])')
+  - [Page](#P-CodeFirstWebFramework-ListForm-Page 'CodeFirstWebFramework.ListForm.Page')
   - [Select](#P-CodeFirstWebFramework-ListForm-Select 'CodeFirstWebFramework.ListForm.Select')
   - [Show()](#M-CodeFirstWebFramework-ListForm-Show 'CodeFirstWebFramework.ListForm.Show')
 - [Log](#T-CodeFirstWebFramework-Log 'CodeFirstWebFramework.Log')
@@ -515,16 +569,61 @@
   - [Url](#F-CodeFirstWebFramework-MenuOption-Url 'CodeFirstWebFramework.MenuOption.Url')
   - [Disabled](#P-CodeFirstWebFramework-MenuOption-Disabled 'CodeFirstWebFramework.MenuOption.Disabled')
   - [Id](#P-CodeFirstWebFramework-MenuOption-Id 'CodeFirstWebFramework.MenuOption.Id')
+- [MessageInfo](#T-CodeFirstWebFramework-WebServer-MessageInfo 'CodeFirstWebFramework.WebServer.MessageInfo')
+  - [#ctor()](#M-CodeFirstWebFramework-WebServer-MessageInfo-#ctor-System-String- 'CodeFirstWebFramework.WebServer.MessageInfo.#ctor(System.String)')
+  - [Date](#F-CodeFirstWebFramework-WebServer-MessageInfo-Date 'CodeFirstWebFramework.WebServer.MessageInfo.Date')
+  - [Lock](#F-CodeFirstWebFramework-WebServer-MessageInfo-Lock 'CodeFirstWebFramework.WebServer.MessageInfo.Lock')
+  - [NextSequence](#F-CodeFirstWebFramework-WebServer-MessageInfo-NextSequence 'CodeFirstWebFramework.WebServer.MessageInfo.NextSequence')
+  - [Sequence](#F-CodeFirstWebFramework-WebServer-MessageInfo-Sequence 'CodeFirstWebFramework.WebServer.MessageInfo.Sequence')
+  - [Text](#F-CodeFirstWebFramework-WebServer-MessageInfo-Text 'CodeFirstWebFramework.WebServer.MessageInfo.Text')
+  - [Handle](#P-CodeFirstWebFramework-WebServer-MessageInfo-Handle 'CodeFirstWebFramework.WebServer.MessageInfo.Handle')
+  - [Days()](#M-CodeFirstWebFramework-WebServer-MessageInfo-Days-System-DateTime- 'CodeFirstWebFramework.WebServer.MessageInfo.Days(System.DateTime)')
 - [ModuleInfo](#T-CodeFirstWebFramework-ModuleInfo 'CodeFirstWebFramework.ModuleInfo')
-  - [#ctor()](#M-CodeFirstWebFramework-ModuleInfo-#ctor-System-String,System-Type- 'CodeFirstWebFramework.ModuleInfo.#ctor(System.String,System.Type)')
+  - [#ctor()](#M-CodeFirstWebFramework-ModuleInfo-#ctor-System-String,System-Type,CodeFirstWebFramework-Namespace- 'CodeFirstWebFramework.ModuleInfo.#ctor(System.String,System.Type,CodeFirstWebFramework.Namespace)')
   - [Auth](#F-CodeFirstWebFramework-ModuleInfo-Auth 'CodeFirstWebFramework.ModuleInfo.Auth')
   - [AuthMethods](#F-CodeFirstWebFramework-ModuleInfo-AuthMethods 'CodeFirstWebFramework.ModuleInfo.AuthMethods')
   - [ModuleAccessLevel](#F-CodeFirstWebFramework-ModuleInfo-ModuleAccessLevel 'CodeFirstWebFramework.ModuleInfo.ModuleAccessLevel')
   - [Name](#F-CodeFirstWebFramework-ModuleInfo-Name 'CodeFirstWebFramework.ModuleInfo.Name')
   - [Type](#F-CodeFirstWebFramework-ModuleInfo-Type 'CodeFirstWebFramework.ModuleInfo.Type')
-  - [LowestAccessLevel](#P-CodeFirstWebFramework-ModuleInfo-LowestAccessLevel 'CodeFirstWebFramework.ModuleInfo.LowestAccessLevel')
+  - [_lowestAccessLevel](#F-CodeFirstWebFramework-ModuleInfo-_lowestAccessLevel 'CodeFirstWebFramework.ModuleInfo._lowestAccessLevel')
+  - [_lowestAccessLevels](#F-CodeFirstWebFramework-ModuleInfo-_lowestAccessLevels 'CodeFirstWebFramework.ModuleInfo._lowestAccessLevels')
   - [UnCamelName](#P-CodeFirstWebFramework-ModuleInfo-UnCamelName 'CodeFirstWebFramework.ModuleInfo.UnCamelName')
+  - [GetLowestAccessLevel()](#M-CodeFirstWebFramework-ModuleInfo-GetLowestAccessLevel 'CodeFirstWebFramework.ModuleInfo.GetLowestAccessLevel')
+  - [GetLowestAccessLevels()](#M-CodeFirstWebFramework-ModuleInfo-GetLowestAccessLevels 'CodeFirstWebFramework.ModuleInfo.GetLowestAccessLevels')
+  - [LowestAccessLevelForGroup()](#M-CodeFirstWebFramework-ModuleInfo-LowestAccessLevelForGroup-System-Int32- 'CodeFirstWebFramework.ModuleInfo.LowestAccessLevelForGroup(System.Int32)')
+  - [UserHasAccess()](#M-CodeFirstWebFramework-ModuleInfo-UserHasAccess-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.ModuleInfo.UserHasAccess(CodeFirstWebFramework.AppModule)')
   - [addMethods(t)](#M-CodeFirstWebFramework-ModuleInfo-addMethods-System-Type- 'CodeFirstWebFramework.ModuleInfo.addMethods(System.Type)')
+- [MultiDetailForm](#T-CodeFirstWebFramework-MultiDetailForm 'CodeFirstWebFramework.MultiDetailForm')
+  - [#ctor(module,header,details)](#M-CodeFirstWebFramework-MultiDetailForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Type[]- 'CodeFirstWebFramework.MultiDetailForm.#ctor(CodeFirstWebFramework.AppModule,System.Type,System.Type[])')
+  - [#ctor(module,header,details)](#M-CodeFirstWebFramework-MultiDetailForm-#ctor-CodeFirstWebFramework-AppModule,CodeFirstWebFramework-Form,CodeFirstWebFramework-ListForm[]- 'CodeFirstWebFramework.MultiDetailForm.#ctor(CodeFirstWebFramework.AppModule,CodeFirstWebFramework.Form,CodeFirstWebFramework.ListForm[])')
+  - [Details](#F-CodeFirstWebFramework-MultiDetailForm-Details 'CodeFirstWebFramework.MultiDetailForm.Details')
+  - [Header](#F-CodeFirstWebFramework-MultiDetailForm-Header 'CodeFirstWebFramework.MultiDetailForm.Header')
+  - [CanDelete](#P-CodeFirstWebFramework-MultiDetailForm-CanDelete 'CodeFirstWebFramework.MultiDetailForm.CanDelete')
+  - [Show()](#M-CodeFirstWebFramework-MultiDetailForm-Show 'CodeFirstWebFramework.MultiDetailForm.Show')
+- [MySqlConnector](#T-CodeFirstWebFramework-MySqlConnector 'CodeFirstWebFramework.MySqlConnector')
+  - [#ctor(db,connectionString)](#M-CodeFirstWebFramework-MySqlConnector-#ctor-CodeFirstWebFramework-Database,System-String- 'CodeFirstWebFramework.MySqlConnector.#ctor(CodeFirstWebFramework.Database,System.String)')
+  - [BeginTransaction()](#M-CodeFirstWebFramework-MySqlConnector-BeginTransaction 'CodeFirstWebFramework.MySqlConnector.BeginTransaction')
+  - [Cast()](#M-CodeFirstWebFramework-MySqlConnector-Cast-System-String,System-String- 'CodeFirstWebFramework.MySqlConnector.Cast(System.String,System.String)')
+  - [CleanDatabase()](#M-CodeFirstWebFramework-MySqlConnector-CleanDatabase 'CodeFirstWebFramework.MySqlConnector.CleanDatabase')
+  - [Commit()](#M-CodeFirstWebFramework-MySqlConnector-Commit 'CodeFirstWebFramework.MySqlConnector.Commit')
+  - [CreateIndex()](#M-CodeFirstWebFramework-MySqlConnector-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'CodeFirstWebFramework.MySqlConnector.CreateIndex(CodeFirstWebFramework.Table,CodeFirstWebFramework.Index)')
+  - [CreateTable()](#M-CodeFirstWebFramework-MySqlConnector-CreateTable-CodeFirstWebFramework-Table- 'CodeFirstWebFramework.MySqlConnector.CreateTable(CodeFirstWebFramework.Table)')
+  - [Dispose()](#M-CodeFirstWebFramework-MySqlConnector-Dispose 'CodeFirstWebFramework.MySqlConnector.Dispose')
+  - [DropIndex()](#M-CodeFirstWebFramework-MySqlConnector-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index- 'CodeFirstWebFramework.MySqlConnector.DropIndex(CodeFirstWebFramework.Table,CodeFirstWebFramework.Index)')
+  - [DropTable()](#M-CodeFirstWebFramework-MySqlConnector-DropTable-CodeFirstWebFramework-Table- 'CodeFirstWebFramework.MySqlConnector.DropTable(CodeFirstWebFramework.Table)')
+  - [Execute()](#M-CodeFirstWebFramework-MySqlConnector-Execute-System-String- 'CodeFirstWebFramework.MySqlConnector.Execute(System.String)')
+  - [FieldsMatch()](#M-CodeFirstWebFramework-MySqlConnector-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'CodeFirstWebFramework.MySqlConnector.FieldsMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Field,CodeFirstWebFramework.Field)')
+  - [GroupConcat()](#M-CodeFirstWebFramework-MySqlConnector-GroupConcat-System-String,System-String- 'CodeFirstWebFramework.MySqlConnector.GroupConcat(System.String,System.String)')
+  - [Insert(table,sql,updatesAutoIncrement)](#M-CodeFirstWebFramework-MySqlConnector-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'CodeFirstWebFramework.MySqlConnector.Insert(CodeFirstWebFramework.Table,System.String,System.Boolean)')
+  - [Query()](#M-CodeFirstWebFramework-MySqlConnector-Query-System-String- 'CodeFirstWebFramework.MySqlConnector.Query(System.String)')
+  - [QueryOne()](#M-CodeFirstWebFramework-MySqlConnector-QueryOne-System-String- 'CodeFirstWebFramework.MySqlConnector.QueryOne(System.String)')
+  - [Quote()](#M-CodeFirstWebFramework-MySqlConnector-Quote-System-Object- 'CodeFirstWebFramework.MySqlConnector.Quote(System.Object)')
+  - [QuoteName()](#M-CodeFirstWebFramework-MySqlConnector-QuoteName-System-String- 'CodeFirstWebFramework.MySqlConnector.QuoteName(System.String)')
+  - [Rollback()](#M-CodeFirstWebFramework-MySqlConnector-Rollback 'CodeFirstWebFramework.MySqlConnector.Rollback')
+  - [TableNamesMatch()](#M-CodeFirstWebFramework-MySqlConnector-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table- 'CodeFirstWebFramework.MySqlConnector.TableNamesMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table)')
+  - [Tables()](#M-CodeFirstWebFramework-MySqlConnector-Tables 'CodeFirstWebFramework.MySqlConnector.Tables')
+  - [UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex)](#M-CodeFirstWebFramework-MySqlConnector-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'CodeFirstWebFramework.MySqlConnector.UpgradeTable(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table,System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Index},System.Collections.Generic.List{CodeFirstWebFramework.Index})')
+  - [ViewsMatch()](#M-CodeFirstWebFramework-MySqlConnector-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'CodeFirstWebFramework.MySqlConnector.ViewsMatch(CodeFirstWebFramework.View,CodeFirstWebFramework.View)')
 - [MySqlDatabase](#T-CodeFirstWebFramework-MySqlDatabase 'CodeFirstWebFramework.MySqlDatabase')
   - [#ctor(db,connectionString)](#M-CodeFirstWebFramework-MySqlDatabase-#ctor-CodeFirstWebFramework-Database,System-String- 'CodeFirstWebFramework.MySqlDatabase.#ctor(CodeFirstWebFramework.Database,System.String)')
   - [BeginTransaction()](#M-CodeFirstWebFramework-MySqlDatabase-BeginTransaction 'CodeFirstWebFramework.MySqlDatabase.BeginTransaction')
@@ -538,25 +637,33 @@
   - [DropTable()](#M-CodeFirstWebFramework-MySqlDatabase-DropTable-CodeFirstWebFramework-Table- 'CodeFirstWebFramework.MySqlDatabase.DropTable(CodeFirstWebFramework.Table)')
   - [Execute()](#M-CodeFirstWebFramework-MySqlDatabase-Execute-System-String- 'CodeFirstWebFramework.MySqlDatabase.Execute(System.String)')
   - [FieldsMatch()](#M-CodeFirstWebFramework-MySqlDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'CodeFirstWebFramework.MySqlDatabase.FieldsMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Field,CodeFirstWebFramework.Field)')
+  - [GroupConcat()](#M-CodeFirstWebFramework-MySqlDatabase-GroupConcat-System-String,System-String- 'CodeFirstWebFramework.MySqlDatabase.GroupConcat(System.String,System.String)')
   - [Insert(table,sql,updatesAutoIncrement)](#M-CodeFirstWebFramework-MySqlDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'CodeFirstWebFramework.MySqlDatabase.Insert(CodeFirstWebFramework.Table,System.String,System.Boolean)')
   - [Query()](#M-CodeFirstWebFramework-MySqlDatabase-Query-System-String- 'CodeFirstWebFramework.MySqlDatabase.Query(System.String)')
   - [QueryOne()](#M-CodeFirstWebFramework-MySqlDatabase-QueryOne-System-String- 'CodeFirstWebFramework.MySqlDatabase.QueryOne(System.String)')
   - [Quote()](#M-CodeFirstWebFramework-MySqlDatabase-Quote-System-Object- 'CodeFirstWebFramework.MySqlDatabase.Quote(System.Object)')
+  - [QuoteName()](#M-CodeFirstWebFramework-MySqlDatabase-QuoteName-System-String- 'CodeFirstWebFramework.MySqlDatabase.QuoteName(System.String)')
   - [Rollback()](#M-CodeFirstWebFramework-MySqlDatabase-Rollback 'CodeFirstWebFramework.MySqlDatabase.Rollback')
+  - [TableNamesMatch()](#M-CodeFirstWebFramework-MySqlDatabase-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table- 'CodeFirstWebFramework.MySqlDatabase.TableNamesMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table)')
   - [Tables()](#M-CodeFirstWebFramework-MySqlDatabase-Tables 'CodeFirstWebFramework.MySqlDatabase.Tables')
   - [UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex)](#M-CodeFirstWebFramework-MySqlDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'CodeFirstWebFramework.MySqlDatabase.UpgradeTable(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table,System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Index},System.Collections.Generic.List{CodeFirstWebFramework.Index})')
   - [ViewsMatch()](#M-CodeFirstWebFramework-MySqlDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'CodeFirstWebFramework.MySqlDatabase.ViewsMatch(CodeFirstWebFramework.View,CodeFirstWebFramework.View)')
 - [Namespace](#T-CodeFirstWebFramework-Namespace 'CodeFirstWebFramework.Namespace')
   - [#ctor()](#M-CodeFirstWebFramework-Namespace-#ctor-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.#ctor(CodeFirstWebFramework.ServerConfig)')
+  - [AuthGroups](#F-CodeFirstWebFramework-Namespace-AuthGroups 'CodeFirstWebFramework.Namespace.AuthGroups')
   - [FileSystem](#F-CodeFirstWebFramework-Namespace-FileSystem 'CodeFirstWebFramework.Namespace.FileSystem')
   - [Server](#F-CodeFirstWebFramework-Namespace-Server 'CodeFirstWebFramework.Namespace.Server')
   - [Database](#P-CodeFirstWebFramework-Namespace-Database 'CodeFirstWebFramework.Namespace.Database')
   - [EmptySession](#P-CodeFirstWebFramework-Namespace-EmptySession 'CodeFirstWebFramework.Namespace.EmptySession')
   - [Modules](#P-CodeFirstWebFramework-Namespace-Modules 'CodeFirstWebFramework.Namespace.Modules')
   - [Name](#P-CodeFirstWebFramework-Namespace-Name 'CodeFirstWebFramework.Namespace.Name')
+  - [OldAuth](#P-CodeFirstWebFramework-Namespace-OldAuth 'CodeFirstWebFramework.Namespace.OldAuth')
   - [TableNames](#P-CodeFirstWebFramework-Namespace-TableNames 'CodeFirstWebFramework.Namespace.TableNames')
   - [Tables](#P-CodeFirstWebFramework-Namespace-Tables 'CodeFirstWebFramework.Namespace.Tables')
   - [ViewNames](#P-CodeFirstWebFramework-Namespace-ViewNames 'CodeFirstWebFramework.Namespace.ViewNames')
+  - [AddAuthGroup()](#M-CodeFirstWebFramework-Namespace-AddAuthGroup-System-String- 'CodeFirstWebFramework.Namespace.AddAuthGroup(System.String)')
+  - [AddAuthGroups()](#M-CodeFirstWebFramework-Namespace-AddAuthGroups-System-Collections-Generic-IEnumerable{CodeFirstWebFramework-AuthGroupAttribute}- 'CodeFirstWebFramework.Namespace.AddAuthGroups(System.Collections.Generic.IEnumerable{CodeFirstWebFramework.AuthGroupAttribute})')
+  - [AddAuthGroups()](#M-CodeFirstWebFramework-Namespace-AddAuthGroups-System-Collections-Generic-IEnumerable{System-String}- 'CodeFirstWebFramework.Namespace.AddAuthGroups(System.Collections.Generic.IEnumerable{System.String})')
   - [Create(server)](#M-CodeFirstWebFramework-Namespace-Create-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.Create(CodeFirstWebFramework.ServerConfig)')
   - [GetAccessLevel()](#M-CodeFirstWebFramework-Namespace-GetAccessLevel 'CodeFirstWebFramework.Namespace.GetAccessLevel')
   - [GetDatabase(server)](#M-CodeFirstWebFramework-Namespace-GetDatabase-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.Namespace.GetDatabase(CodeFirstWebFramework.ServerConfig)')
@@ -597,14 +704,18 @@
   - [DropTable()](#M-CodeFirstWebFramework-SQLiteDatabase-DropTable-CodeFirstWebFramework-Table- 'CodeFirstWebFramework.SQLiteDatabase.DropTable(CodeFirstWebFramework.Table)')
   - [Execute()](#M-CodeFirstWebFramework-SQLiteDatabase-Execute-System-String- 'CodeFirstWebFramework.SQLiteDatabase.Execute(System.String)')
   - [FieldsMatch()](#M-CodeFirstWebFramework-SQLiteDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'CodeFirstWebFramework.SQLiteDatabase.FieldsMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Field,CodeFirstWebFramework.Field)')
+  - [GroupConcat()](#M-CodeFirstWebFramework-SQLiteDatabase-GroupConcat-System-String,System-String- 'CodeFirstWebFramework.SQLiteDatabase.GroupConcat(System.String,System.String)')
   - [Insert(table,sql,updatesAutoIncrement)](#M-CodeFirstWebFramework-SQLiteDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'CodeFirstWebFramework.SQLiteDatabase.Insert(CodeFirstWebFramework.Table,System.String,System.Boolean)')
   - [Query()](#M-CodeFirstWebFramework-SQLiteDatabase-Query-System-String- 'CodeFirstWebFramework.SQLiteDatabase.Query(System.String)')
   - [QueryOne()](#M-CodeFirstWebFramework-SQLiteDatabase-QueryOne-System-String- 'CodeFirstWebFramework.SQLiteDatabase.QueryOne(System.String)')
   - [Quote()](#M-CodeFirstWebFramework-SQLiteDatabase-Quote-System-Object- 'CodeFirstWebFramework.SQLiteDatabase.Quote(System.Object)')
+  - [QuoteName()](#M-CodeFirstWebFramework-SQLiteDatabase-QuoteName-System-String- 'CodeFirstWebFramework.SQLiteDatabase.QuoteName(System.String)')
   - [Rollback()](#M-CodeFirstWebFramework-SQLiteDatabase-Rollback 'CodeFirstWebFramework.SQLiteDatabase.Rollback')
+  - [TableNamesMatch()](#M-CodeFirstWebFramework-SQLiteDatabase-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table- 'CodeFirstWebFramework.SQLiteDatabase.TableNamesMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table)')
   - [Tables()](#M-CodeFirstWebFramework-SQLiteDatabase-Tables 'CodeFirstWebFramework.SQLiteDatabase.Tables')
   - [UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex)](#M-CodeFirstWebFramework-SQLiteDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'CodeFirstWebFramework.SQLiteDatabase.UpgradeTable(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table,System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Index},System.Collections.Generic.List{CodeFirstWebFramework.Index})')
   - [ViewsMatch()](#M-CodeFirstWebFramework-SQLiteDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'CodeFirstWebFramework.SQLiteDatabase.ViewsMatch(CodeFirstWebFramework.View,CodeFirstWebFramework.View)')
+  - [dropAllViews()](#M-CodeFirstWebFramework-SQLiteDatabase-dropAllViews 'CodeFirstWebFramework.SQLiteDatabase.dropAllViews')
 - [SQLiteDateDiff](#T-CodeFirstWebFramework-SQLiteDateDiff 'CodeFirstWebFramework.SQLiteDateDiff')
 - [SQLiteSum](#T-CodeFirstWebFramework-SQLiteSum 'CodeFirstWebFramework.SQLiteSum')
 - [ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig')
@@ -612,9 +723,11 @@
   - [ConnectionString](#F-CodeFirstWebFramework-ServerConfig-ConnectionString 'CodeFirstWebFramework.ServerConfig.ConnectionString')
   - [CookieTimeoutMinutes](#F-CodeFirstWebFramework-ServerConfig-CookieTimeoutMinutes 'CodeFirstWebFramework.ServerConfig.CookieTimeoutMinutes')
   - [Database](#F-CodeFirstWebFramework-ServerConfig-Database 'CodeFirstWebFramework.ServerConfig.Database')
+  - [DatabaseId](#F-CodeFirstWebFramework-ServerConfig-DatabaseId 'CodeFirstWebFramework.ServerConfig.DatabaseId')
   - [Email](#F-CodeFirstWebFramework-ServerConfig-Email 'CodeFirstWebFramework.ServerConfig.Email')
   - [Namespace](#F-CodeFirstWebFramework-ServerConfig-Namespace 'CodeFirstWebFramework.ServerConfig.Namespace')
   - [NamespaceDef](#F-CodeFirstWebFramework-ServerConfig-NamespaceDef 'CodeFirstWebFramework.ServerConfig.NamespaceDef')
+  - [Nonce](#F-CodeFirstWebFramework-ServerConfig-Nonce 'CodeFirstWebFramework.ServerConfig.Nonce')
   - [PersistentSessions](#F-CodeFirstWebFramework-ServerConfig-PersistentSessions 'CodeFirstWebFramework.ServerConfig.PersistentSessions')
   - [Port](#F-CodeFirstWebFramework-ServerConfig-Port 'CodeFirstWebFramework.ServerConfig.Port')
   - [ServerAlias](#F-CodeFirstWebFramework-ServerConfig-ServerAlias 'CodeFirstWebFramework.ServerConfig.ServerAlias')
@@ -622,17 +735,21 @@
   - [Title](#F-CodeFirstWebFramework-ServerConfig-Title 'CodeFirstWebFramework.ServerConfig.Title')
   - [Matches()](#M-CodeFirstWebFramework-ServerConfig-Matches-System-Uri- 'CodeFirstWebFramework.ServerConfig.Matches(System.Uri)')
 - [Session](#T-CodeFirstWebFramework-WebServer-Session 'CodeFirstWebFramework.WebServer.Session')
-  - [#ctor(server)](#M-CodeFirstWebFramework-WebServer-Session-#ctor-CodeFirstWebFramework-WebServer- 'CodeFirstWebFramework.WebServer.Session.#ctor(CodeFirstWebFramework.WebServer)')
+  - [#ctor()](#M-CodeFirstWebFramework-WebServer-Session-#ctor-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.WebServer.Session.#ctor(CodeFirstWebFramework.WebServer,CodeFirstWebFramework.ServerConfig)')
   - [#ctor()](#M-CodeFirstWebFramework-WebServer-Session-#ctor 'CodeFirstWebFramework.WebServer.Session.#ctor')
   - [Expires](#F-CodeFirstWebFramework-WebServer-Session-Expires 'CodeFirstWebFramework.WebServer.Session.Expires')
   - [Server](#F-CodeFirstWebFramework-WebServer-Session-Server 'CodeFirstWebFramework.WebServer.Session.Server')
   - [User](#F-CodeFirstWebFramework-WebServer-Session-User 'CodeFirstWebFramework.WebServer.Session.User')
   - [UserId](#F-CodeFirstWebFramework-WebServer-Session-UserId 'CodeFirstWebFramework.WebServer.Session.UserId')
   - [idSession](#F-CodeFirstWebFramework-WebServer-Session-idSession 'CodeFirstWebFramework.WebServer.Session.idSession')
+  - [Config](#P-CodeFirstWebFramework-WebServer-Session-Config 'CodeFirstWebFramework.WebServer.Session.Config')
   - [Cookie](#P-CodeFirstWebFramework-WebServer-Session-Cookie 'CodeFirstWebFramework.WebServer.Session.Cookie')
   - [Object](#P-CodeFirstWebFramework-WebServer-Session-Object 'CodeFirstWebFramework.WebServer.Session.Object')
+  - [AddMessage()](#M-CodeFirstWebFramework-WebServer-Session-AddMessage-System-String- 'CodeFirstWebFramework.WebServer.Session.AddMessage(System.String)')
+  - [AddTextMessage()](#M-CodeFirstWebFramework-WebServer-Session-AddTextMessage-System-String- 'CodeFirstWebFramework.WebServer.Session.AddTextMessage(System.String)')
   - [Dispose()](#M-CodeFirstWebFramework-WebServer-Session-Dispose 'CodeFirstWebFramework.WebServer.Session.Dispose')
   - [FromStore()](#M-CodeFirstWebFramework-WebServer-Session-FromStore-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-AppModule,System-String- 'CodeFirstWebFramework.WebServer.Session.FromStore(CodeFirstWebFramework.WebServer,CodeFirstWebFramework.AppModule,System.String)')
+  - [TakeMessage()](#M-CodeFirstWebFramework-WebServer-Session-TakeMessage-System-String- 'CodeFirstWebFramework.WebServer.Session.TakeMessage(System.String)')
   - [ToStore()](#M-CodeFirstWebFramework-WebServer-Session-ToStore-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.WebServer.Session.ToStore(CodeFirstWebFramework.ServerConfig)')
 - [Settings](#T-CodeFirstWebFramework-Settings 'CodeFirstWebFramework.Settings')
   - [DbVersion](#F-CodeFirstWebFramework-Settings-DbVersion 'CodeFirstWebFramework.Settings.DbVersion')
@@ -653,11 +770,14 @@
   - [DropTable()](#M-CodeFirstWebFramework-SqlServerDatabase-DropTable-CodeFirstWebFramework-Table- 'CodeFirstWebFramework.SqlServerDatabase.DropTable(CodeFirstWebFramework.Table)')
   - [Execute()](#M-CodeFirstWebFramework-SqlServerDatabase-Execute-System-String- 'CodeFirstWebFramework.SqlServerDatabase.Execute(System.String)')
   - [FieldsMatch()](#M-CodeFirstWebFramework-SqlServerDatabase-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field- 'CodeFirstWebFramework.SqlServerDatabase.FieldsMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Field,CodeFirstWebFramework.Field)')
+  - [GroupConcat()](#M-CodeFirstWebFramework-SqlServerDatabase-GroupConcat-System-String,System-String- 'CodeFirstWebFramework.SqlServerDatabase.GroupConcat(System.String,System.String)')
   - [Insert(table,sql,updatesAutoIncrement)](#M-CodeFirstWebFramework-SqlServerDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean- 'CodeFirstWebFramework.SqlServerDatabase.Insert(CodeFirstWebFramework.Table,System.String,System.Boolean)')
   - [Query()](#M-CodeFirstWebFramework-SqlServerDatabase-Query-System-String- 'CodeFirstWebFramework.SqlServerDatabase.Query(System.String)')
   - [QueryOne()](#M-CodeFirstWebFramework-SqlServerDatabase-QueryOne-System-String- 'CodeFirstWebFramework.SqlServerDatabase.QueryOne(System.String)')
   - [Quote()](#M-CodeFirstWebFramework-SqlServerDatabase-Quote-System-Object- 'CodeFirstWebFramework.SqlServerDatabase.Quote(System.Object)')
+  - [QuoteName()](#M-CodeFirstWebFramework-SqlServerDatabase-QuoteName-System-String- 'CodeFirstWebFramework.SqlServerDatabase.QuoteName(System.String)')
   - [Rollback()](#M-CodeFirstWebFramework-SqlServerDatabase-Rollback 'CodeFirstWebFramework.SqlServerDatabase.Rollback')
+  - [TableNamesMatch()](#M-CodeFirstWebFramework-SqlServerDatabase-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table- 'CodeFirstWebFramework.SqlServerDatabase.TableNamesMatch(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table)')
   - [Tables()](#M-CodeFirstWebFramework-SqlServerDatabase-Tables 'CodeFirstWebFramework.SqlServerDatabase.Tables')
   - [UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex)](#M-CodeFirstWebFramework-SqlServerDatabase-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}- 'CodeFirstWebFramework.SqlServerDatabase.UpgradeTable(CodeFirstWebFramework.Table,CodeFirstWebFramework.Table,System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Field},System.Collections.Generic.List{CodeFirstWebFramework.Index},System.Collections.Generic.List{CodeFirstWebFramework.Index})')
   - [ViewsMatch()](#M-CodeFirstWebFramework-SqlServerDatabase-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View- 'CodeFirstWebFramework.SqlServerDatabase.ViewsMatch(CodeFirstWebFramework.View,CodeFirstWebFramework.View)')
@@ -698,9 +818,19 @@
   - [Login](#F-CodeFirstWebFramework-User-Login 'CodeFirstWebFramework.User.Login')
   - [ModulePermissions](#F-CodeFirstWebFramework-User-ModulePermissions 'CodeFirstWebFramework.User.ModulePermissions')
   - [Password](#F-CodeFirstWebFramework-User-Password 'CodeFirstWebFramework.User.Password')
+  - [PasswordLastChanged](#F-CodeFirstWebFramework-User-PasswordLastChanged 'CodeFirstWebFramework.User.PasswordLastChanged')
+  - [Salt](#F-CodeFirstWebFramework-User-Salt 'CodeFirstWebFramework.User.Salt')
   - [idUser](#F-CodeFirstWebFramework-User-idUser 'CodeFirstWebFramework.User.idUser')
-  - [HashPassword()](#M-CodeFirstWebFramework-User-HashPassword-System-String- 'CodeFirstWebFramework.User.HashPassword(System.String)')
+  - [OldHashingMethod](#P-CodeFirstWebFramework-User-OldHashingMethod 'CodeFirstWebFramework.User.OldHashingMethod')
+  - [AccessLevels()](#M-CodeFirstWebFramework-User-AccessLevels-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.User.AccessLevels(CodeFirstWebFramework.AppModule)')
+  - [GetAccessLevel()](#M-CodeFirstWebFramework-User-GetAccessLevel-CodeFirstWebFramework-AppModule,System-Int32[]- 'CodeFirstWebFramework.User.GetAccessLevel(CodeFirstWebFramework.AppModule,System.Int32[])')
+  - [GetSalt()](#M-CodeFirstWebFramework-User-GetSalt 'CodeFirstWebFramework.User.GetSalt')
+  - [GroupAccessLevel()](#M-CodeFirstWebFramework-User-GroupAccessLevel-CodeFirstWebFramework-Database,System-String[]- 'CodeFirstWebFramework.User.GroupAccessLevel(CodeFirstWebFramework.Database,System.String[])')
+  - [HashPassword(password,forceLatestAlgorithm)](#M-CodeFirstWebFramework-User-HashPassword-System-String,System-Boolean- 'CodeFirstWebFramework.User.HashPassword(System.String,System.Boolean)')
+  - [LegacyHashPassword()](#M-CodeFirstWebFramework-User-LegacyHashPassword-System-String- 'CodeFirstWebFramework.User.LegacyHashPassword(System.String)')
   - [PasswordValid()](#M-CodeFirstWebFramework-User-PasswordValid-System-String- 'CodeFirstWebFramework.User.PasswordValid(System.String)')
+  - [ReloadAccessLevels()](#M-CodeFirstWebFramework-User-ReloadAccessLevels-CodeFirstWebFramework-AppModule- 'CodeFirstWebFramework.User.ReloadAccessLevels(CodeFirstWebFramework.AppModule)')
+  - [UpdatePassword()](#M-CodeFirstWebFramework-User-UpdatePassword-System-String- 'CodeFirstWebFramework.User.UpdatePassword(System.String)')
 - [Utils](#T-CodeFirstWebFramework-Utils 'CodeFirstWebFramework.Utils')
   - [DecimalRegex](#F-CodeFirstWebFramework-Utils-DecimalRegex 'CodeFirstWebFramework.Utils.DecimalRegex')
   - [IntegerRegex](#F-CodeFirstWebFramework-Utils-IntegerRegex 'CodeFirstWebFramework.Utils.IntegerRegex')
@@ -724,8 +854,11 @@
   - [Capitalise()](#M-CodeFirstWebFramework-Utils-Capitalise-System-String- 'CodeFirstWebFramework.Utils.Capitalise(System.String)')
   - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Net-HttpStatusCode- 'CodeFirstWebFramework.Utils.Check(System.Boolean,System.String,System.Net.HttpStatusCode)')
   - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Boolean,System-String,System-Object[]- 'CodeFirstWebFramework.Utils.Check(System.Boolean,System.String,System.Object[])')
+  - [Check()](#M-CodeFirstWebFramework-Utils-Check-System-Int32,System-Boolean,System-String- 'CodeFirstWebFramework.Utils.Check(System.Int32,System.Boolean,System.String)')
   - [CopyFrom\`\`1()](#M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object- 'CodeFirstWebFramework.Utils.CopyFrom``1(``0,System.Object)')
   - [ExtractNumber()](#M-CodeFirstWebFramework-Utils-ExtractNumber-System-String- 'CodeFirstWebFramework.Utils.ExtractNumber(System.String)')
+  - [FindOrCreatePath(o,path)](#M-CodeFirstWebFramework-Utils-FindOrCreatePath-Newtonsoft-Json-Linq-JObject,System-String- 'CodeFirstWebFramework.Utils.FindOrCreatePath(Newtonsoft.Json.Linq.JObject,System.String)')
+  - [GetFieldsInOrder(self,bindingAttr)](#M-CodeFirstWebFramework-Utils-GetFieldsInOrder-System-Type,System-Reflection-BindingFlags- 'CodeFirstWebFramework.Utils.GetFieldsInOrder(System.Type,System.Reflection.BindingFlags)')
   - [IsAllNull()](#M-CodeFirstWebFramework-Utils-IsAllNull-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.Utils.IsAllNull(Newtonsoft.Json.Linq.JObject)')
   - [IsDecimal()](#M-CodeFirstWebFramework-Utils-IsDecimal-System-String- 'CodeFirstWebFramework.Utils.IsDecimal(System.String)')
   - [IsInteger()](#M-CodeFirstWebFramework-Utils-IsInteger-System-String- 'CodeFirstWebFramework.Utils.IsInteger(System.String)')
@@ -743,6 +876,7 @@
   - [UnCamel()](#M-CodeFirstWebFramework-Utils-UnCamel-System-Object- 'CodeFirstWebFramework.Utils.UnCamel(System.Object)')
   - [UnCamel()](#M-CodeFirstWebFramework-Utils-UnCamel-System-String- 'CodeFirstWebFramework.Utils.UnCamel(System.String)')
   - [UniqueId()](#M-CodeFirstWebFramework-Utils-UniqueId 'CodeFirstWebFramework.Utils.UniqueId')
+  - [UniqueId()](#M-CodeFirstWebFramework-Utils-UniqueId-System-Byte[]- 'CodeFirstWebFramework.Utils.UniqueId(System.Byte[])')
 - [View](#T-CodeFirstWebFramework-View 'CodeFirstWebFramework.View')
   - [#ctor(name,fields,indexes,sql,updateTable)](#M-CodeFirstWebFramework-View-#ctor-System-String,CodeFirstWebFramework-Field[],CodeFirstWebFramework-Index[],System-String,CodeFirstWebFramework-Table- 'CodeFirstWebFramework.View.#ctor(System.String,CodeFirstWebFramework.Field[],CodeFirstWebFramework.Index[],System.String,CodeFirstWebFramework.Table)')
   - [IsView](#P-CodeFirstWebFramework-View-IsView 'CodeFirstWebFramework.View.IsView')
@@ -759,7 +893,7 @@
   - [ProcessRequest(listenerContext)](#M-CodeFirstWebFramework-WebServer-ProcessRequest-System-Object- 'CodeFirstWebFramework.WebServer.ProcessRequest(System.Object)')
   - [Start()](#M-CodeFirstWebFramework-WebServer-Start 'CodeFirstWebFramework.WebServer.Start')
   - [Stop()](#M-CodeFirstWebFramework-WebServer-Stop 'CodeFirstWebFramework.WebServer.Stop')
-  - [registerServer(databases,server)](#M-CodeFirstWebFramework-WebServer-registerServer-System-Collections-Generic-HashSet{System-String},CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.WebServer.registerServer(System.Collections.Generic.HashSet{System.String},CodeFirstWebFramework.ServerConfig)')
+  - [registerServer(server)](#M-CodeFirstWebFramework-WebServer-registerServer-CodeFirstWebFramework-ServerConfig- 'CodeFirstWebFramework.WebServer.registerServer(CodeFirstWebFramework.ServerConfig)')
 - [WriteableAttribute](#T-CodeFirstWebFramework-WriteableAttribute 'CodeFirstWebFramework.WriteableAttribute')
 
 <a name='T-CodeFirstWebFramework-AccessLevel'></a>
@@ -827,6 +961,22 @@ NB Must always have 0, "None" as the first item.
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AccessLevel-addValues-System-Collections-Generic-Dictionary{System-Int32,Newtonsoft-Json-Linq-JObject},System-Type,System-Int32-'></a>
+### addValues(values,t,maxLevel) `method`
+
+##### Summary
+
+Add the possible values of AccessLevel to the dictionary, base classes first,
+so the derived values override the base ones
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| values | [System.Collections.Generic.Dictionary{System.Int32,Newtonsoft.Json.Linq.JObject}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.Dictionary 'System.Collections.Generic.Dictionary{System.Int32,Newtonsoft.Json.Linq.JObject}') | The dictionary |
+| t | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | The type to process |
+| maxLevel | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Ignore values above maxLevel |
 
 <a name='T-CodeFirstWebFramework-AdminHelper'></a>
 ## AdminHelper `type`
@@ -982,6 +1132,20 @@ Return the log file for a given date (today if date not supplied)
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-AdminHelper-LoadCache-System-String,System-Int64-'></a>
+### LoadCache(u,h) `method`
+
+##### Summary
+
+Retrieve a partially edited record from the CachedRecord table
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| u | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Url of the form edit screen |
+| h | [System.Int64](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int64 'System.Int64') | Hash of the original record |
+
 <a name='M-CodeFirstWebFramework-AdminHelper-Login'></a>
 ### Login() `method`
 
@@ -1041,6 +1205,21 @@ Restore the database
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AdminHelper-SaveCache-System-String,System-Int64,System-String-'></a>
+### SaveCache(u,h,json) `method`
+
+##### Summary
+
+Save a partially edited record in the CachedRecord table
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| u | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Url of the form edit screen |
+| h | [System.Int64](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int64 'System.Int64') | Hash of the original record |
+| json | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Json of the edited record |
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Users'></a>
 ### Users() `method`
@@ -1132,6 +1311,7 @@ Ask the user to confirm something, and resubmit with confirm parameter if the us
 ##### Summary
 
 Arbitrary data which the caller needs
+In Notification calls, this data replaces the existing data in the form or row
 
 <a name='F-CodeFirstWebFramework-AjaxReturn-error'></a>
 ### error `constants`
@@ -1161,6 +1341,15 @@ Message for user
 ##### Summary
 
 Where to redirect to on completion
+
+<a name='F-CodeFirstWebFramework-AjaxReturn-saved'></a>
+### saved `constants`
+
+##### Summary
+
+Indicate the record has been completely saved, so the user can exit the screen
+Resets the record modified flag
+if the complete record hasn't been saved
 
 <a name='M-CodeFirstWebFramework-AjaxReturn-ToString'></a>
 ### ToString() `method`
@@ -1333,6 +1522,13 @@ Used by Respond to decide which template file to use.
 The current module (from the url - lower case).
 Used by Respond to decide which template file to use.
 
+<a name='F-CodeFirstWebFramework-AppModule-Nonce'></a>
+### Nonce `constants`
+
+##### Summary
+
+Nonce generated for scripts if the Config.Nonce setting is on
+
 <a name='F-CodeFirstWebFramework-AppModule-OriginalMethod'></a>
 ### OriginalMethod `constants`
 
@@ -1466,6 +1662,13 @@ All Modules running batch jobs
 
 List of modules for templates (e.g. to auto-generate a module menu)
 
+<a name='P-CodeFirstWebFramework-AppModule-NonceAttribute'></a>
+### NonceAttribute `property`
+
+##### Summary
+
+Nonce attribute to add to inline scripts or styles - empty if nonces are off
+
 <a name='P-CodeFirstWebFramework-AppModule-ReadOnly'></a>
 ### ReadOnly `property`
 
@@ -1535,6 +1738,54 @@ Today's date (yyyy-MM-dd)
 ##### Summary
 
 Version suffix for including in url's to defeat long-term caching of (e.g.) javascript and css files
+
+<a name='M-CodeFirstWebFramework-AppModule-AllSessions-System-Func{CodeFirstWebFramework-WebServer-Session,System-Boolean}-'></a>
+### AllSessions(selector) `method`
+
+##### Summary
+
+All sessions using this database
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| selector | [System.Func{CodeFirstWebFramework.WebServer.Session,System.Boolean}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{CodeFirstWebFramework.WebServer.Session,System.Boolean}') | To select which ones to return (null for all) |
+
+<a name='M-CodeFirstWebFramework-AppModule-AllSessionsForUser-System-Int32-'></a>
+### AllSessionsForUser() `method`
+
+##### Summary
+
+All sessions with the given user logged on
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AppModule-AppendMenuOption-CodeFirstWebFramework-MenuOption-'></a>
+### AppendMenuOption() `method`
+
+##### Summary
+
+Add a menu option to the default Menu (checking security - no add if no access)
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AppModule-AppendMenuOptions-CodeFirstWebFramework-MenuOption[]-'></a>
+### AppendMenuOptions(opts) `method`
+
+##### Summary
+
+Add multiple menu options to the default Menu (checking security - no add if no access)
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| opts | [CodeFirstWebFramework.MenuOption[]](#T-CodeFirstWebFramework-MenuOption[] 'CodeFirstWebFramework.MenuOption[]') |  |
 
 <a name='M-CodeFirstWebFramework-AppModule-Call-System-Net-HttpListenerContext,System-String,System-String-'></a>
 ### Call() `method`
@@ -1684,6 +1935,17 @@ The current from= parameter, if present, otherwise defaultValue
 | ---- | ---- | ----------- |
 | defaultValue | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Optional, defaults to "/" |
 
+<a name='M-CodeFirstWebFramework-AppModule-GenerateNonce'></a>
+### GenerateNonce() `method`
+
+##### Summary
+
+Generate nonce if required
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-AppModule-GetBatchJob-System-Int32-'></a>
 ### GetBatchJob() `method`
 
@@ -1696,6 +1958,17 @@ Get batch job from id (for status/progress display)
 This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-AppModule-HasAccess-System-String-'></a>
+### HasAccess() `method`
+
+##### Summary
+
+Check the security for access to a url
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-AppModule-HasAccess-System-String,System-Int32@-'></a>
 ### HasAccess() `method`
 
 ##### Summary
@@ -1906,6 +2179,74 @@ it is converted to json representation. |
 | contentType | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The content type (suitable default is used if null) |
 | status | [System.Net.HttpStatusCode](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Net.HttpStatusCode 'System.Net.HttpStatusCode') | The Http return code |
 
+<a name='M-CodeFirstWebFramework-AppModule-saveListForm``2-System-String,System-Func{``1,``0},Newtonsoft-Json-Linq-JToken,System-Func{``1,``1,System-Boolean,System-Boolean}-'></a>
+### saveListForm\`\`2(sql,getKey,newValues,process) `method`
+
+##### Summary
+
+Helper function to process input to a ListForm. The easy way to do this is to delete all the old records, 
+and insert all the new ones. But this function can be more efficient and useful, as it matches the old and
+new records by a key of your choice, and allows you to update the old record rather than deleting and recreating.
+It also detects duplicate records (i.e. with the same key), so you can throw an error, or ignore them (your choice).
+
+Process all the items newValues (entered on the form)
+Match them to originalRecords using the Key returned by getKey
+Items with a null or empty key are ignored
+At the end, originalRecords not in the new list are deleted for you
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| sql | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | SQL to return original records |
+| getKey | [System.Func{\`\`1,\`\`0}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{``1,``0}') | Returns a key for matching new to old records |
+| newValues | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | JToken containing the array of new records from the edit |
+| process | [System.Func{\`\`1,\`\`1,System.Boolean,System.Boolean}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{``1,``1,System.Boolean,System.Boolean}') | This is called this on each item, passing the new record, 
+the original record (or null if this is a new record), and whether there is a previous new record with the same key. 
+This is also called on deletions, with newRecord == null.
+If it returns true, update the database with the new record |
+
+##### Generic Types
+
+| Name | Description |
+| ---- | ----------- |
+| K | Type of key |
+| T | Type of record |
+
+<a name='M-CodeFirstWebFramework-AppModule-saveListForm``2-System-Collections-Generic-IEnumerable{``1},System-Func{``1,``0},Newtonsoft-Json-Linq-JToken,System-Func{``1,``1,System-Boolean,System-Boolean}-'></a>
+### saveListForm\`\`2(originalRecords,getKey,newValues,process) `method`
+
+##### Summary
+
+Helper function to process input to a ListForm. The easy way to do this is to delete all the old records, 
+and insert all the new ones. But this function can be more efficient and useful, as it matches the old and
+new records by a key of your choice, and allows you to update the old record rather than deleting and recreating.
+It also detects duplicate records (i.e. with the same key), so you can throw an error, or ignore them (your choice).
+
+Process all the items newValues (entered on the form)
+Match them to originalRecords using the Key returned by getKey
+Items with a null or empty key are ignored
+At the end, originalRecords not in the new list are deleted for you
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| originalRecords | [System.Collections.Generic.IEnumerable{\`\`1}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{``1}') | Enumerable containing all the original records before editing |
+| getKey | [System.Func{\`\`1,\`\`0}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{``1,``0}') | Returns a key for matching new to old records |
+| newValues | [Newtonsoft.Json.Linq.JToken](#T-Newtonsoft-Json-Linq-JToken 'Newtonsoft.Json.Linq.JToken') | JToken containing the array of new records from the edit |
+| process | [System.Func{\`\`1,\`\`1,System.Boolean,System.Boolean}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{``1,``1,System.Boolean,System.Boolean}') | This is called this on each item, passing the new record, 
+the original record (or null if this is a new record), and whether there is a previous new record with the same key. 
+This is also called on deletions, with newRecord == null.
+If it returns true, update the database with the new record |
+
+##### Generic Types
+
+| Name | Description |
+| ---- | ----------- |
+| K | Type of key |
+| T | Type of record |
+
 <a name='T-CodeFirstWebFramework-AppModule-AsyncBatchJob'></a>
 ## AsyncBatchJob `type`
 
@@ -1988,6 +2329,13 @@ Constructor with specific access level.
 
 The AccessLevel required to see this module or method.
 
+<a name='F-CodeFirstWebFramework-AuthAttribute-Groups'></a>
+### Groups `constants`
+
+##### Summary
+
+Auth Groups
+
 <a name='F-CodeFirstWebFramework-AuthAttribute-Hide'></a>
 ### Hide `constants`
 
@@ -2001,6 +2349,37 @@ True if this AuthAttribute is not to appear on the list of module permissions
 ##### Summary
 
 Name to use (instead of module/method). AuthAttributes with the same name are grouped in the UI.
+
+<a name='T-CodeFirstWebFramework-AuthGroupAttribute'></a>
+## AuthGroupAttribute `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Attribute to use on AppModule or method to allow special access to methods in the group for a user
+
+<a name='M-CodeFirstWebFramework-AuthGroupAttribute-#ctor-System-String-'></a>
+### #ctor(name) `constructor`
+
+##### Summary
+
+Constructor with name.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Name of group |
+
+<a name='F-CodeFirstWebFramework-AuthGroupAttribute-Name'></a>
+### Name `constants`
+
+##### Summary
+
+Name to use. AuthAttributes with the same name are grouped in the UI.
 
 <a name='T-CodeFirstWebFramework-BaseForm'></a>
 ## BaseForm `type`
@@ -2038,12 +2417,34 @@ Module creating the form
 
 Form options passed to javascript.
 
+<a name='P-CodeFirstWebFramework-BaseForm-AutoSave'></a>
+### AutoSave `property`
+
+##### Summary
+
+Set to true to call MethodNameAutoSave(JObject json) when any field is changed by the user
+
+<a name='P-CodeFirstWebFramework-BaseForm-CacheChanges'></a>
+### CacheChanges `property`
+
+##### Summary
+
+Set to true to cache all changes when any field is changed by the user, and offer to restore them
+if they revisit the form with the same url and query string
+
 <a name='P-CodeFirstWebFramework-BaseForm-Data'></a>
 ### Data `property`
 
 ##### Summary
 
 Form data passed to javascript.
+
+<a name='P-CodeFirstWebFramework-BaseForm-SafeOptions'></a>
+### SafeOptions `property`
+
+##### Summary
+
+Options as safe json (for direct inclusion in javascript)
 
 <a name='M-CodeFirstWebFramework-BaseForm-Show'></a>
 ### Show() `method`
@@ -2144,6 +2545,13 @@ True if the batch job has finished
 
 Total number of records (for progress bar)
 
+<a name='F-CodeFirstWebFramework-AppModule-BatchJob-Redirect'></a>
+### Redirect `constants`
+
+##### Summary
+
+Where to redirect to at the end
+
 <a name='F-CodeFirstWebFramework-AppModule-BatchJob-Status'></a>
 ### Status `constants`
 
@@ -2157,13 +2565,6 @@ For status/progress display
 ##### Summary
 
 The running module
-
-<a name='F-CodeFirstWebFramework-AppModule-BatchJob-_redirect'></a>
-### _redirect `constants`
-
-##### Summary
-
-Where to redirect to at the end
 
 <a name='P-CodeFirstWebFramework-AppModule-BatchJob-Id'></a>
 ### Id `property`
@@ -2186,12 +2587,16 @@ For progress display
 
 To indicate progress (0...Records)
 
-<a name='P-CodeFirstWebFramework-AppModule-BatchJob-Redirect'></a>
-### Redirect `property`
+<a name='M-CodeFirstWebFramework-AppModule-BatchJob-RedirectWithMessage'></a>
+### RedirectWithMessage() `method`
 
 ##### Summary
 
-Where redirecting to on completion
+Where redirecting to on completion (with any Message added)
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-AppModule-BatchJob-BatchJobItem'></a>
 ## BatchJobItem `type`
@@ -2305,6 +2710,45 @@ Writes the JSON representation of the object.
 ##### Parameters
 
 This method has no parameters.
+
+<a name='T-CodeFirstWebFramework-CachedRecord'></a>
+## CachedRecord `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Table to store partially edited form data, so we can offer to restore it if they come back to the form
+
+<a name='F-CodeFirstWebFramework-CachedRecord-Json'></a>
+### Json `constants`
+
+##### Summary
+
+Json of the edited record
+
+<a name='F-CodeFirstWebFramework-CachedRecord-OriginalRecordHash'></a>
+### OriginalRecordHash `constants`
+
+##### Summary
+
+Hash of the original record
+
+<a name='F-CodeFirstWebFramework-CachedRecord-Url'></a>
+### Url `constants`
+
+##### Summary
+
+Url of the form edit screen, with transient variables like from, query, etc. removed
+
+<a name='F-CodeFirstWebFramework-CachedRecord-UserId'></a>
+### UserId `constants`
+
+##### Summary
+
+Id of user editing the record
 
 <a name='T-CodeFirstWebFramework-CheckException'></a>
 ## CheckException `type`
@@ -2498,6 +2942,16 @@ Logging configuration
 ##### Summary
 
 The default namespace
+
+<a name='F-CodeFirstWebFramework-Config-Nonce'></a>
+### Nonce `constants`
+
+##### Summary
+
+Set to true to generate a Nonce for each request.
+If set to true, the AppModule will have a different string in Nonce for every request,
+and the default template will use CSP to enforce nonces on script-src and style-src.
+If not set, or set to false, the Nonce string will be null.
 
 <a name='F-CodeFirstWebFramework-Config-PersistentSessions'></a>
 ### PersistentSessions `constants`
@@ -2958,6 +3412,17 @@ NB If called with T a base class of the class used to create the table, returns 
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-Database-GroupConcat-System-String,System-String-'></a>
+### GroupConcat() `method`
+
+##### Summary
+
+Return SQL to cast a value to a type
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-Database-In-System-Object[]-'></a>
 ### In() `method`
 
@@ -3062,7 +3527,8 @@ This method has no parameters.
 
 ##### Summary
 
-Code that must be run after the database is reconfigured - e.g. populating new fields
+Code that must be run after the database is reconfigured - e.g. populating new fields.
+MUST NOT alter the database structure.
 
 ##### Parameters
 
@@ -3075,7 +3541,8 @@ Code that must be run after the database is reconfigured - e.g. populating new f
 
 ##### Summary
 
-Code that must be run before the database is reconfigured - e.g. renaming old fields
+Code that must be run before the database is reconfigured - e.g. renaming old fields.
+May alter the database structure, if required.
 
 ##### Parameters
 
@@ -3202,6 +3669,17 @@ Joins are performed automatically on foreign keys. |
 ##### Summary
 
 Quote any kind of data for inclusion in a SQL query
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Database-QuoteName-System-String-'></a>
+### QuoteName() `method`
+
+##### Summary
+
+Quote a field or table name when creating SQL
 
 ##### Parameters
 
@@ -3595,6 +4073,17 @@ Do the fields in code and database match (some implementations are case insensit
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-DbInterface-GroupConcat-System-String,System-String-'></a>
+### GroupConcat() `method`
+
+##### Summary
+
+Return SQL to do a GROUP_CONCAT
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-DbInterface-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
 ### Insert() `method`
 
@@ -3617,12 +4106,34 @@ Quote any kind of data for inclusion in a SQL query
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-DbInterface-QuoteName-System-String-'></a>
+### QuoteName() `method`
+
+##### Summary
+
+Quote a field or table name when creating SQL
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-DbInterface-Rollback'></a>
 ### Rollback() `method`
 
 ##### Summary
 
 Rollback transaction
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-DbInterface-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table-'></a>
+### TableNamesMatch() `method`
+
+##### Summary
+
+Do the table names in code and database match (some implementations are case insensitive)
 
 ##### Parameters
 
@@ -4146,7 +4657,7 @@ Create a Field object from the Attributes on a C# class field
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Field-Quote-System-Object-'></a>
+<a name='M-CodeFirstWebFramework-Field-Quote-System-Object,System-Func{System-Object,System-String}-'></a>
 ### Quote() `method`
 
 ##### Summary
@@ -4231,6 +4742,13 @@ Pair of types, separated by , - first is read only, second is read-write
 
 Html attributes to add to field
 
+<a name='P-CodeFirstWebFramework-FieldAttribute-Class'></a>
+### Class `property`
+
+##### Summary
+
+Class name to apply to field row in plain Forms
+
 <a name='P-CodeFirstWebFramework-FieldAttribute-Colspan'></a>
 ### Colspan `property`
 
@@ -4259,6 +4777,13 @@ Name of field (allowing for default to Data)
 
 Heading/prompt for field (defaults to Data, un camel cased)
 
+<a name='P-CodeFirstWebFramework-FieldAttribute-Hint'></a>
+### Hint `property`
+
+##### Summary
+
+Popup hint text (text only)
+
 <a name='P-CodeFirstWebFramework-FieldAttribute-MaxLength'></a>
 ### MaxLength `property`
 
@@ -4272,6 +4797,34 @@ Number of characters to allow in input
 ##### Summary
 
 Name of field - should be unique within a form. Defaults to same as Data.
+
+<a name='P-CodeFirstWebFramework-FieldAttribute-Notify'></a>
+### Notify `property`
+
+##### Summary
+
+Set to true to call MethodNameNotify(string fieldName, JObject json) when the field is changed by the user
+
+<a name='P-CodeFirstWebFramework-FieldAttribute-Page'></a>
+### Page `property`
+
+##### Summary
+
+Page number
+
+<a name='P-CodeFirstWebFramework-FieldAttribute-Postamble'></a>
+### Postamble `property`
+
+##### Summary
+
+Postamble appears immediately after field, in the same cell
+
+<a name='P-CodeFirstWebFramework-FieldAttribute-Preamble'></a>
+### Preamble `property`
+
+##### Summary
+
+Preamble appears above field in plain Forms (may have html)
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-SameRow'></a>
 ### SameRow `property`
@@ -4323,8 +4876,8 @@ Create a FieldAttribute for the given property in a class.
 | field | [System.Reflection.PropertyInfo](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Reflection.PropertyInfo 'System.Reflection.PropertyInfo') | Property definition |
 | readwrite | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if the user can edit the field |
 
-<a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-CodeFirstWebFramework-JObjectEnumerable-'></a>
-### MakeSelectable() `method`
+<a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject},System-String,System-Int32-'></a>
+### MakeSelectable(values,defaultLabel,defaultValue) `method`
 
 ##### Summary
 
@@ -4332,21 +4885,14 @@ Turn a field into a select or selectInput
 
 ##### Parameters
 
-This method has no parameters.
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| values | [System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.IEnumerable 'System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JObject}') | IEnumerable JObject containing id and value to make the select options |
+| defaultLabel | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Label to use if there is to be an option for "none of the above" (null if there isn't to be such an option) |
+| defaultValue | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Value to use for for "none of the above" |
 
-<a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Collections-Generic-IEnumerable{Newtonsoft-Json-Linq-JObject}-'></a>
-### MakeSelectable() `method`
-
-##### Summary
-
-Turn a field into a select or selectInput
-
-##### Parameters
-
-This method has no parameters.
-
-<a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Type-'></a>
-### MakeSelectable() `method`
+<a name='M-CodeFirstWebFramework-FieldAttribute-MakeSelectable-System-Type,System-String,System-Int32-'></a>
+### MakeSelectable(enumType,defaultLabel,defaultValue) `method`
 
 ##### Summary
 
@@ -4354,7 +4900,11 @@ Turn a field into a select or selectInput
 
 ##### Parameters
 
-This method has no parameters.
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| enumType | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Enum type for field |
+| defaultLabel | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Label to use if there is to be an option for "none of the above" (null if there isn't to be such an option) |
+| defaultValue | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Value to use for for "none of the above" |
 
 <a name='M-CodeFirstWebFramework-FieldAttribute-SelectValues-System-Type-'></a>
 ### SelectValues() `method`
@@ -4586,8 +5136,8 @@ CodeFirstWebFramework
 
 Attribute marking a field as a foreign key
 
-<a name='M-CodeFirstWebFramework-ForeignKeyAttribute-#ctor-System-String-'></a>
-### #ctor(table) `constructor`
+<a name='M-CodeFirstWebFramework-ForeignKeyAttribute-#ctor-System-String,System-String-'></a>
+### #ctor(table,fieldName) `constructor`
 
 ##### Summary
 
@@ -4598,6 +5148,28 @@ Constructor
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | table | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The foreign table |
+| fieldName | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The name of the field to use as the text value in select options, or NoAutoSelect |
+
+<a name='F-CodeFirstWebFramework-ForeignKeyAttribute-AutoSelect'></a>
+### AutoSelect `constants`
+
+##### Summary
+
+Whether ForeignKey fields automatically create an AutoSelect on the first key if no FieldName field is specified
+
+<a name='F-CodeFirstWebFramework-ForeignKeyAttribute-NoAutoSelect'></a>
+### NoAutoSelect `constants`
+
+##### Summary
+
+Set Fieldname to this to turn off AutoSelect
+
+<a name='P-CodeFirstWebFramework-ForeignKeyAttribute-FieldName'></a>
+### FieldName `property`
+
+##### Summary
+
+The name of the field to use as the text value in select options
 
 <a name='P-CodeFirstWebFramework-ForeignKeyAttribute-Table'></a>
 ### Table `property`
@@ -4709,6 +5281,20 @@ Find a field by name
 | ---- | ---- | ----------- |
 | name | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
 
+<a name='P-CodeFirstWebFramework-Form-MultiPageOptions'></a>
+### MultiPageOptions `property`
+
+##### Summary
+
+Find or create the "multipage" options JObject
+
+<a name='P-CodeFirstWebFramework-Form-Pages'></a>
+### Pages `property`
+
+##### Summary
+
+List of page titles for multi-page forms. If not set, the form will be single page.
+
 <a name='M-CodeFirstWebFramework-Form-Add-System-Reflection-FieldInfo-'></a>
 ### Add() `method`
 
@@ -4742,6 +5328,17 @@ Add a field to the form
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-Form-Add-System-Type-'></a>
+### Add() `method`
+
+##### Summary
+
+Add all the fields from a type
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-Form-Add-System-Type,System-String-'></a>
 ### Add() `method`
 
@@ -4759,6 +5356,17 @@ This method has no parameters.
 ##### Summary
 
 Add all the suitable fields from a C# type to the form
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Form-Check-System-String,System-Boolean,System-String-'></a>
+### Check() `method`
+
+##### Summary
+
+Check a condition is true on a field. Throw a FormException with the field page number if not.
 
 ##### Parameters
 
@@ -4830,6 +5438,17 @@ Decide whether a field should be included - e.g. autoincrement and non-visible f
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-Form-SetPages-System-String[]-'></a>
+### SetPages() `method`
+
+##### Summary
+
+Helper function to set list of page titles for multi-page forms
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-Form-Show'></a>
 ### Show() `method`
 
@@ -4854,6 +5473,108 @@ Process all the fields from a type (do any base classes first)
 | ---- | ---- | ----------- |
 | tbl | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type being analysed |
 | inTable | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if this is a base class of a Table or Writeable object |
+
+<a name='T-CodeFirstWebFramework-FormChecker'></a>
+## FormChecker `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Class to check form fields
+
+<a name='M-CodeFirstWebFramework-FormChecker-#ctor-System-Type,System-Int32-'></a>
+### #ctor(type,page) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| type | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Table JsonObject being checked |
+| page | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Page number to use if he whole form is one 1 page (so we don't need to check the fields) |
+
+<a name='M-CodeFirstWebFramework-FormChecker-Check``1-``0,System-Func{``0,System-Boolean},System-Func{System-String},System-String-'></a>
+### Check\`\`1(value,validate,error,expression) `method`
+
+##### Summary
+
+Check a condition is true on a field. Throw a FormException with the field page number if not.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| value | [\`\`0](#T-``0 '``0') | The member item to check |
+| validate | [System.Func{\`\`0,System.Boolean}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{``0,System.Boolean}') | A validation fnction to call, passing the value |
+| error | [System.Func{System.String}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{System.String}') | A method to call which returns the error message |
+| expression | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Filled in automatically by the compiler |
+
+<a name='M-CodeFirstWebFramework-FormChecker-Check``1-``0,System-Func{``0,System-Boolean},System-String,System-String-'></a>
+### Check\`\`1(value,validate,error,expression) `method`
+
+##### Summary
+
+Check a condition is true on a field. Throw a FormException with the field page number if not.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| value | [\`\`0](#T-``0 '``0') | The member item to check |
+| validate | [System.Func{\`\`0,System.Boolean}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Func 'System.Func{``0,System.Boolean}') | A validation fnction to call, passing the value |
+| error | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The error message string |
+| expression | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Filled in automatically by the compiler |
+
+<a name='M-CodeFirstWebFramework-FormChecker-Check``1-``0,System-Boolean,System-String,System-String-'></a>
+### Check\`\`1(value,condition,error,expression) `method`
+
+##### Summary
+
+Check a condition is true on a field. Throw a FormException with the field page number if not.
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| value | [\`\`0](#T-``0 '``0') | The member item to check |
+| condition | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | Whether the item is valis |
+| error | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The error message string |
+| expression | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Filled in automatically by the compiler |
+
+<a name='T-CodeFirstWebFramework-FormException'></a>
+## FormException `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Exception thrown by Form.Check assertion function
+
+<a name='M-CodeFirstWebFramework-FormException-#ctor-System-String,System-Int32-'></a>
+### #ctor() `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+This constructor has no parameters.
+
+<a name='P-CodeFirstWebFramework-FormException-Page'></a>
+### Page `property`
+
+##### Summary
+
+Field page number (0 for none)
 
 <a name='T-CodeFirstWebFramework-HandlesAttribute'></a>
 ## HandlesAttribute `type`
@@ -5315,7 +6036,7 @@ For debugging
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-Index-Where-Newtonsoft-Json-Linq-JObject-'></a>
+<a name='M-CodeFirstWebFramework-Index-Where-Newtonsoft-Json-Linq-JObject,System-Func{System-Object,System-String},System-Func{System-String,System-String}-'></a>
 ### Where() `method`
 
 ##### Summary
@@ -5619,6 +6340,13 @@ Constructor for C# type t with specific fields in specific order
 
 This constructor has no parameters.
 
+<a name='P-CodeFirstWebFramework-ListForm-Page'></a>
+### Page `property`
+
+##### Summary
+
+Page to display this form on, if multi-page
+
 <a name='P-CodeFirstWebFramework-ListForm-Select'></a>
 ### Select `property`
 
@@ -5897,6 +6625,82 @@ Is the option disabled (used in Mustache templates)
 
 Html element id - text with no spaces
 
+<a name='T-CodeFirstWebFramework-WebServer-MessageInfo'></a>
+## MessageInfo `type`
+
+##### Namespace
+
+CodeFirstWebFramework.WebServer
+
+##### Summary
+
+Message text/html for displaying in a new screen.
+This is stored in the Session, so people can't hack the text.
+
+<a name='M-CodeFirstWebFramework-WebServer-MessageInfo-#ctor-System-String-'></a>
+### #ctor() `constructor`
+
+##### Summary
+
+Create a new message
+
+##### Parameters
+
+This constructor has no parameters.
+
+<a name='F-CodeFirstWebFramework-WebServer-MessageInfo-Date'></a>
+### Date `constants`
+
+##### Summary
+
+Day number since 1/1/2000 the message was created
+
+<a name='F-CodeFirstWebFramework-WebServer-MessageInfo-Lock'></a>
+### Lock `constants`
+
+##### Summary
+
+Object to prevent two threads updating NextSequence at the same time
+
+<a name='F-CodeFirstWebFramework-WebServer-MessageInfo-NextSequence'></a>
+### NextSequence `constants`
+
+##### Summary
+
+Next sequence number today
+
+<a name='F-CodeFirstWebFramework-WebServer-MessageInfo-Sequence'></a>
+### Sequence `constants`
+
+##### Summary
+
+Sequence number of this message (resets to 1 at midnight)
+
+<a name='F-CodeFirstWebFramework-WebServer-MessageInfo-Text'></a>
+### Text `constants`
+
+##### Summary
+
+The text of the message
+
+<a name='P-CodeFirstWebFramework-WebServer-MessageInfo-Handle'></a>
+### Handle `property`
+
+##### Summary
+
+Unique id of this message
+
+<a name='M-CodeFirstWebFramework-WebServer-MessageInfo-Days-System-DateTime-'></a>
+### Days() `method`
+
+##### Summary
+
+Convert a DateTime into days since Base
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='T-CodeFirstWebFramework-ModuleInfo'></a>
 ## ModuleInfo `type`
 
@@ -5908,7 +6712,7 @@ CodeFirstWebFramework
 
 Class to hold a module name, for use in templates
 
-<a name='M-CodeFirstWebFramework-ModuleInfo-#ctor-System-String,System-Type-'></a>
+<a name='M-CodeFirstWebFramework-ModuleInfo-#ctor-System-String,System-Type,CodeFirstWebFramework-Namespace-'></a>
 ### #ctor() `constructor`
 
 ##### Summary
@@ -5954,14 +6758,19 @@ Name of module
 
 AppModule type
 
-<a name='P-CodeFirstWebFramework-ModuleInfo-LowestAccessLevel'></a>
-### LowestAccessLevel `property`
+<a name='F-CodeFirstWebFramework-ModuleInfo-_lowestAccessLevel'></a>
+### _lowestAccessLevel `constants`
 
 ##### Summary
 
-Lowest Access level for any method.
-Returns AccessLevel.Any if all methods have that level (or there are none),
-otherwise the lowest level > Any
+Lowest Access level for any method (for determining whether module should be displayed in the menu for a user).
+
+<a name='F-CodeFirstWebFramework-ModuleInfo-_lowestAccessLevels'></a>
+### _lowestAccessLevels `constants`
+
+##### Summary
+
+Lowest access levels for each group (for determining whether module should be displayed in the menu for a user)
 
 <a name='P-CodeFirstWebFramework-ModuleInfo-UnCamelName'></a>
 ### UnCamelName `property`
@@ -5969,6 +6778,50 @@ otherwise the lowest level > Any
 ##### Summary
 
 Uncamelled name for display
+
+<a name='M-CodeFirstWebFramework-ModuleInfo-GetLowestAccessLevel'></a>
+### GetLowestAccessLevel() `method`
+
+##### Summary
+
+Compute the LowestAccessLevel for users without groups
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-ModuleInfo-GetLowestAccessLevels'></a>
+### GetLowestAccessLevels() `method`
+
+##### Summary
+
+Compute the lowest access levels for each group
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-ModuleInfo-LowestAccessLevelForGroup-System-Int32-'></a>
+### LowestAccessLevelForGroup() `method`
+
+##### Summary
+
+Lowest access level for group g
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-ModuleInfo-UserHasAccess-CodeFirstWebFramework-AppModule-'></a>
+### UserHasAccess() `method`
+
+##### Summary
+
+Whether user can access at least one method in this module
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-ModuleInfo-addMethods-System-Type-'></a>
 ### addMethods(t) `method`
@@ -5982,6 +6835,364 @@ Look for Auth attributes on all the methods of a type, and add them to the dicti
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | t | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') |  |
+
+<a name='T-CodeFirstWebFramework-MultiDetailForm'></a>
+## MultiDetailForm `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Header + multi detail form
+
+<a name='M-CodeFirstWebFramework-MultiDetailForm-#ctor-CodeFirstWebFramework-AppModule,System-Type,System-Type[]-'></a>
+### #ctor(module,header,details) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | Owning module |
+| header | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | C# type in the header |
+| details | [System.Type[]](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type[] 'System.Type[]') | C# type in the detail |
+
+<a name='M-CodeFirstWebFramework-MultiDetailForm-#ctor-CodeFirstWebFramework-AppModule,CodeFirstWebFramework-Form,CodeFirstWebFramework-ListForm[]-'></a>
+### #ctor(module,header,details) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| module | [CodeFirstWebFramework.AppModule](#T-CodeFirstWebFramework-AppModule 'CodeFirstWebFramework.AppModule') | Owning module |
+| header | [CodeFirstWebFramework.Form](#T-CodeFirstWebFramework-Form 'CodeFirstWebFramework.Form') | Header form |
+| details | [CodeFirstWebFramework.ListForm[]](#T-CodeFirstWebFramework-ListForm[] 'CodeFirstWebFramework.ListForm[]') | Detail form |
+
+<a name='F-CodeFirstWebFramework-MultiDetailForm-Details'></a>
+### Details `constants`
+
+##### Summary
+
+The Detail ListForm
+
+<a name='F-CodeFirstWebFramework-MultiDetailForm-Header'></a>
+### Header `constants`
+
+##### Summary
+
+The header Form
+
+<a name='P-CodeFirstWebFramework-MultiDetailForm-CanDelete'></a>
+### CanDelete `property`
+
+##### Summary
+
+Whether the user can delete record.
+
+<a name='M-CodeFirstWebFramework-MultiDetailForm-Show'></a>
+### Show() `method`
+
+##### Summary
+
+Render the form to a web page using the appropriate template
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='T-CodeFirstWebFramework-MySqlConnector'></a>
+## MySqlConnector `type`
+
+##### Namespace
+
+CodeFirstWebFramework
+
+##### Summary
+
+Interface to MySql
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-#ctor-CodeFirstWebFramework-Database,System-String-'></a>
+### #ctor(db,connectionString) `constructor`
+
+##### Summary
+
+Constructor
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| db | [CodeFirstWebFramework.Database](#T-CodeFirstWebFramework-Database 'CodeFirstWebFramework.Database') |  |
+| connectionString | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') |  |
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-BeginTransaction'></a>
+### BeginTransaction() `method`
+
+##### Summary
+
+Begin transaction
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Cast-System-String,System-String-'></a>
+### Cast() `method`
+
+##### Summary
+
+Return SQL to cast a value to a type
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-CleanDatabase'></a>
+### CleanDatabase() `method`
+
+##### Summary
+
+Clean up database
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Commit'></a>
+### Commit() `method`
+
+##### Summary
+
+Commit transaction
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-CreateIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
+### CreateIndex() `method`
+
+##### Summary
+
+Create an index from a table and index definition
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-CreateTable-CodeFirstWebFramework-Table-'></a>
+### CreateTable() `method`
+
+##### Summary
+
+Create a table from a Table definition
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Dispose'></a>
+### Dispose() `method`
+
+##### Summary
+
+Roll back any uncommitted transaction and close the connection
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-DropIndex-CodeFirstWebFramework-Table,CodeFirstWebFramework-Index-'></a>
+### DropIndex() `method`
+
+##### Summary
+
+Drop an index
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-DropTable-CodeFirstWebFramework-Table-'></a>
+### DropTable() `method`
+
+##### Summary
+
+Drop a table
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Execute-System-String-'></a>
+### Execute() `method`
+
+##### Summary
+
+Execute arbitrary sql
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-FieldsMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Field,CodeFirstWebFramework-Field-'></a>
+### FieldsMatch() `method`
+
+##### Summary
+
+Determine whether two fields are the same
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-GroupConcat-System-String,System-String-'></a>
+### GroupConcat() `method`
+
+##### Summary
+
+Return SQL to cast a value to a type
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
+### Insert(table,sql,updatesAutoIncrement) `method`
+
+##### Summary
+
+Insert a record
+
+##### Returns
+
+The value of the auto-increment record id of the newly inserted record
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| table | [CodeFirstWebFramework.Table](#T-CodeFirstWebFramework-Table 'CodeFirstWebFramework.Table') | Table |
+| sql | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | SQL INSERT statement |
+| updatesAutoIncrement | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True if the insert may update an auto-increment field |
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Query-System-String-'></a>
+### Query() `method`
+
+##### Summary
+
+Query the database, and return JObjects for each record returned
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-QueryOne-System-String-'></a>
+### QueryOne() `method`
+
+##### Summary
+
+Query the database, and return the first record matching the query
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Quote-System-Object-'></a>
+### Quote() `method`
+
+##### Summary
+
+Quote any kind of data for inclusion in a SQL query
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-QuoteName-System-String-'></a>
+### QuoteName() `method`
+
+##### Summary
+
+Quote a field or table name when creating SQL
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Rollback'></a>
+### Rollback() `method`
+
+##### Summary
+
+Rollback transaction
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table-'></a>
+### TableNamesMatch() `method`
+
+##### Summary
+
+Do the table names in code and database match (some implementations are case insensitive)
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-Tables'></a>
+### Tables() `method`
+
+##### Summary
+
+Get a Dictionary of existing tables in the database
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-UpgradeTable-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table,System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Field},System-Collections-Generic-List{CodeFirstWebFramework-Index},System-Collections-Generic-List{CodeFirstWebFramework-Index}-'></a>
+### UpgradeTable(code,database,insert,update,remove,insertFK,dropFK,insertIndex,dropIndex) `method`
+
+##### Summary
+
+Upgrade the table definition
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| code | [CodeFirstWebFramework.Table](#T-CodeFirstWebFramework-Table 'CodeFirstWebFramework.Table') | Defintiion required, from code |
+| database | [CodeFirstWebFramework.Table](#T-CodeFirstWebFramework-Table 'CodeFirstWebFramework.Table') | Definition in database |
+| insert | [System.Collections.Generic.List{CodeFirstWebFramework.Field}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Field}') | Fields to insert |
+| update | [System.Collections.Generic.List{CodeFirstWebFramework.Field}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Field}') | Fields to change |
+| remove | [System.Collections.Generic.List{CodeFirstWebFramework.Field}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Field}') | Fields to remove |
+| insertFK | [System.Collections.Generic.List{CodeFirstWebFramework.Field}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Field}') | Foreign keys to insert |
+| dropFK | [System.Collections.Generic.List{CodeFirstWebFramework.Field}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Field}') | Foreign keys to remove |
+| insertIndex | [System.Collections.Generic.List{CodeFirstWebFramework.Index}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Index}') | Indexes to insert |
+| dropIndex | [System.Collections.Generic.List{CodeFirstWebFramework.Index}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.List 'System.Collections.Generic.List{CodeFirstWebFramework.Index}') | Indexes to remove |
+
+<a name='M-CodeFirstWebFramework-MySqlConnector-ViewsMatch-CodeFirstWebFramework-View,CodeFirstWebFramework-View-'></a>
+### ViewsMatch() `method`
+
+##### Summary
+
+Determine whether two views are the same
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='T-CodeFirstWebFramework-MySqlDatabase'></a>
 ## MySqlDatabase `type`
@@ -6129,6 +7340,17 @@ Determine whether two fields are the same
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-MySqlDatabase-GroupConcat-System-String,System-String-'></a>
+### GroupConcat() `method`
+
+##### Summary
+
+Return SQL to cast a value to a type
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
 ### Insert(table,sql,updatesAutoIncrement) `method`
 
@@ -6181,12 +7403,34 @@ Quote any kind of data for inclusion in a SQL query
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-MySqlDatabase-QuoteName-System-String-'></a>
+### QuoteName() `method`
+
+##### Summary
+
+Quote a field or table name when creating SQL
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-MySqlDatabase-Rollback'></a>
 ### Rollback() `method`
 
 ##### Summary
 
 Rollback transaction
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-MySqlDatabase-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table-'></a>
+### TableNamesMatch() `method`
+
+##### Summary
+
+Do the table names in code and database match (some implementations are case insensitive)
 
 ##### Parameters
 
@@ -6257,6 +7501,13 @@ Constructor - uses reflection to get the information
 
 This constructor has no parameters.
 
+<a name='F-CodeFirstWebFramework-Namespace-AuthGroups'></a>
+### AuthGroups `constants`
+
+##### Summary
+
+The dictionary of group names
+
 <a name='F-CodeFirstWebFramework-Namespace-FileSystem'></a>
 ### FileSystem `constants`
 
@@ -6299,6 +7550,13 @@ List of module names for templates (e.g. to auto-generate a module menu)
 
 Namespace name
 
+<a name='P-CodeFirstWebFramework-Namespace-OldAuth'></a>
+### OldAuth `property`
+
+##### Summary
+
+Backward compatible authorisation grouups by module and method
+
 <a name='P-CodeFirstWebFramework-Namespace-TableNames'></a>
 ### TableNames `property`
 
@@ -6319,6 +7577,51 @@ Dictionary of tables defined in this namespace
 ##### Summary
 
 List of the view names
+
+<a name='M-CodeFirstWebFramework-Namespace-AddAuthGroup-System-String-'></a>
+### AddAuthGroup() `method`
+
+##### Summary
+
+Add the given AuthGroup
+
+##### Returns
+
+HashSet containing the added group number
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Namespace-AddAuthGroups-System-Collections-Generic-IEnumerable{CodeFirstWebFramework-AuthGroupAttribute}-'></a>
+### AddAuthGroups() `method`
+
+##### Summary
+
+Add the AuthGroups from the list
+
+##### Returns
+
+HashSet of added group numbers
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Namespace-AddAuthGroups-System-Collections-Generic-IEnumerable{System-String}-'></a>
+### AddAuthGroups() `method`
+
+##### Summary
+
+Add the AuthGroups from the list
+
+##### Returns
+
+HashSet of added group numbers
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-Namespace-Create-CodeFirstWebFramework-ServerConfig-'></a>
 ### Create(server) `method`
@@ -6757,6 +8060,17 @@ Do the fields in code and database match (some implementations are case insensit
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-SQLiteDatabase-GroupConcat-System-String,System-String-'></a>
+### GroupConcat() `method`
+
+##### Summary
+
+Return SQL to cast a value to a type
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
 ### Insert(table,sql,updatesAutoIncrement) `method`
 
@@ -6809,12 +8123,34 @@ Quote any kind of data for inclusion in a SQL query
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-SQLiteDatabase-QuoteName-System-String-'></a>
+### QuoteName() `method`
+
+##### Summary
+
+Quote a field or table name when creating SQL
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-SQLiteDatabase-Rollback'></a>
 ### Rollback() `method`
 
 ##### Summary
 
 Rollback transaction
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-SQLiteDatabase-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table-'></a>
+### TableNamesMatch() `method`
+
+##### Summary
+
+Do the table names in code and database match (some implementations are case insensitive)
 
 ##### Parameters
 
@@ -6858,6 +8194,17 @@ Upgrade the table definition
 ##### Summary
 
 Do the views in code and database match
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-SQLiteDatabase-dropAllViews'></a>
+### dropAllViews() `method`
+
+##### Summary
+
+Get a Dictionary of existing tables in the database
 
 ##### Parameters
 
@@ -6924,6 +8271,13 @@ Cookie timeout in minutes
 
 Database type
 
+<a name='F-CodeFirstWebFramework-ServerConfig-DatabaseId'></a>
+### DatabaseId `constants`
+
+##### Summary
+
+Unique database id
+
 <a name='F-CodeFirstWebFramework-ServerConfig-Email'></a>
 ### Email `constants`
 
@@ -6944,6 +8298,16 @@ Namespace in which to look for AppModules
 ##### Summary
 
 Details of the namespace
+
+<a name='F-CodeFirstWebFramework-ServerConfig-Nonce'></a>
+### Nonce `constants`
+
+##### Summary
+
+Set to true to generate a Nonce for each request.
+If set to true, the AppModule will have a different string in Nonce for every request,
+and the default template will use CSP to enforce nonces on script-src and style-src.
+If not set, or set to false, the Nonce string will be null.
 
 <a name='F-CodeFirstWebFramework-ServerConfig-PersistentSessions'></a>
 ### PersistentSessions `constants`
@@ -7002,8 +8366,8 @@ CodeFirstWebFramework.WebServer
 
 Simple session
 
-<a name='M-CodeFirstWebFramework-WebServer-Session-#ctor-CodeFirstWebFramework-WebServer-'></a>
-### #ctor(server) `constructor`
+<a name='M-CodeFirstWebFramework-WebServer-Session-#ctor-CodeFirstWebFramework-WebServer,CodeFirstWebFramework-ServerConfig-'></a>
+### #ctor() `constructor`
 
 ##### Summary
 
@@ -7011,9 +8375,7 @@ Constructor
 
 ##### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| server | [CodeFirstWebFramework.WebServer](#T-CodeFirstWebFramework-WebServer 'CodeFirstWebFramework.WebServer') |  |
+This constructor has no parameters.
 
 <a name='M-CodeFirstWebFramework-WebServer-Session-#ctor'></a>
 ### #ctor() `constructor`
@@ -7061,6 +8423,13 @@ Logged in user (or null if none)
 
 The session cookie
 
+<a name='P-CodeFirstWebFramework-WebServer-Session-Config'></a>
+### Config `property`
+
+##### Summary
+
+The Database id
+
 <a name='P-CodeFirstWebFramework-WebServer-Session-Cookie'></a>
 ### Cookie `property`
 
@@ -7074,6 +8443,36 @@ The session cookie
 ##### Summary
 
 Arbitrary JObject stored in session for later access
+
+<a name='M-CodeFirstWebFramework-WebServer-Session-AddMessage-System-String-'></a>
+### AddMessage() `method`
+
+##### Summary
+
+Add a message to the message list
+
+##### Returns
+
+Handle of the added message
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-WebServer-Session-AddTextMessage-System-String-'></a>
+### AddTextMessage() `method`
+
+##### Summary
+
+Add a message to the message list (encoding to avoid any html, but keeping newlines as )
+
+##### Returns
+
+Handle of the added message
+
+##### Parameters
+
+This method has no parameters.
 
 <a name='M-CodeFirstWebFramework-WebServer-Session-Dispose'></a>
 ### Dispose() `method`
@@ -7092,6 +8491,21 @@ This method has no parameters.
 ##### Summary
 
 Create session from store
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-WebServer-Session-TakeMessage-System-String-'></a>
+### TakeMessage() `method`
+
+##### Summary
+
+Get the text of a message from the list for this session (and remove it)
+
+##### Returns
+
+Message text, or null if no such message
 
 ##### Parameters
 
@@ -7297,6 +8711,17 @@ Determine whether two fields are the same
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-SqlServerDatabase-GroupConcat-System-String,System-String-'></a>
+### GroupConcat() `method`
+
+##### Summary
+
+Return SQL to cast a value to a type
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Insert-CodeFirstWebFramework-Table,System-String,System-Boolean-'></a>
 ### Insert(table,sql,updatesAutoIncrement) `method`
 
@@ -7349,12 +8774,34 @@ Quote any kind of data for inclusion in a SQL query
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-SqlServerDatabase-QuoteName-System-String-'></a>
+### QuoteName() `method`
+
+##### Summary
+
+Quote a field or table name when creating SQL
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-SqlServerDatabase-Rollback'></a>
 ### Rollback() `method`
 
 ##### Summary
 
 Rollback transaction
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-SqlServerDatabase-TableNamesMatch-CodeFirstWebFramework-Table,CodeFirstWebFramework-Table-'></a>
+### TableNamesMatch() `method`
+
+##### Summary
+
+Do the table names in code and database match (some implementations are case insensitive)
 
 ##### Parameters
 
@@ -7770,6 +9217,21 @@ True if user has different permissions for different modules/methods.
 
 Password.
 
+<a name='F-CodeFirstWebFramework-User-PasswordLastChanged'></a>
+### PasswordLastChanged `constants`
+
+##### Summary
+
+Date and time the password was last changed, or 1/1/2000 if not changed after this field was created
+
+<a name='F-CodeFirstWebFramework-User-Salt'></a>
+### Salt `constants`
+
+##### Summary
+
+Random salt to add to password before hashing. 
+First character is $ in this version (may change if new hashing algorithm used)
+
 <a name='F-CodeFirstWebFramework-User-idUser'></a>
 ### idUser `constants`
 
@@ -7777,8 +9239,73 @@ Password.
 
 Unique id.
 
-<a name='M-CodeFirstWebFramework-User-HashPassword-System-String-'></a>
-### HashPassword() `method`
+<a name='P-CodeFirstWebFramework-User-OldHashingMethod'></a>
+### OldHashingMethod `property`
+
+##### Summary
+
+Determines if the password is stored using an obsolete hashing method, and needs to be updated
+
+<a name='M-CodeFirstWebFramework-User-AccessLevels-CodeFirstWebFramework-AppModule-'></a>
+### AccessLevels() `method`
+
+##### Summary
+
+List of AccessLevels, 1 per AuthGroup, or null if ModulePermissions is not on
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-User-GetAccessLevel-CodeFirstWebFramework-AppModule,System-Int32[]-'></a>
+### GetAccessLevel() `method`
+
+##### Summary
+
+Get max access level for groups list
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-User-GetSalt'></a>
+### GetSalt() `method`
+
+##### Summary
+
+Return the salt byte array
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-User-GroupAccessLevel-CodeFirstWebFramework-Database,System-String[]-'></a>
+### GroupAccessLevel() `method`
+
+##### Summary
+
+Return the maximum access level for this user in any of the AuthGroups provided
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-User-HashPassword-System-String,System-Boolean-'></a>
+### HashPassword(password,forceLatestAlgorithm) `method`
+
+##### Summary
+
+Hash a password using SHA and Base64
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| password | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | The password to hash into Password |
+| forceLatestAlgorithm | [System.Boolean](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean 'System.Boolean') | True to always use the latest hashing method |
+
+<a name='M-CodeFirstWebFramework-User-LegacyHashPassword-System-String-'></a>
+### LegacyHashPassword() `method`
 
 ##### Summary
 
@@ -7798,6 +9325,30 @@ Check supplied password is valid
 ##### Returns
 
 null if valid, or error message explaining why if not
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-User-ReloadAccessLevels-CodeFirstWebFramework-AppModule-'></a>
+### ReloadAccessLevels() `method`
+
+##### Summary
+
+Reload AccessLevels from ModulePermissions
+
+##### Parameters
+
+This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-User-UpdatePassword-System-String-'></a>
+### UpdatePassword() `method`
+
+##### Summary
+
+Update the stored Hashed password (using the latest hashing algortihm
+Also update the password age.
+It will be necessary to save the record to the database aftereards
 
 ##### Parameters
 
@@ -8033,6 +9584,17 @@ Assert condition is true, throw a CheckException if not.
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-Utils-Check-System-Int32,System-Boolean,System-String-'></a>
+### Check() `method`
+
+##### Summary
+
+Check a condition is true. Throw a FormException with the field page number if not.
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='M-CodeFirstWebFramework-Utils-CopyFrom``1-``0,System-Object-'></a>
 ### CopyFrom\`\`1() `method`
 
@@ -8054,6 +9616,38 @@ If s is a positive integer, return it, otherwise 0
 ##### Parameters
 
 This method has no parameters.
+
+<a name='M-CodeFirstWebFramework-Utils-FindOrCreatePath-Newtonsoft-Json-Linq-JObject,System-String-'></a>
+### FindOrCreatePath(o,path) `method`
+
+##### Summary
+
+Make sure the given path exists in he JObject, and return is as a JObject
+
+##### Returns
+
+The found or created JObject
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| o | [Newtonsoft.Json.Linq.JObject](#T-Newtonsoft-Json-Linq-JObject 'Newtonsoft.Json.Linq.JObject') | Original object |
+| path | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | with dots between parts |
+
+<a name='M-CodeFirstWebFramework-Utils-GetFieldsInOrder-System-Type,System-Reflection-BindingFlags-'></a>
+### GetFieldsInOrder(self,bindingAttr) `method`
+
+##### Summary
+
+Attempt to make GetFields return the fields in the right order
+
+##### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| self | [System.Type](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Type 'System.Type') | Type to get the fields for |
+| bindingAttr | [System.Reflection.BindingFlags](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Reflection.BindingFlags 'System.Reflection.BindingFlags') | Binding flags to pass to GetFields |
 
 <a name='M-CodeFirstWebFramework-Utils-IsAllNull-Newtonsoft-Json-Linq-JObject-'></a>
 ### IsAllNull() `method`
@@ -8245,6 +9839,18 @@ Based on what Mattermost does to create unique record ids.
 
 This method has no parameters.
 
+<a name='M-CodeFirstWebFramework-Utils-UniqueId-System-Byte[]-'></a>
+### UniqueId() `method`
+
+##### Summary
+
+Static method to generate a unique id based on an array of bytes.
+Based on what Mattermost does to create unique record ids.
+
+##### Parameters
+
+This method has no parameters.
+
 <a name='T-CodeFirstWebFramework-View'></a>
 ## View `type`
 
@@ -8406,8 +10012,8 @@ Stop the server
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-WebServer-registerServer-System-Collections-Generic-HashSet{System-String},CodeFirstWebFramework-ServerConfig-'></a>
-### registerServer(databases,server) `method`
+<a name='M-CodeFirstWebFramework-WebServer-registerServer-CodeFirstWebFramework-ServerConfig-'></a>
+### registerServer(server) `method`
 
 ##### Summary
 
@@ -8417,7 +10023,6 @@ Add namespace to modules list, and upgrade database, if not done already.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| databases | [System.Collections.Generic.HashSet{System.String}](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Collections.Generic.HashSet 'System.Collections.Generic.HashSet{System.String}') | HashSet of databases already upgraded |
 | server | [CodeFirstWebFramework.ServerConfig](#T-CodeFirstWebFramework-ServerConfig 'CodeFirstWebFramework.ServerConfig') | ServerConfig to register |
 
 <a name='T-CodeFirstWebFramework-WriteableAttribute'></a>

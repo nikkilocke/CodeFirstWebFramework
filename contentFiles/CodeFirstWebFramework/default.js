@@ -295,7 +295,7 @@ $(function () {
 	setTimeout(function () {
 		// Once initial form creation is done:
 		//  add a Back button if there isn't one
-		if (/[^\/]\//.test(window.location.pathname) && $('button#Back').length == 0)
+		if (/[^\/]\//.test(window.location.pathname) && $('button.back').length == 0)
 			addBackButton();
 		setFocusToFirstInputField();
 	}, 100);
@@ -374,7 +374,7 @@ function jumpButton(text, url) {
 function actionButton(text, type) {
 	var id = text.replace(/ /g, '');
 	if (!type)
-		type = id;
+		type = id.toLowerCase();
 	var btn = $('<button></button>')
 		.attr('id', id)
 		.addClass(type)
@@ -2176,7 +2176,7 @@ function makeDataTable(selector, options) {
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function () {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 		var col = table.fields[$(this).attr('data-col')];
 		if (col) {
 			var row = table.row(this);
@@ -2194,7 +2194,7 @@ function makeDataTable(selector, options) {
 				if ($(selector).triggerHandler('changed.field', [val, data, col, this]) != false) {
 					data[col.data] = val;
 				}
-				colHandleInput(col, data, table, function (d) {
+				colHandleInput(col, data, table.owningForm, function (d) {
 					if (!d.error && d.data)
 						row.data(d.data).draw(false);
 				});
@@ -2244,6 +2244,7 @@ function makeDataTable(selector, options) {
 	table.rowData = function (r) {
 		return table.row(r).data();
 	};
+	var drawn;
 	/**
 	 * When data has arrived, update the table
 	 * @param data
@@ -2252,9 +2253,14 @@ function makeDataTable(selector, options) {
 		table.api().clear();
 		table.api().rows.add(data);
 		table.api().draw();
+		if (!drawn) {
+			drawn = true;
+			checkForCachedData(table);
+		}
 	};
 	table.fields = columns;
 	table.settings = options;
+	table.owningForm = table;
 	DataTable = table.api();
 	Forms.push(table);
 	return table;
@@ -2280,8 +2286,9 @@ function makeDataTable(selector, options) {
  * @param {boolean} [options.apply} Include Apply button (default false)
  * @param {string} [options.applyText} Text to use for Apply button (default "Apply")
  * @param {boolean} [options.saveAndNew} Include Save and New button (default false)
- * @param {Array} [options.pages} List of page titles for multi-page forms
- * @param {boolean} [options.saveOnAllPages} Always enable the save button on multi-oage forms (if false, disables it except for the last page)
+ * @param {Array} [options.multipage.pages} List of page titles for multi-page forms
+ * @param {boolean} [options.multipage.saveOnAllPages} Always enable the save button on multi-oage forms (if false, disables it except for the last page)
+ * @param {boolean} [options.multipage.cancel} Leave the back button on all pages, but call it Cancel
  * @param {*} [options.data] Existing data to display
  * @param {Array} options.columns
  * @param {function} [options.validate] Callback to validate data
@@ -2296,6 +2303,20 @@ function makeForm(selector, options) {
 	if (submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
+	function isMultiPage() {
+		return options.multipage && options.multipage.pages && options.multipage.pages.length;
+	}
+	function validate() {
+		if (!validateForm(result, 0, result.data))
+			return false;
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
+
 	if (typeof (submitUrl) == 'string') {
 		// Turn url into a function that validates and posts
 		var submitHref = submitUrl;
@@ -2306,27 +2327,11 @@ function makeForm(selector, options) {
 		submitUrl = function (button, callback) {
 			if (typeof (callback) != 'function')
 				callback = null;
-			var hdg = null;
-			try {
-				// Check each input value is valid
-				_.each(options.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						col.inputValue(col.cell.find('#r0c' + col.name), result.data);
-					}
-				});
-			} catch (e) {
-				message(hdg + ':' + e);
+			if (!validate())
 				return;
-			}
-			if (options.validate) {
-				var msg = options.validate();
-				message(msg);
-				if (msg) return;
-			}
 			postJson(submitHref, result.data, function (d) {
 				// Success
-				$('button#Back').text('Back');
+				$('button.back').text('Back');
 				if (callback && callback(d, true))
 					return;
 				if (result.submitCallback && result.submitCallback(d))
@@ -2344,7 +2349,7 @@ function makeForm(selector, options) {
 					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
-				if (options.pages && options.pages.length && d.error && d.id)
+				if (isMultiPage() && d.error && d.id)
 					showPage(d.id, d.error);
 			});
 		};
@@ -2420,7 +2425,7 @@ function makeForm(selector, options) {
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function (/** this: jElement */) {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 		var col = result.fields[$(this).attr('data-col')];
 		if (col) {
 			var val;
@@ -2462,34 +2467,35 @@ function makeForm(selector, options) {
 					});
 				}
 			}
-			colHandleInput(col, result.data, result, function (d) {
+			colHandleInput(col, result.data, result.owningForm, function (d) {
 				if (!d.error && d.data)
 					dataReady(d.data);
 			});
 		}
 	});
-	var prevButton;
 	var nextButton;
 	var page;
 	var pages;
-	var origTitle = $('div#title').text();
 	function showPage(p, msg) {
-		if (options.pages && options.pages.length) {
-			if (p != page)
+		if (isMultiPage()) {
+			if (p != page) {
 				message(msg);
+				$('button.back').text('Cancel');
+				$('div.form-tabs span.tab[data-page=' + page + ']').removeClass('selected');
+			}
 			$('button[data-page=' + page + ']').prop('disabled', false);
-			page = p;
+			page = parseInt(p);
 			for (var i = 1; i <= pages; i++) {
 				if (i != page)
 					$('.page' + i).hide();
 			}
 			$('.page' + page).show();
-			$('div#title').text(origTitle + ' - ' + options.pages[page - 1] + ' - step ' + page + ' of ' + pages);
-			prevButton.prop('disabled', page == 1);
 			nextButton.prop('disabled', page == pages);
-			if (!options.saveOnAllPages)
+			if (!options.multipage.saveOnAllPages)
 				$('button.save').prop('disabled', page != pages);
-			$('button[data-page=' + page + ']').prop('disabled', true);
+			if (!options.multipage.cancel)
+				$('button.back').hide();
+			$('div.form-tabs span.tab[data-page=' + page + ']').addClass('selected');
 			history.replaceState({ "id": 0 }, "", urlParameter('page', page));
 		}
 	}
@@ -2508,8 +2514,8 @@ function makeForm(selector, options) {
 		addJQueryUiControls();
 		if (options.readonly)
 			result.find('input:not(.searchbox),select,textarea,button.ui-multiselect').attr('disabled', true);
-		if (options.pages && options.pages.length) {
-			pages = options.pages.length;
+		if (isMultiPage()) {
+			pages = options.multipage.pages.length;
 			page = getParameter('page');
 			page = page ? parseInt(page) : 1;
 			if (page < 1 || page > pages)
@@ -2527,25 +2533,36 @@ function makeForm(selector, options) {
 		result.data = d;
 		if (deleteButton && !d[idName])
 			deleteButton.remove();
-		if (!drawn && options.pages && options.pages.length) {
-			var pages = options.pages.length;
-			nextButton = insertActionButton('Next').click(function (e) {
-				showPage(page + 1);
-			});
-			for (var i = pages; i > 0; i--) {
-				insertActionButton(i + '-' + options.pages[i - 1]).attr('id', 'p' + i).attr('data-page', i).click(function (e) {
-					showPage(parseInt($(this).attr('data-page')));
-				});
+		if (!drawn && isMultiPage()) {
+			var pages = options.multipage.pages.length;
+			var header = $('<div class="form-tabs" />').insertBefore($('div.form-body'));
+			for (var i = 0; i < pages; i++) {
+				var tab = $('<span/>')
+					.addClass('tab')
+					.text((i + 1) + '. ' + options.multipage.pages[i])
+					.attr('data-page', i + 1)
+					.click(function () { showPage($(this).attr('data-page')); })
+					;
+				tab.appendTo(header)
+				if (i == page - 1)
+					tab.addClass('selected');
 			}
-			prevButton = insertActionButton('Previous').click(function (e) {
-				showPage(page - 1);
-			});
+			nextButton = $('<button/>')
+				.addClass('nextpage')
+				.text('Next page')
+				.click(function (e) {
+					showPage(page + 1);
+				});
+				nextButton.appendTo(header);
+			if (!options.multipage.saveOnAllPages)
+				nextButton.attr('title', 'You can save the form when you reach the last page');
 		}
 		draw();
 		// Only do this bit once
 		if (drawn)
 			return;
 		drawn = true;
+		checkForCachedData(result);
 		if (submitUrl) {
 			if (options.dialog) {
 				// Wrap form in a dialog, called by Edit button
@@ -2616,7 +2633,7 @@ function makeForm(selector, options) {
 				}
 			}
 		}
-		if (!drawn && options.pages && options.pages.length && !options.saveOnAllPages)
+		if (!drawn && isMultiPage() && !options.multipage.saveOnAllPages)
 			$('button.save').prop('disabled', page != pages);
 		if (deleteUrl && !options.readonly) {
 			deleteButton = actionButton(options.deleteText || 'Delete', 'delete')
@@ -2634,6 +2651,8 @@ function makeForm(selector, options) {
 	result.submit = submitUrl;
 	result.submitCallback = options.submitCallback;
 	result.showPage = showPage;
+	result.validate = validate;
+	result.owningForm = result;
 	result.updateSelectOptions = function (col, selectOptions) {
 		col.selectOptions = selectOptions;
 		col.cell.html(col.draw(result.data[col.data], 0, result.data));
@@ -2661,42 +2680,23 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	if (submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
+	function validate() {
+		if (!result.header.validate() || !result.detail.validate())
+			return false;
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
 	if (typeof (submitUrl) == 'string') {
 		var submitHref = submitUrl;
 		submitUrl = function (button, callback) {
 			if (typeof (callback) != 'function')
 				callback = null;
-			var hdg = null;
-			try {
-				// Validate everything
-				_.each(options.header.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						col.inputValue(result.header.find('#r0c' + col.name), result.header.data);
-					}
-				});
-				_.each(options.detail.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						_.each(result.detail.data, function (row, index) {
-							col.inputValue(result.detail.find('#r' + index + 'c' + col.name), row);
-						});
-					}
-				});
-			} catch (e) {
-				message(hdg + ':' + e);
+			if (!validate())
 				return;
-			}
-			if (options.header.validate) {
-				var msg = options.header.validate();
-				message(msg);
-				if (msg) return;
-			}
-			if (options.validate) {
-				msg = options.validate();
-				message(msg);
-				if (msg) return;
-			}
 			postJson(submitHref, {
 				header: result.header.data,
 				detail: result.detail.data
@@ -2718,7 +2718,7 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 					return;
 				if (result.submitCallback)
 					result.submitCallback(d);
-				if (options.header.pages && options.header.pages.length && d.error && d.id)
+				if (options.header.multipage && options.header.multipage.pages && options.header.multipage.pages.length && d.error && d.id)
 					result.header.showPage(d.id, d.error);
 			});
 		};
@@ -2743,26 +2743,149 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 			}
 		}
 	}
+	var drawn;
 	function dataReady(d) {
 		result.data = d;
 		if (d.header)
 			result.header.dataReady(d.header);
 		if (d.detail)
 			result.detail.dataReady(d.detail);
+		if (!drawn) {
+			drawn = true;
+			checkForCachedData(result);
+		}
 	}
 	var result = {
 		header: makeForm(headerSelector, options.header),
 		detail: makeListForm(detailSelector, options.detail),
 		data: options.data,
+		settings: options,
 		dataReady: dataReady,
 		submit: submitUrl,
-		submitCallback: options.submitCallback
+		submitCallback: options.submitCallback,
+		validate: validate
 	};
+	result.owningForm = result.header.owningForm = result.detail.owningForm = result;
 	result.detail.header = result.header;
 	nextPreviousButtons(result.data);
 	result.detail.bind('changed.field', function () {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 	});
+	if (options.data)
+		dataReady(options.data);
+	return result;
+}
+
+/**
+ * Make a header and multiple details form
+ * @param headerSelector
+ * @param detailSelector
+ * @param options - has header and an array of detail objects for the form
+ */
+function makeMultiDetailForm(headerSelector, detailSelector, options) {
+	var submitUrl = options.submit;
+	var tableName = options.header.table;
+	if (submitUrl === undefined) {
+		submitUrl = defaultUrl('Save');
+	}
+	function validate() {
+		if (!result.header.validate())
+			return false;
+		for (var i = 0; i < result.detail.length; i++) {
+			if (!result.detail[i].validate())
+				return false;
+		}
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
+	if (typeof (submitUrl) == 'string') {
+		var submitHref = submitUrl;
+		submitUrl = function (button) {
+			if (!validate())
+				return;
+			postJson(submitHref, {
+				header: result.header.data,
+				detail: result.detail.map(function (d) { return d.data; })
+			}, function (d) {
+				// Success
+				$('button.back').text('Back');
+				if (result.submitCallback && result.submitCallback(d))
+					return;
+				if ($(button).hasClass('goback'))
+					goback();
+				else if ($(button).hasClass('new'))
+					window.location = urlParameter('id', 0);
+				else if (tableName && d.id)
+					window.location = urlParameter('id', d.id);
+			}, function (d) {
+				// Failure
+				if (result.submitCallback)
+					result.submitCallback(d);
+				if (options.header.multipage && options.header.multipage.pages && options.header.multipage.pages.length && d.error && d.id)
+					result.header.showPage(d.id, d.error);
+			});
+		};
+	}
+	if (options.header.submit === undefined)
+		options.header.submit = submitUrl;
+	if (options.header.readonly === undefined)
+		options.header.readonly = options.readonly;
+	options.header.ajax = null;
+	_.each(options.detail, function (opts) {
+		opts.submit = null;
+		opts.ajax = null;
+		if (opts.readonly === undefined)
+			opts.readonly = options.header.readonly;
+	});
+	var drawn;
+	function dataReady(d) {
+		result.data = d;
+		if (d.header)
+			result.header.dataReady(d.header);
+		if (d.detail)
+			for (var i = 0; i < options.detail.length; i++)
+				result.detail[i].dataReady(d.detail[i]);
+		if (!drawn) {
+			drawn = true;
+			checkForCachedData(result);
+		}
+	}
+	var result = {
+		header: makeForm(headerSelector, options.header),
+		detail: [],
+		data: options.data,
+		settings: options,
+		dataReady: dataReady,
+		submit: submitUrl,
+		submitCallback: options.submitCallback,
+		validate: validate
+	};
+	result.owningForm = result.header.owningForm = result;
+	var ds = $(detailSelector);
+	var after = ds;
+	var id = ds.prop('id') || 'detail';
+	_.each(options.detail, function (opts) {
+		var newid = id + result.detail.length;
+		var clone = $('#' + newid);
+		if (!clone.length) {
+			clone = ds.clone().prop('id', newid);
+			after.after(clone);
+		}
+		after = clone;
+		var f = makeListForm('#' + newid, opts);
+		f.header = result.header;
+		f.bind('changed.field', function () {
+			$('button.back').text('Cancel');
+		});
+		f.owningForm = result;
+		result.detail.push(f);
+	});
+	ds.hide();
+	nextPreviousButtons(result.data);
 	if (options.data)
 		dataReady(options.data);
 	return result;
@@ -2787,31 +2910,25 @@ function makeListForm(selector, options) {
 	if (selectUrl === undefined && submitUrl === undefined) {
 		submitUrl = defaultUrl('Save');
 	}
+	function validate() {
+		for (var row = 0; row < table.data.length; row++)
+			if (!validateForm(table, row, table.data[row]))
+				return false;
+		if (options.validate) {
+			var msg = options.validate();
+			message(msg);
+			if (msg) return false;
+		}
+		return true;
+	}
 	if (selectUrl === undefined && typeof (submitUrl) == 'string') {
 		var submitHref = submitUrl;
 		//noinspection JSUnusedAssignment,JSUnusedLocalSymbols
 		submitUrl = function (button, callback) {
 			if (typeof (callback) != 'function')
 				callback = null;
-			try {
-				var hdg;
-				_.each(options.columns, function (col) {
-					if (col.inputValue) {
-						hdg = col.heading;
-						_.each(table.data, function (row, index) {
-							col.inputValue(table.find('#r' + index + 'c' + col.name), row);
-						});
-					}
-				});
-			} catch (e) {
-				message(e);
+			if (!validate())
 				return;
-			}
-			if (options.validate) {
-				var msg = options.validate();
-				message(msg);
-				if (msg) return;
-			}
 			postJson(submitHref, table.data, function (d) {
 				// Success
 				if (callback && callback(d, true))
@@ -2963,7 +3080,7 @@ function makeListForm(selector, options) {
 					cell = cell.next('td');
 				});
 			}
-			colHandleInput(col, table.data[rowIndex], table, function (d) {
+			colHandleInput(col, table.data[rowIndex], table.owningForm, function (d) {
 				if (!d.error && d.data) {
 					table.data[rowIndex] = d.data;
 					drawRow(rowIndex);
@@ -3020,7 +3137,7 @@ function makeListForm(selector, options) {
 						callback = options.deleteRows.call(thisrow, table.data[index]);
 					if (callback != false) {
 						unsavedInput = true;
-						$('button#Back').text('Cancel');
+						$('button.back').text('Cancel');
 						thisrow.remove();
 						table.data.splice(index, 1);
 						if (typeof (callback) == 'function')
@@ -3083,7 +3200,7 @@ function makeListForm(selector, options) {
 						var r = parseInt($(this).attr('data-row'));
 						if (index != r) {
 							unsavedInput = true;
-							$('button#Back').text('Cancel');
+							$('button.back').text('Cancel');
 						}
 						data.push(table.data[r]);
 					});
@@ -3106,9 +3223,10 @@ function makeListForm(selector, options) {
 		}
 		body.find('tr').remove();
 		draw();
-		if (!drawn && submitUrl) {
+		if (!drawn) {
 			drawn = true;
-			if (!options.readonly) {
+			checkForCachedData(table);
+			if (submitUrl && !options.readonly) {
 				actionButton(options.submitText || 'Save', 'save')
 					.addClass('goback')
 					.click(function (e) {
@@ -3147,6 +3265,7 @@ function makeListForm(selector, options) {
 	table.refresh = refresh;
 	table.submit = submitUrl;
 	table.submitCallback = options.submitCallback;
+	table.validate = validate;
 	/**
 	 * Return the row index of item r
 	 * @param r
@@ -3281,7 +3400,7 @@ function makeDumbForm(selector, options) {
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function (/** this: jElement */) {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 		var col = result.fields[$(this).attr('data-col')];
 		if (col) {
 			var val;
@@ -3323,7 +3442,7 @@ function makeDumbForm(selector, options) {
 					});
 				}
 			}
-			colHandleInput(col, result.data, result, function (d) {
+			colHandleInput(col, result.data, result.owningForm, function (d) {
 				if (!d.error && d.data)
 					dataReady(d.data);
 			});
@@ -3358,6 +3477,7 @@ function makeDumbForm(selector, options) {
 		if (drawn)
 			return;
 		drawn = true;
+		checkForCachedData(result);
 		if (submitUrl) {
 			// Add Buttons
 			if (!options.readonly) {
@@ -3388,6 +3508,7 @@ function makeDumbForm(selector, options) {
 	result.draw = draw;
 	result.submit = submitUrl;
 	result.submitCallback = options.submitCallback;
+	result.owningForm = result;
 	Forms.push(result);
 	if (options.data)
 		dataReady(options.data);
@@ -3395,6 +3516,71 @@ function makeDumbForm(selector, options) {
 		get(options.ajax.url, null, dataReady);
 	}
 	return result;
+}
+
+/**
+ * Validate all the fields in a data row
+ * @param {*} form Form
+ * @param {int} row Row no (0 for main form)
+ * @param {*} data Data for the row
+ */
+function validateForm(form, row, data) {
+	try {
+		var hdg = null;
+		// Check each input value is valid
+		_.each(form.settings.columns, function (col) {
+			if (col.inputValue) {
+				hdg = col.heading;
+				col.inputValue(form.find('#r' + row + 'c' + col.name), data);
+			}
+		});
+	} catch (e) {
+		message(hdg + ':' + e);
+		return false;
+	}
+	if (form.settings.validate) {
+		var msg = form.settings.validate();
+		message(msg);
+		if (msg) return false;
+	}
+	return true;
+}
+
+function checkForCachedData(form) {
+	if (!form.settings.cacheChanges)
+		return;
+	form.settings.originalRecordHash = murmurhash2_32_gc(JSON.stringify(form.data));
+	var ajax = {
+		url: '/admin/loadcache',
+		type: 'post',
+		data: {
+			u: window.location.href,
+			h: form.settings.originalRecordHash
+		},
+		timeout: 10000,
+		xhrFields: {
+			withCredentials: true
+		}
+	};
+	$.ajax(ajax)
+		.done(
+			/**
+			 * @param {string} [result.error] Error message
+			 * @param {string} [result.message] Info message
+			 * @param {*} [result.data] Previously cached data
+			 */
+			function (result) {
+				if (result.error) {
+					message(result.error);
+				} else if (result.message) {
+					message(result.message);
+				}
+				if (result.data) {
+					// There is cached data - offer to restore it
+					if (confirm("You abandoned an edit of this form previously - would you like to resume where you left off?"))
+						form.dataReady(result.data);
+				}
+			});
 }
 
 /**
@@ -3753,7 +3939,7 @@ function colRender(data, type, row, meta) {
 }
 
 /**
- * Do notify and/or autosave callbacks
+ * Do notify and/or cacheChanges/autosave callbacks
  * @param {any} col
  * @param {any} rowData
  * @param {any} form
@@ -3765,9 +3951,25 @@ function colHandleInput(col, rowData, form, callback) {
 			if (callback)
 				callback(d);
 		});
+	if (form.settings.cacheChanges) {
+		var ajax = {
+			url: '/admin/savecache',
+			type: 'post',
+			data: {
+				u: window.location.href,
+				h: form.settings.originalRecordHash,
+				json: JSON.stringify(form.data)
+			},
+			timeout: 10000,
+			xhrFields: {
+				withCredentials: true
+			}
+		};
+		$.ajax(ajax);
+	}
 	if (form.settings.autosave) {
-		postJson(defaultUrl('autosave'), form.data, function(d) {
-			if(callback)
+		postJson(defaultUrl('autosave'), form.data, function (d) {
+			if (callback)
 				callback(d);
 		});
 	}

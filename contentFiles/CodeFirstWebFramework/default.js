@@ -295,7 +295,7 @@ $(function () {
 	setTimeout(function () {
 		// Once initial form creation is done:
 		//  add a Back button if there isn't one
-		if (/[^\/]\//.test(window.location.pathname) && $('button#Back').length == 0)
+		if (/[^\/]\//.test(window.location.pathname) && $('button.back').length == 0)
 			addBackButton();
 		setFocusToFirstInputField();
 	}, 100);
@@ -374,7 +374,7 @@ function jumpButton(text, url) {
 function actionButton(text, type) {
 	var id = text.replace(/ /g, '');
 	if (!type)
-		type = id;
+		type = id.toLowerCase();
 	var btn = $('<button></button>')
 		.attr('id', id)
 		.addClass(type)
@@ -2176,7 +2176,7 @@ function makeDataTable(selector, options) {
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function () {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 		var col = table.fields[$(this).attr('data-col')];
 		if (col) {
 			var row = table.row(this);
@@ -2307,7 +2307,7 @@ function makeForm(selector, options) {
 		return options.multipage && options.multipage.pages && options.multipage.pages.length;
 	}
 	function validate() {
-		if (!validateForm(options, 0, data))
+		if (!validateForm(result, 0, result.data))
 			return false;
 		if (options.validate) {
 			var msg = options.validate();
@@ -2331,7 +2331,7 @@ function makeForm(selector, options) {
 				return;
 			postJson(submitHref, result.data, function (d) {
 				// Success
-				$('button#Back').text('Back');
+				$('button.back').text('Back');
 				if (callback && callback(d, true))
 					return;
 				if (result.submitCallback && result.submitCallback(d))
@@ -2425,7 +2425,7 @@ function makeForm(selector, options) {
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function (/** this: jElement */) {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 		var col = result.fields[$(this).attr('data-col')];
 		if (col) {
 			var val;
@@ -2473,32 +2473,29 @@ function makeForm(selector, options) {
 			});
 		}
 	});
-	var prevButton;
 	var nextButton;
 	var page;
 	var pages;
-	var origTitle = $('div#title').text();
 	function showPage(p, msg) {
 		if (isMultiPage()) {
 			if (p != page) {
 				message(msg);
-				$('button#Back').text('Cancel');
+				$('button.back').text('Cancel');
+				$('div.form-tabs span.tab[data-page=' + page + ']').removeClass('selected');
 			}
 			$('button[data-page=' + page + ']').prop('disabled', false);
-			page = p;
+			page = parseInt(p);
 			for (var i = 1; i <= pages; i++) {
 				if (i != page)
 					$('.page' + i).hide();
 			}
 			$('.page' + page).show();
-			$('div#title').text(origTitle + ' - ' + options.multipage.pages[page - 1] + ' - step ' + page + ' of ' + pages);
-			prevButton.prop('disabled', page == 1);
 			nextButton.prop('disabled', page == pages);
 			if (!options.multipage.saveOnAllPages)
 				$('button.save').prop('disabled', page != pages);
 			if (!options.multipage.cancel)
-				$('button#Back').hide();
-			$('button[data-page=' + page + ']').prop('disabled', true);
+				$('button.back').hide();
+			$('div.form-tabs span.tab[data-page=' + page + ']').addClass('selected');
 			history.replaceState({ "id": 0 }, "", urlParameter('page', page));
 		}
 	}
@@ -2538,17 +2535,27 @@ function makeForm(selector, options) {
 			deleteButton.remove();
 		if (!drawn && isMultiPage()) {
 			var pages = options.multipage.pages.length;
-			nextButton = insertActionButton('Next').click(function (e) {
-				showPage(page + 1);
-			});
-			for (var i = pages; i > 0; i--) {
-				insertActionButton(i + '-' + options.multipage.pages[i - 1]).attr('id', 'p' + i).attr('data-page', i).click(function (e) {
-					showPage(parseInt($(this).attr('data-page')));
-				});
+			var header = $('<div class="form-tabs" />').insertBefore($('div.form-body'));
+			for (var i = 0; i < pages; i++) {
+				var tab = $('<span/>')
+					.addClass('tab')
+					.text((i + 1) + '. ' + options.multipage.pages[i])
+					.attr('data-page', i + 1)
+					.click(function () { showPage($(this).attr('data-page')); })
+					;
+				tab.appendTo(header)
+				if (i == page - 1)
+					tab.addClass('selected');
 			}
-			prevButton = insertActionButton('Previous').click(function (e) {
-				showPage(page - 1);
-			});
+			nextButton = $('<button/>')
+				.addClass('nextpage')
+				.text('Next page')
+				.click(function (e) {
+					showPage(page + 1);
+				});
+				nextButton.appendTo(header);
+			if (!options.multipage.saveOnAllPages)
+				nextButton.attr('title', 'You can save the form when you reach the last page');
 		}
 		draw();
 		// Only do this bit once
@@ -2752,6 +2759,7 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 		header: makeForm(headerSelector, options.header),
 		detail: makeListForm(detailSelector, options.detail),
 		data: options.data,
+		settings: options,
 		dataReady: dataReady,
 		submit: submitUrl,
 		submitCallback: options.submitCallback,
@@ -2761,7 +2769,7 @@ function makeHeaderDetailForm(headerSelector, detailSelector, options) {
 	result.detail.header = result.header;
 	nextPreviousButtons(result.data);
 	result.detail.bind('changed.field', function () {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 	});
 	if (options.data)
 		dataReady(options.data);
@@ -2804,7 +2812,7 @@ function makeMultiDetailForm(headerSelector, detailSelector, options) {
 				detail: result.detail.map(function (d) { return d.data; })
 			}, function (d) {
 				// Success
-				$('button#Back').text('Back');
+				$('button.back').text('Back');
 				if (result.submitCallback && result.submitCallback(d))
 					return;
 				if ($(button).hasClass('goback'))
@@ -2850,15 +2858,13 @@ function makeMultiDetailForm(headerSelector, detailSelector, options) {
 		header: makeForm(headerSelector, options.header),
 		detail: [],
 		data: options.data,
+		settings: options,
 		dataReady: dataReady,
 		submit: submitUrl,
 		submitCallback: options.submitCallback,
 		validate: validate
 	};
 	result.owningForm = result.header.owningForm = result;
-	_.each(result.detail, function (d) {
-		d.owningForm = result;
-	});
 	var ds = $(detailSelector);
 	var after = ds;
 	var id = ds.prop('id') || 'detail';
@@ -2873,8 +2879,9 @@ function makeMultiDetailForm(headerSelector, detailSelector, options) {
 		var f = makeListForm('#' + newid, opts);
 		f.header = result.header;
 		f.bind('changed.field', function () {
-			$('button#Back').text('Cancel');
+			$('button.back').text('Cancel');
 		});
+		f.owningForm = result;
 		result.detail.push(f);
 	});
 	ds.hide();
@@ -2905,7 +2912,7 @@ function makeListForm(selector, options) {
 	}
 	function validate() {
 		for (var row = 0; row < table.data.length; row++)
-			if (!validateForm(options, row, data[row]))
+			if (!validateForm(table, row, table.data[row]))
 				return false;
 		if (options.validate) {
 			var msg = options.validate();
@@ -3130,7 +3137,7 @@ function makeListForm(selector, options) {
 						callback = options.deleteRows.call(thisrow, table.data[index]);
 					if (callback != false) {
 						unsavedInput = true;
-						$('button#Back').text('Cancel');
+						$('button.back').text('Cancel');
 						thisrow.remove();
 						table.data.splice(index, 1);
 						if (typeof (callback) == 'function')
@@ -3193,7 +3200,7 @@ function makeListForm(selector, options) {
 						var r = parseInt($(this).attr('data-row'));
 						if (index != r) {
 							unsavedInput = true;
-							$('button#Back').text('Cancel');
+							$('button.back').text('Cancel');
 						}
 						data.push(table.data[r]);
 					});
@@ -3218,7 +3225,7 @@ function makeListForm(selector, options) {
 		draw();
 		if (!drawn) {
 			drawn = true;
-			checkForCachedData(result);
+			checkForCachedData(table);
 			if (submitUrl && !options.readonly) {
 				actionButton(options.submitText || 'Save', 'save')
 					.addClass('goback')
@@ -3393,7 +3400,7 @@ function makeDumbForm(selector, options) {
 	// Attach event handler to input fields
 	$('body').off('change', selector + ' :input');
 	$('body').on('change', selector + ' :input', function (/** this: jElement */) {
-		$('button#Back').text('Cancel');
+		$('button.back').text('Cancel');
 		var col = result.fields[$(this).attr('data-col')];
 		if (col) {
 			var val;
@@ -3513,26 +3520,26 @@ function makeDumbForm(selector, options) {
 
 /**
  * Validate all the fields in a data row
- * @param {*} options Form options
+ * @param {*} form Form
  * @param {int} row Row no (0 for main form)
  * @param {*} data Data for the row
  */
-function validateForm(options, row, data) {
+function validateForm(form, row, data) {
 	try {
 		var hdg = null;
 		// Check each input value is valid
-		_.each(options.columns, function (col) {
+		_.each(form.settings.columns, function (col) {
 			if (col.inputValue) {
 				hdg = col.heading;
-				col.inputValue(col.cell.find('#r' + row + 'c' + col.name), data);
+				col.inputValue(form.find('#r' + row + 'c' + col.name), data);
 			}
 		});
 	} catch (e) {
 		message(hdg + ':' + e);
 		return false;
 	}
-	if (options.validate) {
-		var msg = options.validate();
+	if (form.settings.validate) {
+		var msg = form.settings.validate();
 		message(msg);
 		if (msg) return false;
 	}

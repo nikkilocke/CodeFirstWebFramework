@@ -486,7 +486,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="h">Hash of the original record</param>
 		/// <param name="json">Json of the edited record</param>
 		[Auth(AccessLevel.Any)]
-		public AjaxReturn SaveCache(string u, int h, string json) {
+		public AjaxReturn SaveCache(string u, long h, string json) {
 			AjaxReturn r = new AjaxReturn();
 			if (module.Session.User != null) {
 				removeTransientItemsFromUrl(ref u);
@@ -508,7 +508,7 @@ namespace CodeFirstWebFramework {
 		/// <param name="u">Url of the form edit screen</param>
 		/// <param name="h">Hash of the original record</param>
 		[Auth(AccessLevel.Any)]
-		public AjaxReturn LoadCache(string u, int h) {
+		public AjaxReturn LoadCache(string u, long h) {
 			AjaxReturn r = new AjaxReturn();
 			if (module.Session.User != null) {
 				removeTransientItemsFromUrl(ref u);
@@ -577,7 +577,7 @@ namespace CodeFirstWebFramework {
 		/// <summary>
 		/// Hash of the original record
 		/// </summary>
-		public int OriginalRecordHash;
+		public long OriginalRecordHash;
 		/// <summary>
 		/// Json of the edited record
 		/// </summary>

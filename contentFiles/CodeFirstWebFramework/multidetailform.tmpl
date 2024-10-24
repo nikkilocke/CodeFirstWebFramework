@@ -1,6 +1,6 @@
 <head>
-{{#if Form.Options.Pages}}
-<link{{NonceAttribute}} href="/multipageform.css" rel="stylesheet" type="text/css" />
+{{#if Form.Header.Pages}}
+<link{{NonceAttribute}} href="/multipageform{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
 {{/if}}
 	<script{{NonceAttribute}}>
 		$(function() {
@@ -9,6 +9,8 @@
 	</script>
 </head>
 <body>
+<div class="form-body">
 <table id="headerform" cellspacing="0"></table>
 <table id="detailform" cellspacing="0"></table>
+</div>
 </body>

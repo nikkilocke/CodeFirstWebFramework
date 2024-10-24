@@ -16,14 +16,15 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.152</Version>
-    <AssemblyVersion>1.3.152.0</AssemblyVersion>
-    <FileVersion>1.3.152.0</FileVersion>
+    <Version>1.3.157</Version>
+    <AssemblyVersion>1.3.157.0</AssemblyVersion>
+    <FileVersion>1.3.157.0</FileVersion>
     <PackageReleaseNotes>Added MultiDetailForm.
 Option to cache abandoned changes to a form, and resore them next time the exact same form is visited</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -89,7 +90,16 @@ Option to cache abandoned changes to a form, and resore them next time the exact
     <None Remove="contentfiles\codefirstwebframework\multidetailform.tmpl" />
     <None Remove="contentfiles\codefirstwebframework\multipageform.css" />
     <None Remove="Properties\launchSettings.json" />
+    <None Remove="README.md" />
     <None Remove="zip.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

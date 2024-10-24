@@ -26,13 +26,13 @@
   - [EditUserDelete()](#M-CodeFirstWebFramework-AdminHelper-EditUserDelete-System-Int32- 'CodeFirstWebFramework.AdminHelper.EditUserDelete(System.Int32)')
   - [EditUserSave()](#M-CodeFirstWebFramework-AdminHelper-EditUserSave-Newtonsoft-Json-Linq-JObject- 'CodeFirstWebFramework.AdminHelper.EditUserSave(Newtonsoft.Json.Linq.JObject)')
   - [GetLog()](#M-CodeFirstWebFramework-AdminHelper-GetLog 'CodeFirstWebFramework.AdminHelper.GetLog')
-  - [LoadCache(u,h)](#M-CodeFirstWebFramework-AdminHelper-LoadCache-System-String,System-Int32- 'CodeFirstWebFramework.AdminHelper.LoadCache(System.String,System.Int32)')
+  - [LoadCache(u,h)](#M-CodeFirstWebFramework-AdminHelper-LoadCache-System-String,System-Int64- 'CodeFirstWebFramework.AdminHelper.LoadCache(System.String,System.Int64)')
   - [Login()](#M-CodeFirstWebFramework-AdminHelper-Login 'CodeFirstWebFramework.AdminHelper.Login')
   - [LoginNoRedirect()](#M-CodeFirstWebFramework-AdminHelper-LoginNoRedirect 'CodeFirstWebFramework.AdminHelper.LoginNoRedirect')
   - [Logout()](#M-CodeFirstWebFramework-AdminHelper-Logout 'CodeFirstWebFramework.AdminHelper.Logout')
   - [RedirectAfterLogin()](#M-CodeFirstWebFramework-AdminHelper-RedirectAfterLogin-System-String- 'CodeFirstWebFramework.AdminHelper.RedirectAfterLogin(System.String)')
   - [Restore()](#M-CodeFirstWebFramework-AdminHelper-Restore 'CodeFirstWebFramework.AdminHelper.Restore')
-  - [SaveCache(u,h,json)](#M-CodeFirstWebFramework-AdminHelper-SaveCache-System-String,System-Int32,System-String- 'CodeFirstWebFramework.AdminHelper.SaveCache(System.String,System.Int32,System.String)')
+  - [SaveCache(u,h,json)](#M-CodeFirstWebFramework-AdminHelper-SaveCache-System-String,System-Int64,System-String- 'CodeFirstWebFramework.AdminHelper.SaveCache(System.String,System.Int64,System.String)')
   - [Users()](#M-CodeFirstWebFramework-AdminHelper-Users 'CodeFirstWebFramework.AdminHelper.Users')
   - [UsersListing()](#M-CodeFirstWebFramework-AdminHelper-UsersListing 'CodeFirstWebFramework.AdminHelper.UsersListing')
   - [permissions()](#M-CodeFirstWebFramework-AdminHelper-permissions-System-Int32- 'CodeFirstWebFramework.AdminHelper.permissions(System.Int32)')
@@ -1132,7 +1132,7 @@ Return the log file for a given date (today if date not supplied)
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-AdminHelper-LoadCache-System-String,System-Int32-'></a>
+<a name='M-CodeFirstWebFramework-AdminHelper-LoadCache-System-String,System-Int64-'></a>
 ### LoadCache(u,h) `method`
 
 ##### Summary
@@ -1144,7 +1144,7 @@ Retrieve a partially edited record from the CachedRecord table
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | u | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Url of the form edit screen |
-| h | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Hash of the original record |
+| h | [System.Int64](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int64 'System.Int64') | Hash of the original record |
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Login'></a>
 ### Login() `method`
@@ -1206,7 +1206,7 @@ Restore the database
 
 This method has no parameters.
 
-<a name='M-CodeFirstWebFramework-AdminHelper-SaveCache-System-String,System-Int32,System-String-'></a>
+<a name='M-CodeFirstWebFramework-AdminHelper-SaveCache-System-String,System-Int64,System-String-'></a>
 ### SaveCache(u,h,json) `method`
 
 ##### Summary
@@ -1218,7 +1218,7 @@ Save a partially edited record in the CachedRecord table
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | u | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Url of the form edit screen |
-| h | [System.Int32](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int32 'System.Int32') | Hash of the original record |
+| h | [System.Int64](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Int64 'System.Int64') | Hash of the original record |
 | json | [System.String](http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String 'System.String') | Json of the edited record |
 
 <a name='M-CodeFirstWebFramework-AdminHelper-Users'></a>

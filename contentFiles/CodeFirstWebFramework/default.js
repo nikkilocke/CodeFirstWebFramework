@@ -2544,7 +2544,10 @@ function makeForm(selector, options) {
 				.click(function (e) {
 					showPage(page + 1);
 				});
-				nextButton.appendTo(header);
+			var nextpagepos = $('.nextpage-pos');
+			if (!nextpagepos || !nextpagepos.length)
+				nextpagepos = header;
+			nextButton.appendTo(nextpagepos);
 			if (!options.multipage.saveOnAllPages)
 				nextButton.attr('title', 'You can save the form when you reach the last page');
 		}

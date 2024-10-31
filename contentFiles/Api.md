@@ -4810,7 +4810,7 @@ Set to true to call MethodNameNotify(string fieldName, JObject json) when the fi
 
 ##### Summary
 
-Page number
+Page number for multi-page forms - leave at 0 for the field to appear on every page
 
 <a name='P-CodeFirstWebFramework-FieldAttribute-Postamble'></a>
 ### Postamble `property`

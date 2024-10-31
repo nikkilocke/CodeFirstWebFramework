@@ -16,11 +16,8 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.157</Version>
-    <AssemblyVersion>1.3.157.0</AssemblyVersion>
-    <FileVersion>1.3.157.0</FileVersion>
-    <PackageReleaseNotes>Added MultiDetailForm.
-Option to cache abandoned changes to a form, and resore them next time the exact same form is visited</PackageReleaseNotes>
+    <Version>1.3.158</Version>
+    <PackageReleaseNotes>New options in default.tmpl to have multiple save/back/etc. buttons, and to choose the order they are shown in.</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>
@@ -35,8 +32,8 @@ Option to cache abandoned changes to a form, and resore them next time the exact
     <Reference Include="System.Web" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.37.0" />
+<ItemGroup>
+    <PackageReference Include="Markdig" Version="0.38.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.10" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
@@ -52,9 +49,9 @@ Option to cache abandoned changes to a form, and resore them next time the exact
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
+</ItemGroup>
 
-  <ItemGroup>
+<ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 

@@ -2,14 +2,14 @@
 <html>
 <head lang="en">
 {{#if Nonce}}
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-{{Nonce}}'; style-src 'nonce-{{Nonce}}'; connect-src 'self'; img-src 'self'; font-src 'self';" />
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-{{Nonce}}'; style-src 'nonce-{{Nonce}}'; connect-src 'self'; img-src 'self'; font-src 'self';"></span>
 {{/if}}
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-	<link{{NonceAttribute}} href="/libs/jquery-ui.structure.css" rel="stylesheet" type="text/css" />
-	<link{{NonceAttribute}} href="/libs/jquery-ui.min.css" rel="stylesheet" type="text/css" />
-	<link{{NonceAttribute}} href="/libs/theme.min.css" rel="stylesheet" type="text/css" />
-	<link{{NonceAttribute}} href="/libs/jquery.multiselect.css" rel="stylesheet" type="text/css" />
-	<link{{NonceAttribute}} href="/libs/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+	<link{{NonceAttribute}} href="/libs/jquery-ui.structure.css" rel="stylesheet" type="text/css"></span>
+	<link{{NonceAttribute}} href="/libs/jquery-ui.min.css" rel="stylesheet" type="text/css"></span>
+	<link{{NonceAttribute}} href="/libs/theme.min.css" rel="stylesheet" type="text/css"></span>
+	<link{{NonceAttribute}} href="/libs/jquery.multiselect.css" rel="stylesheet" type="text/css"></span>
+	<link{{NonceAttribute}} href="/libs/jquery.dataTables.min.css" rel="stylesheet" type="text/css"></span>
 	<script{{NonceAttribute}} src="/libs/jquery.min.js" type="text/javascript"></script>
 	<script{{NonceAttribute}} src="/libs/underscore-min.js" type="text/javascript"></script>
 	<script{{NonceAttribute}} src="/libs/jquery-ui.min.js" type="text/javascript"></script>
@@ -17,8 +17,8 @@
 	<script{{NonceAttribute}} src="/libs/jquery.multiselect.js" type="text/javascript"></script>
 	<script{{NonceAttribute}} src="/libs/bowser.min.js" type="text/javascript"></script>
 	<script{{NonceAttribute}} src="/libs/murmurhash.js" type="text/javascript"></script>
-	<link{{NonceAttribute}} id="defaultStyles" href="/default{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
-	<link{{NonceAttribute}} href="/skin/{{Settings.Skin}}{{VersionSuffix}}.css" rel="stylesheet" type="text/css" />
+	<link{{NonceAttribute}} id="defaultStyles" href="/default{{VersionSuffix}}.css" rel="stylesheet" type="text/css"></span>
+	<link{{NonceAttribute}} href="/skin/{{Settings.Skin}}{{VersionSuffix}}.css" rel="stylesheet" type="text/css"></span>
 	<script{{NonceAttribute}} src="/default{{VersionSuffix}}.js" type="text/javascript"></script>
 	{{include default.inc}}
 	{{HeaderScript}}
@@ -27,7 +27,7 @@
 	{{Head}}
 </head>
 <body>
-<img id="menuicon" src="/images/menu.png" />
+<img id="menuicon" src="/images/menu.png"></span>
 <div id="outerheader">
 <div id="header">
 {{#if Session.User}}<div class="loginuser">{{Session.User.Login}}</div>{{/if}}
@@ -39,7 +39,7 @@
 </div>
 <div id="menu2">&nbsp;{{#each Menu}}<button id="{{Id}}" href="{{Url}}"{{#if Disabled}} disabled="disabled"{{/if}}>{{Text}}</button>{{/each}}</div>
 </div>
-<div id="menu3">&nbsp;</div>
+<div id="menu3"><span class="back-pos"></span><span class="download-pos"></span><span class="openDialog-pos"></span><span class="save-pos"></span><span class="apply-pos"></span><span class="savenew-pos"></span><span class="delete-pos"></span><span class="reset-pos"></span><span class="next-pos"></span><span class="previous-pos"></span><span class="download-pos"></span><span class="other-pos"></span>&nbsp;</div>
 </div>
 <div id="spacer"></div>
 <div id="body">

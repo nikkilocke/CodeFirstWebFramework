@@ -320,7 +320,7 @@ function updateImageInput(items) {
 }
 
 function addBackButton() {
-	insertActionButton('Back', 'back').click(goback);
+	actionButton('Back', 'back').click(goback);
 }
 
 function setFocusToFirstInputField() {
@@ -373,31 +373,22 @@ function jumpButton(text, url) {
  */
 function actionButton(text, type) {
 	var id = text.replace(/ /g, '');
-	if (!type)
+	var appendTo;
+	if (type) {
+		appendTo = '.' + type + '-pos';
+	} else {
+		appendTo = '.' + other + '-pos';
 		type = id.toLowerCase();
+	}
+	appendTo = $(appendTo);
+	if (!appendTo || !appendTo.length)
+		appendTo = $('#menu3');
 	var btn = $('<button></button>')
-		.attr('id', id)
 		.addClass(type)
 		.text(text)
-		.appendTo($('#menu3').show());
-	resize();
-	return btn;
-}
-
-/**
- * Add a button to front of menu 3
- * @param text Button text
- * @returns {*|jQuery} Button
- */
-function insertActionButton(text, type) {
-	var id = text.replace(/ /g, '');
-	if (!type)
-		type = id;
-	var btn = $('<button></button>')
-		.attr('id', id)
-		.addClass(type)
-		.text(text)
-		.prependTo($('#menu3').show());
+		.appendTo(appendTo.show());
+	btn.first().attr('id', id);
+	$('#menu3').show();
 	resize();
 	return btn;
 }
@@ -2609,12 +2600,14 @@ function makeForm(selector, options) {
 				if (!options.readonly) {
 					actionButton(options.submitText || 'Save', 'save')
 						.addClass('goback')
+						.attr('title', 'Save the data and go back to the previous screen')
 						.click(function (e) {
 							submitUrl(this);
 							e.preventDefault();
 						});
 					if (options.apply)
 						actionButton(options.applyText || 'Apply', 'apply')
+							.attr('title', 'Save the data, but stay on this screen')
 							.click(function (e) {
 								submitUrl(this);
 								e.preventDefault();
@@ -2622,6 +2615,7 @@ function makeForm(selector, options) {
 					if (options.saveAndNew)
 						actionButton((options.submitText || 'Save') + ' and New', 'savenew')
 							.addClass('new')
+							.attr('title', 'Save the data, and start creating another new record')
 							.click(function (e) {
 								submitUrl(this);
 								e.preventDefault();
@@ -3229,12 +3223,14 @@ function makeListForm(selector, options) {
 			if (submitUrl && !options.readonly) {
 				actionButton(options.submitText || 'Save', 'save')
 					.addClass('goback')
+					.attr('title', 'Save the data and go back to the previous screen')
 					.click(function (e) {
 						submitUrl(this);
 						e.preventDefault();
 					});
 				if (options.apply)
 					actionButton(options.applyText || 'Apply', 'apply')
+						.attr('title', 'Save the data, but stay on this screen')
 						.click(function (e) {
 							submitUrl(this);
 							e.preventDefault();

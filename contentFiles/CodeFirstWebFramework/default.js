@@ -2471,7 +2471,6 @@ function makeForm(selector, options) {
 		if (isMultiPage()) {
 			if (p != page) {
 				message(msg);
-				$('button.back').text('Cancel');
 				$('div.form-tabs span.tab[data-page=' + page + ']').removeClass('selected');
 			}
 			$('button[data-page=' + page + ']').prop('disabled', false);
@@ -2540,7 +2539,7 @@ function makeForm(selector, options) {
 			}
 			nextButton = $('<button/>')
 				.addClass('nextpage')
-				.text('Next page')
+				.text('Next section')
 				.click(function (e) {
 					showPage(page + 1);
 				});

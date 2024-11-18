@@ -427,7 +427,7 @@ namespace CodeFirstWebFramework {
 			if (module.Request.HttpMethod == "POST") {
 				string login = module.Parameters.AsString("login").Trim();
 				string password = module.Parameters.AsString("password");
-				module.Message = "Login name or not found or password invalid";
+				module.Message = "Login name not found or password invalid";
 				User user = module.Database.QueryOne<User>("SELECT * FROM User WHERE Login = "
 					+ module.Database.Quote(login) + " OR Email = " + module.Database.Quote(login));
 				if (user.idUser > 0) {

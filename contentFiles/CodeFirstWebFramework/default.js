@@ -377,7 +377,7 @@ function actionButton(text, type) {
 	if (type) {
 		appendTo = '.' + type + '-pos';
 	} else {
-		appendTo = '.' + other + '-pos';
+		appendTo = '.other-pos';
 		type = id.toLowerCase();
 	}
 	appendTo = $(appendTo);

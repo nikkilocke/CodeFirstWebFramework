@@ -16,8 +16,11 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.160</Version>
-    <PackageReleaseNotes>Fix bug in multi page forms, so Back button isn;t replaced by cancel on change of page (which is now called section in the button).</PackageReleaseNotes>
+    <Version>1.3.161</Version>
+    <PackageReleaseNotes>Minor bugfixes :
+- extra "or" in login failure message
+- actionButton method referenced non-existent variable if no type supplied
+</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

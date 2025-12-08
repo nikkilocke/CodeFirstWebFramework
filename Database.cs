@@ -186,8 +186,7 @@ namespace CodeFirstWebFramework {
 				case "mariadb":
 					return new MySqlConnector(this, connectionString);
 				case "sqlserver":
-					throw new CheckException("Support for SQL Server has temporarily been dropped");
-					// return new SqlServerDatabase(this, connectionString);
+					throw new CheckException("Support for SQL Server has been dropped");
 				default:
 					throw new CheckException("Unknown database type {0}", Config.Default.Database);
 			}

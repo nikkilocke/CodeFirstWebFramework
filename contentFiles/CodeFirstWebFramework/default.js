@@ -2929,14 +2929,14 @@ function makeListForm(selector, options) {
 				// Success
 				if (callback && callback(d, true))
 					return;
-				if (result.submitCallback)
-					result.submitCallback(d);
+				if (table.submitCallback)
+					table.submitCallback(d);
 			}, function (d) {
 				// Failure
 				if (callback && callback(d, false))
 					return;
-				if (result.submitCallback)
-					result.submitCallback(d);
+				if (table.submitCallback)
+					table.submitCallback(d);
 			});
 		};
 	}
@@ -2995,6 +2995,8 @@ function makeListForm(selector, options) {
 			}
 			if (col.sClass)
 				cell.attr('class', col.sClass);
+			if (col["@class"])
+				cell.addClass(col["@class"]);
 		}
 		columns[col.name] = col;
 		col.index = index;
@@ -3329,6 +3331,7 @@ function makeListForm(selector, options) {
 	};
 	refresh();
 	Forms.push(table);
+	table.owningForm = table;
 	return table;
 }
 

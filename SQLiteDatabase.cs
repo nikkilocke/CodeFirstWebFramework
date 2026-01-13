@@ -466,7 +466,7 @@ namespace CodeFirstWebFramework {
 					break;
 				case "DateTime":
 					b.Append("DATETIME");
-                    if (defaultValue == null)
+                    if (!f.Nullable && defaultValue == null)
                         defaultValue = "1900-01-01";
                     break;
 				case "String":

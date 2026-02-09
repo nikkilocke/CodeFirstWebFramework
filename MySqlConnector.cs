@@ -303,11 +303,8 @@ namespace CodeFirstWebFramework {
 				string columnName = parts[parts.Length - 1];
 				Field masterField = master.PrimaryKey;
 				Field f = fieldFor(detail, columnName);
-				if (f == null) {
-					columnName = foreignKeyInfo[constraint + "_idx"];
-					if (columnName != null)
-						f = fieldFor(detail, columnName);
-				}
+				if (f == null && foreignKeyInfo.TryGetValue(constraint + "_idx", out columnName))
+					f = fieldFor(detail, columnName);
 				if (f != null)
 					f.ForeignKey = new ForeignKey(master, masterField);
 			}

@@ -16,9 +16,8 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.164</Version>
-    <PackageReleaseNotes>Support .Net10
-Do not set default value on nullable dates (unless it is supplied).</PackageReleaseNotes>
+    <Version>1.3.165</Version>
+    <PackageReleaseNotes>Better recognition of foreign keys in MySqlConnector</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

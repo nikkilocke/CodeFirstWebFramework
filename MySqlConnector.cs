@@ -261,6 +261,8 @@ namespace CodeFirstWebFramework {
 			DataTable indexes = _conn.GetSchema("Indexes", restrictions);
 			DataTable indexCols = _conn.GetSchema("IndexColumns", restrictions);
 			DataTable views = _conn.GetSchema("Views");
+			Dictionary<string, string> foreignKeyInfo = new Dictionary<string, string>();
+
 			foreach(DataRow table in tabs.Rows) {
 				string name = table["TABLE_NAME"].ToString();
 				string filter = "TABLE_NAME = " + Quote(name);
@@ -280,10 +282,14 @@ namespace CodeFirstWebFramework {
 				}
 				foreach (DataRow ind in indexes.Select(filter + " AND PRIMARY = 'False'")) {
 					string indexName = ind["INDEX_NAME"].ToString();
-					if (!indexName.StartsWith("fk_"))
+					if (indexName.StartsWith("fk_")) {
+						foreignKeyInfo[indexName] = indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
+							.First()["COLUMN_NAME"].ToString();
+					} else {
 						tableIndexes.Add(new Index(indexName, ind["UNIQUE"].ToString() == "True",
 						indexCols.Select(filter + " AND INDEX_NAME = " + Quote(indexName), "ORDINAL_POSITION")
 						.Select(r => fields.First(f => f.Name == r["COLUMN_NAME"].ToString())).ToArray()));
+					}
 				}
 				tables[name] = new Table(name, fields, tableIndexes.ToArray());
 			}
@@ -292,10 +298,18 @@ namespace CodeFirstWebFramework {
 				// MySql 5 incorrectly returns lower case table and field names here
 				Table detail = tables[fk["TABLE_NAME"].ToString()];
 				Table master = tables[fk["REFERENCED_TABLE_NAME"].ToString()];
-				string[] parts = fk["CONSTRAINT_NAME"].ToString().Split('_');
+				string constraint = fk["CONSTRAINT_NAME"].ToString();
+				string[] parts = constraint.Split('_');
 				string columnName = parts[parts.Length - 1];
 				Field masterField = master.PrimaryKey;
-				fieldFor(detail, columnName).ForeignKey = new ForeignKey(master, masterField);
+				Field f = fieldFor(detail, columnName);
+				if (f == null) {
+					columnName = foreignKeyInfo[constraint + "_idx"];
+					if (columnName != null)
+						f = fieldFor(detail, columnName);
+				}
+				if (f != null)
+					f.ForeignKey = new ForeignKey(master, masterField);
 			}
 			foreach (DataRow table in views.Select("TABLE_SCHEMA = " + Quote(schema))) {
 				string name = table["TABLE_NAME"].ToString();

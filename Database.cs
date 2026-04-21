@@ -1314,7 +1314,7 @@ namespace CodeFirstWebFramework {
 				return false;
 			for (int i = 0; i < Fields.Length; i++) {
 				Field mine = Fields[i], theirs = other.Fields[i];
-				if (mine.Name != theirs.Name || mine.Type != theirs.Type)
+				if (mine.Name != theirs.Name || mine.DatabaseTypeName != theirs.DatabaseTypeName)
 					return false;
 			}
 			return true;

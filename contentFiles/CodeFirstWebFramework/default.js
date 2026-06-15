@@ -244,7 +244,8 @@ $(function () {
 		var focusInput;
 		$('body').on('focus', ':input', function () {
 			focusInput = this;
-			$(this).select();
+			if (!$(this).is('textarea'))
+				$(this).select();
 		}).on('mouseup', ':input', function (e) {
 			if (focusInput == this) {
 				focusInput = null;
@@ -328,7 +329,7 @@ function setFocusToFirstInputField() {
 	var focusField = $(':input[autofocus]:enabled:visible:first');
 	if (focusField.length == 0)
 		focusField = $(':input:enabled:visible:not(button):first');
-	focusField.focus().select();
+	focusField.focus();
 }
 
 $(window).on("load", resize);

@@ -16,8 +16,8 @@
     <RepositoryUrl>https://github.com/nikkilocke/CodeFirstWebFramework</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>C# SQL Code First Web Server</PackageTags>
-    <Version>1.3.171</Version>
-    <PackageReleaseNotes>Do not highlight input textareas when they gain focus.</PackageReleaseNotes>
+    <Version>1.3.172</Version>
+    <PackageReleaseNotes>Added AppModule.Files</PackageReleaseNotes>
 	<DocumentationMarkdown>contentFiles/Api.md</DocumentationMarkdown>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageLicenseFile>license.txt</PackageLicenseFile>

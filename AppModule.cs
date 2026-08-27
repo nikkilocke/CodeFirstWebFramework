@@ -300,6 +300,11 @@ namespace CodeFirstWebFramework {
 		public JObject PostParameters;
 
 		/// <summary>
+		/// If a file is posted, it is store here, for ease of access
+		/// </summary>
+		public Dictionary<string, UploadedFile> Files;
+
+		/// <summary>
 		/// The Web Request (from Context)
 		/// </summary>
 		public HttpListenerRequest Request {
@@ -727,7 +732,11 @@ namespace CodeFirstWebFramework {
 								string field = match.Groups[1].Value;
 								match = new Regex(@"; filename=""(.*)""").Match(headers);
 								if (match.Success) {
-									PostParameters.Add(field, new UploadedFile(Path.GetFileName(match.Groups[1].Value), value).ToJToken());
+									UploadedFile f = new UploadedFile(Path.GetFileName(match.Groups[1].Value), value);
+									if (Files == null)
+										Files = new Dictionary<string, UploadedFile>();
+									Files[field] = f;
+									PostParameters.Add(field, f.ToJToken());
 								} else {
 									PostParameters.Add(field, ConvertEncoding(value));
 								}

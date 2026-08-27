@@ -117,14 +117,13 @@ namespace CodeFirstWebFramework {
 		/// Restore the database
 		/// </summary>
 		public void Restore() {
-			if (module.PostParameters != null && module.PostParameters["file"] != null) {
+			if (module.Files != null && module.Files.TryGetValue("file", out UploadedFile data)) {
+				JObject d = data.Content.JsonTo<JObject>();
 				new AppModule.BatchJob(module, delegate () {
 					module.Batch.Status = "Loading new data";
-					UploadedFile data = module.PostParameters.As<UploadedFile>("file");
 					try {
 						module.Database.Logging = false;
 						module.Database.BeginTransaction();
-						JObject d = data.Content.JsonTo<JObject>();
 						List<Table> tables = module.Database.TableNames.Select(n => module.Database.TableFor(n)).ToList();
 						module.Batch.Records = tables.Count * 4;
 						foreach (Table t in tables) {

@@ -58,6 +58,7 @@
   - [Context](#F-CodeFirstWebFramework-AppModule-Context 'CodeFirstWebFramework.AppModule.Context')
   - [Encoding](#F-CodeFirstWebFramework-AppModule-Encoding 'CodeFirstWebFramework.AppModule.Encoding')
   - [Exception](#F-CodeFirstWebFramework-AppModule-Exception 'CodeFirstWebFramework.AppModule.Exception')
+  - [Files](#F-CodeFirstWebFramework-AppModule-Files 'CodeFirstWebFramework.AppModule.Files')
   - [Form](#F-CodeFirstWebFramework-AppModule-Form 'CodeFirstWebFramework.AppModule.Form')
   - [GetParameters](#F-CodeFirstWebFramework-AppModule-GetParameters 'CodeFirstWebFramework.AppModule.GetParameters')
   - [Head](#F-CodeFirstWebFramework-AppModule-Head 'CodeFirstWebFramework.AppModule.Head')
@@ -1425,6 +1426,13 @@ Character encoding for web output
 ##### Summary
 
 Any exception thrown handling a web request
+
+<a name='F-CodeFirstWebFramework-AppModule-Files'></a>
+### Files `constants`
+
+##### Summary
+
+If a file is posted, it is store here, for ease of access
 
 <a name='F-CodeFirstWebFramework-AppModule-Form'></a>
 ### Form `constants`
